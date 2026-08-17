@@ -24,8 +24,8 @@ model User {
   displayName   String
   email         String   @unique
   passwordHash  String?
-  emailVerified Boolean  @default(false)
   avatarUrl     String?
+  emailVerified Boolean  @default(false)
   role          Role     @default(USER)
 
   createdAt DateTime @default(now())
