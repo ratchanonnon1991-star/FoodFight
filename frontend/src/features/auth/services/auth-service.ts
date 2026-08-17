@@ -8,8 +8,8 @@ import type {
 /**
  * Frontend Authentication Service Interface
  *
- * Defines the contract for client-side authentication interactions.
- * Actual transport/API wiring is deferred until the backend contract integration task.
+ * Defines the client-side contract for authentication interactions.
+ * Concrete transport implementation is deferred to the backend contract integration phase.
  */
 export interface AuthService {
   register(input: RegisterInput): Promise<void>;
@@ -20,37 +20,3 @@ export interface AuthService {
   beginGoogleAuth(): void;
   beginLineAuth(): void;
 }
-
-/**
- * Placeholder service implementation.
- * Throws explicitly to prevent fabricated success states until real transport is integrated.
- */
-export const authService: AuthService = {
-  async register(): Promise<void> {
-    throw new Error("Auth transport integration deferred until contract integration task.");
-  },
-
-  async login(): Promise<void> {
-    throw new Error("Auth transport integration deferred until contract integration task.");
-  },
-
-  async verifyEmail(): Promise<void> {
-    throw new Error("Auth transport integration deferred until contract integration task.");
-  },
-
-  async resendVerificationCode(): Promise<void> {
-    throw new Error("Auth transport integration deferred until contract integration task.");
-  },
-
-  async changeVerificationEmail(): Promise<void> {
-    throw new Error("Auth transport integration deferred until contract integration task.");
-  },
-
-  beginGoogleAuth(): void {
-    throw new Error("OAuth transport integration deferred until contract integration task.");
-  },
-
-  beginLineAuth(): void {
-    throw new Error("OAuth transport integration deferred until contract integration task.");
-  },
-};
