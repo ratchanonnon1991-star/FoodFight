@@ -43,3 +43,8 @@ pids
 *.pid
 *.seed
 *.pid.lock
+
+# AI coding assistant local config/skills (not needed by other contributors)
+.agents/
+.claude/
+.windsurf/
