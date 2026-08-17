@@ -122,7 +122,24 @@ src/features/auth/
 └── hooks/
 ```
 
+src/features/design-system/
+├── components/
+│   ├── color-showcase.tsx
+│   ├── typography-showcase.tsx
+│   ├── button-showcase.tsx
+│   ├── form-showcase.tsx
+│   ├── feedback-showcase.tsx
+│   ├── card-showcase.tsx
+│   ├── motion-showcase.tsx
+│   └── index.ts
+
 ## 6. App Router locations
+
+Design system reference:
+
+```text
+src/app/design-system/page.tsx
+```
 
 Expected auth routes when auth implementation begins:
 

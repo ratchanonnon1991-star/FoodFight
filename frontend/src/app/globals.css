@@ -82,53 +82,53 @@
 }
 
 /* ==========================================================================
-   Base & Reset Rules
+   Base & Reset Rules (Wrapped in @layer base to preserve utility precedence)
    ========================================================================== */
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
-}
+@layer base {
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
 
-html {
-  -webkit-text-size-adjust: 100%;
-  tab-size: 4;
-  font-feature-settings: normal;
-  font-variation-settings: normal;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
+  html {
+    -webkit-text-size-adjust: 100%;
+    tab-size: 4;
+    font-feature-settings: normal;
+    font-variation-settings: normal;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
 
-body {
-  background-color: var(--color-background);
-  color: var(--color-text-primary);
-  font-family: var(--font-sans);
-  line-height: 1.5;
-  margin: 0;
-  min-height: 100vh;
-}
+  body {
+    background-color: var(--color-background);
+    color: var(--color-text-primary);
+    font-family: var(--font-sans);
+    line-height: 1.5;
+    margin: 0;
+    min-height: 100vh;
+  }
 
-/* Ensure controls inherit typography correctly */
-input,
-button,
-textarea,
-select,
-optgroup {
-  font: inherit;
-  color: inherit;
-}
+  input,
+  button,
+  textarea,
+  select,
+  optgroup {
+    font: inherit;
+  }
 
-/* Focus-visible baseline */
-:focus-visible {
-  outline: 2px solid var(--color-focus-ring);
-  outline-offset: var(--focus-ring-offset);
-}
+  /* Focus-visible baseline */
+  :focus-visible {
+    outline: 2px solid var(--color-focus-ring);
+    outline-offset: var(--focus-ring-offset);
+  }
 
-/* Selection */
-::selection {
-  background-color: var(--palette-pastel-petal);
-  color: var(--palette-blackberry-cream);
+  /* Selection */
+  ::selection {
+    background-color: var(--palette-pastel-petal);
+    color: var(--palette-blackberry-cream);
+  }
 }
 
 /* ==========================================================================
