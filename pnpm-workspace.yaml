@@ -1,0 +1,9 @@
+packages:
+  - backend
+  - frontend
+
+allowBuilds:
+  '@prisma/engines': true
+  bcrypt: true
+  prisma: true
+  unrs-resolver: true
