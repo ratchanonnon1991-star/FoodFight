@@ -3,20 +3,22 @@ import type {
   LoginInput,
   EmailVerificationInput,
   ChangeEmailInput,
+  AuthResult,
 } from "../types/auth-types";
 
 /**
  * Frontend Authentication Service Interface
  *
  * Defines the client-side contract for authentication interactions.
- * Concrete transport implementation is deferred to the backend contract integration phase.
+ * Returns domain AuthResult models so UI layers handle success and failure
+ * without throwing or inventing backend DTOs.
  */
 export interface AuthService {
-  register(input: RegisterInput): Promise<void>;
-  login(input: LoginInput): Promise<void>;
-  verifyEmail(input: EmailVerificationInput): Promise<void>;
-  resendVerificationCode(email: string): Promise<void>;
-  changeVerificationEmail(input: ChangeEmailInput): Promise<void>;
-  beginGoogleAuth(): void;
-  beginLineAuth(): void;
+  register(input: RegisterInput): Promise<AuthResult>;
+  login(input: LoginInput): Promise<AuthResult>;
+  verifyEmail(input: EmailVerificationInput): Promise<AuthResult>;
+  resendVerificationCode(email: string): Promise<AuthResult>;
+  changeVerificationEmail(input: ChangeEmailInput): Promise<AuthResult>;
+  beginGoogleAuth(): Promise<AuthResult>;
+  beginLineAuth(): Promise<AuthResult>;
 }

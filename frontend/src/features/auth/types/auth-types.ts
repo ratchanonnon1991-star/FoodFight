@@ -1,7 +1,7 @@
 /**
  * Frontend Authentication Domain & Input Types
  *
- * Types for user input and client-side form state across auth flows.
+ * Types for user input, operation status, and client-side results across auth flows.
  */
 
 export interface RegisterInput {
@@ -41,3 +41,7 @@ export interface AuthError {
   message: string;
   fieldErrors?: Record<string, string>;
 }
+
+export type AuthResult<T = void> =
+  | { ok: true; data?: T }
+  | { ok: false; error: AuthError };

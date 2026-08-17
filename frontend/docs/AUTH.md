@@ -74,7 +74,11 @@
 
 ---
 
-## 4. Feature Folder Structure
+## 4. Feature Folder Structure & Service Architecture
+
+- **Mock Adapter**: Frontend Auth currently uses an explicit temporary `MockAuthService` (`src/features/auth/mocks/`) while backend APIs are unavailable.
+- **Frontend Only**: Mock behavior is strictly frontend-only; production backend remains the source of truth.
+- **Runtime Selector**: `src/features/auth/services/auth-runtime.ts` exposes the active `AuthService` (defaulting to mock, requiring API adapter for production).
 
 ```text
 src/features/auth/
@@ -85,12 +89,16 @@ src/features/auth/
 │   ├── change-email-form/
 │   ├── social-auth-buttons/
 │   └── verification-success/
+├── mocks/
+│   ├── mock-auth-scenarios.ts
+│   └── mock-auth-service.ts
 ├── schemas/
 │   └── auth-validation.ts
 ├── constants/
 │   └── auth-policy.ts
 ├── services/
-│   └── auth-service.ts
+│   ├── auth-service.ts
+│   └── auth-runtime.ts
 ├── types/
 │   └── auth-types.ts
 └── hooks/
