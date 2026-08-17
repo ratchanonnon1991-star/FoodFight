@@ -113,3 +113,14 @@ src/features/auth/
 - All form inputs, social buttons, and primary CTAs are 100% width on phone screens (`360px`–`430px`).
 - Interactive touch targets >= `44x44px`.
 - Desktop presentation centers bounded auth card (`max-w-md`) within `AuthLayout`.
+
+---
+
+## 6. Gap Ledger & Mock Flow Status
+
+- **FRONTEND_AUTH_MOCK_STATUS**: `COMPLETE` (All 5 reference auth screens, social actions, mock service adapter, and recoverable fallbacks verified).
+- **PRODUCTION_AUTH_STATUS**: `NOT_COMPLETE` (Real backend API adapter and session persistence pending).
+- **FORGOT_PASSWORD**: `REFERENCE_GAP / BACKEND_CONTRACT_GAP` (Accessible affordance rendered; reset flow deferred until design reference is supplied).
+- **TERMS & PRIVACY**: `ROUTE_GAP` (Rendered inline with semantic styling; dedicated legal pages deferred).
+- **2FA**: `NOT_IMPLEMENTED` (Registration OTP is strictly email verification, not login 2FA).
+- **BACKEND_INTEGRATION_GAPS**: Register, OTP, Change Email, Login, Google OAuth, LINE OAuth, JWT session, and post-auth Food Profile onboarding routing.

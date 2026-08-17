@@ -61,8 +61,9 @@ src/app/design-system/page.tsx        → Developer Design System reference
 src/app/(auth)/register/page.tsx      → Registration screen
 src/app/(auth)/verify-email/page.tsx  → Email OTP verification screen
 src/app/(auth)/change-email/page.tsx  → Change email screen
+src/app/(auth)/verification-success/page.tsx → Verification success screen
 src/app/(auth)/login/page.tsx         → Login screen
-src/app/(auth)/layout.tsx             → Auth route group layout
+src/app/(auth)/layout.tsx             → Auth route group layout (AuthFlowProvider)
 ```
 
 ## 6. Shared Config
