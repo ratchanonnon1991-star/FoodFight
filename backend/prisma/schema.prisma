@@ -1,0 +1,94 @@
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/database/generated/prisma"
+  moduleFormat = "cjs"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum AuthProvider {
+  GOOGLE
+  LINE
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+model User {
+  id            String   @id @default(uuid())
+  displayName   String
+  email         String   @unique
+  passwordHash  String?
+  emailVerified Boolean  @default(false)
+  avatarUrl     String?
+  role          Role     @default(USER)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  accounts          Account[]
+  emailVerification EmailVerification?
+  passwordResets    PasswordReset[]
+
+  @@map("users")
+}
+
+model Account {
+  id                String       @id @default(uuid())
+  userId            String
+  provider          AuthProvider
+  providerAccountId String
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // provider account เดียวกันห้ามซ้ำ
+  @@unique([provider, providerAccountId])
+
+  // User 1 คน เชื่อม Google ได้ 1 account และ LINE ได้ 1 account
+  @@unique([userId, provider])
+
+  @@index([userId])
+  @@map("accounts")
+}
+
+model EmailVerification {
+  id                String   @id @default(uuid())
+  userId            String   @unique
+  otpHash           String
+  expiresAt         DateTime
+  resendAvailableAt DateTime
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("email_verifications")
+}
+
+model PasswordReset {
+  id                String   @id @default(uuid())
+  userId            String
+  tokenHash         String   @unique
+  expiresAt         DateTime
+  resendAvailableAt DateTime
+  used              Boolean  @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("password_resets")
+}
+
