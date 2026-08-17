@@ -6,30 +6,55 @@ import { authService } from "@/features/auth/services/auth-runtime";
 
 export interface SocialAuthButtonsProps {
   disabled?: boolean;
+  onSuccess?: () => void;
+  onError?: (message: string) => void;
+  onPendingChange?: (isPending: boolean) => void;
 }
 
-export function SocialAuthButtons({ disabled = false }: SocialAuthButtonsProps) {
+export function SocialAuthButtons({
+  disabled = false,
+  onSuccess,
+  onError,
+  onPendingChange,
+}: SocialAuthButtonsProps) {
   const [loadingProvider, setLoadingProvider] = React.useState<"google" | "line" | null>(null);
 
+  const setPending = (provider: "google" | "line" | null) => {
+    setLoadingProvider(provider);
+    onPendingChange?.(provider !== null);
+  };
+
   const handleGoogleAuth = async () => {
+    if (disabled || loadingProvider !== null) return;
     try {
-      setLoadingProvider("google");
-      await authService.beginGoogleAuth();
+      setPending("google");
+      const result = await authService.beginGoogleAuth();
+      if (result.ok) {
+        onSuccess?.();
+      } else {
+        onError?.(result.error.message);
+      }
     } catch {
-      // Ignored for now
+      onError?.("Failed to authenticate with Google. Please try again.");
     } finally {
-      setLoadingProvider(null);
+      setPending(null);
     }
   };
 
   const handleLineAuth = async () => {
+    if (disabled || loadingProvider !== null) return;
     try {
-      setLoadingProvider("line");
-      await authService.beginLineAuth();
+      setPending("line");
+      const result = await authService.beginLineAuth();
+      if (result.ok) {
+        onSuccess?.();
+      } else {
+        onError?.(result.error.message);
+      }
     } catch {
-      // Ignored for now
+      onError?.("Failed to authenticate with LINE. Please try again.");
     } finally {
-      setLoadingProvider(null);
+      setPending(null);
     }
   };
 

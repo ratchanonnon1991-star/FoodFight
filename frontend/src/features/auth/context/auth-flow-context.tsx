@@ -8,6 +8,8 @@ export interface AuthFlowContextValue {
   setChallenge: (challenge: EmailVerificationChallenge | null) => void;
   verificationCompleted: boolean;
   setVerificationCompleted: (completed: boolean) => void;
+  isAuthenticated: boolean;
+  setIsAuthenticated: (completed: boolean) => void;
   clearFlowState: () => void;
 }
 
@@ -16,10 +18,12 @@ const AuthFlowContext = React.createContext<AuthFlowContextValue | null>(null);
 export function AuthFlowProvider({ children }: { children: React.ReactNode }) {
   const [challenge, setChallenge] = React.useState<EmailVerificationChallenge | null>(null);
   const [verificationCompleted, setVerificationCompleted] = React.useState<boolean>(false);
+  const [isAuthenticated, setIsAuthenticated] = React.useState<boolean>(false);
 
   const clearFlowState = React.useCallback(() => {
     setChallenge(null);
     setVerificationCompleted(false);
+    setIsAuthenticated(false);
   }, []);
 
   const value = React.useMemo(
@@ -28,9 +32,11 @@ export function AuthFlowProvider({ children }: { children: React.ReactNode }) {
       setChallenge,
       verificationCompleted,
       setVerificationCompleted,
+      isAuthenticated,
+      setIsAuthenticated,
       clearFlowState,
     }),
-    [challenge, verificationCompleted, clearFlowState]
+    [challenge, verificationCompleted, isAuthenticated, clearFlowState]
   );
 
   return (
