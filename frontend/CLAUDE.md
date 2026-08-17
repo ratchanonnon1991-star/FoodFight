@@ -2,29 +2,22 @@
 
 Claude must treat `AGENTS.md` as the canonical frontend working agreement.
 
-Read:
+Canonical read order:
 
 ```text
-AGENTS.md
-docs/Srs-Footfight.md
-docs/FRONTEND.md
-docs/FRONTEND_FILE_MAP.md
-docs/FRONTEND_DESIGN_SYSTEM_MASTER.md
-docs/COLOR_SYSTEM.md
-docs/MOTION_SYSTEM.md
-docs/COMPONENT_CATALOG.md
-docs/FRONTEND_SKILLS.md
-agents/frontend-design-system-agent.md
-skills/foodfighter-frontend-design-system/SKILL.md
+1. AGENTS.md
+2. docs/Srs-Footfight.md
+3. docs/FRONTEND.md
+4. docs/DESIGN_SYSTEM.md
+5. docs/FILE_MAP.md
+6. docs/AUTH.md (or task-specific doc)
+7. relevant source/tests
 ```
 
-Do not duplicate a second architecture policy here.
-
-Core behavior:
-- audit before implementation,
-- preserve unrelated work,
-- separate SRS requirements from design recommendations,
-- use the approved FoodFighter palette,
-- reuse design-system primitives,
-- keep motion restrained and centralized,
-- verify before reporting completion.
+Core principles:
+- `frontend/**` mutation only; never touch `backend/**`.
+- Mobile-first (390px reference, 360–430px checks).
+- Reusable Design System primitives under `src/components/ui/`.
+- Domain features under `src/features/<feature>/`.
+- Centralized tokens, routes, validation schemas, and services (no hard-coding).
+- Verified with typecheck, lint, and build before completing tasks.

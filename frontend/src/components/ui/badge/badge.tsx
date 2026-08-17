@@ -14,11 +14,11 @@ export const badgeVariants = cva(
         "brand-secondary":
           "bg-brand-secondary border-brand-secondary text-white",
         petal:
-          "bg-accent-petal border-[#F5A9C0] text-text-primary",
+          "bg-accent-petal border-border text-text-primary",
         apricot:
-          "bg-accent-apricot border-[#F5C7A3] text-text-primary",
+          "bg-accent-apricot border-border text-text-primary",
         custard:
-          "bg-accent-custard border-[#E8DC84] text-text-primary",
+          "bg-accent-custard border-border text-text-primary",
         success:
           "bg-status-success-bg border-status-success-border text-status-success-text",
         warning:
