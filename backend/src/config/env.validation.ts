@@ -3,6 +3,8 @@ import z from 'zod';
 
 const envSchema = z.object({
   PORT: z.coerce.number().int().max(65535).min(0),
+  JWT_SECRET: z.string().min(1),
+  JWT_EXPIRES_IN: z.string().min(1),
 });
 
 export function validate(config: Record<string, any>) {
