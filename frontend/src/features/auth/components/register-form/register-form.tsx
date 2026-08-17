@@ -3,7 +3,7 @@
 import * as React from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useForm, Controller } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ArrowLeft } from "lucide-react";
 import { ROUTES } from "@/config/routes";
@@ -12,11 +12,11 @@ import { registerSchema, type RegisterFormValues } from "@/features/auth/schemas
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { PasswordInput } from "@/components/ui/password-input";
-import { Checkbox } from "@/components/ui/checkbox";
 import { FormField, FormLabel, FormDescription, FormError } from "@/components/ui/form-field";
 import { Separator } from "@/components/ui/separator";
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 import { SocialAuthButtons } from "../social-auth-buttons";
+import { TermsConsent } from "./terms-consent";
 
 export function RegisterForm() {
   const router = useRouter();
@@ -167,38 +167,11 @@ export function RegisterForm() {
         </FormField>
 
         {/* Terms of Service & Privacy Policy Consent */}
-        <div className="pt-1">
-          <Controller
-            name="termsAccepted"
-            control={control}
-            render={({ field }) => (
-              <Checkbox
-                id="termsAccepted"
-                checked={field.value}
-                onChange={(e) => field.onChange(e.target.checked)}
-                disabled={isSubmitting}
-                invalid={!!errors.termsAccepted}
-                label={
-                  <span className="text-xs text-text-secondary font-normal">
-                    I agree to the{" "}
-                    <span className="font-medium text-brand-primary underline underline-offset-2">
-                      Terms of Service
-                    </span>{" "}
-                    and{" "}
-                    <span className="font-medium text-brand-primary underline underline-offset-2">
-                      Privacy Policy
-                    </span>
-                  </span>
-                }
-              />
-            )}
-          />
-          {errors.termsAccepted && (
-            <p className="mt-1 text-xs text-status-danger-text" role="alert">
-              {errors.termsAccepted.message}
-            </p>
-          )}
-        </div>
+        <TermsConsent
+          control={control}
+          error={errors.termsAccepted?.message}
+          disabled={isSubmitting}
+        />
 
         {/* Create Account CTA */}
         <div className="pt-2">
