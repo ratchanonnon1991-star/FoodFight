@@ -79,6 +79,7 @@
 - **Mock Adapter**: Frontend Auth uses a temporary `MockAuthService` (`src/features/auth/mocks/`) while backend APIs are unavailable.
 - **Frontend Only**: Mock behavior is strictly frontend-only; production backend remains the source of truth.
 - **Runtime Selector & Fail-Closed Safety**: `src/features/auth/services/auth-runtime.ts` resolves `NEXT_PUBLIC_AUTH_MODE`. In production (`NODE_ENV === "production"`), missing `NEXT_PUBLIC_AUTH_MODE` strictly fails closed and never silently defaults to mock. API mode fails closed until the backend adapter is integrated. Development mode (`NODE_ENV !== "production"`) falls back to `"mock"` for local developer convenience.
+- **Auth Flow Context**: `src/features/auth/context/auth-flow-context.tsx` manages scoped verification challenge state (`EmailVerificationChallenge`) across registration and verification steps without global state libraries or query parameter pollution.
 
 ```text
 src/features/auth/

@@ -3,6 +3,7 @@ import type {
   LoginInput,
   EmailVerificationInput,
   ChangeEmailInput,
+  EmailVerificationChallenge,
   AuthResult,
 } from "../types/auth-types";
 
@@ -14,10 +15,10 @@ import type {
  * without throwing or inventing backend DTOs.
  */
 export interface AuthService {
-  register(input: RegisterInput): Promise<AuthResult>;
+  register(input: RegisterInput): Promise<AuthResult<EmailVerificationChallenge>>;
   login(input: LoginInput): Promise<AuthResult>;
   verifyEmail(input: EmailVerificationInput): Promise<AuthResult>;
-  resendVerificationCode(email: string): Promise<AuthResult>;
+  resendVerificationCode(email: string): Promise<AuthResult<EmailVerificationChallenge>>;
   changeVerificationEmail(input: ChangeEmailInput): Promise<AuthResult>;
   beginGoogleAuth(): Promise<AuthResult>;
   beginLineAuth(): Promise<AuthResult>;

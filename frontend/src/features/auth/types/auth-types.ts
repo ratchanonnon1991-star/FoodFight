@@ -1,7 +1,7 @@
 /**
  * Frontend Authentication Domain & Input Types
  *
- * Types for user input, operation status, and client-side results across auth flows.
+ * Types for user input, operation status, challenge state, and client-side results across auth flows.
  */
 
 export interface RegisterInput {
@@ -23,6 +23,12 @@ export interface EmailVerificationInput {
 
 export interface ChangeEmailInput {
   newEmail: string;
+}
+
+export interface EmailVerificationChallenge {
+  email: string;
+  expiresAt: number;
+  resendAvailableAt: number;
 }
 
 export type AuthOperationStatus = "idle" | "loading" | "success" | "error";

@@ -7,6 +7,10 @@
 
 export const MOCK_AUTH_DELAY_MS = 250;
 
+export const MOCK_OTP_LIFETIME_MS = 5 * 60 * 1000; // 5 minutes
+
+export const MOCK_RESEND_COOLDOWN_MS = 45 * 1000; // 45 seconds
+
 export const MOCK_DUPLICATE_EMAIL = "exists@example.com";
 
 export const MOCK_VALID_VERIFICATION_CODE = "123456";

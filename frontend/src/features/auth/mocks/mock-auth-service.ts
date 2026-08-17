@@ -4,11 +4,14 @@ import type {
   LoginInput,
   EmailVerificationInput,
   ChangeEmailInput,
+  EmailVerificationChallenge,
   AuthResult,
 } from "../types/auth-types";
 import { EMAIL_VERIFICATION_POLICY } from "../constants/auth-policy";
 import {
   MOCK_AUTH_DELAY_MS,
+  MOCK_OTP_LIFETIME_MS,
+  MOCK_RESEND_COOLDOWN_MS,
   MOCK_DUPLICATE_EMAIL,
   MOCK_VALID_VERIFICATION_CODE,
   MOCK_EXPIRED_VERIFICATION_CODE,
@@ -19,6 +22,12 @@ import {
 const delay = (ms: number = MOCK_AUTH_DELAY_MS) =>
   new Promise((resolve) => setTimeout(resolve, ms));
 
+const createMockChallenge = (email: string): EmailVerificationChallenge => ({
+  email,
+  expiresAt: Date.now() + MOCK_OTP_LIFETIME_MS,
+  resendAvailableAt: Date.now() + MOCK_RESEND_COOLDOWN_MS,
+});
+
 /**
  * Frontend Mock Authentication Service
  *
@@ -26,7 +35,7 @@ const delay = (ms: number = MOCK_AUTH_DELAY_MS) =>
  * without hitting real backend endpoints or fabricating JWT tokens.
  */
 export const mockAuthService: AuthService = {
-  async register(input: RegisterInput): Promise<AuthResult> {
+  async register(input: RegisterInput): Promise<AuthResult<EmailVerificationChallenge>> {
     await delay();
     if (input.email.toLowerCase() === MOCK_DUPLICATE_EMAIL.toLowerCase()) {
       return {
@@ -37,7 +46,10 @@ export const mockAuthService: AuthService = {
         },
       };
     }
-    return { ok: true };
+    return {
+      ok: true,
+      data: createMockChallenge(input.email),
+    };
   },
 
   async login(input: LoginInput): Promise<AuthResult> {
@@ -92,9 +104,12 @@ export const mockAuthService: AuthService = {
     return { ok: true };
   },
 
-  async resendVerificationCode(): Promise<AuthResult> {
+  async resendVerificationCode(email: string): Promise<AuthResult<EmailVerificationChallenge>> {
     await delay();
-    return { ok: true };
+    return {
+      ok: true,
+      data: createMockChallenge(email),
+    };
   },
 
   async changeVerificationEmail(input: ChangeEmailInput): Promise<AuthResult> {

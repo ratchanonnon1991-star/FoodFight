@@ -8,6 +8,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { ArrowLeft } from "lucide-react";
 import { ROUTES } from "@/config/routes";
 import { authService } from "@/features/auth/services/auth-runtime";
+import { useAuthFlow } from "@/features/auth/context";
 import { registerSchema, type RegisterFormValues } from "@/features/auth/schemas/register-schema";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -20,6 +21,7 @@ import { TermsConsent } from "./terms-consent";
 
 export function RegisterForm() {
   const router = useRouter();
+  const { setChallenge } = useAuthFlow();
   const [generalError, setGeneralError] = React.useState<string | null>(null);
 
   const {
@@ -58,6 +60,9 @@ export function RegisterForm() {
         return;
       }
 
+      if (result.data) {
+        setChallenge(result.data);
+      }
       router.push(ROUTES.AUTH.VERIFY_EMAIL);
     } catch {
       setGeneralError("An unexpected error occurred during registration. Please try again.");
