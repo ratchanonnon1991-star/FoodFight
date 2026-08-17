@@ -29,8 +29,8 @@ export declare const UserScalarFieldEnum: {
     readonly displayName: "displayName";
     readonly email: "email";
     readonly passwordHash: "passwordHash";
-    readonly emailVerified: "emailVerified";
     readonly avatarUrl: "avatarUrl";
+    readonly emailVerified: "emailVerified";
     readonly role: "role";
     readonly createdAt: "createdAt";
     readonly updatedAt: "updatedAt";

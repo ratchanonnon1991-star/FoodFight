@@ -12,12 +12,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.RegisterDto = void 0;
 const class_validator_1 = require("class-validator");
 const trim_decorator_1 = require("../../common/decorators/trim.decorator");
-const passwords_match_validator_1 = require("../../common/validators/passwords-match.validator");
 class RegisterDto {
     displayName;
     email;
     password;
-    confirmPassword;
     agreeToTerms;
 }
 exports.RegisterDto = RegisterDto;
@@ -40,12 +38,6 @@ __decorate([
     (0, class_validator_1.MinLength)(8),
     __metadata("design:type", String)
 ], RegisterDto.prototype, "password", void 0);
-__decorate([
-    (0, class_validator_1.IsNotEmpty)(),
-    (0, class_validator_1.IsString)(),
-    (0, class_validator_1.Validate)(passwords_match_validator_1.PasswordsMatchConstraint),
-    __metadata("design:type", String)
-], RegisterDto.prototype, "confirmPassword", void 0);
 __decorate([
     (0, class_validator_1.IsBoolean)(),
     (0, class_validator_1.Equals)(true),
