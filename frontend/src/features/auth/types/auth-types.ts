@@ -24,3 +24,20 @@ export interface EmailVerificationInput {
 export interface ChangeEmailInput {
   newEmail: string;
 }
+
+export type AuthOperationStatus = "idle" | "loading" | "success" | "error";
+
+export type AuthErrorKind =
+  | "validation"
+  | "invalid_credentials"
+  | "duplicate_email"
+  | "invalid_code"
+  | "expired_code"
+  | "network"
+  | "unknown";
+
+export interface AuthError {
+  kind: AuthErrorKind;
+  message: string;
+  fieldErrors?: Record<string, string>;
+}
