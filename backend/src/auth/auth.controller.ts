@@ -14,6 +14,30 @@ export class AuthController {
   @Post('login')
   login() {}
 
+  @Public()
+  @HttpCode(HttpStatus.OK)
+  @Post('google')
+  loginWithGoogle() {}
+
+  @Public()
+  @HttpCode(HttpStatus.OK)
+  @Post('line')
+  loginWithLine() {}
+
+  @Public()
+  @HttpCode(HttpStatus.OK)
+  @Post('forgot-password')
+  forgotPassword() {}
+
+  @Public()
+  @HttpCode(HttpStatus.OK)
+  @Post('reset-password')
+  resetPassword() {}
+
+  @HttpCode(HttpStatus.OK)
+  @Post('logout')
+  logout() {}
+
   @Get('me')
   getMe(@CurrentUser() user: AccessTokenPayload) {
     return user;
