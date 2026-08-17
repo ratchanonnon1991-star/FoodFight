@@ -30,7 +30,7 @@ src/lib/utils/cn.ts                   → Class merge utility (clsx + tailwind-m
 src/lib/motion/                       → Centralized transitions, variants, springs
 
 src/components/ui/<primitive>/        → Generic UI primitives (button, input, card, badge, alert, etc.)
-src/components/layout/<layout>/       → Layout primitives (page-container, auth-layout)
+src/components/layout/<layout>/       → Layout primitives (page-container, auth-layout, public-header, public-footer)
 src/components/providers/<provider>/  → Global providers (motion-provider)
 ```
 
@@ -44,6 +44,7 @@ src/features/design-system/components/→ Showcase components (color, typography
 ## 4. Feature Modules
 
 ```text
+src/features/home/                    → Public home entry & hero presentation
 src/features/auth/                    → Auth domain (components, services, schemas, constants, types)
 src/features/food-profile/            → Food profile onboarding & preferences
 src/features/room/                    → Room creation, joining, lobby
