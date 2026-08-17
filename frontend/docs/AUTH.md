@@ -76,9 +76,9 @@
 
 ## 4. Feature Folder Structure & Service Architecture
 
-- **Mock Adapter**: Frontend Auth currently uses an explicit temporary `MockAuthService` (`src/features/auth/mocks/`) while backend APIs are unavailable.
+- **Mock Adapter**: Frontend Auth uses a temporary `MockAuthService` (`src/features/auth/mocks/`) while backend APIs are unavailable.
 - **Frontend Only**: Mock behavior is strictly frontend-only; production backend remains the source of truth.
-- **Runtime Selector**: `src/features/auth/services/auth-runtime.ts` exposes the active `AuthService` (defaulting to mock, requiring API adapter for production).
+- **Runtime Selector & Fail-Closed Safety**: `src/features/auth/services/auth-runtime.ts` resolves `NEXT_PUBLIC_AUTH_MODE`. In production (`NODE_ENV === "production"`), missing `NEXT_PUBLIC_AUTH_MODE` strictly fails closed and never silently defaults to mock. API mode fails closed until the backend adapter is integrated. Development mode (`NODE_ENV !== "production"`) falls back to `"mock"` for local developer convenience.
 
 ```text
 src/features/auth/
