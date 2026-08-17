@@ -112,7 +112,7 @@ export const mockAuthService: AuthService = {
     };
   },
 
-  async changeVerificationEmail(input: ChangeEmailInput): Promise<AuthResult> {
+  async changeVerificationEmail(input: ChangeEmailInput): Promise<AuthResult<EmailVerificationChallenge>> {
     await delay();
     if (input.newEmail.toLowerCase() === MOCK_DUPLICATE_EMAIL.toLowerCase()) {
       return {
@@ -123,7 +123,10 @@ export const mockAuthService: AuthService = {
         },
       };
     }
-    return { ok: true };
+    return {
+      ok: true,
+      data: createMockChallenge(input.newEmail),
+    };
   },
 
   async beginGoogleAuth(): Promise<AuthResult> {

@@ -19,7 +19,7 @@ export interface AuthService {
   login(input: LoginInput): Promise<AuthResult>;
   verifyEmail(input: EmailVerificationInput): Promise<AuthResult>;
   resendVerificationCode(email: string): Promise<AuthResult<EmailVerificationChallenge>>;
-  changeVerificationEmail(input: ChangeEmailInput): Promise<AuthResult>;
+  changeVerificationEmail(input: ChangeEmailInput): Promise<AuthResult<EmailVerificationChallenge>>;
   beginGoogleAuth(): Promise<AuthResult>;
   beginLineAuth(): Promise<AuthResult>;
 }

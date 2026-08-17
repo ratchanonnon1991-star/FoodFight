@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useForm, Controller, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ArrowLeft } from "lucide-react";
@@ -29,6 +30,7 @@ function maskEmail(email: string): string {
 }
 
 export function VerifyEmailForm() {
+  const router = useRouter();
   const { challenge, setChallenge, setVerificationCompleted } = useAuthFlow();
   const [generalError, setGeneralError] = React.useState<string | null>(null);
   const [isResending, setIsResending] = React.useState(false);
@@ -70,7 +72,7 @@ export function VerifyEmailForm() {
       }
 
       setVerificationCompleted(true);
-      setResendMessage("Verification successful! Ready for verification success screen.");
+      router.push(ROUTES.AUTH.VERIFICATION_SUCCESS);
     } catch {
       setGeneralError("An unexpected error occurred during verification. Please try again.");
     }
