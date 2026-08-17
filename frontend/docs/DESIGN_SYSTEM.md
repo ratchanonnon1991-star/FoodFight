@@ -34,19 +34,22 @@ The following exact source palette is approved for all FoodFighter frontend deve
 
 ---
 
-## 2. Typography Scale
+## 2. Typography System
 
-Configured in `src/app/globals.css` via `@theme` and loaded with `next/font/google`:
+- **Primary Latin/UI Font**: `Poppins` (Weights: `400`, `500`, `600`, `700`) via `next/font/google`
+- **Thai Glyph Font**: `Noto Sans Thai` (Weights: `400`, `500`, `600`, `700`) via `next/font/google`
+- **Reference Note**: The font selection is an implementation choice based on visual similarity to the owner-provided UI reference; the exact original reference typeface was not technically identifiable from the image alone.
+- **Font Variables**: `--font-poppins`, `--font-noto-thai`, combined into `--font-sans` in `globals.css` `@theme`.
 
 | Scale | Class / Size | Weight | Role |
 |---|---|---|---|
-| **Display** | `text-3xl sm:text-4xl` | Bold (`700`) | Hero headlines |
-| **Heading 1** | `text-2xl sm:text-3xl` | Bold (`700`) | Screen titles |
-| **Heading 2** | `text-xl sm:text-2xl` | Bold (`700`) | Section titles |
-| **Heading 3** | `text-lg sm:text-xl` | Semibold (`600`) | Card / Subsection titles |
-| **Body** | `text-base` | Regular (`400`) | Primary content, inputs |
-| **Body Small** | `text-sm` | Regular (`400`) | Helper text, secondary descriptions |
-| **Label** | `text-xs uppercase tracking-wider` | Semibold (`600`) | Form labels, category tags |
+| **Display** | `text-3xl sm:text-4xl` | Bold (`700`) | Hero headlines (`Create your account`) |
+| **Heading 1** | `text-2xl sm:text-3xl` | Bold (`700`) | Screen titles (`Verify your email`) |
+| **Heading 2** | `text-xl sm:text-2xl` | Semibold (`600`) | Section titles (`Welcome back`) |
+| **Heading 3** | `text-lg sm:text-xl` | Semibold (`600`) | Card / Subtitles (`Enter 6-digit OTP`) |
+| **Body** | `text-base` | Regular (`400`) | Primary readable content |
+| **Body Small** | `text-sm` | Regular (`400`) | Helper text (`At least 8 characters`) |
+| **Label** | `text-xs uppercase tracking-wider` | Medium (`500`) | Form field labels (`Email`, `Password`) |
 | **Caption** | `text-xs` | Regular (`400`) | Timestamps, metadata |
 
 ---

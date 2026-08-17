@@ -77,8 +77,10 @@
   --shadow-xl: var(--shadow-xl);
   --shadow-focus: var(--shadow-focus);
 
-  --font-sans: var(--font-geist-sans), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans Thai", sans-serif;
-  --font-mono: var(--font-geist-mono), monospace;
+  --font-poppins: var(--font-poppins);
+  --font-noto-thai: var(--font-noto-thai);
+  --font-sans: var(--font-poppins), var(--font-noto-thai), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-mono: monospace;
 }
 
 /* ==========================================================================
