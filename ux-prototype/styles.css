@@ -273,7 +273,7 @@ button {
 }
 
 .page-shell-has-bottom-actions {
-  padding-bottom: 6rem;
+  padding-bottom: 6.5rem;
 }
 
 /* Top Navigation Bar */
@@ -557,7 +557,7 @@ button {
   width: 100%;
 }
 
-.form-input, .form-textarea {
+.form-input, .form-textarea, .form-select {
   width: 100%;
   background-color: var(--color-surface);
   border: 1.5px solid var(--color-border);
@@ -569,11 +569,11 @@ button {
   outline: none;
 }
 
-.form-input:hover, .form-textarea:hover {
+.form-input:hover, .form-textarea:hover, .form-select:hover {
   border-color: #d2c1cb;
 }
 
-.form-input:focus, .form-textarea:focus {
+.form-input:focus, .form-textarea:focus, .form-select:focus {
   border-color: var(--color-brand-secondary);
   box-shadow: var(--shadow-focus);
 }
@@ -612,7 +612,7 @@ button {
 }
 
 .form-textarea {
-  min-height: 110px;
+  min-height: 100px;
   resize: vertical;
   line-height: 1.45;
 }
@@ -868,6 +868,7 @@ button {
   background-color: var(--color-accent-apricot);
   border-color: var(--color-brand-primary);
   font-weight: 600;
+  color: var(--color-brand-primary);
 }
 
 /* ==========================================================================
@@ -1025,20 +1026,27 @@ button {
    12. Bottom Actions Container (Sticky at bottom of forms)
    ========================================================================== */
 .bottom-actions {
-  position: sticky;
+  position: fixed;
   bottom: 0;
-  background: linear-gradient(180deg, rgba(253, 251, 249, 0) 0%, rgba(253, 251, 249, 0.95) 25%, rgba(253, 251, 249, 1) 100%);
-  padding: 1rem 0 0.5rem 0;
-  margin-top: auto;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: var(--app-shell-max-width);
+  background: linear-gradient(180deg, rgba(253, 251, 249, 0.85) 0%, rgba(253, 251, 249, 0.98) 30%, rgba(253, 251, 249, 1) 100%);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  padding: 1rem 1.25rem 1.25rem 1.25rem;
   display: flex;
   flex-direction: column;
   gap: 0.65rem;
-  z-index: 10;
+  z-index: 25;
+  border-top: 1px solid rgba(232, 222, 216, 0.6);
 }
 
 .bottom-actions-row {
   display: flex;
   gap: 0.75rem;
+  width: 100%;
 }
 
 /* ==========================================================================
@@ -1081,7 +1089,385 @@ button {
 }
 
 /* ==========================================================================
-   14. Future Screen Shell Banner
+   14. Room & Lobby Components (V2)
+   ========================================================================== */
+
+/* Room Code Badge & Display Card */
+.room-identity-card {
+  background: linear-gradient(135deg, var(--color-surface) 0%, var(--color-surface-subtle) 100%);
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  padding: 1.25rem;
+  margin-bottom: 1.25rem;
+  position: relative;
+  box-shadow: var(--shadow-sm);
+}
+
+.room-code-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.4rem 0.85rem;
+  background-color: var(--color-surface);
+  border: 1.5px solid var(--color-brand-secondary);
+  border-radius: var(--radius-full);
+  font-family: monospace;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--color-brand-primary);
+  letter-spacing: 0.08em;
+  cursor: pointer;
+  transition: all var(--duration-fast) ease;
+}
+
+.room-code-badge:hover {
+  background-color: var(--color-accent-petal);
+  transform: translateY(-1px);
+}
+
+/* Readiness Summary Banner */
+.readiness-banner {
+  background-color: var(--color-surface);
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  padding: 1.15rem;
+  margin-bottom: 1.25rem;
+}
+
+.readiness-banner.ready-all {
+  border-color: var(--color-status-success-border);
+  background-color: #f6fcf8;
+}
+
+.readiness-banner.threshold-met {
+  border-color: var(--color-status-warning-border);
+  background-color: #fffdf5;
+}
+
+/* Member List & Row Cards */
+.member-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  margin-bottom: 1.5rem;
+}
+
+.member-card {
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: 0.85rem 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  transition: all var(--duration-fast) ease;
+}
+
+.member-card:hover {
+  border-color: #d8c8d2;
+  box-shadow: var(--shadow-xs);
+}
+
+.member-card.is-you {
+  border-color: var(--color-brand-secondary);
+  background-color: #fffbfc;
+}
+
+.member-info {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.avatar-badge {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 0.85rem;
+  color: var(--color-brand-primary);
+  flex-shrink: 0;
+  border: 1.5px solid rgba(72, 40, 74, 0.15);
+}
+
+.avatar-petal { background-color: var(--color-accent-petal); }
+.avatar-apricot { background-color: var(--color-accent-apricot); }
+.avatar-custard { background-color: var(--color-accent-custard); }
+.avatar-mauve { background-color: #e4d8df; }
+
+.member-badge-ready {
+  background-color: var(--color-status-success-bg);
+  color: var(--color-status-success-text);
+  border: 1px solid var(--color-status-success-border);
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 0.25rem 0.65rem;
+  border-radius: var(--radius-full);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.member-badge-waiting {
+  background-color: var(--color-surface-subtle);
+  color: var(--color-text-muted);
+  border: 1px solid var(--color-border);
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.25rem 0.65rem;
+  border-radius: var(--radius-full);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.member-badge-observer {
+  background-color: #f0eef0;
+  color: #7a6672;
+  border: 1px solid #d4ccd1;
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 0.2rem 0.55rem;
+  border-radius: var(--radius-full);
+}
+
+/* Simulated QR Code Component (No third-party dependency) */
+.qr-mock-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 1.25rem;
+  background-color: #fff;
+  border: 2px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  margin: 1rem 0;
+  box-shadow: var(--shadow-sm);
+}
+
+.qr-matrix-box {
+  width: 170px;
+  height: 170px;
+  background-color: #fff;
+  border: 4px solid var(--color-brand-primary);
+  border-radius: var(--radius-md);
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  grid-template-rows: repeat(5, 1fr);
+  gap: 4px;
+  padding: 8px;
+  position: relative;
+}
+
+.qr-corner-marker {
+  background-color: var(--color-brand-primary);
+  border-radius: 4px;
+}
+
+.qr-dot {
+  background-color: var(--color-brand-primary);
+  border-radius: 2px;
+}
+
+.qr-dot-muted {
+  background-color: var(--color-accent-petal);
+  border-radius: 2px;
+}
+
+/* Simulated Camera Viewfinder */
+.camera-scanner-frame {
+  position: relative;
+  width: 100%;
+  height: 280px;
+  background-color: #1a0f1b;
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 1.25rem 0;
+  box-shadow: var(--shadow-lg);
+}
+
+.scanner-reticle {
+  width: 190px;
+  height: 190px;
+  border: 2px dashed rgba(255, 198, 217, 0.8);
+  border-radius: var(--radius-lg);
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.scanner-laser {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, #FFC6D9, #FFF7AE, transparent);
+  box-shadow: 0 0 12px #FFC6D9;
+  animation: laserScan 2s infinite ease-in-out;
+}
+
+@keyframes laserScan {
+  0% { top: 10%; opacity: 0.2; }
+  50% { top: 85%; opacity: 1; }
+  100% { top: 10%; opacity: 0.2; }
+}
+
+/* ==========================================================================
+   15. FoodFight Meal Preference Components (V2)
+   ========================================================================== */
+.pref-category-block {
+  margin-bottom: 1.75rem;
+}
+
+.pref-category-title {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  margin-bottom: 0.25rem;
+}
+
+.pref-category-sub {
+  font-size: 0.8rem;
+  color: var(--color-text-secondary);
+  margin-bottom: 0.75rem;
+}
+
+.price-level-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.65rem;
+}
+
+.price-card {
+  background-color: var(--color-surface);
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: 0.85rem 0.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 0.25rem;
+  cursor: pointer;
+  transition: all var(--duration-fast) ease;
+}
+
+.price-card:hover {
+  border-color: var(--color-brand-secondary);
+  background-color: var(--color-surface-subtle);
+}
+
+.price-card.selected {
+  background-color: var(--color-accent-custard);
+  border-color: var(--color-brand-primary);
+  font-weight: 700;
+  box-shadow: 0 2px 6px rgba(72, 40, 74, 0.08);
+}
+
+.price-symbol {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--color-brand-primary);
+}
+
+.price-label {
+  font-size: 0.75rem;
+  color: var(--color-text-secondary);
+}
+
+/* Waiting Screen Pulse & Progress */
+.waiting-hero-card {
+  background: linear-gradient(135deg, #FFF8FA 0%, #FFF3EA 100%);
+  border: 1.5px solid #F5DFE6;
+  border-radius: var(--radius-xl);
+  padding: 1.5rem 1.25rem;
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+/* Generating Recommendations Animation */
+.generating-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2.5rem 1rem;
+  text-align: center;
+  gap: 1.5rem;
+  flex: 1;
+}
+
+.radar-pulse-box {
+  width: 96px;
+  height: 96px;
+  border-radius: var(--radius-full);
+  background: linear-gradient(135deg, var(--color-accent-petal), var(--color-accent-apricot));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-brand-primary);
+  position: relative;
+  box-shadow: var(--shadow-md);
+}
+
+.radar-pulse-ring {
+  position: absolute;
+  inset: -12px;
+  border-radius: var(--radius-full);
+  border: 2px solid var(--color-accent-petal);
+  animation: pulseOut 2s infinite cubic-bezier(0, 0, 0.2, 1);
+}
+
+.radar-pulse-ring-2 {
+  position: absolute;
+  inset: -24px;
+  border-radius: var(--radius-full);
+  border: 2px solid var(--color-accent-apricot);
+  animation: pulseOut 2s infinite cubic-bezier(0, 0, 0.2, 1);
+  animation-delay: 0.5s;
+}
+
+@keyframes pulseOut {
+  0% { transform: scale(0.8); opacity: 0.8; }
+  100% { transform: scale(1.35); opacity: 0; }
+}
+
+.synthesis-tag-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  width: 100%;
+  max-width: 320px;
+}
+
+.synthesis-tag-item {
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 0.6rem 0.85rem;
+  font-size: 0.825rem;
+  color: var(--color-text-secondary);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  text-align: left;
+  animation: fadeIn 300ms ease;
+}
+
+/* ==========================================================================
+   16. Future Screen Shell Banner
    ========================================================================== */
 .future-shell-container {
   display: flex;
@@ -1135,7 +1521,7 @@ button {
 }
 
 /* ==========================================================================
-   15. Toast System
+   17. Toast System
    ========================================================================== */
 .toast-container {
   position: fixed;
@@ -1178,7 +1564,7 @@ button {
 }
 
 /* ==========================================================================
-   16. Prototype Navigator Drawer / Overlay
+   18. Prototype Navigator Drawer & Simulation Controls
    ========================================================================== */
 .proto-nav-floating-btn {
   position: fixed;
@@ -1228,7 +1614,7 @@ button {
   right: 0;
   bottom: 0;
   width: 100%;
-  max-width: 400px;
+  max-width: 410px;
   background-color: var(--color-surface);
   z-index: 95;
   box-shadow: var(--shadow-xl);
@@ -1320,6 +1706,36 @@ button {
   border: 1px solid var(--color-border);
 }
 
+/* Simulation Section Inside Navigator */
+.proto-sim-box {
+  background-color: var(--color-surface-subtle);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: 0.9rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.proto-sim-btn {
+  font-size: 0.775rem;
+  font-weight: 600;
+  padding: 0.45rem 0.75rem;
+  border-radius: var(--radius-sm);
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  color: var(--color-brand-primary);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  transition: all var(--duration-fast) ease;
+}
+
+.proto-sim-btn:hover {
+  background-color: var(--color-accent-petal);
+  border-color: var(--color-brand-secondary);
+}
+
 .proto-nav-footer {
   padding: 1rem 1.25rem;
   border-top: 1px solid var(--color-border);
@@ -1330,12 +1746,12 @@ button {
 }
 
 /* ==========================================================================
-   17. Modal & Generic Overlays
+   19. Modal & Generic Overlays
    ========================================================================== */
 .modal-overlay {
   position: fixed;
   inset: 0;
-  background-color: rgba(72, 40, 74, 0.45);
+  background-color: rgba(72, 40, 74, 0.5);
   backdrop-filter: blur(4px);
   -webkit-backdrop-filter: blur(4px);
   z-index: 80;
@@ -1355,13 +1771,15 @@ button {
 .modal-box {
   background-color: var(--color-surface);
   border-radius: var(--radius-xl);
-  max-width: 360px;
+  max-width: 380px;
   width: 100%;
   padding: 1.5rem;
   box-shadow: var(--shadow-xl);
   transform: scale(0.95);
   transition: transform var(--duration-fast) var(--ease-enter);
   position: relative;
+  max-height: 90vh;
+  overflow-y: auto;
 }
 
 .modal-overlay.open .modal-box {
@@ -1369,7 +1787,7 @@ button {
 }
 
 /* ==========================================================================
-   18. Animations & Motion
+   20. Animations & Motion
    ========================================================================== */
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(4px); }
@@ -1401,7 +1819,7 @@ button {
 }
 
 /* ==========================================================================
-   19. Responsive & Accessibility Settings
+   21. Responsive & Accessibility Settings
    ========================================================================== */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
@@ -1419,6 +1837,6 @@ button {
   }
   
   .proto-nav-drawer {
-    max-width: 85%;
+    max-width: 88%;
   }
 }
