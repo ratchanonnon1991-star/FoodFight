@@ -160,19 +160,19 @@ Generic UI must not.
 
 ### Start small
 
-For a small feature:
+For a small or early feature:
 
 ```text
-features/auth/
+features/<feature>/
 ├─ components/
-│  ├─ RegisterForm.tsx
-│  └─ LoginForm.tsx
-├─ auth.schema.ts
-├─ auth.types.ts
-└─ auth.service.ts
+│  ├─ FeatureForm.tsx
+│  └─ FeatureCard.tsx
+├─ <feature>.schema.ts
+├─ <feature>.types.ts
+└─ <feature>.service.ts
 ```
 
-Only add `hooks/`, `services/`, `schemas/`, or other subfolders when the number of files actually benefits from grouping.
+Only add `hooks/`, `services/`, `schemas/`, or other subfolders when the number of files actually benefits from grouping (as structured in `src/features/auth/`).
 
 Do not create speculative empty architecture.
 

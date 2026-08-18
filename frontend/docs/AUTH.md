@@ -84,25 +84,36 @@
 ```text
 src/features/auth/
 ├── components/
-│   ├── register-form/
-│   ├── login-form/
-│   ├── email-verification-form/
-│   ├── change-email-form/
-│   ├── social-auth-buttons/
-│   └── verification-success/
+│   ├── AuthSessionFallback.tsx
+│   ├── ChangeEmailForm.tsx
+│   ├── LoginForm.tsx
+│   ├── RegisterForm.tsx
+│   ├── ResendCodeControl.tsx
+│   ├── SocialAuthButtons.tsx
+│   ├── TermsConsent.tsx
+│   ├── VerificationCodeInput.tsx
+│   ├── VerificationSecurityNotice.tsx
+│   ├── VerificationSuccess.tsx
+│   └── VerifyEmailForm.tsx
+├── constants/
+│   └── auth-policy.ts
+├── context/
+│   └── auth-flow-context.tsx
+├── hooks/
+│   └── use-countdown.ts
 ├── mocks/
 │   ├── mock-auth-scenarios.ts
 │   └── mock-auth-service.ts
 ├── schemas/
-│   └── auth-validation.ts
-├── constants/
-│   └── auth-policy.ts
+│   ├── change-email-schema.ts
+│   ├── login-schema.ts
+│   ├── register-schema.ts
+│   └── verify-email-schema.ts
 ├── services/
-│   ├── auth-service.ts
-│   └── auth-runtime.ts
-├── types/
-│   └── auth-types.ts
-└── hooks/
+│   ├── auth-runtime.ts
+│   └── auth-service.ts
+└── types/
+    └── auth-types.ts
 ```
 
 ---

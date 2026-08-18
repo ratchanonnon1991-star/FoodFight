@@ -68,21 +68,21 @@ The following exact source palette is approved for all FoodFighter frontend deve
 
 ## 4. Component Catalog (Generic UI Primitives)
 
-Each component lives in its own folder under `src/components/ui/<component>/`:
+Generic UI primitives live directly under `src/components/ui/` (with `form-field/` as a cohesive compound module):
 
 | Component | Location | Variants / Capabilities |
 |---|---|---|
-| **Button** | `src/components/ui/button/` | primary, secondary, outline, ghost, destructive · sm, md, lg, icon · loading, disabled, left/right icons |
-| **IconButton** | `src/components/ui/icon-button/` | Required `aria-label`, accessible touch target, loading spinner, variants |
-| **Input** | `src/components/ui/input/` | default, hover, focus, filled, disabled, invalid (`aria-invalid`) · left/right adornments · sm, md, lg |
-| **PasswordInput** | `src/components/ui/password-input/` | Show/hide visibility toggle with Lucide Eye/EyeOff, accessible labels |
-| **Label** | `src/components/ui/label/` | Associated `htmlFor`, required asterisk indicator, disabled styling |
-| **Checkbox** | `src/components/ui/checkbox/` | Accessible SVG check, label & description, keyboard focus ring |
-| **Card** | `src/components/ui/card/` | default, subtle, elevated, outline · Compound: CardHeader, CardTitle, CardDescription, CardContent, CardFooter |
-| **Badge** | `src/components/ui/badge/` | neutral, brand, brand-secondary, petal, apricot, custard, success, warning, danger, info · status dot |
-| **Alert** | `src/components/ui/alert/` | info, success, warning, error · `role="alert"`, AlertTitle, AlertDescription, semantic icons |
-| **Spinner** | `src/components/ui/spinner/` | `role="status"`, sm, md, lg, xl sizes, primary/secondary variants |
-| **Separator** | `src/components/ui/separator/` | horizontal / vertical with optional center text |
+| **Button** | `src/components/ui/Button.tsx` | primary, secondary, outline, ghost, destructive · sm, md, lg, icon · loading, disabled, left/right icons |
+| **IconButton** | `src/components/ui/IconButton.tsx` | Required `aria-label`, accessible touch target, loading spinner, variants |
+| **Input** | `src/components/ui/Input.tsx` | default, hover, focus, filled, disabled, invalid (`aria-invalid`) · left/right adornments · sm, md, lg |
+| **PasswordInput** | `src/components/ui/PasswordInput.tsx` | Show/hide visibility toggle with Lucide Eye/EyeOff, accessible labels |
+| **Label** | `src/components/ui/Label.tsx` | Associated `htmlFor`, required asterisk indicator, disabled styling |
+| **Checkbox** | `src/components/ui/Checkbox.tsx` | Accessible SVG check, label & description, keyboard focus ring |
+| **Card** | `src/components/ui/Card.tsx` | default, subtle, elevated, outline · Compound: CardHeader, CardTitle, CardDescription, CardContent, CardFooter |
+| **Badge** | `src/components/ui/Badge.tsx` | neutral, brand, brand-secondary, petal, apricot, custard, success, warning, danger, info · status dot |
+| **Alert** | `src/components/ui/Alert.tsx` | info, success, warning, error · `role="alert"`, AlertTitle, AlertDescription, semantic icons |
+| **Spinner** | `src/components/ui/Spinner.tsx` | `role="status"`, sm, md, lg, xl sizes, primary/secondary variants |
+| **Separator** | `src/components/ui/Separator.tsx` | horizontal / vertical with optional center text |
 | **FormField** | `src/components/ui/form-field/` | FormField context connecting FormLabel, FormDescription, FormError with `aria-describedby` and `aria-live="polite"` |
 
 ---
