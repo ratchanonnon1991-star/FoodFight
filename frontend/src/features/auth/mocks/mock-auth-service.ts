@@ -1,4 +1,4 @@
-import type { AuthService } from "../services/auth-service";
+import type { AuthService, LoginResultData } from "../services/auth-service";
 import type {
   RegisterInput,
   LoginInput,
@@ -17,6 +17,7 @@ import {
   MOCK_EXPIRED_VERIFICATION_CODE,
   MOCK_INVALID_CREDENTIALS_EMAIL,
   MOCK_INVALID_PASSWORD,
+  MOCK_RETURNING_USER_EMAIL,
 } from "./mock-auth-scenarios";
 
 const delay = (ms: number = MOCK_AUTH_DELAY_MS) =>
@@ -29,12 +30,21 @@ const createMockChallenge = (email: string): EmailVerificationChallenge => ({
 });
 
 /**
+ * In-memory state for mock development flow.
+ * Resets to false upon new registration; set to true upon Step 3 completion.
+ */
+let mockFoodProfileCompleted = false;
+
+/**
  * Frontend Mock Authentication Service
  *
  * Simulates authentication flows locally for UI validation and development
  * without hitting real backend endpoints or fabricating JWT tokens.
  */
-export const mockAuthService: AuthService = {
+export const mockAuthService: AuthService & {
+  setMockFoodProfileComplete: (completed: boolean) => void;
+  isMockFoodProfileComplete: () => boolean;
+} = {
   async register(input: RegisterInput): Promise<AuthResult<EmailVerificationChallenge>> {
     await delay();
     if (input.email.toLowerCase() === MOCK_DUPLICATE_EMAIL.toLowerCase()) {
@@ -46,13 +56,17 @@ export const mockAuthService: AuthService = {
         },
       };
     }
+
+    // Newly registered mock accounts start with incomplete food profile
+    mockFoodProfileCompleted = false;
+
     return {
       ok: true,
       data: createMockChallenge(input.email),
     };
   },
 
-  async login(input: LoginInput): Promise<AuthResult> {
+  async login(input: LoginInput): Promise<AuthResult<LoginResultData>> {
     await delay();
     if (
       input.email.toLowerCase() === MOCK_INVALID_CREDENTIALS_EMAIL.toLowerCase() ||
@@ -66,7 +80,18 @@ export const mockAuthService: AuthService = {
         },
       };
     }
-    return { ok: true };
+
+    // Seeded returning user or in-memory completed session
+    const isComplete =
+      input.email.toLowerCase() === MOCK_RETURNING_USER_EMAIL.toLowerCase() ||
+      mockFoodProfileCompleted;
+
+    return {
+      ok: true,
+      data: {
+        foodProfileComplete: isComplete,
+      },
+    };
   },
 
   async verifyEmail(input: EmailVerificationInput): Promise<AuthResult> {
@@ -137,5 +162,13 @@ export const mockAuthService: AuthService = {
   async beginLineAuth(): Promise<AuthResult> {
     await delay();
     return { ok: true };
+  },
+
+  setMockFoodProfileComplete(completed: boolean) {
+    mockFoodProfileCompleted = completed;
+  },
+
+  isMockFoodProfileComplete() {
+    return mockFoodProfileCompleted;
   },
 };

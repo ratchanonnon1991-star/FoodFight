@@ -51,6 +51,25 @@ export function getAuthService(): AuthService {
 }
 
 /**
+ * Sets mock food profile completion state during frontend development.
+ */
+export function setMockFoodProfileComplete(completed: boolean): void {
+  if (resolveAuthMode() === "mock") {
+    mockAuthService.setMockFoodProfileComplete(completed);
+  }
+}
+
+/**
+ * Gets mock food profile completion state during frontend development.
+ */
+export function isMockFoodProfileComplete(): boolean {
+  if (resolveAuthMode() === "mock") {
+    return mockAuthService.isMockFoodProfileComplete();
+  }
+  return false;
+}
+
+/**
  * Runtime authentication service proxy.
  * Resolves mode on invocation to prevent build-time static evaluation errors
  * while enforcing strict runtime fail-closed guarantees.

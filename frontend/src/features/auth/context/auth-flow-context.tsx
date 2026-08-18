@@ -9,7 +9,9 @@ export interface AuthFlowContextValue {
   verificationCompleted: boolean;
   setVerificationCompleted: (completed: boolean) => void;
   isAuthenticated: boolean;
-  setIsAuthenticated: (completed: boolean) => void;
+  setIsAuthenticated: (authenticated: boolean) => void;
+  isFoodProfileCompleted: boolean;
+  setIsFoodProfileCompleted: (completed: boolean) => void;
   clearFlowState: () => void;
 }
 
@@ -19,11 +21,13 @@ export function AuthFlowProvider({ children }: { children: React.ReactNode }) {
   const [challenge, setChallenge] = React.useState<EmailVerificationChallenge | null>(null);
   const [verificationCompleted, setVerificationCompleted] = React.useState<boolean>(false);
   const [isAuthenticated, setIsAuthenticated] = React.useState<boolean>(false);
+  const [isFoodProfileCompleted, setIsFoodProfileCompleted] = React.useState<boolean>(false);
 
   const clearFlowState = React.useCallback(() => {
     setChallenge(null);
     setVerificationCompleted(false);
     setIsAuthenticated(false);
+    setIsFoodProfileCompleted(false);
   }, []);
 
   const value = React.useMemo(
@@ -34,9 +38,11 @@ export function AuthFlowProvider({ children }: { children: React.ReactNode }) {
       setVerificationCompleted,
       isAuthenticated,
       setIsAuthenticated,
+      isFoodProfileCompleted,
+      setIsFoodProfileCompleted,
       clearFlowState,
     }),
-    [challenge, verificationCompleted, isAuthenticated, clearFlowState]
+    [challenge, verificationCompleted, isAuthenticated, isFoodProfileCompleted, clearFlowState]
   );
 
   return (

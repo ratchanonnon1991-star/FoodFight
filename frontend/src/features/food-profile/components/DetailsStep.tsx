@@ -4,6 +4,7 @@ import * as React from "react";
 import { useRouter } from "next/navigation";
 import { Info } from "lucide-react";
 import { ROUTES } from "@/config/routes";
+import { setMockFoodProfileComplete } from "@/features/auth/services/auth-runtime";
 import { Button } from "@/components/ui/Button";
 import { Label } from "@/components/ui/Label";
 import { Textarea } from "@/components/ui/Textarea";
@@ -35,6 +36,9 @@ export function DetailsStep({
   };
 
   const handleSaveAndContinue = () => {
+    // Explicit mock-mode profile completion flag
+    setMockFoodProfileComplete(true);
+
     if (onComplete) {
       onComplete();
     } else {

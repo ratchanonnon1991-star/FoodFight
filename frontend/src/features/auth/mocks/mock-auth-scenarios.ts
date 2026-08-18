@@ -20,3 +20,9 @@ export const MOCK_EXPIRED_VERIFICATION_CODE = "999999";
 export const MOCK_INVALID_CREDENTIALS_EMAIL = "wrong@example.com";
 
 export const MOCK_INVALID_PASSWORD = "WrongPassword1";
+
+/**
+ * Seeded returning user with an already completed Food Profile.
+ * Used for demoing immediate post-auth navigation to /home.
+ */
+export const MOCK_RETURNING_USER_EMAIL = "returning@example.com";
