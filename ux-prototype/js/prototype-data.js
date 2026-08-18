@@ -1,8 +1,8 @@
 /**
  * FoodFighter UX Prototype — Data Store & Static Constants
  * 
- * Defines SCREEN_REGISTRY, default prototype state, option constants,
- * and demo datasets without active DOM or navigation behavior.
+ * Defines SCREEN_REGISTRY, candidate dishes, fictional restaurants catalogue,
+ * default prototype state, and static catalogues without active DOM behavior.
  */
 
 (function () {
@@ -227,33 +227,33 @@
       title: 'Final Menu Winner',
       category: 'Recommendation',
       status: 'IMPLEMENTED',
-      description: 'Celebratory winning dish announcement and transition to restaurant discovery (V4 boundary).'
+      description: 'Celebratory winning dish announcement and transition to restaurant discovery.'
     },
 
-    // RESTAURANTS & MAP (Future V4)
+    // RESTAURANTS & MAP (Implemented V4)
     {
       id: 'restaurants',
       hash: '#/restaurants',
       title: 'Recommended Restaurants',
       category: 'Restaurant',
-      status: 'FUTURE',
-      description: 'Nearby restaurants serving the winning menu, filtered by distance and rating.'
+      status: 'IMPLEMENTED',
+      description: 'Nearby restaurants serving the winning menu with accessible List ↔ Map discovery view.'
     },
     {
       id: 'restaurants-detail',
       hash: '#/restaurants/detail',
       title: 'Restaurant Detail & Map',
       category: 'Restaurant',
-      status: 'FUTURE',
-      description: 'Interactive OpenStreetMap location, distance, opening hours, and contact details.'
+      status: 'IMPLEMENTED',
+      description: 'Detailed business info, distance, opening hours, address, and interactive route preview.'
     },
     {
       id: 'restaurants-selected',
       hash: '#/restaurants/selected',
       title: 'Restaurant Selected',
       category: 'Restaurant',
-      status: 'FUTURE',
-      description: 'Destination confirmation and navigation launch screen.'
+      status: 'IMPLEMENTED',
+      description: 'Group restaurant destination confirmation and transition to Split Bill (V5 boundary).'
     },
 
     // SPLIT BILL & RECEIPT OCR (Future - Exploratory)
@@ -411,7 +411,237 @@
   };
 
   /* ==========================================================================
-     3. Prototype Initial State Definition
+     3. Fictional Restaurant Catalogue (Mapped per Final Menu)
+     ========================================================================== */
+  const RESTAURANT_CATALOGUE = {
+    'menu-a': [
+      {
+        id: 'rest-a1',
+        menuId: 'menu-a',
+        name: 'Siam Ember Kitchen',
+        thaiName: 'สยาม เอ็มเบอร์ คิทเช่น',
+        cuisine: 'Modern Thai',
+        distance: '0.6 km',
+        estimatedTravel: '6 min walk',
+        priceLevel: '฿฿',
+        openState: 'Open Now • Closes 22:00',
+        isOpen: true,
+        address: '12/4 Sukhumvit Soi 23, Khlong Toei Nuea, Bangkok',
+        tags: ['Signature Wagyu Krapow', 'Air-Con', 'Easy Parking'],
+        matchReason: 'Renowned for dry-fried wok Wagyu Krapow paired with crispy duck eggs.',
+        mapX: '32%',
+        mapY: '38%',
+        ratingText: '4.8 (120+ reviews)'
+      },
+      {
+        id: 'rest-a2',
+        menuId: 'menu-a',
+        name: 'Baan Krapow Bistro',
+        thaiName: 'บ้านกะเพรา บิสโทร',
+        cuisine: 'Thai Comfort Food',
+        distance: '1.2 km',
+        estimatedTravel: '10 min walk',
+        priceLevel: '฿฿',
+        openState: 'Open Now • Closes 21:30',
+        isOpen: true,
+        address: '88 Thonglor Soi 8, Watthana, Bangkok',
+        tags: ['Crispy Egg Specialist', 'Casual Dining', 'Cozy Atmosphere'],
+        matchReason: 'Cozy neighbourhood spot serving premium beef stir-fries with herb-rich sauces.',
+        mapX: '68%',
+        mapY: '28%',
+        ratingText: '4.7 (95 reviews)'
+      },
+      {
+        id: 'rest-a3',
+        menuId: 'menu-a',
+        name: 'Krapow 101 Wok House',
+        thaiName: 'กะเพรา 101 กระทะเหล็ก',
+        cuisine: 'Street Style Thai',
+        distance: '1.9 km',
+        estimatedTravel: '14 min transit',
+        priceLevel: '฿',
+        openState: 'Open Now • Closes 23:30',
+        isOpen: true,
+        address: '45 Asoke-Din Daeng Rd, Din Daeng, Bangkok',
+        tags: ['High Heat Wok', 'Fast Service', 'Late Night'],
+        matchReason: 'Intense wok-hei flavors with adjustable spice levels suitable for all tastes.',
+        mapX: '22%',
+        mapY: '68%',
+        ratingText: '4.6 (210 reviews)'
+      }
+    ],
+    'menu-b': [
+      {
+        id: 'rest-b1',
+        menuId: 'menu-b',
+        name: 'Nori House Ramen',
+        thaiName: 'โนริ เฮาส์ ราเมง',
+        cuisine: 'Japanese Ramen',
+        distance: '0.8 km',
+        estimatedTravel: '8 min walk',
+        priceLevel: '฿฿',
+        openState: 'Open Now • Closes 22:30',
+        isOpen: true,
+        address: '55 Sukhumvit Soi 31, Watthana, Bangkok',
+        tags: ['18-Hour Broth', 'Air-Conditioned', 'Custom Firmness'],
+        matchReason: 'Rich, collagen-rich Tonkotsu soup simmered overnight with tender pork belly.',
+        mapX: '58%',
+        mapY: '35%',
+        ratingText: '4.9 (180 reviews)'
+      },
+      {
+        id: 'rest-b2',
+        menuId: 'menu-b',
+        name: 'Kuro Noodle Lab',
+        thaiName: 'คุโระ นู้ดเดิล แล็บ',
+        cuisine: 'Modern Japanese',
+        distance: '1.5 km',
+        estimatedTravel: '12 min walk',
+        priceLevel: '฿฿',
+        openState: 'Open Now • Closes 21:00',
+        isOpen: true,
+        address: '102 Ekkamai Soi 4, Sukhumvit 63, Bangkok',
+        tags: ['Torched Chashu', 'Craft Gyoza', 'Counter Seating'],
+        matchReason: 'Handmade thin wheat noodles served with blowtorched smoky chashu slices.',
+        mapX: '75%',
+        mapY: '62%',
+        ratingText: '4.7 (140 reviews)'
+      },
+      {
+        id: 'rest-b3',
+        menuId: 'menu-b',
+        name: 'Tokyo Slurp Bar',
+        thaiName: 'โตเกียว สเลิร์ป บาร์',
+        cuisine: 'Tokyo Izakaya & Ramen',
+        distance: '2.3 km',
+        estimatedTravel: '16 min transit',
+        priceLevel: '฿฿',
+        openState: 'Open Now • Closes 01:00',
+        isOpen: true,
+        address: '21 Phrom Phong, Sukhumvit 39, Bangkok',
+        tags: ['Late Night Dining', 'Rich Broth', 'Air-Con'],
+        matchReason: 'Vibrant izakaya-ramen fusion open late night with generous portions.',
+        mapX: '28%',
+        mapY: '22%',
+        ratingText: '4.6 (88 reviews)'
+      }
+    ],
+    'menu-c': [
+      {
+        id: 'rest-c1',
+        menuId: 'menu-c',
+        name: 'Kuro Pot Shabu Dining',
+        thaiName: 'คุโระ พ็อต ชาบู',
+        cuisine: 'Japanese Shabu-Shabu',
+        distance: '0.7 km',
+        estimatedTravel: '7 min walk',
+        priceLevel: '฿฿',
+        openState: 'Open Now • Closes 22:00',
+        isOpen: true,
+        address: '34 Sukhumvit Soi 24, Khlong Toei, Bangkok',
+        tags: ['Kurobuta Pork', 'Group Friendly', 'Private Booths'],
+        matchReason: 'Kagoshima-style Kurobuta pork sets with sweet soy dashi and fresh farm greens.',
+        mapX: '36%',
+        mapY: '60%',
+        ratingText: '4.8 (165 reviews)'
+      },
+      {
+        id: 'rest-c2',
+        menuId: 'menu-c',
+        name: 'Mori Shabu Garden',
+        thaiName: 'โมริ ชาบู การ์เด้น',
+        cuisine: 'Asian Hot Pot',
+        distance: '1.4 km',
+        estimatedTravel: '11 min walk',
+        priceLevel: '฿฿',
+        openState: 'Open Now • Closes 21:30',
+        isOpen: true,
+        address: '77 Asoke Montri Rd, Watthana, Bangkok',
+        tags: ['Dual Broth Pot', 'Low Sodium Option', 'Air-Con'],
+        matchReason: 'Spacious dining room featuring dual-chamber pots and house sesame dipping sauce.',
+        mapX: '62%',
+        mapY: '20%',
+        ratingText: '4.7 (110 reviews)'
+      },
+      {
+        id: 'rest-c3',
+        menuId: 'menu-c',
+        name: 'Sukhumvit Broth House',
+        thaiName: 'สุขุมวิท บรอธ เฮาส์',
+        cuisine: 'Shabu & Sukiyaki',
+        distance: '2.1 km',
+        estimatedTravel: '15 min transit',
+        priceLevel: '฿฿',
+        openState: 'Open Now • Closes 23:00',
+        isOpen: true,
+        address: '18 Phra Khanong, Sukhumvit 71, Bangkok',
+        tags: ['All-You-Can-Eat', 'Free Matcha Ice Cream', 'Parking'],
+        matchReason: 'Casual group-friendly shabu spot with rapid service and unlimited veggie bar.',
+        mapX: '80%',
+        mapY: '75%',
+        ratingText: '4.6 (90 reviews)'
+      }
+    ],
+    'menu-d': [
+      {
+        id: 'rest-d1',
+        menuId: 'menu-d',
+        name: 'Talay Table Seafood',
+        thaiName: 'ทะเล เทเบิล ซีฟู้ด',
+        cuisine: 'Thai Seafood',
+        distance: '0.9 km',
+        estimatedTravel: '9 min walk',
+        priceLevel: '฿฿',
+        openState: 'Open Now • Closes 22:00',
+        isOpen: true,
+        address: '62 Sukhumvit Soi 39, Watthana, Bangkok',
+        tags: ['Jumbo Prawns', 'Tom Yum Flavors', 'Air-Con'],
+        matchReason: 'Fresh Gulf seafood dry-tossed in zesty tom yum reduction over organic jasmine rice.',
+        mapX: '52%',
+        mapY: '25%',
+        ratingText: '4.9 (130 reviews)'
+      },
+      {
+        id: 'rest-d2',
+        menuId: 'menu-d',
+        name: 'Andaman Wok House',
+        thaiName: 'อันดามัน วอค เฮาส์',
+        cuisine: 'Southern & Central Thai',
+        distance: '1.6 km',
+        estimatedTravel: '13 min walk',
+        priceLevel: '฿฿',
+        openState: 'Open Now • Closes 21:30',
+        isOpen: true,
+        address: '90 Thonglor Soi 13, Watthana, Bangkok',
+        tags: ['Bold Herb Spice', 'Seafood Stir-Fry', 'Casual Dining'],
+        matchReason: 'Aromatic kaffir lime and lemongrass infused wok dishes with tender squid rings.',
+        mapX: '72%',
+        mapY: '45%',
+        ratingText: '4.7 (85 reviews)'
+      },
+      {
+        id: 'rest-d3',
+        menuId: 'menu-d',
+        name: 'Ruam Samut Seafood Bar',
+        thaiName: 'รวมสมุทร ซีฟู้ด บาร์',
+        cuisine: 'Seafood & Grill',
+        distance: '2.4 km',
+        estimatedTravel: '18 min transit',
+        priceLevel: '฿฿',
+        openState: 'Open Now • Closes 23:00',
+        isOpen: true,
+        address: '14 Ekkamai Soi 10, Sukhumvit 63, Bangkok',
+        tags: ['Fresh Daily Catch', 'Family Friendly', 'Air-Con'],
+        matchReason: 'Known for generous seafood servings and zesty seafood dipping sauce.',
+        mapX: '24%',
+        mapY: '72%',
+        ratingText: '4.6 (155 reviews)'
+      }
+    ]
+  };
+
+  /* ==========================================================================
+     4. Prototype Initial State Definition
      ========================================================================== */
   const STORAGE_KEY = 'foodfighter-prototype-v1';
 
@@ -464,10 +694,10 @@
       recommendAgainUsed: false,
       roundVotes: {
         1: {
-          user: { 'menu-a': 'OK', 'menu-b': null },
+          user: { 'menu-a': 'OK', 'menu-b': 'PASS' },
           maya: { 'menu-a': 'OK', 'menu-b': 'PASS' },
           nina: { 'menu-a': 'OK', 'menu-b': 'PASS' },
-          ken: { 'menu-a': null, 'menu-b': null } // observer or unvoted
+          ken: { 'menu-a': null, 'menu-b': null }
         },
         2: {
           user: { 'menu-c': null, 'menu-d': null },
@@ -484,11 +714,18 @@
       },
       tieBreakWinnerId: null,
       finalWinnerMenuId: 'menu-a'
+    },
+    restaurant: {
+      discoveryView: 'list', // 'list' | 'map'
+      selectedFilter: 'all', // 'all' | 'nearest' | 'open'
+      activePinId: 'rest-a1',
+      selectedRestaurantId: 'rest-a1',
+      restaurantConfirmed: true
     }
   };
 
   /* ==========================================================================
-     4. Static Option Catalogues
+     5. Static Option Catalogues
      ========================================================================== */
   const ALLERGY_OPTIONS = [
     { id: 'peanuts', label: 'Peanuts', thai: 'ถั่วลิสง' },
@@ -555,6 +792,7 @@
   // Expose to Prototype Namespace
   window.FFPrototype.SCREEN_REGISTRY = SCREEN_REGISTRY;
   window.FFPrototype.CANDIDATE_MENUS = CANDIDATE_MENUS;
+  window.FFPrototype.RESTAURANT_CATALOGUE = RESTAURANT_CATALOGUE;
   window.FFPrototype.STORAGE_KEY = STORAGE_KEY;
   window.FFPrototype.INITIAL_STATE = INITIAL_STATE;
   window.FFPrototype.ALLERGY_OPTIONS = ALLERGY_OPTIONS;

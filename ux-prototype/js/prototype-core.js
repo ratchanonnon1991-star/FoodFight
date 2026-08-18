@@ -43,6 +43,10 @@
               ...P.INITIAL_STATE.recommendation.finalVotes,
               ...(parsed.recommendation?.finalVotes || {})
             }
+          },
+          restaurant: {
+            ...P.INITIAL_STATE.restaurant,
+            ...(parsed.restaurant || {})
           }
         };
       }
@@ -74,6 +78,13 @@
     navigateTo('#/recommendations');
   }
 
+  function resetRestaurantState() {
+    state.restaurant = JSON.parse(JSON.stringify(P.INITIAL_STATE.restaurant));
+    saveState();
+    showToast('Restaurant discovery state reset to default.', 'info');
+    navigateTo('#/restaurants');
+  }
+
   function getState() {
     return state;
   }
@@ -95,7 +106,7 @@
     } else if (type === 'error') {
       iconSvg = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#F6B8B8" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>`;
     } else {
-      iconSvg = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#A7D3F3" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>`;
+      iconSvg = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#A7D3F3" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>`;
     }
 
     toast.innerHTML = `
@@ -350,6 +361,8 @@
       categories[screen.category].push(screen);
     });
 
+    const activeMenuId = state.recommendation?.finalWinnerMenuId || 'menu-a';
+
     let html = `
       <!-- Developer Simulation & Test Controls Box -->
       <div class="proto-sim-box">
@@ -358,7 +371,7 @@
         </div>
 
         <div style="font-size:0.75rem;color:var(--color-text-secondary);line-height:1.35;">
-          Test room readiness, vote scenarios, Recommend Again, and Host Tie Break.
+          Simulate room roles, recommendation outcomes, final menus, and restaurant discovery.
         </div>
 
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.4rem;margin-top:0.25rem;">
@@ -366,10 +379,34 @@
             <span>Role: <strong>${state.room.role === 'host' ? 'Host' : 'Member'}</strong></span>
             <span>⇄</span>
           </button>
-          <button type="button" id="sim-toggle-threshold" class="proto-sim-btn">
-            <span>2-Min: <strong>${state.room.simulatedTwoMinutesElapsed ? 'YES' : 'NO'}</strong></span>
+          <button type="button" id="sim-toggle-view" class="proto-sim-btn">
+            <span>View: <strong>${(state.restaurant?.discoveryView || 'list').toUpperCase()}</strong></span>
+            <span>⇄</span>
           </button>
         </div>
+
+        <div style="font-size:0.7rem;font-weight:700;color:var(--color-brand-primary);margin-top:0.4rem;text-transform:uppercase;">
+          V4 Restaurant Discovery & Menu Context
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.35rem;">
+          <button type="button" id="sim-set-menu-a" class="proto-sim-btn ${activeMenuId === 'menu-a' ? 'active' : ''}">
+            <span>🥩 Wagyu Krapow (A)</span>
+          </button>
+          <button type="button" id="sim-set-menu-b" class="proto-sim-btn ${activeMenuId === 'menu-b' ? 'active' : ''}">
+            <span>🍜 Ramen (B)</span>
+          </button>
+          <button type="button" id="sim-set-menu-c" class="proto-sim-btn ${activeMenuId === 'menu-c' ? 'active' : ''}">
+            <span>🍲 Shabu-Shabu (C)</span>
+          </button>
+          <button type="button" id="sim-set-menu-d" class="proto-sim-btn ${activeMenuId === 'menu-d' ? 'active' : ''}">
+            <span>🦐 Tom Yum (D)</span>
+          </button>
+        </div>
+
+        <button type="button" id="sim-reset-rest" class="proto-sim-btn" style="color:#D32F2F;margin-top:0.25rem;">
+          <span>↺ Reset Restaurant Discovery State</span>
+        </button>
 
         <div style="font-size:0.7rem;font-weight:700;color:var(--color-brand-primary);margin-top:0.4rem;text-transform:uppercase;">
           V3 Voting Scenarios
@@ -377,29 +414,16 @@
 
         <div style="display:flex;flex-direction:column;gap:0.35rem;">
           <button type="button" id="sim-vote-all-ok" class="proto-sim-btn" style="background:#EDF9F0;color:#165E2A;border-color:#A6DEB4;">
-            <span>✨ Set All Active OK (Win Menu A)</span>
+            <span>✨ Set All Active OK (Win Round 1)</span>
           </button>
           <button type="button" id="sim-vote-split-no-win" class="proto-sim-btn" style="background:#FFF8E6;color:#784C00;border-color:#F6D68A;">
-            <span>⚡ Set No Winner (Trigger Recommend Again)</span>
+            <span>⚡ Set No Winner (Recommend Again)</span>
           </button>
           <button type="button" id="sim-vote-final-tie" class="proto-sim-btn" style="background:#EFF6FC;color:#185582;border-color:#A7D3F3;">
             <span>⚖️ Final Vote: Create 2-2 Tie (Host Tie Break)</span>
           </button>
           <button type="button" id="sim-reset-recom" class="proto-sim-btn" style="color:#D32F2F;">
-            <span>↺ Reset Recommendation State Only</span>
-          </button>
-        </div>
-
-        <div style="font-size:0.7rem;font-weight:700;color:var(--color-brand-primary);margin-top:0.4rem;text-transform:uppercase;">
-          V2 Lobby Readiness
-        </div>
-
-        <div style="display:flex;flex-direction:column;gap:0.35rem;">
-          <button type="button" id="sim-all-ready" class="proto-sim-btn">
-            <span>Set All Members Ready (100%)</span>
-          </button>
-          <button type="button" id="sim-all-submitted" class="proto-sim-btn">
-            <span>Mark Active Members Submitted</span>
+            <span>↺ Reset Recommendation Flow</span>
           </button>
         </div>
       </div>
@@ -417,7 +441,7 @@
                 <a href="${s.hash}" class="proto-nav-item" data-hash="${s.hash}">
                   <span>${escapeHtml(s.title)}</span>
                   <span class="proto-nav-tag ${isImpl ? 'proto-nav-tag-impl' : 'proto-nav-tag-shell'}">
-                    ${isImpl ? 'Implemented' : 'V4 / Future'}
+                    ${isImpl ? 'Implemented' : 'V5 / Future'}
                   </span>
                 </a>
               `;
@@ -433,9 +457,12 @@
 
   function bindSimulationControls() {
     const roleBtn = document.getElementById('sim-toggle-role');
-    const threshBtn = document.getElementById('sim-toggle-threshold');
-    const allReadyBtn = document.getElementById('sim-all-ready');
-    const allSubBtn = document.getElementById('sim-all-submitted');
+    const viewBtn = document.getElementById('sim-toggle-view');
+    const setMenuABtn = document.getElementById('sim-set-menu-a');
+    const setMenuBBtn = document.getElementById('sim-set-menu-b');
+    const setMenuCBtn = document.getElementById('sim-set-menu-c');
+    const setMenuDBtn = document.getElementById('sim-set-menu-d');
+    const resetRestBtn = document.getElementById('sim-reset-rest');
     const voteAllOkBtn = document.getElementById('sim-vote-all-ok');
     const voteSplitBtn = document.getElementById('sim-vote-split-no-win');
     const voteFinalTieBtn = document.getElementById('sim-vote-final-tie');
@@ -451,35 +478,38 @@
       };
     }
 
-    if (threshBtn) {
-      threshBtn.onclick = () => {
-        state.room.simulatedTwoMinutesElapsed = !state.room.simulatedTwoMinutesElapsed;
+    if (viewBtn) {
+      viewBtn.onclick = () => {
+        state.restaurant.discoveryView = state.restaurant.discoveryView === 'list' ? 'map' : 'list';
         saveState();
-        showToast(`2-Min Elapsed simulated: ${state.room.simulatedTwoMinutesElapsed ? 'YES' : 'NO'}`, 'info');
+        showToast(`Discovery view: ${state.restaurant.discoveryView.toUpperCase()}`, 'info');
         renderNavigatorContent(document.getElementById('proto-nav-list'));
         if (P.renderCurrentRoute) P.renderCurrentRoute();
       };
     }
 
-    if (allReadyBtn) {
-      allReadyBtn.onclick = () => {
-        state.room.members.forEach(m => m.isReady = true);
-        saveState();
-        showToast('All 4 members set to READY!', 'success');
-        renderNavigatorContent(document.getElementById('proto-nav-list'));
-        if (P.renderCurrentRoute) P.renderCurrentRoute();
-      };
-    }
+    const setFinalMenu = (menuId, menuName) => {
+      state.recommendation.finalWinnerMenuId = menuId;
+      const restList = P.RESTAURANT_CATALOGUE[menuId] || [];
+      if (restList.length > 0) {
+        state.restaurant.selectedRestaurantId = restList[0].id;
+        state.restaurant.activePinId = restList[0].id;
+      }
+      saveState();
+      showToast(`Final Menu context set to: ${menuName}`, 'success');
+      renderNavigatorContent(document.getElementById('proto-nav-list'));
+      if (P.renderCurrentRoute) P.renderCurrentRoute();
+    };
 
-    if (allSubBtn) {
-      allSubBtn.onclick = () => {
-        state.room.members.forEach(m => {
-          if (m.isActive) m.hasSubmitted = true;
-        });
-        saveState();
-        showToast('All active members marked as SUBMITTED!', 'success');
-        renderNavigatorContent(document.getElementById('proto-nav-list'));
-        if (P.renderCurrentRoute) P.renderCurrentRoute();
+    if (setMenuABtn) setMenuABtn.onclick = () => setFinalMenu('menu-a', 'Krapow Wagyu Beef');
+    if (setMenuBBtn) setMenuBBtn.onclick = () => setFinalMenu('menu-b', 'Tonkotsu Ramen');
+    if (setMenuCBtn) setMenuCBtn.onclick = () => setFinalMenu('menu-c', 'Kurobuta Shabu');
+    if (setMenuDBtn) setMenuDBtn.onclick = () => setFinalMenu('menu-d', 'Seafood Tom Yum');
+
+    if (resetRestBtn) {
+      resetRestBtn.onclick = () => {
+        resetRestaurantState();
+        closePrototypeNavigator();
       };
     }
 
@@ -510,7 +540,6 @@
         const menu1 = round === 1 ? 'menu-a' : 'menu-c';
         const menu2 = round === 1 ? 'menu-b' : 'menu-d';
         
-        // 1 OK / 3 PASS (25% OK -> below 60% threshold)
         state.recommendation.roundVotes[round]['user'] = { [menu1]: 'PASS', [menu2]: 'PASS' };
         state.recommendation.roundVotes[round]['maya'] = { [menu1]: 'OK', [menu2]: 'PASS' };
         state.recommendation.roundVotes[round]['nina'] = { [menu1]: 'PASS', [menu2]: 'PASS' };
@@ -526,7 +555,6 @@
 
     if (voteFinalTieBtn) {
       voteFinalTieBtn.onclick = () => {
-        // 2 votes for Menu A, 2 votes for Menu C
         state.recommendation.finalVotes = {
           user: 'menu-a',
           maya: 'menu-a',
@@ -587,6 +615,7 @@
   P.saveState = saveState;
   P.resetState = resetState;
   P.resetRecommendationState = resetRecommendationState;
+  P.resetRestaurantState = resetRestaurantState;
   P.showToast = showToast;
   P.copyTextToClipboard = copyTextToClipboard;
   P.openModal = openModal;

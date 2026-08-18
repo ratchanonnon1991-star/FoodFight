@@ -137,7 +137,21 @@
         bindFn = P.bindFinalMenuEvents;
         break;
 
-      // Future Screens / Shell Router (Restaurants V4, Bill, History, Profile)
+      // V4 Restaurant Discovery & Location Selection
+      case '#/restaurants':
+        screenHtml = P.renderRecommendedRestaurants();
+        bindFn = P.bindRecommendedRestaurantsEvents;
+        break;
+      case '#/restaurants/detail':
+        screenHtml = P.renderRestaurantDetail();
+        bindFn = P.bindRestaurantDetailEvents;
+        break;
+      case '#/restaurants/selected':
+        screenHtml = P.renderRestaurantSelected();
+        bindFn = P.bindRestaurantSelectedEvents;
+        break;
+
+      // Future Screens / Shell Router (Split Bill V5, History, Profile)
       default: {
         const screen = P.findScreen(hash);
         if (screen) {
