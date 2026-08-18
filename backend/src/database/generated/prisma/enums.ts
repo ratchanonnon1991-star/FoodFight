@@ -23,3 +23,119 @@ export const Role = {
 } as const
 
 export type Role = (typeof Role)[keyof typeof Role]
+
+
+export const RoomStatus = {
+  LOBBY: 'LOBBY',
+  IN_PROGRESS: 'IN_PROGRESS',
+  COMPLETED: 'COMPLETED',
+  CANCELLED: 'CANCELLED'
+} as const
+
+export type RoomStatus = (typeof RoomStatus)[keyof typeof RoomStatus]
+
+
+export const FoodFightStatus = {
+  COLLECTING_PREFERENCES: 'COLLECTING_PREFERENCES',
+  GENERATING_RECOMMENDATIONS: 'GENERATING_RECOMMENDATIONS',
+  VOTING: 'VOTING',
+  FINAL_VOTE: 'FINAL_VOTE',
+  FINALIZED: 'FINALIZED',
+  RESTAURANT_RECOMMENDATION: 'RESTAURANT_RECOMMENDATION',
+  RESTAURANT_SELECTION: 'RESTAURANT_SELECTION',
+  BILLING: 'BILLING',
+  COMPLETED: 'COMPLETED',
+  CANCELLED: 'CANCELLED'
+} as const
+
+export type FoodFightStatus = (typeof FoodFightStatus)[keyof typeof FoodFightStatus]
+
+
+export const SessionMemberRole = {
+  HOST: 'HOST',
+  MEMBER: 'MEMBER'
+} as const
+
+export type SessionMemberRole = (typeof SessionMemberRole)[keyof typeof SessionMemberRole]
+
+
+export const MealBudgetRange = {
+  UNDER_200: 'UNDER_200',
+  BETWEEN_200_400: 'BETWEEN_200_400',
+  BETWEEN_400_600: 'BETWEEN_400_600',
+  ABOVE_600: 'ABOVE_600',
+  ANY: 'ANY'
+} as const
+
+export type MealBudgetRange = (typeof MealBudgetRange)[keyof typeof MealBudgetRange]
+
+
+export const RecommendationRoundStatus = {
+  GENERATING: 'GENERATING',
+  VOTING: 'VOTING',
+  COMPLETED: 'COMPLETED'
+} as const
+
+export type RecommendationRoundStatus = (typeof RecommendationRoundStatus)[keyof typeof RecommendationRoundStatus]
+
+
+export const VoteAction = {
+  OK: 'OK',
+  PASS: 'PASS'
+} as const
+
+export type VoteAction = (typeof VoteAction)[keyof typeof VoteAction]
+
+
+export const FinalVoteType = {
+  TIE_BREAK: 'TIE_BREAK',
+  FOUR_MENU_FINAL: 'FOUR_MENU_FINAL'
+} as const
+
+export type FinalVoteType = (typeof FinalVoteType)[keyof typeof FinalVoteType]
+
+
+export const FinalSelectionMethod = {
+  OK_MAJORITY: 'OK_MAJORITY',
+  FINAL_VOTE: 'FINAL_VOTE',
+  HOST_TIE_BREAK: 'HOST_TIE_BREAK'
+} as const
+
+export type FinalSelectionMethod = (typeof FinalSelectionMethod)[keyof typeof FinalSelectionMethod]
+
+
+export const RestaurantRecommendationStatus = {
+  ACTIVE: 'ACTIVE',
+  SELECTED: 'SELECTED',
+  REJECTED: 'REJECTED'
+} as const
+
+export type RestaurantRecommendationStatus = (typeof RestaurantRecommendationStatus)[keyof typeof RestaurantRecommendationStatus]
+
+
+export const BillStatus = {
+  DRAFT: 'DRAFT',
+  SPLITTING: 'SPLITTING',
+  COMPLETED: 'COMPLETED',
+  CANCELLED: 'CANCELLED'
+} as const
+
+export type BillStatus = (typeof BillStatus)[keyof typeof BillStatus]
+
+
+export const PaymentStatus = {
+  UNPAID: 'UNPAID',
+  PAID: 'PAID'
+} as const
+
+export type PaymentStatus = (typeof PaymentStatus)[keyof typeof PaymentStatus]
+
+
+export const OcrStatus = {
+  NOT_USED: 'NOT_USED',
+  PROCESSING: 'PROCESSING',
+  COMPLETED: 'COMPLETED',
+  FAILED: 'FAILED'
+} as const
+
+export type OcrStatus = (typeof OcrStatus)[keyof typeof OcrStatus]

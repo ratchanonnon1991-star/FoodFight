@@ -37,3 +37,93 @@ export type EmailVerification = Prisma.EmailVerificationModel
  * 
  */
 export type PasswordReset = Prisma.PasswordResetModel
+/**
+ * Model FoodProfile
+ * 
+ */
+export type FoodProfile = Prisma.FoodProfileModel
+/**
+ * Model Room
+ * 
+ */
+export type Room = Prisma.RoomModel
+/**
+ * Model RoomMember
+ * 
+ */
+export type RoomMember = Prisma.RoomMemberModel
+/**
+ * Model FoodFightSession
+ * 
+ */
+export type FoodFightSession = Prisma.FoodFightSessionModel
+/**
+ * Model SessionMember
+ * 
+ */
+export type SessionMember = Prisma.SessionMemberModel
+/**
+ * Model MealPreference
+ * 
+ */
+export type MealPreference = Prisma.MealPreferenceModel
+/**
+ * Model RecommendationRound
+ * 
+ */
+export type RecommendationRound = Prisma.RecommendationRoundModel
+/**
+ * Model RecommendationItem
+ * 
+ */
+export type RecommendationItem = Prisma.RecommendationItemModel
+/**
+ * Model Vote
+ * 
+ */
+export type Vote = Prisma.VoteModel
+/**
+ * Model FinalVote
+ * 
+ */
+export type FinalVote = Prisma.FinalVoteModel
+/**
+ * Model FinalSelection
+ * 
+ */
+export type FinalSelection = Prisma.FinalSelectionModel
+/**
+ * Model RestaurantRecommendation
+ * 
+ */
+export type RestaurantRecommendation = Prisma.RestaurantRecommendationModel
+/**
+ * Model RestaurantSelection
+ * 
+ */
+export type RestaurantSelection = Prisma.RestaurantSelectionModel
+/**
+ * Model Bill
+ * 
+ */
+export type Bill = Prisma.BillModel
+/**
+ * Model Receipt
+ * 
+ */
+export type Receipt = Prisma.ReceiptModel
+/**
+ * Model ReceiptItem
+ * 
+ */
+export type ReceiptItem = Prisma.ReceiptItemModel
+/**
+ * Model ItemShare
+ * 
+ */
+export type ItemShare = Prisma.ItemShareModel
+/**
+ * Model UserPayment
+ * 
+ */
+export type UserPayment = Prisma.UserPaymentModel
