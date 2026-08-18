@@ -37,11 +37,11 @@ export function RecentFoodFightItem({
           onClick?.();
         }
       }}
-      className="group flex items-center justify-between p-3.5 sm:p-4 rounded-2xl border border-border/80 bg-surface shadow-xs hover:border-brand-secondary/50 hover:bg-surface-subtle/30 transition-all duration-150 cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-secondary select-none"
+      className="group flex items-center justify-between p-3.5 sm:p-4 hover:bg-surface-subtle/50 transition-colors cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-secondary select-none"
     >
-      <div className="flex items-center gap-3 sm:gap-3.5 min-w-0 flex-1 pr-2">
+      <div className="flex items-center gap-3.5 min-w-0 flex-1 pr-2">
         {/* Leading Category/Food Icon Box */}
-        <div className="size-11 sm:size-12 shrink-0 rounded-xl bg-surface-subtle border border-border/60 flex items-center justify-center shadow-2xs">
+        <div className="size-12 shrink-0 rounded-xl bg-surface-subtle border border-border/60 flex items-center justify-center shadow-2xs">
           {renderItemIcon(item.iconType)}
         </div>
 
@@ -50,17 +50,17 @@ export function RecentFoodFightItem({
           <h3 className="text-sm sm:text-base font-bold text-text-primary truncate">
             {item.title}
           </h3>
-          <p className="text-xs text-text-secondary truncate">
+          <p className="text-xs sm:text-sm text-text-secondary truncate">
             {item.subtitle}
           </p>
-          <div className="flex items-center gap-2 text-3xs sm:text-xs text-text-muted pt-0.5">
+          <div className="flex items-center gap-2 text-xs text-text-muted pt-0.5">
             <span className="inline-flex items-center gap-1">
-              <Calendar className="size-3" />
+              <Calendar className="size-3.5" />
               {item.date}
             </span>
             <span>•</span>
             <span className="inline-flex items-center gap-1">
-              <Users className="size-3" />
+              <Users className="size-3.5" />
               {item.memberCount} members
             </span>
           </div>

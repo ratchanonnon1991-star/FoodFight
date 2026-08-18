@@ -30,7 +30,7 @@ export function AuthenticatedHome({
 }: AuthenticatedHomeProps) {
   return (
     <main className="min-h-dvh bg-background text-text-primary">
-      <PageContainer maxWidth="auth" paddingY="none" className="space-y-5 pt-3 sm:pt-4 pb-28">
+      <PageContainer maxWidth="auth" paddingY="none" className="space-y-5 sm:space-y-6 pt-3 sm:pt-4 pb-32">
         {/* 1. Header with greeting and avatar/notification */}
         <HomeHeader user={DEMO_USER} />
 

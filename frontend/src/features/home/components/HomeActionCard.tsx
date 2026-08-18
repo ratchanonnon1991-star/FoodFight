@@ -26,29 +26,31 @@ export function HomeActionCard({
 }: HomeActionCardProps) {
   const content = (
     <>
-      {/* Icon in soft rounded box */}
-      <div className="size-11 sm:size-12 rounded-xl border border-border/60 bg-surface flex items-center justify-center text-text-primary mb-3 shadow-2xs">
+      {/* Icon in larger soft rounded box */}
+      <div className="size-12 sm:size-14 rounded-2xl border border-border/70 bg-surface flex items-center justify-center text-text-primary mb-3.5 shadow-2xs">
         {icon}
       </div>
 
-      {/* Title with inline small Chevron */}
-      <div className="flex items-center justify-between gap-1 w-full">
-        <span className="text-xs sm:text-sm font-bold uppercase tracking-wider text-text-primary truncate">
-          {title}
-        </span>
-        <ChevronRight className="size-4 shrink-0 text-text-secondary group-hover:translate-x-0.5 transition-transform" />
-      </div>
+      <div>
+        {/* Title with inline small Chevron */}
+        <div className="flex items-center justify-between gap-1 w-full">
+          <span className="text-xs sm:text-sm font-extrabold uppercase tracking-wider text-text-primary truncate">
+            {title}
+          </span>
+          <ChevronRight className="size-4 shrink-0 text-text-secondary group-hover:translate-x-0.5 transition-transform" />
+        </div>
 
-      {/* Description */}
-      <p className="text-xs text-text-secondary mt-1 line-clamp-1">
-        {description}
-      </p>
+        {/* Description */}
+        <p className="text-xs text-text-secondary mt-1 line-clamp-1 leading-snug">
+          {description}
+        </p>
+      </div>
     </>
   );
 
   const cardClasses = cn(
-    "group flex flex-col justify-between p-4 sm:p-5 rounded-2xl border border-border/80 bg-surface shadow-xs hover:border-brand-secondary/60 hover:shadow-sm transition-all duration-150 text-left select-none",
-    "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-secondary cursor-pointer",
+    "group flex flex-col justify-between min-h-[148px] p-5 rounded-2xl border border-border/80 bg-surface shadow-xs hover:border-brand-secondary/60 hover:shadow-sm transition-all duration-150 text-left select-none",
+    "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-secondary cursor-pointer active:scale-[0.98]",
     className
   );
 

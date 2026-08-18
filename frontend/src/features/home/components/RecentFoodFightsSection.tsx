@@ -22,22 +22,22 @@ export function RecentFoodFightsSection({
       <div className="flex items-center justify-between">
         <h2
           id="recent-foodfights-heading"
-          className="text-sm font-bold text-text-primary tracking-tight"
+          className="text-sm sm:text-base font-bold text-text-primary tracking-tight"
         >
           Recent FoodFights
         </h2>
         <button
           type="button"
           onClick={onViewAll}
-          className="inline-flex items-center gap-0.5 text-xs font-semibold text-text-secondary hover:text-brand-primary transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-secondary rounded-sm py-0.5 px-1 cursor-pointer"
+          className="inline-flex items-center gap-0.5 text-xs sm:text-sm font-semibold text-text-secondary hover:text-brand-primary transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-secondary rounded-sm py-0.5 px-1 cursor-pointer"
         >
           <span>View all</span>
-          <ChevronRight className="size-3.5" />
+          <ChevronRight className="size-4" />
         </button>
       </div>
 
-      {/* List of Recent Items */}
-      <div className="space-y-2.5">
+      {/* Grouped Surface Card with subtle row dividers */}
+      <div className="rounded-2xl border border-border/80 bg-surface shadow-xs divide-y divide-border/60 overflow-hidden">
         {items.map((item) => (
           <RecentFoodFightItem
             key={item.id}

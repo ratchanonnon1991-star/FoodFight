@@ -53,12 +53,12 @@ export function BottomNavigation({
     <nav
       aria-label="Main Navigation"
       className={cn(
-        "fixed bottom-0 left-0 right-0 z-30 border-t border-border/80 bg-surface/95 backdrop-blur-md py-1.5 shadow-lg",
+        "fixed bottom-0 left-0 right-0 z-30 border-t border-border/80 bg-surface/95 backdrop-blur-md py-2.5 shadow-lg",
         className
       )}
     >
       <PageContainer maxWidth="auth" paddingY="none">
-        <ul className="flex items-center justify-around gap-1" role="list">
+        <ul className="flex items-center justify-around gap-1.5" role="list">
           {tabs.map((tab) => {
             const isActive = tab.id === activeTab;
             const Icon = tab.icon;
@@ -70,7 +70,7 @@ export function BottomNavigation({
                     href={tab.href}
                     aria-current={isActive ? "page" : undefined}
                     className={cn(
-                      "flex flex-col items-center justify-center gap-1 py-1.5 px-3 rounded-xl transition-all select-none",
+                      "flex flex-col items-center justify-center gap-1 py-1.5 px-3 rounded-2xl transition-all select-none",
                       "focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-brand-secondary",
                       isActive
                         ? "bg-surface-subtle text-brand-primary font-bold shadow-2xs"
@@ -85,7 +85,7 @@ export function BottomNavigation({
                     type="button"
                     disabled
                     aria-label={`${tab.label} (Coming soon)`}
-                    className="w-full flex flex-col items-center justify-center gap-1 py-1.5 px-3 rounded-xl text-text-disabled cursor-not-allowed select-none opacity-60"
+                    className="w-full flex flex-col items-center justify-center gap-1 py-1.5 px-3 rounded-2xl text-text-disabled cursor-not-allowed select-none opacity-60"
                   >
                     <Icon className="size-5 stroke-[1.8]" />
                     <span className="text-2xs sm:text-xs leading-none">{tab.label}</span>
