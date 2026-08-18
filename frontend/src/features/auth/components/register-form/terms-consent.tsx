@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { type Control, Controller } from "react-hook-form";
-import { Checkbox } from "@/components/ui/checkbox";
+import { Checkbox } from "@/components/ui/Checkbox";
 import type { RegisterFormValues } from "@/features/auth/schemas/register-schema";
 
 export interface TermsConsentProps {

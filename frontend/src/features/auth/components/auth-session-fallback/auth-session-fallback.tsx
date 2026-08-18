@@ -3,7 +3,7 @@
 import * as React from "react";
 import Link from "next/link";
 import { ROUTES } from "@/config/routes";
-import { buttonVariants } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/Button";
 import { cn } from "@/lib/utils/cn";
 
 export interface AuthSessionFallbackProps {

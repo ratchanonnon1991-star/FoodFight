@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { Eye, EyeOff } from "lucide-react";
-import { Input, type InputProps } from "@/components/ui/input";
+import { Input, type InputProps } from "@/components/ui/Input";
 
 export interface PasswordInputProps extends Omit<InputProps, "type" | "rightAdornment"> {
   showPasswordLabel?: string;

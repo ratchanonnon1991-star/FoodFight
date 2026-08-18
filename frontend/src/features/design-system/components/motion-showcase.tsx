@@ -3,8 +3,8 @@
 import * as React from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { fadeUp, scaleIn, fadeIn } from "@/lib/motion";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/Button";
+import { Badge } from "@/components/ui/Badge";
 import { RefreshCw } from "lucide-react";
 
 export function MotionShowcase() {

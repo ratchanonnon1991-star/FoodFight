@@ -10,12 +10,12 @@ import { ROUTES } from "@/config/routes";
 import { authService } from "@/features/auth/services/auth-runtime";
 import { useAuthFlow } from "@/features/auth/context";
 import { loginSchema, type LoginFormValues } from "@/features/auth/schemas/login-schema";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { PasswordInput } from "@/components/ui/password-input";
+import { Button } from "@/components/ui/Button";
+import { Input } from "@/components/ui/Input";
+import { PasswordInput } from "@/components/ui/PasswordInput";
 import { FormField, FormLabel, FormError } from "@/components/ui/form-field";
-import { Separator } from "@/components/ui/separator";
-import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
+import { Separator } from "@/components/ui/Separator";
+import { Alert, AlertTitle, AlertDescription } from "@/components/ui/Alert";
 import { SocialAuthButtons } from "../social-auth-buttons";
 
 export function LoginForm() {

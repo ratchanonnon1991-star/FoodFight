@@ -1,6 +1,6 @@
 import * as React from "react";
 import { cn } from "@/lib/utils/cn";
-import { Card } from "@/components/ui/card";
+import { Card } from "@/components/ui/Card";
 
 export interface AuthLayoutProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "title"> {
   title?: React.ReactNode;

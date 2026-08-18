@@ -1,7 +1,7 @@
 import * as React from "react";
 import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils/cn";
-import { Spinner } from "@/components/ui/spinner";
+import { Spinner } from "@/components/ui/Spinner";
 
 export const buttonVariants = cva(
   "inline-flex items-center justify-center gap-2 whitespace-nowrap font-medium text-sm transition-colors duration-150 select-none cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-secondary active:scale-[0.98] disabled:pointer-events-none disabled:opacity-50 disabled:scale-100 disabled:cursor-not-allowed",

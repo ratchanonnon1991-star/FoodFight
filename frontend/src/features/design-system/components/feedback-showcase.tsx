@@ -1,8 +1,8 @@
 import * as React from "react";
-import { Badge } from "@/components/ui/badge";
-import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
-import { Spinner } from "@/components/ui/spinner";
-import { Separator } from "@/components/ui/separator";
+import { Badge } from "@/components/ui/Badge";
+import { Alert, AlertTitle, AlertDescription } from "@/components/ui/Alert";
+import { Spinner } from "@/components/ui/Spinner";
+import { Separator } from "@/components/ui/Separator";
 
 export function FeedbackShowcase() {
   return (

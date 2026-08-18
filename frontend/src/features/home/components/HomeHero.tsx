@@ -2,7 +2,7 @@ import * as React from "react";
 import Link from "next/link";
 import { ROUTES } from "@/config/routes";
 import { PageContainer } from "@/components/layout/PageContainer";
-import { buttonVariants } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/Button";
 import { cn } from "@/lib/utils/cn";
 
 export interface HomeHeroProps {

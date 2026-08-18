@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/Button";
 import { authService } from "@/features/auth/services/auth-runtime";
 
 export interface SocialAuthButtonsProps {

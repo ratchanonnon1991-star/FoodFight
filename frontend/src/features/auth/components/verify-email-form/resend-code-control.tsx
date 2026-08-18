@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { RefreshCw } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/Button";
 import type { UseCountdownReturn } from "@/features/auth/hooks/use-countdown";
 
 export interface ResendCodeControlProps {

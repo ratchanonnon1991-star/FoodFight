@@ -1,9 +1,9 @@
 "use client";
 
 import * as React from "react";
-import { Input } from "@/components/ui/input";
-import { PasswordInput } from "@/components/ui/password-input";
-import { Checkbox } from "@/components/ui/checkbox";
+import { Input } from "@/components/ui/Input";
+import { PasswordInput } from "@/components/ui/PasswordInput";
+import { Checkbox } from "@/components/ui/Checkbox";
 import { FormField, FormLabel, FormDescription, FormError } from "@/components/ui/form-field";
 import { Mail, Lock, User } from "lucide-react";
 

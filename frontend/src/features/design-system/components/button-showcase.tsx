@@ -1,9 +1,9 @@
 "use client";
 
 import * as React from "react";
-import { Button } from "@/components/ui/button";
-import { IconButton } from "@/components/ui/icon-button";
-import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/Button";
+import { IconButton } from "@/components/ui/IconButton";
+import { Badge } from "@/components/ui/Badge";
 import { Send, Sparkles, Heart, Settings, Trash2, ArrowRight } from "lucide-react";
 
 export function ButtonShowcase() {
