@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { VerifyEmailForm } from "@/features/auth/components/verify-email-form";
+import { VerifyEmailForm } from "@/features/auth/components/VerifyEmailForm";
 
 export const metadata: Metadata = {
   title: "Verify Email | FoodFighter",

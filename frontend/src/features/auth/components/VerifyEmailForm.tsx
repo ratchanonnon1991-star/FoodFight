@@ -16,10 +16,10 @@ import { FormField, FormError } from "@/components/ui/form-field";
 import { Separator } from "@/components/ui/Separator";
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/Alert";
 import { cn } from "@/lib/utils/cn";
-import { VerificationCodeInput } from "../verification-code-input";
-import { ResendCodeControl } from "./resend-code-control";
-import { VerificationSecurityNotice } from "./verification-security-notice";
-import { VerificationSessionFallback } from "./verification-session-fallback";
+import { VerificationCodeInput } from "./VerificationCodeInput";
+import { ResendCodeControl } from "./ResendCodeControl";
+import { VerificationSecurityNotice } from "./VerificationSecurityNotice";
+import { VerificationSessionFallback } from "./VerificationSessionFallback";
 
 function maskEmail(email: string): string {
   const parts = email.split("@");

@@ -16,7 +16,7 @@ import { PasswordInput } from "@/components/ui/PasswordInput";
 import { FormField, FormLabel, FormError } from "@/components/ui/form-field";
 import { Separator } from "@/components/ui/Separator";
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/Alert";
-import { SocialAuthButtons } from "../social-auth-buttons";
+import { SocialAuthButtons } from "./SocialAuthButtons";
 
 export function LoginForm() {
   const router = useRouter();

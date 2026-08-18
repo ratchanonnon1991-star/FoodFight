@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { AuthSessionFallback } from "../auth-session-fallback";
+import { AuthSessionFallback } from "./AuthSessionFallback";
 
 export function VerificationSessionFallback() {
   return (

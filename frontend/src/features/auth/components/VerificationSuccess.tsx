@@ -7,7 +7,7 @@ import { ROUTES } from "@/config/routes";
 import { useAuthFlow } from "@/features/auth/context";
 import { buttonVariants } from "@/components/ui/Button";
 import { cn } from "@/lib/utils/cn";
-import { AuthSessionFallback } from "../auth-session-fallback";
+import { AuthSessionFallback } from "./AuthSessionFallback";
 
 function maskEmail(email: string): string {
   const parts = email.split("@");

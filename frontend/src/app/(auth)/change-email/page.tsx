@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { ChangeEmailForm } from "@/features/auth/components/change-email-form";
+import { ChangeEmailForm } from "@/features/auth/components/ChangeEmailForm";
 
 export const metadata: Metadata = {
   title: "Change Email | FoodFighter",

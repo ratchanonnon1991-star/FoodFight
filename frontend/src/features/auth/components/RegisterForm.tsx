@@ -16,8 +16,8 @@ import { PasswordInput } from "@/components/ui/PasswordInput";
 import { FormField, FormLabel, FormDescription, FormError } from "@/components/ui/form-field";
 import { Separator } from "@/components/ui/Separator";
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/Alert";
-import { SocialAuthButtons } from "../social-auth-buttons";
-import { TermsConsent } from "./terms-consent";
+import { SocialAuthButtons } from "./SocialAuthButtons";
+import { TermsConsent } from "./TermsConsent";
 
 export function RegisterForm() {
   const router = useRouter();

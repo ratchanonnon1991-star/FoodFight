@@ -15,7 +15,7 @@ import { Input } from "@/components/ui/Input";
 import { FormField, FormLabel, FormError } from "@/components/ui/form-field";
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/Alert";
 import { cn } from "@/lib/utils/cn";
-import { AuthSessionFallback } from "../auth-session-fallback";
+import { AuthSessionFallback } from "./AuthSessionFallback";
 
 function maskEmail(email: string): string {
   const parts = email.split("@");
