@@ -1,5 +1,5 @@
 import * as React from "react";
-import { AuthLayout } from "@/components/layout/auth-layout";
+import { AuthLayout } from "@/components/layout/AuthLayout";
 import { AuthFlowProvider } from "@/features/auth/context";
 
 export default function AuthGroupLayout({

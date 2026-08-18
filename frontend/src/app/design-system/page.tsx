@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { PageContainer } from "@/components/layout/page-container";
+import { PageContainer } from "@/components/layout/PageContainer";
 import { Badge } from "@/components/ui/badge";
 import {
   ColorShowcase,

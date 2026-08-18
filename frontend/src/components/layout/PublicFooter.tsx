@@ -1,5 +1,5 @@
 import * as React from "react";
-import { PageContainer } from "@/components/layout/page-container";
+import { PageContainer } from "@/components/layout/PageContainer";
 import { cn } from "@/lib/utils/cn";
 
 export interface PublicFooterProps {

@@ -1,6 +1,6 @@
-import { PublicHeader } from "@/components/layout/public-header";
-import { HomeHero } from "@/features/home/components/home-hero";
-import { PublicFooter } from "@/components/layout/public-footer";
+import { PublicHeader } from "@/components/layout/PublicHeader";
+import { HomeHero } from "@/features/home/components/HomeHero";
+import { PublicFooter } from "@/components/layout/PublicFooter";
 
 export default function RootPage() {
   return (

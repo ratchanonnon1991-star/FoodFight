@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Poppins, Noto_Sans_Thai } from "next/font/google";
-import { MotionProvider } from "@/components/providers/motion-provider";
+import { MotionProvider } from "@/components/providers/MotionProvider";
 import "./globals.css";
 
 const poppins = Poppins({
