@@ -385,7 +385,7 @@
         </div>
 
         <div style="font-size:0.75rem;color:var(--color-text-secondary);line-height:1.35;">
-          Simulate room roles, recommendation outcomes, final menus, and split bill payments.
+          Complete interactive prototype with all 38 product screens live.
         </div>
 
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.4rem;margin-top:0.25rem;">
@@ -458,17 +458,14 @@
         <div class="proto-nav-group">
           <div class="proto-nav-group-title">${escapeHtml(catName)}</div>
           <div style="display:flex;flex-direction:column;">
-            ${screens.map(s => {
-              const isImpl = s.status === 'IMPLEMENTED';
-              return `
-                <a href="${s.hash}" class="proto-nav-item" data-hash="${s.hash}">
-                  <span>${escapeHtml(s.title)}</span>
-                  <span class="proto-nav-tag ${isImpl ? 'proto-nav-tag-impl' : 'proto-nav-tag-shell'}">
-                    ${isImpl ? 'Implemented' : 'V6 / Future'}
-                  </span>
-                </a>
-              `;
-            }).join('')}
+            ${screens.map(s => `
+              <a href="${s.hash}" class="proto-nav-item" data-hash="${s.hash}">
+                <span>${escapeHtml(s.title)}</span>
+                <span class="proto-nav-tag proto-nav-tag-impl">
+                  Implemented
+                </span>
+              </a>
+            `).join('')}
           </div>
         </div>
       `;

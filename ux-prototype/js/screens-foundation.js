@@ -770,31 +770,29 @@
               <div style="width:42px;height:42px;border-radius:12px;background:var(--color-accent-custard);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;">🍲</div>
               <div style="flex:1;">
                 <div style="font-size:0.9rem;font-weight:600;">Sukhumvit Dinner Squad</div>
-                <div class="font-caption text-secondary">Winner: Krapow Wagyu + Tom Yum</div>
+                <div class="font-caption text-secondary">Winner: Tonkotsu Ramen (Nori House)</div>
               </div>
               <span class="step-badge" style="font-size:0.7rem;">Completed</span>
             </div>
           </section>
         </div>
 
-        <nav class="bottom-nav" aria-label="Main Navigation">
-          <a href="#/home" class="bottom-nav-item active" aria-current="page">
-            <svg class="bottom-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
-            <span>Home</span>
-          </a>
-          <a href="#/room/create" class="bottom-nav-item">
-            <svg class="bottom-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path></svg>
-            <span>Rooms</span>
-          </a>
-          <a href="#/history" class="bottom-nav-item">
-            <svg class="bottom-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
-            <span>History</span>
-          </a>
-          <a href="#/profile" class="bottom-nav-item">
-            <svg class="bottom-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
-            <span>Profile</span>
-          </a>
-        </nav>
+        ${P.renderBottomNavigation ? P.renderBottomNavigation('home') : `
+          <nav class="bottom-nav-bar" aria-label="Main Navigation">
+            <a href="#/home" class="bottom-nav-item active" aria-current="page">
+              <svg class="bottom-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+              <span>Home</span>
+            </a>
+            <a href="#/history" class="bottom-nav-item">
+              <svg class="bottom-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+              <span>History</span>
+            </a>
+            <a href="#/profile" class="bottom-nav-item">
+              <svg class="bottom-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+              <span>Profile</span>
+            </a>
+          </nav>
+        `}
       </main>
     `;
   }

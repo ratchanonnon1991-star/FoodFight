@@ -2,7 +2,7 @@
  * FoodFighter UX Prototype — Application Bootstrap & Route Dispatcher
  * 
  * Orchestrates:
- *   - Route lifecycle & switch dispatcher
+ *   - Route lifecycle & switch dispatcher for all 38 product screens
  *   - Top-level hash routing
  *   - Application startup & DOMContentLoaded hookup
  */
@@ -14,7 +14,7 @@
   const P = window.FFPrototype;
 
   /* ==========================================================================
-     1. Main Route Switch Dispatcher
+     1. Main Route Switch Dispatcher (All 38 Registered Screens Live)
      ========================================================================== */
   function renderCurrentRoute() {
     const hash = window.location.hash || '#/login';
@@ -28,7 +28,7 @@
     let bindFn = null;
 
     switch (hash) {
-      // V1 Auth
+      // V1 Auth (4 Screens)
       case '#/login':
         screenHtml = P.renderLogin();
         bindFn = P.bindLoginEvents;
@@ -46,7 +46,7 @@
         bindFn = P.bindForgotPasswordEvents;
         break;
 
-      // V1 Food Profile
+      // V1 Food Profile Onboarding (3 Screens)
       case '#/food-profile/allergies':
         screenHtml = P.renderFoodProfileAllergies();
         bindFn = P.bindFoodProfileAllergiesEvents;
@@ -60,13 +60,13 @@
         bindFn = P.bindFoodProfileDetailsEvents;
         break;
 
-      // V1 Home
+      // V1 Home (1 Screen)
       case '#/home':
         screenHtml = P.renderHome();
         bindFn = P.bindHomeEvents;
         break;
 
-      // V2 Room Journey
+      // V2 Room Journey (8 Screens)
       case '#/room/create':
         screenHtml = P.renderRoomCreate();
         bindFn = P.bindRoomCreateEvents;
@@ -100,7 +100,7 @@
         bindFn = P.bindRoomLobbyMemberEvents;
         break;
 
-      // V2 FoodFight Preparation & Session
+      // V2 FoodFight Preparation & Session (3 Screens)
       case '#/foodfight/preferences':
         screenHtml = P.renderMealPreferences();
         bindFn = P.bindMealPreferencesEvents;
@@ -114,7 +114,7 @@
         bindFn = P.bindFoodFightGeneratingEvents;
         break;
 
-      // V3 Recommendations & Voting Journey
+      // V3 Recommendations & Voting Journey (6 Screens)
       case '#/recommendations':
       case '#/recommendations/vote':
         screenHtml = P.renderRecommendations(1);
@@ -137,7 +137,7 @@
         bindFn = P.bindFinalMenuEvents;
         break;
 
-      // V4 Restaurant Discovery & Location Selection
+      // V4 Restaurant Discovery & Map (3 Screens)
       case '#/restaurants':
         screenHtml = P.renderRecommendedRestaurants();
         bindFn = P.bindRecommendedRestaurantsEvents;
@@ -151,7 +151,7 @@
         bindFn = P.bindRestaurantSelectedEvents;
         break;
 
-      // V5 Split Bill, Receipt OCR & Payment Flow (Prototype Exploration)
+      // V5 Split Bill, Receipt OCR & Payments (6 Screens)
       case '#/bill':
         screenHtml = P.renderSplitBill();
         bindFn = P.bindSplitBillEvents;
@@ -177,15 +177,27 @@
         bindFn = P.bindBillPaymentEvents;
         break;
 
-      // Future Screens / Shell Router (History, User Profile)
+      // V6 History, Profile & Settings (4 Screens)
+      case '#/history':
+        screenHtml = P.renderHistory();
+        bindFn = P.bindHistoryEvents;
+        break;
+      case '#/bill-history':
+        screenHtml = P.renderBillHistory();
+        bindFn = P.bindBillHistoryEvents;
+        break;
+      case '#/profile':
+        screenHtml = P.renderProfile();
+        bindFn = P.bindProfileEvents;
+        break;
+      case '#/profile/food':
+        screenHtml = P.renderProfileFoodEdit();
+        bindFn = P.bindProfileFoodEditEvents;
+        break;
+
+      // Unknown / 404 Fallback
       default: {
-        const screen = P.findScreen(hash);
-        if (screen) {
-          screenHtml = P.renderFutureShell(screen);
-          bindFn = P.bindFutureShellEvents;
-        } else {
-          screenHtml = P.renderNotFoundShell(hash);
-        }
+        screenHtml = P.renderNotFoundShell(hash);
         break;
       }
     }

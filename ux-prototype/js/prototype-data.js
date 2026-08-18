@@ -1,8 +1,8 @@
 /**
  * FoodFighter UX Prototype — Data Store & Static Constants
  * 
- * Defines SCREEN_REGISTRY, candidate dishes, fictional restaurants catalogue,
- * receipt items, default prototype state, and static catalogues without active DOM behavior.
+ * Defines SCREEN_REGISTRY (38 Implemented Screens), candidate dishes,
+ * fictional restaurants, mock receipts, historical records, and default prototype state.
  */
 
 (function () {
@@ -11,7 +11,7 @@
   window.FFPrototype = window.FFPrototype || {};
 
   /* ==========================================================================
-     1. Prototype Screen Registry & Metadata (38 Registered Routes)
+     1. Prototype Screen Registry & Metadata (38 Total • 38 Implemented • 0 Future)
      ========================================================================== */
   const SCREEN_REGISTRY = [
     // AUTH FLOW (Implemented V1)
@@ -312,39 +312,39 @@
       description: 'Real-time group payment completion tracker and All Settled celebration.'
     },
 
-    // PROFILE & HISTORY (Future V6)
+    // PROFILE & HISTORY (Implemented V6)
     {
       id: 'history',
       hash: '#/history',
       title: 'FoodFight History',
       category: 'Other',
-      status: 'FUTURE',
-      description: 'Past food battle sessions, winning dishes, and restaurants visited.'
+      status: 'IMPLEMENTED',
+      description: 'Past food battle sessions, winning dishes, and restaurants visited with interactive details.'
     },
     {
       id: 'bill-history',
       hash: '#/bill-history',
       title: 'Bill History',
       category: 'Other',
-      status: 'FUTURE',
+      status: 'IMPLEMENTED',
       scope: 'PROTOTYPE_EXPLORATION',
-      description: 'Past receipts and payment settlement records.'
+      description: 'Past itemized receipts, personal payout amounts, and payment settlement records.'
     },
     {
       id: 'profile',
       hash: '#/profile',
       title: 'User Profile',
       category: 'Other',
-      status: 'FUTURE',
-      description: 'Account settings, notification preferences, and linked accounts.'
+      status: 'IMPLEMENTED',
+      description: 'User identity, food safety summary, battle stats, and preferences.'
     },
     {
       id: 'profile-food',
       hash: '#/profile/food',
       title: 'Edit Food Profile',
       category: 'Other',
-      status: 'FUTURE',
-      description: 'Modify allergies, dietary restrictions, and personal food notes.'
+      status: 'IMPLEMENTED',
+      description: 'Modify allergies, dietary restrictions, and personal food notes from a single account screen.'
     }
   ];
 
@@ -653,7 +653,76 @@
   ];
 
   /* ==========================================================================
-     5. Prototype Initial State Definition
+     5. Deterministic Historical Demo Records (FoodFight Sessions & Bills)
+     ========================================================================== */
+  const HISTORICAL_FOODFIGHTS = [
+    {
+      id: 'hist-1',
+      dateLabel: 'Yesterday • 19:30',
+      roomName: 'Dinner Food Fight',
+      menuName: 'Tonkotsu Chashu Ramen',
+      restaurantName: 'Nori House Ramen',
+      location: 'Sukhumvit Soi 31',
+      participants: ['Alex', 'Maya', 'Nina', 'Ken'],
+      outcome: 'Won in Round 1 (100% OK)'
+    },
+    {
+      id: 'hist-2',
+      dateLabel: 'Last Friday • 20:15',
+      roomName: 'Weekend Shabu Feast',
+      menuName: 'Kurobuta Shabu-Shabu Set',
+      restaurantName: 'Kuro Pot Shabu Dining',
+      location: 'Sukhumvit Soi 24',
+      participants: ['Alex', 'Maya', 'Ken'],
+      outcome: 'Won in Round 2 (75% OK)'
+    },
+    {
+      id: 'hist-3',
+      dateLabel: '2 weeks ago • 13:00',
+      roomName: 'Office Lunch Clash',
+      menuName: 'Stir-Fried Seafood Tom Yum',
+      restaurantName: 'Talay Table Seafood',
+      location: 'Sukhumvit Soi 39',
+      participants: ['Alex', 'Nina', 'Ken'],
+      outcome: 'Won via Final Vote'
+    }
+  ];
+
+  const HISTORICAL_BILLS = [
+    {
+      id: 'bill-hist-1',
+      dateLabel: 'Yesterday • 20:45',
+      restaurantName: 'Nori House Ramen',
+      groupName: 'Dinner Food Fight',
+      totalBill: 840,
+      yourShare: 280,
+      participantsCount: 3,
+      isPaid: true
+    },
+    {
+      id: 'bill-hist-2',
+      dateLabel: 'Last Friday • 21:30',
+      restaurantName: 'Kuro Pot Shabu Dining',
+      groupName: 'Weekend Shabu Feast',
+      totalBill: 1580,
+      yourShare: 395,
+      participantsCount: 4,
+      isPaid: true
+    },
+    {
+      id: 'bill-hist-3',
+      dateLabel: '2 weeks ago • 14:15',
+      restaurantName: 'Talay Table Seafood',
+      groupName: 'Office Lunch Clash',
+      totalBill: 920,
+      yourShare: 310,
+      participantsCount: 3,
+      isPaid: true
+    }
+  ];
+
+  /* ==========================================================================
+     6. Prototype Initial State Definition
      ========================================================================== */
   const STORAGE_KEY = 'foodfighter-prototype-v1';
 
@@ -669,11 +738,11 @@
       resetEmailSentTo: null
     },
     foodProfile: {
-      completed: false,
-      allergies: [],
-      restrictions: [],
-      details: '',
-      quickTags: []
+      completed: true,
+      allergies: ['peanuts', 'tree-nuts'],
+      restrictions: ['no-pork'],
+      details: 'Prefer spicy food and places with air conditioning.',
+      quickTags: ['Spicy', 'Peanut-Free']
     },
     room: {
       role: 'host', // 'host' | 'member'
@@ -758,7 +827,7 @@
   };
 
   /* ==========================================================================
-     6. Static Option Catalogues
+     7. Static Option Catalogues
      ========================================================================== */
   const ALLERGY_OPTIONS = [
     { id: 'peanuts', label: 'Peanuts', thai: 'ถั่วลิสง' },
@@ -827,6 +896,8 @@
   window.FFPrototype.CANDIDATE_MENUS = CANDIDATE_MENUS;
   window.FFPrototype.RESTAURANT_CATALOGUE = RESTAURANT_CATALOGUE;
   window.FFPrototype.DEFAULT_RECEIPT_ITEMS = DEFAULT_RECEIPT_ITEMS;
+  window.FFPrototype.HISTORICAL_FOODFIGHTS = HISTORICAL_FOODFIGHTS;
+  window.FFPrototype.HISTORICAL_BILLS = HISTORICAL_BILLS;
   window.FFPrototype.STORAGE_KEY = STORAGE_KEY;
   window.FFPrototype.INITIAL_STATE = INITIAL_STATE;
   window.FFPrototype.ALLERGY_OPTIONS = ALLERGY_OPTIONS;
