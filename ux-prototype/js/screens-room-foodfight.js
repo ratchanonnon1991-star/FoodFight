@@ -585,7 +585,7 @@
           <a href="#/room/lobby-host" class="top-bar-action" aria-label="${t('common.back')}">
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="15 18 9 12 15 6"></polyline></svg>
           </a>
-          <h1 class="top-bar-title">${t('foodfight.pref.title')}</h1>
+          <h1 class="top-bar-title">FoodFight</h1>
           <div style="display:flex;align-items:center;gap:0.35rem;">
             ${P.renderLanguageSwitch ? P.renderLanguageSwitch() : ''}
           </div>
@@ -598,16 +598,23 @@
           </section>
 
           <!-- 1. Food Types -->
-          <section class="pref-group-box">
-            <h3 class="font-heading-3">${t('foodfight.pref.foodTypes')}</h3>
-            <div class="pref-chips-container">
+          <section class="pref-section">
+            <h3 class="pref-section-heading">${t('foodfight.pref.foodTypes')}</h3>
+            <div class="pref-chips-grid">
               ${P.PREF_FOOD_TYPES.map(typeStr => {
                 const parts = typeStr.split(' / ');
                 const label = isTH ? (parts[1] || parts[0]) : parts[0];
                 const isSelected = (pref.foodTypes || []).includes(typeStr);
                 return `
-                  <button type="button" class="btn-pref-chip ${isSelected ? 'selected' : ''}" data-category="foodTypes" data-val="${P.escapeHtml(typeStr)}">
-                    ${P.escapeHtml(label)}
+                  <button 
+                    type="button" 
+                    class="pref-chip-btn ${isSelected ? 'selected' : ''}" 
+                    data-category="foodTypes" 
+                    data-val="${P.escapeHtml(typeStr)}"
+                    aria-pressed="${isSelected}"
+                  >
+                    <span class="pref-chip-icon">${isSelected ? '✓' : '＋'}</span>
+                    <span>${P.escapeHtml(label)}</span>
                   </button>
                 `;
               }).join('')}
@@ -615,16 +622,23 @@
           </section>
 
           <!-- 2. Cuisines -->
-          <section class="pref-group-box">
-            <h3 class="font-heading-3">${t('foodfight.pref.cuisines')}</h3>
-            <div class="pref-chips-container">
+          <section class="pref-section">
+            <h3 class="pref-section-heading">${t('foodfight.pref.cuisines')}</h3>
+            <div class="pref-chips-grid">
               ${P.PREF_CUISINES.map(cStr => {
                 const parts = cStr.split(' / ');
                 const label = isTH ? (parts[1] || parts[0]) : parts[0];
                 const isSelected = (pref.cuisines || []).includes(cStr);
                 return `
-                  <button type="button" class="btn-pref-chip ${isSelected ? 'selected' : ''}" data-category="cuisines" data-val="${P.escapeHtml(cStr)}">
-                    ${P.escapeHtml(label)}
+                  <button 
+                    type="button" 
+                    class="pref-chip-btn ${isSelected ? 'selected' : ''}" 
+                    data-category="cuisines" 
+                    data-val="${P.escapeHtml(cStr)}"
+                    aria-pressed="${isSelected}"
+                  >
+                    <span class="pref-chip-icon">${isSelected ? '✓' : '＋'}</span>
+                    <span>${P.escapeHtml(label)}</span>
                   </button>
                 `;
               }).join('')}
@@ -632,46 +646,81 @@
           </section>
 
           <!-- 3. Key Ingredients -->
-          <section class="pref-group-box">
-            <h3 class="font-heading-3">${t('foodfight.pref.ingredients')}</h3>
-            <div class="pref-chips-container">
+          <section class="pref-section">
+            <h3 class="pref-section-heading">${t('foodfight.pref.ingredients')}</h3>
+            <div class="pref-chips-grid">
               ${P.PREF_INGREDIENTS.map(iStr => {
                 const parts = iStr.split(' / ');
                 const label = isTH ? (parts[1] || parts[0]) : parts[0];
                 const isSelected = (pref.ingredients || []).includes(iStr);
                 return `
-                  <button type="button" class="btn-pref-chip ${isSelected ? 'selected' : ''}" data-category="ingredients" data-val="${P.escapeHtml(iStr)}">
-                    ${P.escapeHtml(label)}
+                  <button 
+                    type="button" 
+                    class="pref-chip-btn ${isSelected ? 'selected' : ''}" 
+                    data-category="ingredients" 
+                    data-val="${P.escapeHtml(iStr)}"
+                    aria-pressed="${isSelected}"
+                  >
+                    <span class="pref-chip-icon">${isSelected ? '✓' : '＋'}</span>
+                    <span>${P.escapeHtml(label)}</span>
                   </button>
                 `;
               }).join('')}
             </div>
           </section>
 
-          <!-- 4. Price Levels -->
-          <section class="pref-group-box">
-            <h3 class="font-heading-3">${t('foodfight.pref.priceLevel')}</h3>
-            <div style="display:grid;grid-template-columns:repeat(3, 1fr);gap:0.5rem;margin-top:0.6rem;">
-              ${P.PREF_PRICE_LEVELS.map(p => `
-                <button type="button" class="pref-price-btn ${pref.priceLevel === p.symbol ? 'selected' : ''}" data-price="${p.symbol}">
-                  <div style="font-size:1.2rem;font-weight:800;">${p.symbol}</div>
-                  <div class="font-caption">${p.sub}</div>
-                </button>
-              `).join('')}
+          <!-- 4. Price Levels / Budget -->
+          <section class="pref-section">
+            <h3 class="pref-section-heading">${t('foodfight.pref.priceLevel')}</h3>
+            <div class="pref-budget-grid">
+              <button 
+                type="button" 
+                class="pref-budget-card ${pref.priceLevel === '฿' ? 'selected' : ''}" 
+                data-price="฿"
+                aria-pressed="${pref.priceLevel === '฿'}"
+              >
+                <div class="pref-budget-symbol">฿</div>
+                <div class="pref-budget-label">${t('foodfight.pref.budgetTier1')}</div>
+              </button>
+              <button 
+                type="button" 
+                class="pref-budget-card ${pref.priceLevel === '฿฿' ? 'selected' : ''}" 
+                data-price="฿฿"
+                aria-pressed="${pref.priceLevel === '฿฿'}"
+              >
+                <div class="pref-budget-symbol">฿฿</div>
+                <div class="pref-budget-label">${t('foodfight.pref.budgetTier2')}</div>
+              </button>
+              <button 
+                type="button" 
+                class="pref-budget-card ${pref.priceLevel === '฿฿฿' ? 'selected' : ''}" 
+                data-price="฿฿฿"
+                aria-pressed="${pref.priceLevel === '฿฿฿'}"
+              >
+                <div class="pref-budget-symbol">฿฿฿</div>
+                <div class="pref-budget-label">${t('foodfight.pref.budgetTier3')}</div>
+              </button>
             </div>
           </section>
 
           <!-- 5. Atmosphere / Styles -->
-          <section class="pref-group-box">
-            <h3 class="font-heading-3">${t('foodfight.pref.restaurantStyles')}</h3>
-            <div class="pref-chips-container">
+          <section class="pref-section">
+            <h3 class="pref-section-heading">${t('foodfight.pref.restaurantStyles')}</h3>
+            <div class="pref-chips-grid">
               ${P.PREF_STYLES.map(sStr => {
                 const parts = sStr.split(' / ');
                 const label = isTH ? (parts[1] || parts[0]) : parts[0];
                 const isSelected = (pref.restaurantStyles || []).includes(sStr);
                 return `
-                  <button type="button" class="btn-pref-chip ${isSelected ? 'selected' : ''}" data-category="restaurantStyles" data-val="${P.escapeHtml(sStr)}">
-                    ${P.escapeHtml(label)}
+                  <button 
+                    type="button" 
+                    class="pref-chip-btn ${isSelected ? 'selected' : ''}" 
+                    data-category="restaurantStyles" 
+                    data-val="${P.escapeHtml(sStr)}"
+                    aria-pressed="${isSelected}"
+                  >
+                    <span class="pref-chip-icon">${isSelected ? '✓' : '＋'}</span>
+                    <span>${P.escapeHtml(label)}</span>
                   </button>
                 `;
               }).join('')}
@@ -679,9 +728,14 @@
           </section>
 
           <!-- 6. Additional Notes -->
-          <section class="pref-group-box">
-            <h3 class="font-heading-3">${t('foodfight.pref.otherNotes')}</h3>
-            <textarea id="pref-notes-input" class="form-input" rows="2" placeholder="${t('foodProfile.details.placeholder')}" style="margin-top:0.5rem;resize:vertical;">${P.escapeHtml(pref.otherNotes || '')}</textarea>
+          <section class="pref-section">
+            <h3 class="pref-section-heading">${t('foodfight.pref.otherNotes')}</h3>
+            <textarea 
+              id="pref-notes-input" 
+              class="pref-notes-textarea" 
+              rows="2" 
+              placeholder="${t('foodfight.pref.notesPlaceholder')}"
+            >${P.escapeHtml(pref.otherNotes || '')}</textarea>
           </section>
 
           <!-- Bottom Action -->
@@ -696,8 +750,8 @@
   }
 
   function bindMealPreferencesEvents() {
-    const chips = document.querySelectorAll('.btn-pref-chip');
-    const priceBtns = document.querySelectorAll('.pref-price-btn');
+    const chips = document.querySelectorAll('.pref-chip-btn');
+    const budgetCards = document.querySelectorAll('.pref-budget-card');
     const submitBtn = document.getElementById('btn-submit-preferences');
     const notesInput = document.getElementById('pref-notes-input');
     const state = P.getState();
@@ -707,21 +761,32 @@
         const cat = chip.getAttribute('data-category');
         const val = chip.getAttribute('data-val');
         let cur = state.mealPreferences[cat] || [];
-        if (cur.includes(val)) {
+        const isSelected = cur.includes(val);
+        if (isSelected) {
           state.mealPreferences[cat] = cur.filter(x => x !== val);
           chip.classList.remove('selected');
+          chip.setAttribute('aria-pressed', 'false');
+          const icon = chip.querySelector('.pref-chip-icon');
+          if (icon) icon.textContent = '＋';
         } else {
           state.mealPreferences[cat] = [...cur, val];
           chip.classList.add('selected');
+          chip.setAttribute('aria-pressed', 'true');
+          const icon = chip.querySelector('.pref-chip-icon');
+          if (icon) icon.textContent = '✓';
         }
         P.saveState();
       };
     });
 
-    priceBtns.forEach(btn => {
+    budgetCards.forEach(btn => {
       btn.onclick = () => {
-        priceBtns.forEach(b => b.classList.remove('selected'));
+        budgetCards.forEach(b => {
+          b.classList.remove('selected');
+          b.setAttribute('aria-pressed', 'false');
+        });
         btn.classList.add('selected');
+        btn.setAttribute('aria-pressed', 'true');
         state.mealPreferences.priceLevel = btn.getAttribute('data-price');
         P.saveState();
       };

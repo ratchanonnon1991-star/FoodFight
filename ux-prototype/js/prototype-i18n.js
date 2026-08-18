@@ -184,13 +184,17 @@
 
       // FoodFight — Meal Preferences
       "foodfight.pref.title": "ความต้องการมื้อนี้",
-      "foodfight.pref.subtitle": "เลือกสไตล์อาหารที่คุณอยากกินในมื้อนี้ เพื่อให้ AI ประมวลผลร่วมกับกลุ่ม",
-      "foodfight.pref.foodTypes": "1. ประเภทอาหารที่อยากทาน",
+      "foodfight.pref.subtitle": "เลือกสิ่งที่อยากกินในมื้อนี้ FoodFighter จะนำไปช่วยหาตัวเลือกที่เหมาะกับกลุ่ม",
+      "foodfight.pref.foodTypes": "1. ประเภทอาหาร",
       "foodfight.pref.cuisines": "2. สัญชาติอาหาร",
-      "foodfight.pref.ingredients": "3. วัตถุดิบที่ต้องการ",
-      "foodfight.pref.priceLevel": "4. ระดับราคาต่อคน",
-      "foodfight.pref.restaurantStyles": "5. บรรยากาศร้าน",
+      "foodfight.pref.ingredients": "3. วัตถุดิบที่อยากทาน",
+      "foodfight.pref.priceLevel": "4. งบประมาณต่อคน",
+      "foodfight.pref.restaurantStyles": "5. สไตล์ร้าน & บรรยากาศ",
       "foodfight.pref.otherNotes": "6. โน้ตเพิ่มเติม",
+      "foodfight.pref.notesPlaceholder": "เช่น อยากได้ร้านมีแอร์และจอดรถสะดวก, ขอร้านนั่งคุยสบาย...",
+      "foodfight.pref.budgetTier1": "ต่ำกว่า ฿150",
+      "foodfight.pref.budgetTier2": "฿150–400",
+      "foodfight.pref.budgetTier3": "มากกว่า ฿400",
       "foodfight.pref.submit": "ส่งความต้องการ →",
 
       // FoodFight — Waiting & Generating
@@ -452,13 +456,17 @@
 
       // FoodFight — Meal Preferences
       "foodfight.pref.title": "Meal Preferences",
-      "foodfight.pref.subtitle": "Pick what you're craving so AI can synthesize the best options for the group",
-      "foodfight.pref.foodTypes": "1. Food Types",
-      "foodfight.pref.cuisines": "2. Cuisines",
+      "foodfight.pref.subtitle": "Choose what you're in the mood for. FoodFighter will use everyone's preferences to find the best match.",
+      "foodfight.pref.foodTypes": "1. Food Type",
+      "foodfight.pref.cuisines": "2. Cuisine",
       "foodfight.pref.ingredients": "3. Key Ingredients",
       "foodfight.pref.priceLevel": "4. Budget Per Person",
       "foodfight.pref.restaurantStyles": "5. Dining Atmosphere",
       "foodfight.pref.otherNotes": "6. Additional Notes",
+      "foodfight.pref.notesPlaceholder": "e.g. Prefer places with air conditioning, easy parking, quiet vibe...",
+      "foodfight.pref.budgetTier1": "< 150 THB",
+      "foodfight.pref.budgetTier2": "150–400 THB",
+      "foodfight.pref.budgetTier3": "400+ THB",
       "foodfight.pref.submit": "Submit Preferences →",
 
       // FoodFight — Waiting & Generating
