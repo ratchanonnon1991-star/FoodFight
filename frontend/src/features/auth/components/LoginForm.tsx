@@ -64,10 +64,6 @@ export function LoginForm() {
     }
   };
 
-  const handleForgotPassword = () => {
-    setGeneralError("Password reset is not yet available in this version.");
-  };
-
   const isAnyPending = isSubmitting || isSocialPending;
 
   return (
@@ -129,13 +125,12 @@ export function LoginForm() {
             <FormLabel htmlFor="password" required>
               Password
             </FormLabel>
-            <button
-              type="button"
-              onClick={handleForgotPassword}
+            <Link
+              href={ROUTES.AUTH.FORGOT_PASSWORD}
               className="text-xs font-medium text-brand-primary hover:text-brand-primary-hover underline underline-offset-2 transition-colors focus-visible:outline-2 focus-visible:outline-brand-secondary rounded-sm"
             >
               Forgot password?
-            </button>
+            </Link>
           </div>
           <PasswordInput
             id="password"

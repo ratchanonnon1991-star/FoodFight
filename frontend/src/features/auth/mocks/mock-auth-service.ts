@@ -4,10 +4,12 @@ import type {
   LoginInput,
   EmailVerificationInput,
   ChangeEmailInput,
+  ForgotPasswordInput,
+  ResetPasswordInput,
   EmailVerificationChallenge,
   AuthResult,
 } from "../types/auth-types";
-import { EMAIL_VERIFICATION_POLICY } from "../constants/auth-policy";
+import { EMAIL_VERIFICATION_POLICY, AUTH_PASSWORD_POLICY } from "../constants/auth-policy";
 import {
   MOCK_AUTH_DELAY_MS,
   MOCK_OTP_LIFETIME_MS,
@@ -152,6 +154,43 @@ export const mockAuthService: AuthService & {
       ok: true,
       data: createMockChallenge(input.newEmail),
     };
+  },
+
+  async forgotPassword(input: ForgotPasswordInput): Promise<AuthResult> {
+    await delay();
+    if (!input.email || !input.email.includes("@")) {
+      return {
+        ok: false,
+        error: {
+          kind: "validation",
+          message: "Please provide a valid email address.",
+        },
+      };
+    }
+    return { ok: true };
+  },
+
+  async resetPassword(input: ResetPasswordInput): Promise<AuthResult> {
+    await delay();
+    if (input.newPassword.length < AUTH_PASSWORD_POLICY.minLength) {
+      return {
+        ok: false,
+        error: {
+          kind: "validation",
+          message: `Password must be at least ${AUTH_PASSWORD_POLICY.minLength} characters.`,
+        },
+      };
+    }
+    if (input.newPassword !== input.confirmPassword) {
+      return {
+        ok: false,
+        error: {
+          kind: "validation",
+          message: "Passwords do not match.",
+        },
+      };
+    }
+    return { ok: true };
   },
 
   async beginGoogleAuth(): Promise<AuthResult> {

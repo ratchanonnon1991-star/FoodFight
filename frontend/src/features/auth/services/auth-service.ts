@@ -3,6 +3,8 @@ import type {
   LoginInput,
   EmailVerificationInput,
   ChangeEmailInput,
+  ForgotPasswordInput,
+  ResetPasswordInput,
   EmailVerificationChallenge,
   AuthResult,
 } from "../types/auth-types";
@@ -24,6 +26,8 @@ export interface AuthService {
   verifyEmail(input: EmailVerificationInput): Promise<AuthResult>;
   resendVerificationCode(email: string): Promise<AuthResult<EmailVerificationChallenge>>;
   changeVerificationEmail(input: ChangeEmailInput): Promise<AuthResult<EmailVerificationChallenge>>;
+  forgotPassword(input: ForgotPasswordInput): Promise<AuthResult>;
+  resetPassword(input: ResetPasswordInput): Promise<AuthResult>;
   beginGoogleAuth(): Promise<AuthResult>;
   beginLineAuth(): Promise<AuthResult>;
 }

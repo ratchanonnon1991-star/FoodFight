@@ -12,6 +12,8 @@ export const ROUTES = {
     CHANGE_EMAIL: "/change-email",
     VERIFICATION_SUCCESS: "/verification-success",
     LOGIN: "/login",
+    FORGOT_PASSWORD: "/forgot-password",
+    RESET_PASSWORD: "/reset-password",
   },
   FOOD_PROFILE: {
     ALLERGIES: "/food-profile/allergies",

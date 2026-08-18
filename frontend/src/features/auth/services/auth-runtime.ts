@@ -80,6 +80,8 @@ export const authService: AuthService = {
   verifyEmail: (input) => getAuthService().verifyEmail(input),
   resendVerificationCode: (email) => getAuthService().resendVerificationCode(email),
   changeVerificationEmail: (input) => getAuthService().changeVerificationEmail(input),
+  forgotPassword: (input) => getAuthService().forgotPassword(input),
+  resetPassword: (input) => getAuthService().resetPassword(input),
   beginGoogleAuth: () => getAuthService().beginGoogleAuth(),
   beginLineAuth: () => getAuthService().beginLineAuth(),
 };
