@@ -198,7 +198,11 @@ export function RegisterForm() {
       </div>
 
       {/* Social Auth Buttons */}
-      <SocialAuthButtons disabled={isSubmitting} />
+      <SocialAuthButtons
+        disabled={isSubmitting}
+        onSuccess={() => router.push(ROUTES.FOOD_PROFILE.ALLERGIES)}
+        onError={(msg) => setGeneralError(msg)}
+      />
 
       {/* Login Link */}
       <div className="text-center pt-2 text-xs text-text-secondary">
