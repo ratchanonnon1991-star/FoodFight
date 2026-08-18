@@ -1,36 +1,54 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# FoodFighter Frontend
+
+AI-powered group meal decision platform frontend built with Next.js (App Router), React, TypeScript, and Tailwind CSS.
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
+- Node.js (v20+)
+- pnpm
 
+### Installation & Development
 ```bash
-npm run dev
-# or
-yarn dev
-# or
+# Install dependencies
+pnpm install
+
+# Start local dev server
 pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) to view the application.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- **Developer Design System Showcase**: [http://localhost:3000/design-system](http://localhost:3000/design-system)
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### Verification Commands
+```bash
+# Typecheck
+pnpm exec tsc --noEmit
 
-## Learn More
+# Lint
+pnpm lint
 
-To learn more about Next.js, take a look at the following resources:
+# Production build
+pnpm build
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Documentation & Contribution
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+All AI agents and developers must start with:
 
-## Deploy on Vercel
+👉 **[`AGENTS.md`](./AGENTS.md)**
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+`AGENTS.md` routes to task-specific modular documentation under `docs/`:
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- [`docs/FRONTEND_ARCHITECTURE.md`](./docs/FRONTEND_ARCHITECTURE.md) — Code structure, routes, and layer boundaries
+- [`docs/FRONTEND_COMPONENTS.md`](./docs/FRONTEND_COMPONENTS.md) — Component responsibilities, primitives, and extraction rules
+- [`docs/FRONTEND_LOGIC.md`](./docs/FRONTEND_LOGIC.md) — Forms, validation schemas, state, and API services
+- [`docs/FRONTEND_UI_UX.md`](./docs/FRONTEND_UI_UX.md) — Mobile-first standard, design tokens, typography, and a11y
+- [`docs/FRONTEND_TESTING.md`](./docs/FRONTEND_TESTING.md) — Testing strategy, unit/integration/E2E, and mocking
+- [`docs/FRONTEND_QUALITY.md`](./docs/FRONTEND_QUALITY.md) — Clean code checklist, line-count signals, and preflight rules
+- [`docs/Srs-Footfight.md`](./docs/Srs-Footfight.md) — Product requirements and business rules
+- [`docs/DESIGN_SYSTEM.md`](./docs/DESIGN_SYSTEM.md) — Approved palette tokens, component catalog, and motion specs
+- [`docs/AUTH.md`](./docs/AUTH.md) — Authentication flow specification and backend gaps
+
+> **Rule**: Read only the documents relevant to your active task.
