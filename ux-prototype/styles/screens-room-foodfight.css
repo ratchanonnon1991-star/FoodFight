@@ -1,0 +1,440 @@
+/**
+ * FoodFighter UX Prototype — Room & FoodFight Screens Styles (V2)
+ * 
+ * Styles for:
+ *   - Room Identity Cards & Alphanumeric Code Badges
+ *   - Readiness Summary Banner & Threshold Highlights
+ *   - Member List, Avatar Badges & Status Indicators
+ *   - QR Matrix Display & Simulated Camera Scanner
+ *   - Meal Preferences Category Blocks & Price Tier Grid
+ *   - Waiting Hero Card & Radar Pulse AI Synthesis Animation
+ *   - Future / Boundary Shell Containers
+ */
+
+/* ==========================================================================
+   1. Room Identity & Code Badge
+   ========================================================================== */
+.room-identity-card {
+  background: #FFFFFF;
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: 1.15rem;
+  margin-bottom: 1.25rem;
+  box-shadow: var(--shadow-sm);
+}
+
+.room-code-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  background: var(--color-surface-subtle);
+  border: 1px solid var(--color-brand-secondary);
+  border-radius: var(--radius-md);
+  padding: 0.4rem 0.65rem;
+  font-family: monospace;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--color-brand-primary);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.room-code-badge:hover {
+  background: rgba(255, 198, 217, 0.25);
+  border-color: var(--color-brand-primary);
+}
+
+/* ==========================================================================
+   2. Readiness Summary Banner
+   ========================================================================== */
+.readiness-banner {
+  background: var(--color-surface-subtle);
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: 1rem;
+  margin-bottom: 1.25rem;
+  transition: all var(--transition-base);
+}
+
+.readiness-banner.ready-all {
+  background: #EDF9F0;
+  border-color: #A6DEB4;
+}
+
+.readiness-banner.threshold-met {
+  background: #FFF8E6;
+  border-color: #F6D68A;
+}
+
+/* ==========================================================================
+   3. Member List & Avatars
+   ========================================================================== */
+.member-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  margin-bottom: 1.5rem;
+}
+
+.member-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.85rem 1rem;
+  background: #FFFFFF;
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  transition: border-color var(--transition-fast);
+}
+
+.member-card.is-you {
+  border-color: var(--color-brand-secondary);
+  background: #FCFAFC;
+}
+
+.member-info {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.avatar-badge {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 0.85rem;
+  color: var(--color-brand-primary);
+  flex-shrink: 0;
+  border: 1.5px solid rgba(0, 0, 0, 0.08);
+}
+
+.avatar-petal { background-color: var(--color-accent-petal); }
+.avatar-apricot { background-color: var(--color-accent-apricot); }
+.avatar-custard { background-color: var(--color-accent-custard); }
+.avatar-mauve { background-color: #D4C3CD; }
+
+.member-badge-ready {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.3rem 0.65rem;
+  border-radius: var(--radius-full);
+  background: #EDF9F0;
+  color: #165E2A;
+  font-size: 0.75rem;
+  font-weight: 700;
+  border: 1px solid #A6DEB4;
+}
+
+.member-badge-waiting {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.3rem 0.65rem;
+  border-radius: var(--radius-full);
+  background: #FFF8E6;
+  color: #784C00;
+  font-size: 0.75rem;
+  font-weight: 600;
+  border: 1px solid #F6D68A;
+}
+
+.member-badge-observer {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.3rem 0.65rem;
+  border-radius: var(--radius-full);
+  background: var(--color-surface-subtle);
+  color: var(--color-text-muted);
+  font-size: 0.75rem;
+  font-weight: 600;
+  border: 1px solid var(--color-border);
+}
+
+/* ==========================================================================
+   4. QR Display & Camera Viewfinder Mock
+   ========================================================================== */
+.qr-mock-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 1.25rem;
+  background: #FFFFFF;
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  margin-bottom: 1.25rem;
+}
+
+.qr-matrix-box {
+  width: 170px;
+  height: 170px;
+  background: #FFFFFF;
+  border: 2px solid var(--color-brand-primary);
+  border-radius: var(--radius-md);
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  grid-template-rows: repeat(5, 1fr);
+  gap: 4px;
+  padding: 10px;
+}
+
+.qr-corner-marker {
+  background: var(--color-brand-primary);
+  border-radius: 3px;
+}
+
+.qr-dot {
+  background: var(--color-brand-primary);
+  border-radius: 2px;
+}
+
+.qr-dot-muted {
+  background: var(--color-surface-subtle);
+  border-radius: 2px;
+}
+
+.camera-scanner-frame {
+  position: relative;
+  width: 100%;
+  max-width: 280px;
+  height: 280px;
+  margin: 1.5rem auto;
+  border-radius: var(--radius-xl);
+  background: #1A1A1A;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  box-shadow: var(--shadow-lg);
+}
+
+.scanner-reticle {
+  width: 190px;
+  height: 190px;
+  border: 2px dashed #FFC6D9;
+  border-radius: var(--radius-lg);
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.scanner-laser {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #FFC6D9, transparent);
+  box-shadow: 0 0 8px #FFC6D9;
+  animation: laserScan 2s ease-in-out infinite alternate;
+}
+
+@keyframes laserScan {
+  0% { top: 0; }
+  100% { top: 100%; }
+}
+
+/* ==========================================================================
+   5. Meal Preferences Categories & Price Grid
+   ========================================================================== */
+.pref-category-block {
+  background: #FFFFFF;
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: 1.25rem;
+  margin-bottom: 1.25rem;
+  box-shadow: var(--shadow-sm);
+}
+
+.pref-category-title {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--color-brand-primary);
+  margin-bottom: 0.2rem;
+}
+
+.pref-category-sub {
+  font-size: 0.75rem;
+  color: var(--color-text-secondary);
+  margin-bottom: 0.75rem;
+}
+
+.price-level-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.65rem;
+}
+
+.price-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 0.85rem 0.5rem;
+  background: #FFFFFF;
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  text-align: center;
+}
+
+.price-card:hover {
+  border-color: var(--color-brand-secondary);
+  background: var(--color-surface-subtle);
+}
+
+.price-card.selected {
+  border-color: var(--color-brand-primary);
+  background: rgba(255, 198, 217, 0.25);
+  box-shadow: inset 0 0 0 1px var(--color-brand-primary);
+}
+
+.price-symbol {
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: var(--color-brand-primary);
+  line-height: 1.1;
+}
+
+.price-label {
+  font-size: 0.75rem;
+  color: var(--color-text-secondary);
+  margin-top: 0.25rem;
+}
+
+/* ==========================================================================
+   6. Waiting Hero Card & Radar Pulse AI Animation
+   ========================================================================== */
+.waiting-hero-card {
+  text-align: center;
+  background: linear-gradient(180deg, #FFFFFF 0%, var(--color-surface-subtle) 100%);
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  padding: 1.75rem 1.25rem;
+  margin-bottom: 1.5rem;
+  box-shadow: var(--shadow-sm);
+}
+
+.generating-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  min-height: 60vh;
+  padding: 1.5rem 0;
+  gap: 1.5rem;
+}
+
+.radar-pulse-box {
+  position: relative;
+  width: 100px;
+  height: 100px;
+  border-radius: var(--radius-full);
+  background: var(--color-brand-primary);
+  color: #FFFFFF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--shadow-lg);
+}
+
+.radar-pulse-ring,
+.radar-pulse-ring-2 {
+  position: absolute;
+  inset: -12px;
+  border-radius: var(--radius-full);
+  border: 2px solid var(--color-accent-petal);
+  animation: pulseOut 2s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+  pointer-events: none;
+}
+
+.radar-pulse-ring-2 {
+  animation-delay: 0.6s;
+  border-color: var(--color-accent-apricot);
+}
+
+@keyframes pulseOut {
+  0% { transform: scale(0.85); opacity: 1; }
+  100% { transform: scale(1.6); opacity: 0; }
+}
+
+.synthesis-tag-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  width: 100%;
+  max-width: 320px;
+  margin-top: 0.5rem;
+}
+
+.synthesis-tag-item {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  background: #FFFFFF;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 0.65rem 0.85rem;
+  font-size: 0.775rem;
+  color: var(--color-text-secondary);
+  text-align: left;
+  box-shadow: var(--shadow-sm);
+}
+
+/* ==========================================================================
+   7. Future Screen Shell Banner
+   ========================================================================== */
+.future-shell-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  min-height: 60vh;
+  padding: 1.5rem 0;
+  gap: 1.25rem;
+}
+
+.future-shell-card {
+  width: 100%;
+  background: #FFFFFF;
+  border: 2px dashed var(--color-brand-secondary);
+  border-radius: var(--radius-xl);
+  padding: 2rem 1.25rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.85rem;
+}
+
+.future-shell-icon {
+  width: 60px;
+  height: 60px;
+  border-radius: var(--radius-full);
+  background: var(--color-surface-subtle);
+  color: var(--color-brand-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.future-shell-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.35rem 0.75rem;
+  border-radius: var(--radius-full);
+  background: var(--color-surface-subtle);
+  color: var(--color-brand-secondary);
+  font-size: 0.75rem;
+  font-weight: 700;
+  border: 1px solid var(--color-border);
+}
