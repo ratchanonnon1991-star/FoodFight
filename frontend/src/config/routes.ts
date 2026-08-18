@@ -15,8 +15,3 @@ export const ROUTES = {
   },
   DESIGN_SYSTEM: "/design-system",
 } as const;
-
-export type AppRoute =
-  | typeof ROUTES.HOME
-  | (typeof ROUTES.AUTH)[keyof typeof ROUTES.AUTH]
-  | typeof ROUTES.DESIGN_SYSTEM;
