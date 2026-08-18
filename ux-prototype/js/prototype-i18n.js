@@ -72,8 +72,14 @@
       "auth.register.submit": "สร้างบัญชี",
       "auth.register.hasAccount": "มีบัญชีอยู่แล้ว?",
       "auth.register.login": "เข้าสู่ระบบ",
-      "auth.register.errorTerms": "กรุณายอมรับเงื่อนไขการใช้งาน",
+      "auth.register.errorName": "กรุณากรอกชื่อที่ใช้แสดง",
+      "auth.register.errorEmail": "กรุณากรอกอีเมล",
+      "auth.register.errorEmailInvalid": "กรุณากรอกอีเมลให้ถูกต้อง (เช่น user@example.com)",
+      "auth.register.errorPassword": "กรุณากรอกรหัสผ่าน",
+      "auth.register.errorPasswordLength": "รหัสผ่านต้องมีความยาวอย่างน้อย 8 ตัวอักษร",
+      "auth.register.errorConfirmPassword": "กรุณายืนยันรหัสผ่าน",
       "auth.register.errorPasswordMismatch": "รหัสผ่านไม่ตรงกัน",
+      "auth.register.errorTerms": "กรุณายอมรับเงื่อนไขการใช้งาน",
 
       // Auth — OTP / Verify Email
       "auth.otp.title": "ยืนยันอีเมล",
@@ -334,8 +340,14 @@
       "auth.register.submit": "Create Account",
       "auth.register.hasAccount": "Already have an account?",
       "auth.register.login": "Log In",
-      "auth.register.errorTerms": "Please accept the Terms of Service to proceed.",
+      "auth.register.errorName": "Please enter your display name.",
+      "auth.register.errorEmail": "Please enter your email address.",
+      "auth.register.errorEmailInvalid": "Please enter a valid email address (e.g. user@example.com).",
+      "auth.register.errorPassword": "Please enter a password.",
+      "auth.register.errorPasswordLength": "Password must be at least 8 characters.",
+      "auth.register.errorConfirmPassword": "Please confirm your password.",
       "auth.register.errorPasswordMismatch": "Passwords do not match.",
+      "auth.register.errorTerms": "Please accept the Terms of Service to proceed.",
 
       // Auth — OTP / Verify Email
       "auth.otp.title": "Verify Your Email",

@@ -207,39 +207,83 @@
             <div class="form-group">
               <label for="reg-name" class="form-label form-label-required">${t('auth.register.name')}</label>
               <div class="input-wrapper">
-                <input type="text" id="reg-name" class="form-input" placeholder="Alex Johnson" required />
+                <input 
+                  type="text" 
+                  id="reg-name" 
+                  name="name" 
+                  class="form-input" 
+                  placeholder="Alex Johnson" 
+                  autocomplete="name" 
+                  required 
+                />
               </div>
             </div>
 
             <div class="form-group">
               <label for="reg-email" class="form-label form-label-required">${t('auth.register.email')}</label>
               <div class="input-wrapper">
-                <input type="email" id="reg-email" class="form-input" placeholder="user@example.com" required />
+                <input 
+                  type="email" 
+                  id="reg-email" 
+                  name="email" 
+                  class="form-input" 
+                  placeholder="user@example.com" 
+                  autocomplete="email" 
+                  required 
+                />
               </div>
             </div>
 
             <div class="form-group">
               <label for="reg-password" class="form-label form-label-required">${t('auth.register.password')}</label>
               <div class="input-wrapper">
-                <input type="password" id="reg-password" class="form-input" placeholder="••••••••" required />
+                <input 
+                  type="password" 
+                  id="reg-password" 
+                  name="password" 
+                  class="form-input form-input-password" 
+                  placeholder="Password123" 
+                  autocomplete="new-password" 
+                  required 
+                />
+                <button type="button" id="btn-toggle-reg-pwd" class="btn-password-toggle" aria-label="Toggle password visibility">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                    <circle cx="12" cy="12" r="3"></circle>
+                  </svg>
+                </button>
               </div>
             </div>
 
             <div class="form-group">
               <label for="reg-confirm-password" class="form-label form-label-required">${t('auth.register.confirmPassword')}</label>
               <div class="input-wrapper">
-                <input type="password" id="reg-confirm-password" class="form-input" placeholder="••••••••" required />
+                <input 
+                  type="password" 
+                  id="reg-confirm-password" 
+                  name="confirmPassword" 
+                  class="form-input form-input-password" 
+                  placeholder="Password123" 
+                  autocomplete="new-password" 
+                  required 
+                />
+                <button type="button" id="btn-toggle-reg-confirm-pwd" class="btn-password-toggle" aria-label="Toggle confirm password visibility">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                    <circle cx="12" cy="12" r="3"></circle>
+                  </svg>
+                </button>
               </div>
             </div>
 
             <div class="form-group">
               <label style="display:flex;align-items:flex-start;gap:0.5rem;font-size:0.775rem;cursor:pointer;">
-                <input type="checkbox" id="reg-terms" style="margin-top:0.15rem;" checked />
+                <input type="checkbox" id="reg-terms" name="terms" style="margin-top:0.15rem;" checked />
                 <span class="text-secondary">${t('auth.register.terms')}</span>
               </label>
             </div>
 
-            <button type="submit" class="btn btn-primary btn-lg" style="margin-top:0.5rem;">
+            <button type="submit" id="btn-register-submit" class="btn btn-primary btn-lg" style="margin-top:0.5rem;">
               ${t('auth.register.submit')} →
             </button>
           </form>
@@ -258,41 +302,94 @@
   function bindRegisterEvents() {
     const form = document.getElementById('register-form');
     const alertArea = document.getElementById('register-alert-area');
+    const pwdInput = document.getElementById('reg-password');
+    const confirmPwdInput = document.getElementById('reg-confirm-password');
+    const togglePwdBtn = document.getElementById('btn-toggle-reg-pwd');
+    const toggleConfirmPwdBtn = document.getElementById('btn-toggle-reg-confirm-pwd');
+
+    if (togglePwdBtn && pwdInput) {
+      togglePwdBtn.onclick = () => {
+        const isPwd = pwdInput.type === 'password';
+        pwdInput.type = isPwd ? 'text' : 'password';
+      };
+    }
+
+    if (toggleConfirmPwdBtn && confirmPwdInput) {
+      toggleConfirmPwdBtn.onclick = () => {
+        const isPwd = confirmPwdInput.type === 'password';
+        confirmPwdInput.type = isPwd ? 'text' : 'password';
+      };
+    }
 
     if (form) {
       form.onsubmit = (e) => {
         e.preventDefault();
-        const name = document.getElementById('reg-name').value.trim();
-        const email = document.getElementById('reg-email').value.trim();
-        const pwd = document.getElementById('reg-password').value;
-        const confirmPwd = document.getElementById('reg-confirm-password').value;
-        const terms = document.getElementById('reg-terms').checked;
+        const name = (document.getElementById('reg-name')?.value || '').trim();
+        const email = (document.getElementById('reg-email')?.value || '').trim();
+        const pwd = document.getElementById('reg-password')?.value || '';
+        const confirmPwd = document.getElementById('reg-confirm-password')?.value || '';
+        const terms = !!document.getElementById('reg-terms')?.checked;
 
-        if (!name || !email || !pwd) {
+        const showError = (msg) => {
           if (alertArea) {
-            alertArea.innerHTML = `<div class="card" style="background:#FFF0F0;color:#8E1F1F;padding:0.75rem;margin-bottom:1rem;font-size:0.85rem;">⚠️ ${P.t('auth.login.errorRequired')}</div>`;
+            alertArea.innerHTML = `
+              <div class="card" style="background:#FFF0F0;border:1px solid #F6B8B8;color:#8E1F1F;padding:0.75rem 1rem;margin-bottom:1rem;font-size:0.85rem;">
+                ⚠️ ${msg}
+              </div>
+            `;
           }
+        };
+
+        if (!name) {
+          showError(P.t('auth.register.errorName'));
+          return;
+        }
+
+        if (!email) {
+          showError(P.t('auth.register.errorEmail'));
+          return;
+        }
+
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+          showError(P.t('auth.register.errorEmailInvalid'));
+          return;
+        }
+
+        if (!pwd) {
+          showError(P.t('auth.register.errorPassword'));
+          return;
+        }
+
+        if (pwd.length < 8) {
+          showError(P.t('auth.register.errorPasswordLength'));
+          return;
+        }
+
+        if (!confirmPwd) {
+          showError(P.t('auth.register.errorConfirmPassword'));
           return;
         }
 
         if (pwd !== confirmPwd) {
-          if (alertArea) {
-            alertArea.innerHTML = `<div class="card" style="background:#FFF0F0;color:#8E1F1F;padding:0.75rem;margin-bottom:1rem;font-size:0.85rem;">⚠️ ${P.t('auth.register.errorPasswordMismatch')}</div>`;
-          }
+          showError(P.t('auth.register.errorPasswordMismatch'));
           return;
         }
 
         if (!terms) {
-          if (alertArea) {
-            alertArea.innerHTML = `<div class="card" style="background:#FFF0F0;color:#8E1F1F;padding:0.75rem;margin-bottom:1rem;font-size:0.85rem;">⚠️ ${P.t('auth.register.errorTerms')}</div>`;
-          }
+          showError(P.t('auth.register.errorTerms'));
           return;
         }
+
+        // Clear any previous error
+        if (alertArea) alertArea.innerHTML = '';
 
         const state = P.getState();
         state.auth.pendingVerificationEmail = email;
         state.auth.user.name = name;
         state.auth.user.email = email;
+        state.auth.user.initials = name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2) || 'AJ';
+        state.auth.user.avatarText = state.auth.user.initials;
         P.saveState();
         P.navigateTo('#/verify-email');
       };
