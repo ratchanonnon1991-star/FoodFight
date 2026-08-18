@@ -12,15 +12,23 @@ Test **behavior and risk**, not implementation details.
 
 ---
 
-## 2. Planned Tool Stack
+## 2. Active Tool Stack
 
-| Test Level | Canonical Tool | Role |
-|---|---|---|
-| **Unit & Component** | `Vitest` + `React Testing Library` + `@testing-library/user-event` | Fast in-memory unit tests and component behavior verification |
-| **End-to-End (E2E)** | `Playwright` | Real browser integration across full user journeys |
-| **API Mocking (Optional)** | `MSW` (Mock Service Worker) | Request interception for integration testing when backend is unavailable |
+| Test Level | Canonical Tool | Status | Role |
+|---|---|---|---|
+| **Unit & Component** | `Vitest` + `React Testing Library` + `@testing-library/user-event` | **Active / Installed** | Fast in-memory unit tests and component behavior verification |
+| **End-to-End (E2E)** | `Playwright` (Chromium) | **Active / Installed** | Real browser integration across core routes and multi-page flows |
+| **API Mocking (Optional)** | `MSW` (Mock Service Worker) | *Optional / Not Installed* | Request interception for integration testing when backend is unavailable |
+| **Visual Regression** | Playwright Screenshots | *Future / Not Yet Baselined* | Visual layout comparison across responsive viewports |
 
-> **Note**: Do **not** simultaneously configure or mix `Jest` with `Vitest`, or `Cypress` with `Playwright`. Vitest and Playwright are the single planned standard.
+### Test Commands
+- `pnpm test`: Run all unit and component tests once via Vitest.
+- `pnpm test:watch`: Run unit and component tests in watch mode.
+- `pnpm test:e2e:smoke`: Run core Playwright smoke test suite.
+- `pnpm test:e2e`: Run full Playwright E2E suite.
+- `pnpm test:e2e:ui`: Open interactive Playwright UI.
+
+> **Note**: Do **not** simultaneously configure or mix `Jest` with `Vitest`, or `Cypress` with `Playwright`. Vitest and Playwright are the single standard.
 
 ---
 
@@ -39,9 +47,9 @@ Unit tests verify deterministic, isolated logic with no UI rendering or browser 
 Prefer colocated unit test files next to the source:
 
 ```text
-src/features/auth/
-├─ auth.schema.ts
-└─ auth.schema.test.ts
+src/features/auth/schemas/
+├─ login-schema.ts
+└─ login-schema.test.ts
 
 src/lib/utils/
 ├─ format-timer.ts
