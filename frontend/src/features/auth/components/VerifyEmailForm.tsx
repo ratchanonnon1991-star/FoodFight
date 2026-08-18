@@ -8,7 +8,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { ArrowLeft } from "lucide-react";
 import { ROUTES } from "@/config/routes";
 import { authService } from "@/features/auth/services/auth-runtime";
-import { useAuthFlow } from "@/features/auth/context";
+import { useAuthFlow } from "@/features/auth/context/auth-flow-context";
 import { useCountdown } from "@/features/auth/hooks/use-countdown";
 import { verifyEmailSchema, type VerifyEmailFormValues } from "@/features/auth/schemas/verify-email-schema";
 import { Button, buttonVariants } from "@/components/ui/Button";
@@ -19,7 +19,7 @@ import { cn } from "@/lib/utils/cn";
 import { VerificationCodeInput } from "./VerificationCodeInput";
 import { ResendCodeControl } from "./ResendCodeControl";
 import { VerificationSecurityNotice } from "./VerificationSecurityNotice";
-import { VerificationSessionFallback } from "./VerificationSessionFallback";
+import { AuthSessionFallback } from "./AuthSessionFallback";
 
 function maskEmail(email: string): string {
   const parts = email.split("@");
@@ -101,7 +101,12 @@ export function VerifyEmailForm() {
   };
 
   if (!challenge) {
-    return <VerificationSessionFallback />;
+    return (
+      <AuthSessionFallback
+        title="Verification session not found"
+        description="Please register or sign in to verify your email address."
+      />
+    );
   }
 
   return (

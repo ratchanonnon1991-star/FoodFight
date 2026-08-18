@@ -8,7 +8,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { ArrowLeft } from "lucide-react";
 import { ROUTES } from "@/config/routes";
 import { authService } from "@/features/auth/services/auth-runtime";
-import { useAuthFlow } from "@/features/auth/context";
+import { useAuthFlow } from "@/features/auth/context/auth-flow-context";
 import { loginSchema, type LoginFormValues } from "@/features/auth/schemas/login-schema";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";

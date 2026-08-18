@@ -4,7 +4,7 @@ import * as React from "react";
 import Link from "next/link";
 import { CheckCircle2 } from "lucide-react";
 import { ROUTES } from "@/config/routes";
-import { useAuthFlow } from "@/features/auth/context";
+import { useAuthFlow } from "@/features/auth/context/auth-flow-context";
 import { buttonVariants } from "@/components/ui/Button";
 import { cn } from "@/lib/utils/cn";
 import { AuthSessionFallback } from "./AuthSessionFallback";

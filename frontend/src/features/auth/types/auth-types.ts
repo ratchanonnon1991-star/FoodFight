@@ -31,8 +31,6 @@ export interface EmailVerificationChallenge {
   resendAvailableAt: number;
 }
 
-export type AuthOperationStatus = "idle" | "loading" | "success" | "error";
-
 export type AuthErrorKind =
   | "validation"
   | "invalid_credentials"

@@ -8,7 +8,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { ArrowLeft, Mail, AlertCircle } from "lucide-react";
 import { ROUTES } from "@/config/routes";
 import { authService } from "@/features/auth/services/auth-runtime";
-import { useAuthFlow } from "@/features/auth/context";
+import { useAuthFlow } from "@/features/auth/context/auth-flow-context";
 import { changeEmailSchema, type ChangeEmailFormValues } from "@/features/auth/schemas/change-email-schema";
 import { Button, buttonVariants } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";

@@ -1,5 +1,3 @@
-"use client";
-
 import * as React from "react";
 import Link from "next/link";
 import { ROUTES } from "@/config/routes";
