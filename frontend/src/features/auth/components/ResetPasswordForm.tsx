@@ -8,64 +8,49 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { ArrowLeft } from "lucide-react";
 import { ROUTES } from "@/config/routes";
 import { authService } from "@/features/auth/services/auth-runtime";
-import { useAuthFlow } from "@/features/auth/context/auth-flow-context";
-import { registerSchema, type RegisterFormValues } from "@/features/auth/schemas/register-schema";
+import {
+  resetPasswordSchema,
+  type ResetPasswordFormValues,
+} from "@/features/auth/schemas/reset-password-schema";
 import { Button } from "@/components/ui/Button";
-import { Input } from "@/components/ui/Input";
 import { PasswordInput } from "@/components/ui/PasswordInput";
 import { FormField, FormLabel, FormDescription, FormError } from "@/components/ui/form-field";
-import { Separator } from "@/components/ui/Separator";
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/Alert";
-import { SocialAuthButtons } from "./SocialAuthButtons";
-import { TermsConsent } from "./TermsConsent";
 
-export function RegisterForm() {
+export function ResetPasswordForm() {
   const router = useRouter();
-  const { setChallenge } = useAuthFlow();
   const [generalError, setGeneralError] = React.useState<string | null>(null);
 
   const {
     register,
     handleSubmit,
-    control,
-    setError,
     formState: { errors, isSubmitting },
-  } = useForm<RegisterFormValues>({
-    resolver: zodResolver(registerSchema),
+  } = useForm<ResetPasswordFormValues>({
+    resolver: zodResolver(resetPasswordSchema),
     defaultValues: {
-      name: "",
-      email: "",
       password: "",
       confirmPassword: "",
-      termsAccepted: false,
     },
     mode: "onBlur",
   });
 
-  const onSubmit = async (values: RegisterFormValues) => {
+  const onSubmit = async (values: ResetPasswordFormValues) => {
     setGeneralError(null);
     try {
-      const result = await authService.register(values);
+      const result = await authService.resetPassword({
+        newPassword: values.password,
+        confirmPassword: values.confirmPassword,
+      });
 
       if (!result.ok) {
-        if (result.error.kind === "duplicate_email") {
-          setError("email", { message: result.error.message });
-        } else if (result.error.fieldErrors) {
-          for (const [field, message] of Object.entries(result.error.fieldErrors)) {
-            setError(field as keyof RegisterFormValues, { message });
-          }
-        } else {
-          setGeneralError(result.error.message);
-        }
+        setGeneralError(result.error.message);
         return;
       }
 
-      if (result.data) {
-        setChallenge(result.data);
-      }
-      router.push(ROUTES.AUTH.VERIFY_EMAIL);
+      // Mock reset success: navigate directly back to /login
+      router.push(ROUTES.AUTH.LOGIN);
     } catch {
-      setGeneralError("An unexpected error occurred during registration. Please try again.");
+      setGeneralError("An unexpected error occurred. Please try again.");
     }
   };
 
@@ -74,9 +59,9 @@ export function RegisterForm() {
       {/* Navigation / Back link */}
       <div className="flex items-center justify-between">
         <Link
-          href={ROUTES.HOME}
+          href={ROUTES.AUTH.LOGIN}
           className="inline-flex items-center gap-1.5 text-xs font-medium text-text-secondary hover:text-text-primary transition-colors focus-visible:outline-2 focus-visible:outline-brand-secondary rounded-sm"
-          aria-label="Back to home"
+          aria-label="Back to login"
         >
           <ArrowLeft className="size-4" aria-hidden="true" />
           <span>Back</span>
@@ -89,57 +74,27 @@ export function RegisterForm() {
           FoodFighter
         </div>
         <h1 className="text-2xl font-bold tracking-tight text-text-primary">
-          Create your account
+          Reset your password
         </h1>
-        <p className="text-xs text-text-secondary">
-          Join FoodFighter to decide group meals easily with AI.
+        <p className="text-xs text-text-secondary max-w-xs mx-auto leading-relaxed">
+          Create a new secure password to access your FoodFighter account.
         </p>
       </div>
 
+      {/* General Error Alert */}
       {generalError && (
         <Alert variant="error">
-          <AlertTitle>Registration Failed</AlertTitle>
+          <AlertTitle>Reset Error</AlertTitle>
           <AlertDescription>{generalError}</AlertDescription>
         </Alert>
       )}
 
-      {/* Registration Form */}
+      {/* Reset Password Form */}
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4" noValidate>
-        {/* Full Name */}
-        <FormField isInvalid={!!errors.name}>
-          <FormLabel htmlFor="name" required>
-            Full Name
-          </FormLabel>
-          <Input
-            id="name"
-            placeholder="e.g. Somchai Dee"
-            autoComplete="name"
-            disabled={isSubmitting}
-            {...register("name")}
-          />
-          {errors.name && <FormError>{errors.name.message}</FormError>}
-        </FormField>
-
-        {/* Email */}
-        <FormField isInvalid={!!errors.email}>
-          <FormLabel htmlFor="email" required>
-            Email Address
-          </FormLabel>
-          <Input
-            id="email"
-            type="email"
-            placeholder="you@example.com"
-            autoComplete="email"
-            disabled={isSubmitting}
-            {...register("email")}
-          />
-          {errors.email && <FormError>{errors.email.message}</FormError>}
-        </FormField>
-
-        {/* Password */}
+        {/* New Password */}
         <FormField isInvalid={!!errors.password}>
           <FormLabel htmlFor="password" required>
-            Password
+            New Password
           </FormLabel>
           <PasswordInput
             id="password"
@@ -157,7 +112,7 @@ export function RegisterForm() {
         {/* Confirm Password */}
         <FormField isInvalid={!!errors.confirmPassword}>
           <FormLabel htmlFor="confirmPassword" required>
-            Confirm Password
+            Confirm New Password
           </FormLabel>
           <PasswordInput
             id="confirmPassword"
@@ -171,14 +126,7 @@ export function RegisterForm() {
           )}
         </FormField>
 
-        {/* Terms of Service & Privacy Policy Consent */}
-        <TermsConsent
-          control={control}
-          error={errors.termsAccepted?.message}
-          disabled={isSubmitting}
-        />
-
-        {/* Create Account CTA */}
+        {/* Action CTA */}
         <div className="pt-2">
           <Button
             type="submit"
@@ -187,26 +135,14 @@ export function RegisterForm() {
             disabled={isSubmitting}
             loading={isSubmitting}
           >
-            CREATE ACCOUNT
+            RESET PASSWORD
           </Button>
         </div>
       </form>
 
-      {/* Social Auth Separator */}
-      <div className="relative my-4">
-        <Separator text="OR" />
-      </div>
-
-      {/* Social Auth Buttons */}
-      <SocialAuthButtons
-        disabled={isSubmitting}
-        onSuccess={() => router.push(ROUTES.FOOD_PROFILE.ALLERGIES)}
-        onError={(msg) => setGeneralError(msg)}
-      />
-
-      {/* Login Link */}
+      {/* Back to Login Link */}
       <div className="text-center pt-2 text-xs text-text-secondary">
-        Already have an account?{" "}
+        Remember your password?{" "}
         <Link
           href={ROUTES.AUTH.LOGIN}
           className="font-semibold text-brand-primary hover:text-brand-primary-hover underline underline-offset-2 transition-colors focus-visible:outline-2 focus-visible:outline-brand-secondary rounded-sm"

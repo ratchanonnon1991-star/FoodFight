@@ -51,6 +51,25 @@ export function getAuthService(): AuthService {
 }
 
 /**
+ * Sets mock food profile completion state during frontend development.
+ */
+export function setMockFoodProfileComplete(completed: boolean): void {
+  if (resolveAuthMode() === "mock") {
+    mockAuthService.setMockFoodProfileComplete(completed);
+  }
+}
+
+/**
+ * Gets mock food profile completion state during frontend development.
+ */
+export function isMockFoodProfileComplete(): boolean {
+  if (resolveAuthMode() === "mock") {
+    return mockAuthService.isMockFoodProfileComplete();
+  }
+  return false;
+}
+
+/**
  * Runtime authentication service proxy.
  * Resolves mode on invocation to prevent build-time static evaluation errors
  * while enforcing strict runtime fail-closed guarantees.
@@ -61,6 +80,8 @@ export const authService: AuthService = {
   verifyEmail: (input) => getAuthService().verifyEmail(input),
   resendVerificationCode: (email) => getAuthService().resendVerificationCode(email),
   changeVerificationEmail: (input) => getAuthService().changeVerificationEmail(input),
+  forgotPassword: (input) => getAuthService().forgotPassword(input),
+  resetPassword: (input) => getAuthService().resetPassword(input),
   beginGoogleAuth: () => getAuthService().beginGoogleAuth(),
   beginLineAuth: () => getAuthService().beginLineAuth(),
 };

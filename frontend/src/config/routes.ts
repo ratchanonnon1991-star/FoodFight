@@ -12,6 +12,21 @@ export const ROUTES = {
     CHANGE_EMAIL: "/change-email",
     VERIFICATION_SUCCESS: "/verification-success",
     LOGIN: "/login",
+    FORGOT_PASSWORD: "/forgot-password",
+    RESET_PASSWORD: "/reset-password",
   },
+  FOOD_PROFILE: {
+    ALLERGIES: "/food-profile/allergies",
+    RESTRICTIONS: "/food-profile/restrictions",
+    DETAILS: "/food-profile/details",
+  },
+  AUTHENTICATED_HOME: "/home",
+  ROOM: {
+    CREATE: "/room/create",
+    JOIN: "/room/join",
+  },
+  HISTORY: "/history",
+  BILLS: "/bills",
+  PROFILE: "/profile",
   DESIGN_SYSTEM: "/design-system",
 } as const;
