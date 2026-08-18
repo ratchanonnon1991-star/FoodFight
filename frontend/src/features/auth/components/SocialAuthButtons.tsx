@@ -3,6 +3,7 @@
 import * as React from "react";
 import { Loader2 } from "lucide-react";
 import { authService } from "@/features/auth/services/auth-runtime";
+import { cn } from "@/lib/utils/cn";
 
 export interface SocialAuthButtonsProps {
   disabled?: boolean;
@@ -11,6 +12,8 @@ export interface SocialAuthButtonsProps {
   onPendingChange?: (isPending: boolean) => void;
   googleLabel?: string;
   lineLabel?: string;
+  appearance?: "brand" | "surface";
+  density?: "default" | "compact";
 }
 
 /**
@@ -47,7 +50,13 @@ function GoogleGIcon({ className = "size-5" }: { className?: string }) {
 /**
  * Official LINE speech bubble brand icon
  */
-function LineBrandIcon({ className = "size-5" }: { className?: string }) {
+function LineBrandIcon({
+  className = "size-5",
+  onSurface = false,
+}: {
+  className?: string;
+  onSurface?: boolean;
+}) {
   return (
     <svg
       viewBox="0 0 24 24"
@@ -56,11 +65,11 @@ function LineBrandIcon({ className = "size-5" }: { className?: string }) {
       focusable="false"
     >
       <path
-        fill="#FFFFFF"
+        fill={onSurface ? "#06C755" : "#FFFFFF"}
         d="M24 10.304c0-5.369-5.383-9.738-12-9.738-6.616 0-12 4.369-12 9.738 0 4.814 4.269 8.846 10.035 9.608.391.084.922.258 1.057.592.122.303.079.778.039 1.085l-.171 1.027c-.053.303-.242 1.186 1.039.647 1.281-.54 6.911-4.069 9.428-6.967 1.739-1.907 2.573-3.843 2.573-5.292z"
       />
       <path
-        fill="#06C755"
+        fill={onSurface ? "#FFFFFF" : "#06C755"}
         d="M9.228 13.072H7.104a.531.531 0 0 1-.531-.531V7.955c0-.293.238-.531.531-.531h.708a.531.531 0 0 1 .531.531v3.878h1.416a.531.531 0 0 1 .531.531v.708a.531.531 0 0 1-.531.531zm2.348 0h-.708a.531.531 0 0 1-.531-.531V7.955c0-.293.238-.531.531-.531h.708a.531.531 0 0 1 .531.531v4.586a.531.531 0 0 1-.531.531zm4.721 0h-.708a.531.531 0 0 1-.447-.245l-2.022-2.889v2.603c0 .293-.238.531-.531.531h-.708a.531.531 0 0 1-.531-.531V7.955c0-.293.238-.531.531-.531h.708a.531.531 0 0 1 .447.245l2.022 2.889V7.955c0-.293.238-.531.531-.531h.708a.531.531 0 0 1 .531.531v4.586a.531.531 0 0 1-.531.531zm4.331-3.355h-1.416v.708h1.416a.531.531 0 0 1 .531.531v.708a.531.531 0 0 1-.531.531h-2.124a.531.531 0 0 1-.531-.531V7.955c0-.293.238-.531.531-.531h2.124a.531.531 0 0 1 .531.531v.708a.531.531 0 0 1-.531.531h-1.416v.708h1.416a.531.531 0 0 1 .531.531v.708a.531.531 0 0 1-.531.531z"
       />
     </svg>
@@ -74,6 +83,8 @@ export function SocialAuthButtons({
   onPendingChange,
   googleLabel = "Continue with Google",
   lineLabel = "Continue with LINE",
+  appearance = "brand",
+  density = "default",
 }: SocialAuthButtonsProps) {
   const [loadingProvider, setLoadingProvider] = React.useState<"google" | "line" | null>(null);
 
@@ -119,9 +130,12 @@ export function SocialAuthButtons({
   const isGoogleLoading = loadingProvider === "google";
   const isLineLoading = loadingProvider === "line";
   const isAnyLoading = loadingProvider !== null;
+  const isCompact = density === "compact";
+  const buttonSize = isCompact ? "h-10 text-xs" : "h-12 text-sm";
+  const iconSize = isCompact ? "size-4" : "size-5";
 
   return (
-    <div className="flex flex-col space-y-3 w-full">
+    <div className={cn("flex w-full flex-col", isCompact ? "space-y-2" : "space-y-3")}>
       {/* 1. Official Google Identity Button */}
       <button
         type="button"
@@ -129,12 +143,12 @@ export function SocialAuthButtons({
         onClick={handleGoogleAuth}
         disabled={disabled || isAnyLoading}
         aria-label={googleLabel}
-        className="w-full h-11 flex items-center justify-center gap-3 px-4 rounded-xl border border-border/80 bg-surface hover:bg-surface-subtle/80 active:bg-surface-subtle text-text-primary text-sm font-semibold shadow-2xs transition-all focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-secondary cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed select-none"
+        className={cn("flex w-full items-center justify-center gap-3 rounded-xl border border-border/80 bg-surface px-4 font-semibold text-text-primary shadow-sm transition-all hover:bg-surface-subtle/80 active:bg-surface-subtle focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-secondary disabled:cursor-not-allowed disabled:opacity-50 select-none", buttonSize)}
       >
         {isGoogleLoading ? (
-          <Loader2 className="size-5 animate-spin text-text-muted" aria-hidden="true" />
+          <Loader2 className={cn(iconSize, "animate-spin text-text-muted")} aria-hidden="true" />
         ) : (
-          <GoogleGIcon className="size-5 shrink-0" />
+          <GoogleGIcon className={cn(iconSize, "shrink-0")} />
         )}
         <span>{googleLabel}</span>
       </button>
@@ -146,14 +160,18 @@ export function SocialAuthButtons({
         onClick={handleLineAuth}
         disabled={disabled || isAnyLoading}
         aria-label={lineLabel}
-        className="w-full h-11 flex items-center justify-center gap-3 px-4 rounded-xl bg-[#06C755] hover:bg-[#05B34C] active:bg-[#049F43] text-white text-sm font-semibold shadow-2xs transition-all focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#06C755] cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed select-none"
+        className={
+          appearance === "surface"
+            ? cn("flex w-full items-center justify-center gap-3 rounded-xl border border-border/80 bg-surface px-4 font-semibold text-text-primary shadow-sm transition-all hover:bg-surface-subtle/80 active:bg-surface-subtle focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-secondary disabled:cursor-not-allowed disabled:opacity-50 select-none", buttonSize)
+            : cn("flex w-full items-center justify-center gap-3 rounded-xl bg-[#06C755] px-4 font-semibold text-white shadow-sm transition-all hover:bg-[#05B34C] active:bg-[#049F43] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#06C755] disabled:cursor-not-allowed disabled:opacity-50 select-none", buttonSize)
+        }
       >
         {isLineLoading ? (
-          <Loader2 className="size-5 animate-spin text-white/80" aria-hidden="true" />
+          <Loader2 className={cn(iconSize, "animate-spin text-white/80")} aria-hidden="true" />
         ) : (
-          <LineBrandIcon className="size-5 shrink-0" />
+          <LineBrandIcon className={cn(iconSize, "shrink-0")} onSurface={appearance === "surface"} />
         )}
-        <span className="text-white">{lineLabel}</span>
+        <span className={appearance === "surface" ? "text-text-primary" : "text-white"}>{lineLabel}</span>
       </button>
     </div>
   );
