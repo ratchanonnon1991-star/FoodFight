@@ -1,0 +1,108 @@
+import { describe, it, expect } from "vitest";
+import { renderHook, act } from "@testing-library/react";
+import * as React from "react";
+import { FoodProfileProvider, useFoodProfile } from "./food-profile-context";
+
+function wrapper({ children }: { children: React.ReactNode }) {
+  return <FoodProfileProvider>{children}</FoodProfileProvider>;
+}
+
+describe("FoodProfileContext - Mutual Exclusivity and Draft Logic", () => {
+  it("initializes with empty allergies, empty custom allergy, and hasNoAllergies=false", () => {
+    const { result } = renderHook(() => useFoodProfile(), { wrapper });
+
+    expect(result.current.draft.allergies).toEqual([]);
+    expect(result.current.draft.otherAllergies).toBe("");
+    expect(result.current.draft.hasNoAllergies).toBe(false);
+    expect(result.current.isAllergiesStepValid).toBe(false);
+  });
+
+  it("case 1: selecting a normal allergy removes hasNoAllergies flag", () => {
+    const { result } = renderHook(() => useFoodProfile(), { wrapper });
+
+    // First set hasNoAllergies = true
+    act(() => {
+      result.current.setHasNoAllergies(true);
+    });
+    expect(result.current.draft.hasNoAllergies).toBe(true);
+    expect(result.current.isAllergiesStepValid).toBe(true);
+
+    // Toggle a standard allergy
+    act(() => {
+      result.current.toggleAllergy("seafood");
+    });
+
+    expect(result.current.draft.allergies).toEqual(["seafood"]);
+    expect(result.current.draft.hasNoAllergies).toBe(false);
+    expect(result.current.isAllergiesStepValid).toBe(true);
+  });
+
+  it("case 2: selecting No Allergies clears all standard allergies", () => {
+    const { result } = renderHook(() => useFoodProfile(), { wrapper });
+
+    // Select standard allergies
+    act(() => {
+      result.current.setAllergies(["peanut", "dairy"]);
+    });
+    expect(result.current.draft.allergies).toEqual(["peanut", "dairy"]);
+
+    // Select No Allergies
+    act(() => {
+      result.current.setHasNoAllergies(true);
+    });
+
+    expect(result.current.draft.allergies).toEqual([]);
+    expect(result.current.draft.hasNoAllergies).toBe(true);
+  });
+
+  it("case 3: selecting No Allergies clears custom otherAllergies", () => {
+    const { result } = renderHook(() => useFoodProfile(), { wrapper });
+
+    // Set custom allergy
+    act(() => {
+      result.current.setOtherAllergies("Kiwi");
+    });
+    expect(result.current.draft.otherAllergies).toBe("Kiwi");
+
+    // Select No Allergies
+    act(() => {
+      result.current.setHasNoAllergies(true);
+    });
+
+    expect(result.current.draft.otherAllergies).toBe("");
+    expect(result.current.draft.hasNoAllergies).toBe(true);
+  });
+
+  it("case 4: entering a custom allergy removes hasNoAllergies flag", () => {
+    const { result } = renderHook(() => useFoodProfile(), { wrapper });
+
+    // First set hasNoAllergies = true
+    act(() => {
+      result.current.setHasNoAllergies(true);
+    });
+    expect(result.current.draft.hasNoAllergies).toBe(true);
+
+    // Enter custom allergy
+    act(() => {
+      result.current.setOtherAllergies("Shellfish");
+    });
+
+    expect(result.current.draft.otherAllergies).toBe("Shellfish");
+    expect(result.current.draft.hasNoAllergies).toBe(false);
+  });
+
+  it("allows multi-selection and toggling of standard allergies", () => {
+    const { result } = renderHook(() => useFoodProfile(), { wrapper });
+
+    act(() => {
+      result.current.toggleAllergy("egg");
+      result.current.toggleAllergy("soy");
+    });
+    expect(result.current.draft.allergies).toEqual(["egg", "soy"]);
+
+    act(() => {
+      result.current.toggleAllergy("egg");
+    });
+    expect(result.current.draft.allergies).toEqual(["soy"]);
+  });
+});

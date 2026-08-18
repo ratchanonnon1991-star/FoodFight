@@ -13,5 +13,11 @@ export const ROUTES = {
     VERIFICATION_SUCCESS: "/verification-success",
     LOGIN: "/login",
   },
+  FOOD_PROFILE: {
+    ALLERGIES: "/food-profile/allergies",
+    RESTRICTIONS: "/food-profile/restrictions",
+    DETAILS: "/food-profile/details",
+  },
   DESIGN_SYSTEM: "/design-system",
 } as const;
+

@@ -6,6 +6,7 @@ test.describe("Accessibility Fundamentals QA", () => {
       { path: "/", expectedH1: "FoodFighter" },
       { path: "/login", expectedH1: "Welcome back" },
       { path: "/register", expectedH1: "Create your account" },
+      { path: "/food-profile/allergies", expectedH1: "Do you have any food allergies?" },
       { path: "/design-system", expectedH1: "Design System Reference" },
     ];
 
