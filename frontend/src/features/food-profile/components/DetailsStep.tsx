@@ -1,12 +1,13 @@
 "use client";
 
 import * as React from "react";
-import { CheckCircle2, Info } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { Info } from "lucide-react";
 import { ROUTES } from "@/config/routes";
 import { Button } from "@/components/ui/Button";
 import { Label } from "@/components/ui/Label";
 import { Textarea } from "@/components/ui/Textarea";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/Alert";
+import { Alert, AlertDescription } from "@/components/ui/Alert";
 import { useFoodProfile } from "../context/food-profile-context";
 import { FoodProfileStepLayout } from "./FoodProfileStepLayout";
 
@@ -21,8 +22,8 @@ export function DetailsStep({
   onComplete,
   backHref = ROUTES.FOOD_PROFILE.RESTRICTIONS,
 }: DetailsStepProps) {
+  const router = useRouter();
   const { draft, setAdditionalNotes } = useFoodProfile();
-  const [isSubmitted, setIsSubmitted] = React.useState<boolean>(false);
 
   const notesLength = draft.additionalNotes.length;
 
@@ -37,8 +38,7 @@ export function DetailsStep({
     if (onComplete) {
       onComplete();
     } else {
-      // Frontend-only completion state (avoids fake backend persistence / unauthorized navigation)
-      setIsSubmitted(true);
+      router.push(ROUTES.AUTHENTICATED_HOME);
     }
   };
 
@@ -111,24 +111,6 @@ export function DetailsStep({
           </span>
         </div>
       </div>
-
-      {/* Subtle Frontend Completion Notice when submitted */}
-      {isSubmitted && (
-        <Alert
-          variant="success"
-          className="py-3 px-3.5 animate-fade-in border-brand-primary/20 bg-surface shadow-xs"
-        >
-          <CheckCircle2 className="size-4 shrink-0 text-brand-primary" />
-          <div className="space-y-0.5">
-            <AlertTitle className="text-xs font-semibold text-brand-primary">
-              Food Profile Complete
-            </AlertTitle>
-            <AlertDescription className="text-xs text-text-secondary">
-              Your 3-step profile is ready. Authenticated home and meal matching will be connected next.
-            </AlertDescription>
-          </div>
-        </Alert>
-      )}
     </FoodProfileStepLayout>
   );
 }

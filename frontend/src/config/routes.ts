@@ -18,6 +18,13 @@ export const ROUTES = {
     RESTRICTIONS: "/food-profile/restrictions",
     DETAILS: "/food-profile/details",
   },
+  AUTHENTICATED_HOME: "/home",
+  ROOM: {
+    CREATE: "/room/create",
+    JOIN: "/room/join",
+  },
+  HISTORY: "/history",
+  BILLS: "/bills",
+  PROFILE: "/profile",
   DESIGN_SYSTEM: "/design-system",
 } as const;
-
