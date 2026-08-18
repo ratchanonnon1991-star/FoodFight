@@ -765,13 +765,19 @@
       foodFightStarted: true,
       roomJoined: true
     },
+    mealPreferenceStep: 1,
     mealPreferences: {
       foodTypes: ['Noodles / ก๋วยเตี๋ยว', 'Hot Pot / ชาบู-สุกี้'],
+      foodTypeOther: '',
       cuisines: ['Thai / อาหารไทย', 'Japanese / ญี่ปุ่น'],
-      ingredients: ['Chicken / ไก่', 'Seafood & Shrimp / กุ้ง-ซีฟู้ด'],
+      cuisineOther: '',
+      ingredients: ['Chicken / ไก่', 'Seafood / ซีฟู้ด'],
+      ingredientsOther: '',
       priceLevel: '฿฿',
+      budgetOther: '',
       restaurantStyles: ['Casual Dining / ร้านนั่งสบาย', 'Air-Conditioned / ห้องแอร์'],
-      otherNotes: 'Prefer places with air conditioning and easy parking'
+      restaurantStyleOther: '',
+      otherNotes: ''
     },
     recommendation: {
       round: 1, // 1 | 2
@@ -865,33 +871,31 @@
   ];
 
   const PREF_FOOD_TYPES = [
-    'Rice / ข้าว', 'Noodles / ก๋วยเตี๋ยว', 'Soup & Stew / ซุป-ต้ม',
-    'Grill & BBQ / ปิ้งย่าง', 'Hot Pot / ชาบู-สุกี้', 'Fried & Crispy / ของทอด',
-    'Fast Food / ฟาสต์ฟู้ด', 'Healthy & Clean / อาหารคลีน', 'Dessert / ของหวาน'
+    'Rice / ข้าว', 'Noodles / ก๋วยเตี๋ยว', 'Soup / ซุป',
+    'Grill / ปิ้งย่าง', 'Hot Pot / ชาบู', 'Fried / ของทอด',
+    'Healthy / อาหารคลีน', 'Dessert / ของหวาน'
   ];
 
   const PREF_CUISINES = [
     'Thai / อาหารไทย', 'Japanese / ญี่ปุ่น', 'Korean / เกาหลี',
-    'Chinese / จีน', 'Italian / อิตาเลียน', 'Western / ตะวันตก',
-    'Indian / อินเดีย', 'Vietnamese / เวียดนาม'
+    'Chinese / จีน', 'Western / ตะวันตก'
   ];
 
   const PREF_INGREDIENTS = [
-    'Chicken / ไก่', 'Pork / หมู', 'Beef / เนื้อวัว',
-    'Seafood & Shrimp / กุ้ง-ซีฟู้ด', 'Fish / ปลา', 'Eggs / ไข่',
-    'Vegetables / ผัก', 'Cheese / ชีส'
+    'Pork / หมู', 'Chicken / ไก่', 'Beef / เนื้อวัว',
+    'Shrimp / กุ้ง', 'Seafood / ซีฟู้ด', 'Fish / ปลา', 'Eggs / ไข่'
   ];
 
   const PREF_PRICE_LEVELS = [
-    { symbol: '฿', title: 'Budget', sub: '< 150 THB' },
-    { symbol: '฿฿', title: 'Moderate', sub: '150 - 400 THB' },
-    { symbol: '฿฿฿', title: 'Premium', sub: '400+ THB' }
+    { symbol: '฿', tier: 1 },
+    { symbol: '฿฿', tier: 2 },
+    { symbol: '฿฿฿', tier: 3 }
   ];
 
   const PREF_STYLES = [
-    'Street Food / สตรีทฟู้ด', 'Casual Dining / ร้านนั่งสบาย',
-    'Cafe & Bakery / คาเฟ่', 'Buffet / บุฟเฟต์',
-    'Air-Conditioned / ห้องแอร์', 'Late Night / เปิดดึก'
+    'Street Food / สตรีทฟู้ด', 'Casual Chill / ร้านนั่งชิล',
+    'Cafe / คาเฟ่', 'Buffet / บุฟเฟต์',
+    'Casual Dining / ร้านนั่งสบาย'
   ];
 
   // Expose to Prototype Namespace

@@ -572,19 +572,189 @@
      2. FoodFight Preparation & Session Screens
      ========================================================================== */
 
-  /** Screen: Meal Preferences */
+  /** Screen: Meal Preferences (5-Step Wizard) */
   function renderMealPreferences() {
     const state = P.getState();
     const t = P.t;
     const isTH = P.i18n.getLanguage() === 'th';
     const pref = state.mealPreferences || {};
+    const currentStep = Math.min(Math.max(state.mealPreferenceStep || 1, 1), 5);
+    const totalSteps = 5;
+    const progressPercent = (currentStep / totalSteps) * 100;
+
+    let stepBadgeTitle = '';
+    let questionText = '';
+    let subtitleText = '';
+    let optionsHtml = '';
+    let additionalLabel = t('foodfight.pref.additionalLabel');
+    let additionalPlaceholder = '';
+    let additionalValue = '';
+
+    if (currentStep === 1) {
+      stepBadgeTitle = t('foodfight.pref.step1Title');
+      questionText = t('foodfight.pref.step1Question');
+      subtitleText = t('foodfight.pref.step1Subtitle');
+      additionalPlaceholder = t('foodfight.pref.step1Placeholder');
+      additionalValue = pref.foodTypeOther || '';
+      optionsHtml = `
+        <div class="pref-chips-grid">
+          ${P.PREF_FOOD_TYPES.map(typeStr => {
+            const parts = typeStr.split(' / ');
+            const label = isTH ? (parts[1] || parts[0]) : parts[0];
+            const isSelected = (pref.foodTypes || []).includes(typeStr);
+            return `
+              <button 
+                type="button" 
+                class="pref-chip-btn ${isSelected ? 'selected' : ''}" 
+                data-category="foodTypes" 
+                data-val="${P.escapeHtml(typeStr)}"
+                aria-pressed="${isSelected}"
+              >
+                <span class="pref-chip-icon">${isSelected ? '✓' : '＋'}</span>
+                <span>${P.escapeHtml(label)}</span>
+              </button>
+            `;
+          }).join('')}
+        </div>
+      `;
+    } else if (currentStep === 2) {
+      stepBadgeTitle = t('foodfight.pref.step2Title');
+      questionText = t('foodfight.pref.step2Question');
+      subtitleText = t('foodfight.pref.step2Subtitle');
+      additionalPlaceholder = t('foodfight.pref.step2Placeholder');
+      additionalValue = pref.cuisineOther || '';
+      optionsHtml = `
+        <div class="pref-chips-grid">
+          ${P.PREF_CUISINES.map(cStr => {
+            const parts = cStr.split(' / ');
+            const label = isTH ? (parts[1] || parts[0]) : parts[0];
+            const isSelected = (pref.cuisines || []).includes(cStr);
+            return `
+              <button 
+                type="button" 
+                class="pref-chip-btn ${isSelected ? 'selected' : ''}" 
+                data-category="cuisines" 
+                data-val="${P.escapeHtml(cStr)}"
+                aria-pressed="${isSelected}"
+              >
+                <span class="pref-chip-icon">${isSelected ? '✓' : '＋'}</span>
+                <span>${P.escapeHtml(label)}</span>
+              </button>
+            `;
+          }).join('')}
+        </div>
+      `;
+    } else if (currentStep === 3) {
+      stepBadgeTitle = t('foodfight.pref.step3Title');
+      questionText = t('foodfight.pref.step3Question');
+      subtitleText = t('foodfight.pref.step3Subtitle');
+      additionalPlaceholder = t('foodfight.pref.step3Placeholder');
+      additionalValue = pref.ingredientsOther || '';
+      optionsHtml = `
+        <div class="pref-chips-grid">
+          ${P.PREF_INGREDIENTS.map(iStr => {
+            const parts = iStr.split(' / ');
+            const label = isTH ? (parts[1] || parts[0]) : parts[0];
+            const isSelected = (pref.ingredients || []).includes(iStr);
+            return `
+              <button 
+                type="button" 
+                class="pref-chip-btn ${isSelected ? 'selected' : ''}" 
+                data-category="ingredients" 
+                data-val="${P.escapeHtml(iStr)}"
+                aria-pressed="${isSelected}"
+              >
+                <span class="pref-chip-icon">${isSelected ? '✓' : '＋'}</span>
+                <span>${P.escapeHtml(label)}</span>
+              </button>
+            `;
+          }).join('')}
+        </div>
+      `;
+    } else if (currentStep === 4) {
+      stepBadgeTitle = t('foodfight.pref.step4Title');
+      questionText = t('foodfight.pref.step4Question');
+      subtitleText = t('foodfight.pref.step4Subtitle');
+      additionalLabel = t('foodfight.pref.additionalBudgetLabel');
+      additionalPlaceholder = t('foodfight.pref.step4Placeholder');
+      additionalValue = pref.budgetOther || '';
+      optionsHtml = `
+        <div class="pref-budget-grid" role="radiogroup" aria-label="${t('foodfight.pref.step4Title')}">
+          <button 
+            type="button" 
+            role="radio"
+            class="pref-budget-card ${pref.priceLevel === '฿' ? 'selected' : ''}" 
+            data-price="฿"
+            aria-checked="${pref.priceLevel === '฿'}"
+          >
+            <div class="pref-budget-symbol">฿</div>
+            <div class="pref-budget-title">${t('foodfight.pref.budgetTier1Label')}</div>
+            <div class="pref-budget-label">${t('foodfight.pref.budgetTier1')}</div>
+          </button>
+          <button 
+            type="button" 
+            role="radio"
+            class="pref-budget-card ${pref.priceLevel === '฿฿' ? 'selected' : ''}" 
+            data-price="฿฿"
+            aria-checked="${pref.priceLevel === '฿฿'}"
+          >
+            <div class="pref-budget-symbol">฿฿</div>
+            <div class="pref-budget-title">${t('foodfight.pref.budgetTier2Label')}</div>
+            <div class="pref-budget-label">${t('foodfight.pref.budgetTier2')}</div>
+          </button>
+          <button 
+            type="button" 
+            role="radio"
+            class="pref-budget-card ${pref.priceLevel === '฿฿฿' ? 'selected' : ''}" 
+            data-price="฿฿฿"
+            aria-checked="${pref.priceLevel === '฿฿฿'}"
+          >
+            <div class="pref-budget-symbol">฿฿฿</div>
+            <div class="pref-budget-title">${t('foodfight.pref.budgetTier3Label')}</div>
+            <div class="pref-budget-label">${t('foodfight.pref.budgetTier3')}</div>
+          </button>
+        </div>
+      `;
+    } else if (currentStep === 5) {
+      stepBadgeTitle = t('foodfight.pref.step5Title');
+      questionText = t('foodfight.pref.step5Question');
+      subtitleText = t('foodfight.pref.step5Subtitle');
+      additionalPlaceholder = t('foodfight.pref.step5Placeholder');
+      additionalValue = pref.restaurantStyleOther || '';
+      optionsHtml = `
+        <div class="pref-chips-grid">
+          ${P.PREF_STYLES.map(sStr => {
+            const parts = sStr.split(' / ');
+            const label = isTH ? (parts[1] || parts[0]) : parts[0];
+            const isSelected = (pref.restaurantStyles || []).includes(sStr);
+            return `
+              <button 
+                type="button" 
+                class="pref-chip-btn ${isSelected ? 'selected' : ''}" 
+                data-category="restaurantStyles" 
+                data-val="${P.escapeHtml(sStr)}"
+                aria-pressed="${isSelected}"
+              >
+                <span class="pref-chip-icon">${isSelected ? '✓' : '＋'}</span>
+                <span>${P.escapeHtml(label)}</span>
+              </button>
+            `;
+          }).join('')}
+        </div>
+      `;
+    }
 
     return `
-      <main class="app-shell" aria-labelledby="pref-title" style="padding-bottom: 90px;">
+      <main class="app-shell" aria-labelledby="pref-wizard-question" style="padding-bottom: 90px;">
         <header class="top-bar">
-          <a href="#/room/lobby-host" class="top-bar-action" aria-label="${t('common.back')}">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="15 18 9 12 15 6"></polyline></svg>
-          </a>
+          ${currentStep > 1 
+            ? `<button type="button" id="btn-pref-back" class="top-bar-action" aria-label="${t('common.back')}">
+                 <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="15 18 9 12 15 6"></polyline></svg>
+               </button>`
+            : `<a href="#/room/lobby-host" class="top-bar-action" aria-label="${t('common.back')}">
+                 <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="15 18 9 12 15 6"></polyline></svg>
+               </a>`
+          }
           <h1 class="top-bar-title">FoodFight</h1>
           <div style="display:flex;align-items:center;gap:0.35rem;">
             ${P.renderLanguageSwitch ? P.renderLanguageSwitch() : ''}
@@ -592,157 +762,49 @@
         </header>
 
         <div class="page-shell">
-          <section class="screen-header">
-            <h2 id="pref-title" class="font-heading-1">${t('foodfight.pref.title')}</h2>
-            <p class="screen-subtitle">${t('foodfight.pref.subtitle')}</p>
+          <!-- Step Progress -->
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <span class="pref-wizard-step-badge">${t('foodfight.pref.stepIndicator', { current: currentStep, total: totalSteps })} • ${stepBadgeTitle}</span>
+          </div>
+          <div class="pref-wizard-progress-bar" role="progressbar" aria-valuenow="${currentStep}" aria-valuemin="1" aria-valuemax="${totalSteps}">
+            <div class="pref-wizard-progress-fill" style="width: ${progressPercent}%;"></div>
+          </div>
+
+          <!-- Wizard Question Header -->
+          <section class="screen-header" style="margin-bottom: 1.25rem;">
+            <h2 id="pref-wizard-question" class="pref-wizard-question">${questionText}</h2>
+            <p class="pref-wizard-subtitle">${subtitleText}</p>
           </section>
 
-          <!-- 1. Food Types -->
-          <section class="pref-section">
-            <h3 class="pref-section-heading">${t('foodfight.pref.foodTypes')}</h3>
-            <div class="pref-chips-grid">
-              ${P.PREF_FOOD_TYPES.map(typeStr => {
-                const parts = typeStr.split(' / ');
-                const label = isTH ? (parts[1] || parts[0]) : parts[0];
-                const isSelected = (pref.foodTypes || []).includes(typeStr);
-                return `
-                  <button 
-                    type="button" 
-                    class="pref-chip-btn ${isSelected ? 'selected' : ''}" 
-                    data-category="foodTypes" 
-                    data-val="${P.escapeHtml(typeStr)}"
-                    aria-pressed="${isSelected}"
-                  >
-                    <span class="pref-chip-icon">${isSelected ? '✓' : '＋'}</span>
-                    <span>${P.escapeHtml(label)}</span>
-                  </button>
-                `;
-              }).join('')}
-            </div>
+          <!-- Step Primary Choices -->
+          <section>
+            ${optionsHtml}
           </section>
 
-          <!-- 2. Cuisines -->
-          <section class="pref-section">
-            <h3 class="pref-section-heading">${t('foodfight.pref.cuisines')}</h3>
-            <div class="pref-chips-grid">
-              ${P.PREF_CUISINES.map(cStr => {
-                const parts = cStr.split(' / ');
-                const label = isTH ? (parts[1] || parts[0]) : parts[0];
-                const isSelected = (pref.cuisines || []).includes(cStr);
-                return `
-                  <button 
-                    type="button" 
-                    class="pref-chip-btn ${isSelected ? 'selected' : ''}" 
-                    data-category="cuisines" 
-                    data-val="${P.escapeHtml(cStr)}"
-                    aria-pressed="${isSelected}"
-                  >
-                    <span class="pref-chip-icon">${isSelected ? '✓' : '＋'}</span>
-                    <span>${P.escapeHtml(label)}</span>
-                  </button>
-                `;
-              }).join('')}
-            </div>
-          </section>
-
-          <!-- 3. Key Ingredients -->
-          <section class="pref-section">
-            <h3 class="pref-section-heading">${t('foodfight.pref.ingredients')}</h3>
-            <div class="pref-chips-grid">
-              ${P.PREF_INGREDIENTS.map(iStr => {
-                const parts = iStr.split(' / ');
-                const label = isTH ? (parts[1] || parts[0]) : parts[0];
-                const isSelected = (pref.ingredients || []).includes(iStr);
-                return `
-                  <button 
-                    type="button" 
-                    class="pref-chip-btn ${isSelected ? 'selected' : ''}" 
-                    data-category="ingredients" 
-                    data-val="${P.escapeHtml(iStr)}"
-                    aria-pressed="${isSelected}"
-                  >
-                    <span class="pref-chip-icon">${isSelected ? '✓' : '＋'}</span>
-                    <span>${P.escapeHtml(label)}</span>
-                  </button>
-                `;
-              }).join('')}
-            </div>
-          </section>
-
-          <!-- 4. Price Levels / Budget -->
-          <section class="pref-section">
-            <h3 class="pref-section-heading">${t('foodfight.pref.priceLevel')}</h3>
-            <div class="pref-budget-grid">
-              <button 
-                type="button" 
-                class="pref-budget-card ${pref.priceLevel === '฿' ? 'selected' : ''}" 
-                data-price="฿"
-                aria-pressed="${pref.priceLevel === '฿'}"
-              >
-                <div class="pref-budget-symbol">฿</div>
-                <div class="pref-budget-label">${t('foodfight.pref.budgetTier1')}</div>
-              </button>
-              <button 
-                type="button" 
-                class="pref-budget-card ${pref.priceLevel === '฿฿' ? 'selected' : ''}" 
-                data-price="฿฿"
-                aria-pressed="${pref.priceLevel === '฿฿'}"
-              >
-                <div class="pref-budget-symbol">฿฿</div>
-                <div class="pref-budget-label">${t('foodfight.pref.budgetTier2')}</div>
-              </button>
-              <button 
-                type="button" 
-                class="pref-budget-card ${pref.priceLevel === '฿฿฿' ? 'selected' : ''}" 
-                data-price="฿฿฿"
-                aria-pressed="${pref.priceLevel === '฿฿฿'}"
-              >
-                <div class="pref-budget-symbol">฿฿฿</div>
-                <div class="pref-budget-label">${t('foodfight.pref.budgetTier3')}</div>
-              </button>
-            </div>
-          </section>
-
-          <!-- 5. Atmosphere / Styles -->
-          <section class="pref-section">
-            <h3 class="pref-section-heading">${t('foodfight.pref.restaurantStyles')}</h3>
-            <div class="pref-chips-grid">
-              ${P.PREF_STYLES.map(sStr => {
-                const parts = sStr.split(' / ');
-                const label = isTH ? (parts[1] || parts[0]) : parts[0];
-                const isSelected = (pref.restaurantStyles || []).includes(sStr);
-                return `
-                  <button 
-                    type="button" 
-                    class="pref-chip-btn ${isSelected ? 'selected' : ''}" 
-                    data-category="restaurantStyles" 
-                    data-val="${P.escapeHtml(sStr)}"
-                    aria-pressed="${isSelected}"
-                  >
-                    <span class="pref-chip-icon">${isSelected ? '✓' : '＋'}</span>
-                    <span>${P.escapeHtml(label)}</span>
-                  </button>
-                `;
-              }).join('')}
-            </div>
-          </section>
-
-          <!-- 6. Additional Notes -->
-          <section class="pref-section">
-            <h3 class="pref-section-heading">${t('foodfight.pref.otherNotes')}</h3>
-            <textarea 
-              id="pref-notes-input" 
-              class="pref-notes-textarea" 
-              rows="2" 
-              placeholder="${t('foodfight.pref.notesPlaceholder')}"
-            >${P.escapeHtml(pref.otherNotes || '')}</textarea>
+          <!-- Additional / Custom Input -->
+          <section class="pref-additional-box">
+            <label for="pref-additional-input" class="pref-additional-label">
+              <span>💬</span> ${additionalLabel}
+            </label>
+            <input 
+              type="text" 
+              id="pref-additional-input" 
+              class="pref-additional-input" 
+              placeholder="${P.escapeHtml(additionalPlaceholder)}" 
+              value="${P.escapeHtml(additionalValue)}" 
+            />
           </section>
 
           <!-- Bottom Action -->
           <div class="bottom-actions">
-            <button type="button" id="btn-submit-preferences" class="btn btn-primary btn-lg">
-              ${t('foodfight.pref.submit')}
-            </button>
+            ${currentStep < 5
+              ? `<button type="button" id="btn-pref-next" class="btn btn-primary btn-lg">
+                   ${t('foodfight.pref.next')}
+                 </button>`
+              : `<button type="button" id="btn-pref-submit" class="btn btn-primary btn-lg">
+                   ${t('foodfight.pref.submit')}
+                 </button>`
+            }
           </div>
         </div>
       </main>
@@ -750,11 +812,30 @@
   }
 
   function bindMealPreferencesEvents() {
+    const state = P.getState();
+    const currentStep = Math.min(Math.max(state.mealPreferenceStep || 1, 1), 5);
     const chips = document.querySelectorAll('.pref-chip-btn');
     const budgetCards = document.querySelectorAll('.pref-budget-card');
-    const submitBtn = document.getElementById('btn-submit-preferences');
-    const notesInput = document.getElementById('pref-notes-input');
-    const state = P.getState();
+    const backBtn = document.getElementById('btn-pref-back');
+    const nextBtn = document.getElementById('btn-pref-next');
+    const submitBtn = document.getElementById('btn-pref-submit');
+    const addInput = document.getElementById('pref-additional-input');
+
+    const saveAdditional = () => {
+      const val = addInput ? addInput.value.trim() : '';
+      if (currentStep === 1) state.mealPreferences.foodTypeOther = val;
+      else if (currentStep === 2) state.mealPreferences.cuisineOther = val;
+      else if (currentStep === 3) state.mealPreferences.ingredientsOther = val;
+      else if (currentStep === 4) state.mealPreferences.budgetOther = val;
+      else if (currentStep === 5) state.mealPreferences.restaurantStyleOther = val;
+      P.saveState();
+    };
+
+    if (addInput) {
+      addInput.oninput = () => {
+        saveAdditional();
+      };
+    }
 
     chips.forEach(chip => {
       chip.onclick = () => {
@@ -783,18 +864,39 @@
       btn.onclick = () => {
         budgetCards.forEach(b => {
           b.classList.remove('selected');
-          b.setAttribute('aria-pressed', 'false');
+          b.setAttribute('aria-checked', 'false');
         });
         btn.classList.add('selected');
-        btn.setAttribute('aria-pressed', 'true');
+        btn.setAttribute('aria-checked', 'true');
         state.mealPreferences.priceLevel = btn.getAttribute('data-price');
         P.saveState();
       };
     });
 
+    if (backBtn) {
+      backBtn.onclick = () => {
+        saveAdditional();
+        state.mealPreferenceStep = Math.max(1, currentStep - 1);
+        P.saveState();
+        P.renderCurrentRoute();
+      };
+    }
+
+    if (nextBtn) {
+      nextBtn.onclick = () => {
+        saveAdditional();
+        state.mealPreferenceStep = Math.min(5, currentStep + 1);
+        P.saveState();
+        P.renderCurrentRoute();
+      };
+    }
+
     if (submitBtn) {
       submitBtn.onclick = () => {
-        if (notesInput) state.mealPreferences.otherNotes = notesInput.value.trim();
+        saveAdditional();
+        state.mealPreferenceStep = 1;
+        const userMem = (state.room?.members || []).find(m => m.id === 'user');
+        if (userMem) userMem.hasSubmitted = true;
         P.saveState();
         P.navigateTo('#/foodfight/waiting');
       };
