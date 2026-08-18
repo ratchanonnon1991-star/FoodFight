@@ -11,6 +11,9 @@
     "test:watch": "vitest",
     "test:e2e": "playwright test",
     "test:e2e:smoke": "playwright test tests/e2e/smoke.spec.ts",
+    "test:e2e:qa": "playwright test tests/e2e/responsive.spec.ts tests/e2e/accessibility.spec.ts",
+    "test:e2e:visual": "playwright test tests/e2e/visual.spec.ts",
+    "test:e2e:visual:update": "playwright test tests/e2e/visual.spec.ts --update-snapshots",
     "test:e2e:ui": "playwright test --ui"
   },
   "dependencies": {

@@ -18,14 +18,19 @@ Test **behavior and risk**, not implementation details.
 |---|---|---|---|
 | **Unit & Component** | `Vitest` + `React Testing Library` + `@testing-library/user-event` | **Active / Installed** | Fast in-memory unit tests and component behavior verification |
 | **End-to-End (E2E)** | `Playwright` (Chromium) | **Active / Installed** | Real browser integration across core routes and multi-page flows |
-| **API Mocking (Optional)** | `MSW` (Mock Service Worker) | *Optional / Not Installed* | Request interception for integration testing when backend is unavailable |
-| **Visual Regression** | Playwright Screenshots | *Future / Not Yet Baselined* | Visual layout comparison across responsive viewports |
+| **Responsive QA** | `Playwright` Viewports (360/390/430/768/1440) | **Active / Installed** | Multi-viewport layout integrity and horizontal overflow prevention |
+| **Visual Regression** | `Playwright` Screenshots (`toHaveScreenshot`) | **Active / Installed** | Deterministic baseline comparison for primary mobile (390px) & desktop (1440px) |
+| **Accessibility** | Semantic Playwright checks | **Active / Installed** | Document structure, single H1 hierarchy, label associations, and keyboard navigation |
+| **Automated WCAG Scanner** | Dedicated scanner | *Not Installed* | External accessibility scanner not currently configured |
 
 ### Test Commands
 - `pnpm test`: Run all unit and component tests once via Vitest.
 - `pnpm test:watch`: Run unit and component tests in watch mode.
 - `pnpm test:e2e:smoke`: Run core Playwright smoke test suite.
-- `pnpm test:e2e`: Run full Playwright E2E suite.
+- `pnpm test:e2e:qa`: Run responsive layout and accessibility fundamentals suites.
+- `pnpm test:e2e:visual`: Run visual regression tests against committed baselines.
+- `pnpm test:e2e:visual:update`: Regenerate visual regression baselines.
+- `pnpm test:e2e`: Run full Playwright test suite (smoke, auth, home, responsive, accessibility, visual).
 - `pnpm test:e2e:ui`: Open interactive Playwright UI.
 
 > **Note**: Do **not** simultaneously configure or mix `Jest` with `Vitest`, or `Cypress` with `Playwright`. Vitest and Playwright are the single standard.
