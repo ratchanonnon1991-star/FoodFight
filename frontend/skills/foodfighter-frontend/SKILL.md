@@ -1,34 +1,22 @@
 ---
 name: foodfighter-frontend
-description: Implement, review, or refactor FoodFighter frontend features using the approved mobile-first design system, reusable primitives, centralized validation/constants, typed service boundaries, and strict frontend-only boundaries.
+description: Implement, review, or refactor FoodFighter frontend features using the approved modular frontend documentation, mobile-first design system, reusable primitives, centralized validation/constants, typed service boundaries, and strict frontend-only boundaries.
 ---
 
 # FoodFighter Frontend Skill
 
-## Scope
+## Workflow
 
-Covers all FoodFighter frontend work:
-- Design System primitives (`src/components/ui/`, `src/styles/tokens.css`)
-- Layout & navigation (`src/components/layout/`, App Router)
-- Authentication flows (`src/features/auth/`)
-- Food Profile onboarding (`src/features/food-profile/`)
-- Room & Lobby (`src/features/room/`)
-- AI Recommendations & Voting (`src/features/recommendations/`, `src/features/voting/`)
-- Restaurant Discovery (`src/features/restaurants/`)
-
-## Canonical Documentation Order
-
-1. `AGENTS.md`
-2. `docs/Srs-Footfight.md`
-3. `docs/FRONTEND.md`
-4. `docs/DESIGN_SYSTEM.md`
-5. `docs/FILE_MAP.md`
-6. Task-specific doc (e.g. `docs/AUTH.md`)
-
-## Core Rules
-
-- **Strict Frontend Boundary**: Never edit `backend/**`. Report missing endpoints as dependencies.
-- **Mobile-First**: Primary reference is 390px. Verify 360px (no overflow), 375px, 390px, 430px, and desktop.
-- **No Hardcoding**: Centralize routes, brand tokens, validation schemas, and API service calls.
-- **Clean Architecture**: Route pages <= 120 lines, UI components <= 180 lines, feature forms <= 220 lines.
-- **Verification Gate**: Evidence from `pnpm exec tsc --noEmit`, `pnpm lint`, and `pnpm build`.
+1. Read `AGENTS.md` for task routing and branch preflight.
+2. Read the task-specific canonical documentation:
+   - Architecture & structure: `docs/FRONTEND_ARCHITECTURE.md`
+   - Components & extraction: `docs/FRONTEND_COMPONENTS.md`
+   - Logic, forms, state & API: `docs/FRONTEND_LOGIC.md`
+   - Styling, tokens, responsive & a11y: `docs/FRONTEND_UI_UX.md`
+   - Testing & verification: `docs/FRONTEND_TESTING.md`
+   - Refactor, quality & completion gate: `docs/FRONTEND_QUALITY.md`
+   - Feature truth: `docs/Srs-Footfight.md`, `docs/AUTH.md`, `docs/DESIGN_SYSTEM.md`
+3. Inspect existing code before adding files.
+4. Implement bounded changes (`BACKEND_MUTATIONS: NONE`).
+5. Run verification (`tsc --noEmit`, `pnpm lint`, `pnpm build`, tests when applicable).
+6. Review diff before commit.

@@ -1,155 +1,262 @@
-<!-- BEGIN:nextjs-agent-rules -->
+# FoodFighter — AI Entry Point
 
-# This is NOT the Next.js you know
+> **Read this file first. Do not read every project document on every task.**
+>
+> This file is the routing/index document for AI agents working on FoodFighter.
 
-This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` (resolved from this file's directory; in monorepos the `next` package may not be visible from the repo root) before writing any code. Heed deprecation notices.
+## 1. Default workflow
 
-This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
+Before coding:
 
-<!-- END:nextjs-agent-rules -->
+1. Confirm the correct Git branch.
+2. Inspect `git status --short`.
+3. Read this file.
+4. Read **only** the task-specific documents listed below.
+5. Inspect the existing source before creating new files.
+6. Implement the smallest coherent change.
+7. Run verification.
+8. Review the full diff before commit.
 
-# FoodFighter Frontend — Canonical Agent Instructions
+Do not load every Markdown file by default. Use selective reading to reduce context/token cost and keep execution fast.
 
-> Scope: `C:\devnest 101\FoodFight\frontend`
-> Hard boundary: frontend work only. Never mutate `backend/**`.
+---
 
-## 1. Source-of-truth order
+## 2. Canonical frontend style
 
-Read before coding:
+FoodFighter uses:
 
-1. `docs/Srs-Footfight.md` (SRS product truth)
-2. Latest owner-approved UI/UX reference PDF
-3. Explicit owner decisions
-4. `AGENTS.md`
-5. Canonical frontend docs (`docs/FRONTEND.md`, `docs/DESIGN_SYSTEM.md`, `docs/AUTH.md`, `docs/FILE_MAP.md`)
-6. Project-local skill (`skills/foodfighter-frontend/SKILL.md`)
-7. External skills (advisory)
-8. Agent preference
+**Feature-oriented + Layered + Explicit Next.js style**
 
-Never silently reconcile conflicts. Report them.
+Meaning:
 
-## 2. Frontend-only mutation boundary
+- organize code around real product features,
+- keep clear layers for routes, feature UI, shared UI, logic, and transport,
+- keep simple code explicit and readable,
+- avoid hiding ordinary logic behind unnecessary abstractions,
+- split files by real responsibility, not just line count.
 
-Allowed:
+If you are doing frontend work, the primary architecture document is:
+
+`docs/FRONTEND_ARCHITECTURE.md`
+
+---
+
+## 3. Task → required reading
+
+| Task type | Required reading |
+|---|---|
+| Any frontend coding | `AGENTS.md` + `docs/FRONTEND_ARCHITECTURE.md` |
+| Create/change reusable UI component | + `docs/FRONTEND_COMPONENTS.md` |
+| Form / validation / state / API / realtime | + `docs/FRONTEND_LOGIC.md` |
+| Styling / responsive / accessibility / UI polish | + `docs/FRONTEND_UI_UX.md` |
+| Test task / behavioral feature | + `docs/FRONTEND_TESTING.md` |
+| Before commit / refactor / cleanup | + `docs/FRONTEND_QUALITY.md` |
+| Auth feature | + existing `docs/AUTH.md` |
+| Product behavior / business rule | + `docs/Srs-Footfight.md` |
+| Design-system-only task | + existing `docs/DESIGN_SYSTEM.md` if present |
+| New feature not documented yet | Read SRS first, then create/update only the feature-specific doc if truly needed |
+
+Do not read documents that are unrelated to the active task.
+
+---
+
+## 4. Source-of-truth order
+
+When documents disagree, prefer:
+
+1. Current owner-approved product/UI reference
+2. `docs/Srs-Footfight.md`
+3. Task-specific feature document
+4. `docs/FRONTEND_UI_UX.md`
+5. `docs/FRONTEND_ARCHITECTURE.md`
+6. Existing implementation, when it does not conflict with newer decisions
+
+Do not invent missing product behavior.
+
+---
+
+## 5. Git branch rule
+
+Every bounded task must verify the branch **before mutation**.
+
+Minimum preflight:
+
+```bash
+git branch --show-current
+git status --short
+```
+
+Use the correct feature/task branch before changing files.
+
+Do not:
+
+- commit onto the wrong branch,
+- use destructive reset/clean commands on unrelated work,
+- mix multiple unrelated features in one commit.
+
+---
+
+## 6. Frontend / backend boundary
+
+Frontend may communicate with backend through HTTP/WebSocket contracts.
+
+Frontend must not import backend source code.
+
+Unless a task explicitly authorizes backend work:
+
+`BACKEND_MUTATIONS: NONE`
+
+Frontend components must not contain backend implementation logic.
+
+---
+
+## 7. Core code-placement rule
+
+Use this mental model:
 
 ```text
-frontend/**
+Route
+  ↓
+Feature component
+  ↓
+Cohesive subcomponents
+  ↓
+Schema / hook / service
+  ↓
+Shared API / realtime infrastructure
+  ↓
+Backend
 ```
 
-Forbidden:
+Avoid:
 
 ```text
-backend/**
-Prisma schema / database migrations
-NestJS modules / controllers / services
-backend environment / configuration
-backend authentication implementation
+Route
+  ↓
+500-line mega component
 ```
 
-If frontend work discovers a missing backend/API capability:
-1. Do not implement backend code.
-2. Record the missing contract/endpoint as a dependency.
-3. Keep frontend behind a typed service/adapter boundary.
-4. Report the dependency clearly.
-
-## 3. Required workflow
+Also avoid:
 
 ```text
-READ → AUDIT → PLAN → IMPLEMENT → VERIFY → REVIEW DIFF → DOCUMENT → COMMIT
+Route
+  ↓
+40 tiny components
+  ↓
+15 index.ts files
+  ↓
+multiple unnecessary abstraction layers
 ```
 
-Before implementation state:
-- objective,
-- why,
-- in-scope,
-- out-of-scope,
-- risks,
-- verification plan.
+---
 
-## 4. Mobile-first mandatory standard
+## 8. Component creation rule
 
-Primary design target is phone portrait:
+Before creating a new component, ask:
+
+- Is this a real reusable or independently understandable responsibility?
+- Does an existing shared component already solve it?
+- Is extraction improving readability?
+- Am I creating it only to reduce line count?
+
+Simple form fields normally stay explicit in the form.
+
+Complex/cohesive behavior may be extracted.
+
+Examples worth extracting:
+
+- `VerificationCodeInput`
+- `SocialAuthButtons`
+- `TermsConsent`
+- `RoomMemberList`
+- `InviteSheet`
+- `MenuRecommendationCard`
+
+Examples usually not worth extracting:
+
+- `EmailLabel`
+- `PasswordLabel`
+- `SubmitText`
+- `OtpDigit1`
+
+---
+
+## 9. Import/export rule
+
+Prefer direct imports that reveal the real file location.
+
+Good:
+
+```ts
+import { RegisterForm } from "@/features/auth/components/RegisterForm";
+```
+
+Avoid broad barrels that hide ownership:
+
+```ts
+import { RegisterForm } from "@/features";
+```
+
+Do not create `index.ts` for every component by default.
+
+---
+
+## 10. Shared component rule
+
+Generic reusable UI belongs in:
+
+`src/components/ui/`
+
+Reusable layout/shell pieces belong in:
+
+`src/components/layout/`
+
+Reusable non-domain widgets belong in:
+
+`src/components/shared/`
+
+FoodFighter-specific UI belongs in:
+
+`src/features/<feature>/`
+
+Do not put Room/Auth/Voting business concepts into generic UI primitives.
+
+---
+
+## 11. Documentation rule
+
+Keep documentation minimal.
+
+One rule should have one canonical home.
+
+Do not duplicate the same coding rule across:
+
+- `AGENTS.md`
+- feature docs
+- skill docs
+- model-specific docs
+- extra audit docs
+
+If a model-specific file merely repeats these rules, consolidate it.
+
+---
+
+## 12. Completion rule
+
+Before reporting completion:
 
 ```text
-Primary reference: 390px portrait
-Required verification widths: 360, 375, 390/393, 430, 768, desktop
+[ ] correct branch
+[ ] task-owned files only
+[ ] responsibilities still clear
+[ ] no unnecessary abstraction
+[ ] no duplicate shared UI
+[ ] typecheck passes
+[ ] lint passes
+[ ] build passes
+[ ] affected responsive UI checked
+[ ] full diff reviewed
+[ ] backend untouched unless explicitly authorized
 ```
 
-- Mobile is the starting design; desktop is progressive enhancement.
-- No mandatory horizontal scrolling at 360px.
-- Touch targets >= 44x44px.
-- Primary actions and form controls are full-width on mobile.
-- Thai and English text must render cleanly without clipping.
-
-## 5. No hard-coded architecture drift
-
-Centralize shared and policy-sensitive values:
-- brand colors → semantic CSS tokens (`src/styles/tokens.css`)
-- routes → route constants (`src/config/routes.ts`)
-- site metadata → site config (`src/config/site-config.ts`)
-- validation policy → feature schema/constants (`src/features/<feature>/constants/`)
-- API endpoints → service layer (`src/features/<feature>/services/`)
-- motion timings → motion presets (`src/lib/motion/`)
-
-Single-use presentational copy may remain local to its component.
-
-## 6. File-size review thresholds
-
-Review thresholds (not arbitrary syntax laws):
-
-```text
-route page / layout:       ideally <= 120 lines
-generic UI component:      ideally <= 180 lines
-feature component / form:  ideally <= 220 lines
-service / schema / config: ideally <= 180 lines
-```
-
-If a file exceeds the threshold, inspect whether responsibilities are mixed and split cleanly by real responsibility.
-
-## 7. Component ownership
-
-```text
-src/components/ui/<component>/       → Generic UI primitives (Button, Input, Card, etc.)
-src/components/layout/<component>/   → Layout framing (PageContainer, AuthLayout)
-src/components/providers/<provider>/ → Providers (MotionProvider)
-src/features/<feature>/              → Feature/domain code (components, services, schemas)
-src/app/                             → App Router pages and route layouts
-```
-
-Generic UI primitives must never import feature/domain code.
-
-## 8. globals.css boundary
-
-`src/app/globals.css` is global-only.
-
-Allowed:
-- Tailwind v4 imports (`@import "tailwindcss";`, `@import "../styles/tokens.css";`)
-- `@theme` mappings
-- `@layer base` resets, html/body defaults, font inheritance
-- focus-visible baseline
-- selection styling
-- `@media (prefers-reduced-motion: reduce)` fallback
-
-Forbidden: Feature-specific rules (`.login-form`, `.register-card`, `.room-card`, etc.).
-
-## 9. Motion & Accessibility
-
-- Motion must explain state, hierarchy, continuity, or feedback.
-- Centralize motion in `src/lib/motion/` and wrap root in `MotionProvider`.
-- Respect `prefers-reduced-motion` at all times.
-- Ensure keyboard access, visible focus rings, ARIA labels, semantic roles (`role="alert"`, `role="status"`), and AAA/AA contrast.
-
-## 10. Verification gate & Git hygiene
-
-Never claim PASS without evidence. Run applicable checks:
-
-```powershell
-pnpm exec tsc --noEmit
-pnpm lint
-pnpm build
-```
-
-Git hygiene:
-- One bounded task per commit.
-- No unrelated files, no secrets, no `.next`, no `node_modules`, no backend mutations.
-- Inspect `git status --short`, `git diff --stat`, and `git diff` before reporting.
+If a task needs more detail, read only the relevant document from Section 3.
