@@ -7,6 +7,7 @@ import { JwtModule } from './infrastructure/jwt/jwt.module';
 import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
 import { UserModule } from './user/user.module';
 import { DatabaseModule } from './database/database.module';
+import { RoomModule } from './room/room.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { DatabaseModule } from './database/database.module';
     JwtModule,
     AuthModule,
     UserModule,
+    RoomModule,
   ],
   providers: [
     {

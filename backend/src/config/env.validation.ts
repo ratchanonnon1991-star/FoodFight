@@ -13,6 +13,7 @@ const envSchema = z.object({
   MAIL_USER: z.string().min(1),
   MAIL_PASSWORD: z.string().min(1),
   MAIL_FROM: z.string().min(1),
+  FRONTEND_URL: z.string().url().default('http://localhost:3000'),
 });
 
 export function validate(config: Record<string, any>) {
