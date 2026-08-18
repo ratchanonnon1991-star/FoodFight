@@ -151,7 +151,33 @@
         bindFn = P.bindRestaurantSelectedEvents;
         break;
 
-      // Future Screens / Shell Router (Split Bill V5, History, Profile)
+      // V5 Split Bill, Receipt OCR & Payment Flow (Prototype Exploration)
+      case '#/bill':
+        screenHtml = P.renderSplitBill();
+        bindFn = P.bindSplitBillEvents;
+        break;
+      case '#/bill/receipt':
+        screenHtml = P.renderBillReceipt();
+        bindFn = P.bindBillReceiptEvents;
+        break;
+      case '#/bill/items':
+        screenHtml = P.renderBillItems();
+        bindFn = P.bindBillItemsEvents;
+        break;
+      case '#/bill/assign':
+        screenHtml = P.renderBillAssign();
+        bindFn = P.bindBillAssignEvents;
+        break;
+      case '#/bill/summary':
+        screenHtml = P.renderBillSummary();
+        bindFn = P.bindBillSummaryEvents;
+        break;
+      case '#/bill/payment':
+        screenHtml = P.renderBillPayment();
+        bindFn = P.bindBillPaymentEvents;
+        break;
+
+      // Future Screens / Shell Router (History, User Profile)
       default: {
         const screen = P.findScreen(hash);
         if (screen) {

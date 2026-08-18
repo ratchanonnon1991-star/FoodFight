@@ -2,7 +2,7 @@
  * FoodFighter UX Prototype — Data Store & Static Constants
  * 
  * Defines SCREEN_REGISTRY, candidate dishes, fictional restaurants catalogue,
- * default prototype state, and static catalogues without active DOM behavior.
+ * receipt items, default prototype state, and static catalogues without active DOM behavior.
  */
 
 (function () {
@@ -256,63 +256,63 @@
       description: 'Group restaurant destination confirmation and transition to Split Bill (V5 boundary).'
     },
 
-    // SPLIT BILL & RECEIPT OCR (Future - Exploratory)
+    // SPLIT BILL & RECEIPT OCR (Implemented V5 — Prototype Exploration)
     {
       id: 'bill',
       hash: '#/bill',
       title: 'Split Bill Overview',
       category: 'Bill',
-      status: 'FUTURE',
+      status: 'IMPLEMENTED',
       scope: 'PROTOTYPE_EXPLORATION',
-      description: 'Bill splitting workflow initiation and option selector (Equal vs Itemized).'
+      description: 'Split bill journey overview, participant roster, and receipt acquisition launch.'
     },
     {
       id: 'bill-receipt',
       hash: '#/bill/receipt',
       title: 'Upload / Scan Receipt',
       category: 'Bill',
-      status: 'FUTURE',
+      status: 'IMPLEMENTED',
       scope: 'PROTOTYPE_EXPLORATION',
-      description: 'Receipt photo capture and OCR parsing mock.'
+      description: 'Simulated thermal receipt camera scanner viewfinder and progressive OCR detection.'
     },
     {
       id: 'bill-items',
       hash: '#/bill/items',
       title: 'Review Receipt Items',
       category: 'Bill',
-      status: 'FUTURE',
+      status: 'IMPLEMENTED',
       scope: 'PROTOTYPE_EXPLORATION',
-      description: 'Itemized dish list with quantities, prices, and tax/service calculations.'
+      description: 'Itemized scanned receipt list with interactive quantity, unit price, item editing, and totals.'
     },
     {
       id: 'bill-assign',
       hash: '#/bill/assign',
       title: 'Select Who Ate What',
       category: 'Bill',
-      status: 'FUTURE',
+      status: 'IMPLEMENTED',
       scope: 'PROTOTYPE_EXPLORATION',
-      description: 'Interactive member dish assignment matrix.'
+      description: 'Per-item participant assignment chips, Everyone shortcut, and running totals preview.'
     },
     {
       id: 'bill-summary',
       hash: '#/bill/summary',
       title: 'Bill Summary & Breakdown',
       category: 'Bill',
-      status: 'FUTURE',
+      status: 'IMPLEMENTED',
       scope: 'PROTOTYPE_EXPLORATION',
-      description: 'Individual payout breakdown with PromptPay QR code integration.'
+      description: 'Per-member total payout breakdown with full item breakdown and exact reconciliation.'
     },
     {
       id: 'bill-payment',
       hash: '#/bill/payment',
       title: 'Payment Status',
       category: 'Bill',
-      status: 'FUTURE',
+      status: 'IMPLEMENTED',
       scope: 'PROTOTYPE_EXPLORATION',
-      description: 'Real-time group payment completion tracker.'
+      description: 'Real-time group payment completion tracker and All Settled celebration.'
     },
 
-    // PROFILE & HISTORY (Future)
+    // PROFILE & HISTORY (Future V6)
     {
       id: 'history',
       hash: '#/history',
@@ -641,7 +641,19 @@
   };
 
   /* ==========================================================================
-     4. Prototype Initial State Definition
+     4. Default Mock Receipt Items (Deterministic Fictional Order)
+     ========================================================================== */
+  const DEFAULT_RECEIPT_ITEMS = [
+    { id: 'item-1', name: 'Wagyu Krapow Over Rice', quantity: 2, unitPrice: 220 },
+    { id: 'item-2', name: 'Crispy Fried Duck Egg', quantity: 2, unitPrice: 30 },
+    { id: 'item-3', name: 'Spicy Lemongrass Wings', quantity: 1, unitPrice: 150 },
+    { id: 'item-4', name: 'Thai Milk Tea', quantity: 3, unitPrice: 65 },
+    { id: 'item-5', name: 'Sparkling Mineral Water', quantity: 2, unitPrice: 40 },
+    { id: 'item-6', name: 'Coconut Pandan Pudding', quantity: 1, unitPrice: 120 }
+  ];
+
+  /* ==========================================================================
+     5. Prototype Initial State Definition
      ========================================================================== */
   const STORAGE_KEY = 'foodfighter-prototype-v1';
 
@@ -721,11 +733,32 @@
       activePinId: 'rest-a1',
       selectedRestaurantId: 'rest-a1',
       restaurantConfirmed: true
+    },
+    bill: {
+      receiptSource: 'sample', // 'sample' | 'scan' | 'upload'
+      scanStatus: 'idle', // 'idle' | 'scanning' | 'done'
+      receiptItems: JSON.parse(JSON.stringify(DEFAULT_RECEIPT_ITEMS)),
+      assignments: {
+        'item-1': ['user', 'maya'],
+        'item-2': ['user', 'maya'],
+        'item-3': ['user', 'maya', 'nina', 'ken'],
+        'item-4': ['user', 'maya', 'nina'],
+        'item-5': ['nina', 'ken'],
+        'item-6': ['user', 'maya', 'nina', 'ken']
+      },
+      paymentStatuses: {
+        user: 'paid',
+        maya: 'paid',
+        nina: 'unpaid',
+        ken: 'unpaid'
+      },
+      finalized: false,
+      completedRecord: null
     }
   };
 
   /* ==========================================================================
-     5. Static Option Catalogues
+     6. Static Option Catalogues
      ========================================================================== */
   const ALLERGY_OPTIONS = [
     { id: 'peanuts', label: 'Peanuts', thai: 'ถั่วลิสง' },
@@ -793,6 +826,7 @@
   window.FFPrototype.SCREEN_REGISTRY = SCREEN_REGISTRY;
   window.FFPrototype.CANDIDATE_MENUS = CANDIDATE_MENUS;
   window.FFPrototype.RESTAURANT_CATALOGUE = RESTAURANT_CATALOGUE;
+  window.FFPrototype.DEFAULT_RECEIPT_ITEMS = DEFAULT_RECEIPT_ITEMS;
   window.FFPrototype.STORAGE_KEY = STORAGE_KEY;
   window.FFPrototype.INITIAL_STATE = INITIAL_STATE;
   window.FFPrototype.ALLERGY_OPTIONS = ALLERGY_OPTIONS;

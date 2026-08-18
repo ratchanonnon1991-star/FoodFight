@@ -47,6 +47,13 @@
           restaurant: {
             ...P.INITIAL_STATE.restaurant,
             ...(parsed.restaurant || {})
+          },
+          bill: {
+            ...P.INITIAL_STATE.bill,
+            ...(parsed.bill || {}),
+            receiptItems: parsed.bill?.receiptItems || JSON.parse(JSON.stringify(P.DEFAULT_RECEIPT_ITEMS)),
+            assignments: { ...P.INITIAL_STATE.bill.assignments, ...(parsed.bill?.assignments || {}) },
+            paymentStatuses: { ...P.INITIAL_STATE.bill.paymentStatuses, ...(parsed.bill?.paymentStatuses || {}) }
           }
         };
       }
@@ -83,6 +90,13 @@
     saveState();
     showToast('Restaurant discovery state reset to default.', 'info');
     navigateTo('#/restaurants');
+  }
+
+  function resetBillState() {
+    state.bill = JSON.parse(JSON.stringify(P.INITIAL_STATE.bill));
+    saveState();
+    showToast('Split Bill & payment flow reset to defaults.', 'info');
+    navigateTo('#/bill');
   }
 
   function getState() {
@@ -371,7 +385,7 @@
         </div>
 
         <div style="font-size:0.75rem;color:var(--color-text-secondary);line-height:1.35;">
-          Simulate room roles, recommendation outcomes, final menus, and restaurant discovery.
+          Simulate room roles, recommendation outcomes, final menus, and split bill payments.
         </div>
 
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.4rem;margin-top:0.25rem;">
@@ -382,6 +396,22 @@
           <button type="button" id="sim-toggle-view" class="proto-sim-btn">
             <span>View: <strong>${(state.restaurant?.discoveryView || 'list').toUpperCase()}</strong></span>
             <span>⇄</span>
+          </button>
+        </div>
+
+        <div style="font-size:0.7rem;font-weight:700;color:var(--color-brand-primary);margin-top:0.4rem;text-transform:uppercase;">
+          V5 Split Bill & Payments Controls
+        </div>
+
+        <div style="display:flex;flex-direction:column;gap:0.35rem;">
+          <button type="button" id="sim-assign-everyone" class="proto-sim-btn" style="background:#EDF9F0;color:#165E2A;border-color:#A6DEB4;">
+            <span>👥 Assign All Items to Everyone</span>
+          </button>
+          <button type="button" id="sim-mark-all-paid" class="proto-sim-btn" style="background:#EFF6FC;color:#185582;border-color:#A7D3F3;">
+            <span>💳 Mark All Members as Paid</span>
+          </button>
+          <button type="button" id="sim-reset-bill" class="proto-sim-btn" style="color:#D32F2F;">
+            <span>↺ Reset Split Bill State</span>
           </button>
         </div>
 
@@ -404,10 +434,6 @@
           </button>
         </div>
 
-        <button type="button" id="sim-reset-rest" class="proto-sim-btn" style="color:#D32F2F;margin-top:0.25rem;">
-          <span>↺ Reset Restaurant Discovery State</span>
-        </button>
-
         <div style="font-size:0.7rem;font-weight:700;color:var(--color-brand-primary);margin-top:0.4rem;text-transform:uppercase;">
           V3 Voting Scenarios
         </div>
@@ -421,9 +447,6 @@
           </button>
           <button type="button" id="sim-vote-final-tie" class="proto-sim-btn" style="background:#EFF6FC;color:#185582;border-color:#A7D3F3;">
             <span>⚖️ Final Vote: Create 2-2 Tie (Host Tie Break)</span>
-          </button>
-          <button type="button" id="sim-reset-recom" class="proto-sim-btn" style="color:#D32F2F;">
-            <span>↺ Reset Recommendation Flow</span>
           </button>
         </div>
       </div>
@@ -441,7 +464,7 @@
                 <a href="${s.hash}" class="proto-nav-item" data-hash="${s.hash}">
                   <span>${escapeHtml(s.title)}</span>
                   <span class="proto-nav-tag ${isImpl ? 'proto-nav-tag-impl' : 'proto-nav-tag-shell'}">
-                    ${isImpl ? 'Implemented' : 'V5 / Future'}
+                    ${isImpl ? 'Implemented' : 'V6 / Future'}
                   </span>
                 </a>
               `;
@@ -462,11 +485,12 @@
     const setMenuBBtn = document.getElementById('sim-set-menu-b');
     const setMenuCBtn = document.getElementById('sim-set-menu-c');
     const setMenuDBtn = document.getElementById('sim-set-menu-d');
-    const resetRestBtn = document.getElementById('sim-reset-rest');
+    const assignEveryoneBtn = document.getElementById('sim-assign-everyone');
+    const markAllPaidBtn = document.getElementById('sim-mark-all-paid');
+    const resetBillBtn = document.getElementById('sim-reset-bill');
     const voteAllOkBtn = document.getElementById('sim-vote-all-ok');
     const voteSplitBtn = document.getElementById('sim-vote-split-no-win');
     const voteFinalTieBtn = document.getElementById('sim-vote-final-tie');
-    const resetRecomBtn = document.getElementById('sim-reset-recom');
 
     if (roleBtn) {
       roleBtn.onclick = () => {
@@ -506,9 +530,35 @@
     if (setMenuCBtn) setMenuCBtn.onclick = () => setFinalMenu('menu-c', 'Kurobuta Shabu');
     if (setMenuDBtn) setMenuDBtn.onclick = () => setFinalMenu('menu-d', 'Seafood Tom Yum');
 
-    if (resetRestBtn) {
-      resetRestBtn.onclick = () => {
-        resetRestaurantState();
+    if (assignEveryoneBtn) {
+      assignEveryoneBtn.onclick = () => {
+        const activeIds = (state.room.members || []).filter(m => m.isActive).map(m => m.id);
+        const items = state.bill.receiptItems || [];
+        items.forEach(item => {
+          state.bill.assignments[item.id] = [...activeIds];
+        });
+        saveState();
+        showToast('All receipt items assigned equally to everyone!', 'success');
+        renderNavigatorContent(document.getElementById('proto-nav-list'));
+        if (P.renderCurrentRoute) P.renderCurrentRoute();
+      };
+    }
+
+    if (markAllPaidBtn) {
+      markAllPaidBtn.onclick = () => {
+        (state.room.members || []).forEach(m => {
+          state.bill.paymentStatuses[m.id] = 'paid';
+        });
+        saveState();
+        showToast('All members marked as Paid ✓', 'success');
+        renderNavigatorContent(document.getElementById('proto-nav-list'));
+        if (P.renderCurrentRoute) P.renderCurrentRoute();
+      };
+    }
+
+    if (resetBillBtn) {
+      resetBillBtn.onclick = () => {
+        resetBillState();
         closePrototypeNavigator();
       };
     }
@@ -568,13 +618,6 @@
         if (P.renderCurrentRoute) P.renderCurrentRoute();
       };
     }
-
-    if (resetRecomBtn) {
-      resetRecomBtn.onclick = () => {
-        resetRecommendationState();
-        closePrototypeNavigator();
-      };
-    }
   }
 
   function openPrototypeNavigator() {
@@ -616,6 +659,7 @@
   P.resetState = resetState;
   P.resetRecommendationState = resetRecommendationState;
   P.resetRestaurantState = resetRestaurantState;
+  P.resetBillState = resetBillState;
   P.showToast = showToast;
   P.copyTextToClipboard = copyTextToClipboard;
   P.openModal = openModal;
