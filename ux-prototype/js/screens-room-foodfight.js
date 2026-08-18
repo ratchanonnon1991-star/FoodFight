@@ -4,7 +4,6 @@
  * Implements:
  *   - Room: Create Room, Join Room Hub, Room Code, Scan QR, Invite Link, Preview, Host Lobby, Member Lobby
  *   - FoodFight: Meal Preferences (6 categories), Waiting for Group Members, AI Generating Recommendations
- *   - Recommendations Boundary Shell (V3 Extension Point) & Future Shells
  */
 
 (function () {
@@ -20,35 +19,38 @@
   /** Screen: Create Room */
   function renderRoomCreate() {
     const state = P.getState();
+    const t = P.t;
     return `
       <main class="app-shell" aria-labelledby="create-room-title">
         <header class="top-bar">
-          <a href="#/home" class="top-bar-action" aria-label="Back to Home">
+          <a href="#/home" class="top-bar-action" aria-label="${t('common.back')}">
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="15 18 9 12 15 6"></polyline></svg>
           </a>
-          <h1 class="top-bar-title">Create Room</h1>
-          <div class="top-bar-placeholder"></div>
+          <h1 class="top-bar-title">${t('home.createRoom.title')}</h1>
+          <div style="display:flex;align-items:center;gap:0.35rem;">
+            ${P.renderLanguageSwitch ? P.renderLanguageSwitch() : ''}
+          </div>
         </header>
 
         <div class="page-shell page-shell-has-bottom-actions">
           <section class="screen-header">
-            <h2 id="create-room-title" class="font-heading-1">Set Up FoodFight Room</h2>
-            <p class="screen-subtitle">Host a session and invite your group to decide on a meal.</p>
+            <h2 id="create-room-title" class="font-heading-1">${t('room.create.title')}</h2>
+            <p class="screen-subtitle">${t('home.createRoom.desc')}</p>
           </section>
 
           <form id="create-room-form">
             <div class="form-group">
-              <label for="room-name-input" class="form-label form-label-required">Room Name</label>
+              <label for="room-name-input" class="form-label form-label-required">${t('room.create.roomName')}</label>
               <input type="text" id="room-name-input" class="form-input" value="${P.escapeHtml(state.room.roomName || 'Dinner Food Fight')}" required />
             </div>
 
             <div class="form-group">
-              <label class="form-label">Search Location</label>
+              <label class="form-label">${t('room.create.location')}</label>
               <input type="text" id="room-location-input" class="form-input" value="${P.escapeHtml(state.room.location || 'Current Location (Sukhumvit)')}" />
             </div>
 
             <div class="form-group">
-              <label class="form-label">Search Radius</label>
+              <label class="form-label">${t('room.create.radius')}</label>
               <div class="pill-list" id="radius-pills">
                 <button type="button" class="pill-item ${state.room.radius === '1 km' ? 'selected' : ''}" data-radius="1 km">1 km</button>
                 <button type="button" class="pill-item ${state.room.radius === '3 km' ? 'selected' : ''}" data-radius="3 km">3 km</button>
@@ -58,18 +60,18 @@
             </div>
 
             <div class="form-group">
-              <label class="form-label">Max Group Members</label>
+              <label class="form-label">${t('room.create.maxMembers')}</label>
               <div class="pill-list" id="max-member-pills">
-                <button type="button" class="pill-item ${state.room.maxMembers === 4 ? 'selected' : ''}" data-max="4">4 Members</button>
-                <button type="button" class="pill-item ${state.room.maxMembers === 6 ? 'selected' : ''}" data-max="6">6 Members</button>
-                <button type="button" class="pill-item ${state.room.maxMembers === 8 ? 'selected' : ''}" data-max="8">8 Members</button>
+                <button type="button" class="pill-item ${state.room.maxMembers === 4 ? 'selected' : ''}" data-max="4">4 ${t('common.member')}</button>
+                <button type="button" class="pill-item ${state.room.maxMembers === 6 ? 'selected' : ''}" data-max="6">6 ${t('common.member')}</button>
+                <button type="button" class="pill-item ${state.room.maxMembers === 8 ? 'selected' : ''}" data-max="8">8 ${t('common.member')}</button>
               </div>
             </div>
           </form>
 
           <div class="bottom-actions">
             <button type="button" id="btn-submit-create-room" class="btn btn-primary btn-lg">
-              Create Room & Open Lobby →
+              ${t('room.create.submit')}
             </button>
           </div>
         </div>
@@ -104,234 +106,63 @@
     if (submitBtn) {
       submitBtn.onclick = () => {
         const nameInput = document.getElementById('room-name-input');
-        const locInput = document.getElementById('room-location-input');
         if (nameInput) state.room.roomName = nameInput.value.trim() || 'Dinner Food Fight';
-        if (locInput) state.room.location = locInput.value.trim() || 'Sukhumvit';
-
         state.room.role = 'host';
-        state.room.roomCode = 'FF-4827';
-        state.room.inviteLink = 'https://foodfight.app/join/FF-4827';
-        state.room.foodFightStarted = false;
-        state.room.simulatedTwoMinutesElapsed = false;
-
-        // Ensure host is ready
-        state.room.members[0].isReady = true;
+        state.room.roomJoined = true;
         P.saveState();
-
-        P.showToast('Room FF-4827 created successfully!', 'success');
+        P.showToast(P.t('home.createRoom.title') + ' ✓', 'success');
         P.navigateTo('#/room/lobby-host');
-      };
-    }
-  }
-
-  /** Screen: Room Lobby — Host */
-  function renderRoomLobbyHost() {
-    const state = P.getState();
-    const room = state.room;
-    const members = room.members || [];
-    const totalCount = members.length;
-    const readyCount = members.filter(m => m.isReady).length;
-    const readyRatio = totalCount > 0 ? readyCount / totalCount : 0;
-    const isAllReady = readyCount === totalCount && totalCount > 0;
-    const isThresholdMet = (readyRatio >= 0.6) && room.simulatedTwoMinutesElapsed;
-    const canStart = isAllReady || isThresholdMet;
-
-    return `
-      <main class="app-shell" aria-labelledby="lobby-host-title">
-        <header class="top-bar">
-          <button type="button" id="btn-host-leave" class="top-bar-action" aria-label="Leave Room">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
-          </button>
-          <h1 class="top-bar-title">Room Lobby</h1>
-          <button type="button" id="btn-host-open-invite" class="top-bar-action" aria-label="Invite Friends">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path><polyline points="16 6 12 2 8 6"></polyline><line x1="12" y1="2" x2="12" y2="15"></line></svg>
-          </button>
-        </header>
-
-        <div class="page-shell page-shell-has-bottom-actions">
-          
-          <!-- Room Identity Card -->
-          <div class="room-identity-card">
-            <div style="display:flex;justify-content:space-between;align-items:flex-start;">
-              <div>
-                <span class="step-badge" style="background:#FFF4CC;color:#7F4E00;border-color:#FFE082;">Host View</span>
-                <h2 id="lobby-host-title" class="font-heading-2" style="margin-top:0.35rem;">
-                  ${P.escapeHtml(room.roomName || 'Dinner Food Fight')}
-                </h2>
-                <div class="font-caption text-secondary" style="margin-top:0.2rem;">
-                  📍 ${P.escapeHtml(room.location || 'Sukhumvit')} • Radius: ${P.escapeHtml(room.radius || '5 km')}
-                </div>
-              </div>
-              
-              <button type="button" id="btn-badge-copy-code" class="room-code-badge" title="Click to copy Room Code">
-                <span>${P.escapeHtml(room.roomCode || 'FF-4827')}</span>
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
-              </button>
-            </div>
-          </div>
-
-          <!-- Readiness Summary Banner -->
-          <div class="readiness-banner ${isAllReady ? 'ready-all' : (isThresholdMet ? 'threshold-met' : '')}">
-            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.4rem;">
-              <span class="font-label" style="color:var(--color-brand-primary);">Member Readiness</span>
-              <span style="font-size:0.85rem;font-weight:700;color:var(--color-brand-primary);">${readyCount} / ${totalCount} Ready (${Math.round(readyRatio * 100)}%)</span>
-            </div>
-            <div class="progress-track" style="margin-bottom:0.6rem;height:8px;">
-              <div class="progress-fill" style="width:${Math.round(readyRatio * 100)}%;background:${isAllReady ? '#22863A' : 'linear-gradient(90deg, #FFC6D9, #916C80)'}"></div>
-            </div>
-            
-            <p class="font-caption text-secondary" style="line-height:1.4;">
-              ${isAllReady 
-                ? '✅ <strong>All members are Ready!</strong> You can start the FoodFight now.'
-                : (isThresholdMet 
-                    ? '⚡ <strong>Threshold reached (≥60% ready + 2 min elapsed).</strong> You can start now with Ready members as Active participants.'
-                    : '⏳ Waiting for members. (Rule: You can start when everyone is ready, or after 2 min if ≥60% are ready).')}
-            </p>
-          </div>
-
-          <!-- Invite Button Banner -->
-          <button type="button" id="btn-host-invite-card" class="btn btn-secondary" style="margin-bottom:1.25rem;">
-            <span>📤 Invite Friends (Share Code / QR / Link)</span>
-          </button>
-
-          <!-- Members List -->
-          <section>
-            <h3 class="font-label text-secondary" style="margin-bottom:0.65rem;">Group Members (${totalCount})</h3>
-            <div class="member-list">
-              ${members.map(m => `
-                <div class="member-card ${m.id === 'user' ? 'is-you' : ''}">
-                  <div class="member-info">
-                    <div class="avatar-badge ${m.colorClass || 'avatar-petal'}">${P.escapeHtml(m.initials)}</div>
-                    <div>
-                      <div style="font-size:0.9rem;font-weight:600;display:flex;align-items:center;gap:0.35rem;">
-                        ${P.escapeHtml(m.name)}
-                        ${m.role === 'Host' ? '<span class="step-badge" style="font-size:0.65rem;padding:1px 5px;">Host</span>' : ''}
-                      </div>
-                      <div class="font-caption text-secondary">${m.isReady ? 'Participating as Active Member' : 'Will observe unless Ready'}</div>
-                    </div>
-                  </div>
-                  
-                  <div>
-                    ${m.isReady 
-                      ? '<span class="member-badge-ready">✓ Ready</span>' 
-                      : '<span class="member-badge-waiting">⏳ Waiting</span>'}
-                  </div>
-                </div>
-              `).join('')}
-            </div>
-          </section>
-
-          <!-- Host Start CTA -->
-          <div class="bottom-actions">
-            <button type="button" id="btn-host-start-foodfight" class="btn btn-primary btn-lg" ${canStart ? '' : 'disabled'}>
-              <span>${canStart ? 'Start FoodFight Now 🚀' : 'Waiting for Ready Members...'}</span>
-            </button>
-            <div class="font-caption text-muted text-center">
-              ${canStart ? 'Active Members will submit their cravings' : 'Need 100% ready or ≥60% after 2 min threshold'}
-            </div>
-          </div>
-
-        </div>
-      </main>
-    `;
-  }
-
-  function bindRoomLobbyHostEvents() {
-    const leaveBtn = document.getElementById('btn-host-leave');
-    const inviteTopBtn = document.getElementById('btn-host-open-invite');
-    const inviteCardBtn = document.getElementById('btn-host-invite-card');
-    const copyCodeBtn = document.getElementById('btn-badge-copy-code');
-    const startBtn = document.getElementById('btn-host-start-foodfight');
-    const state = P.getState();
-
-    if (leaveBtn) leaveBtn.onclick = () => P.showLeaveRoomModal();
-    if (inviteTopBtn) inviteTopBtn.onclick = () => P.showInviteModal();
-    if (inviteCardBtn) inviteCardBtn.onclick = () => P.showInviteModal();
-    if (copyCodeBtn) {
-      copyCodeBtn.onclick = () => P.copyTextToClipboard(state.room.roomCode || 'FF-4827', 'Room Code');
-    }
-
-    if (startBtn) {
-      startBtn.onclick = () => {
-        state.room.members.forEach(m => {
-          m.isActive = m.isReady;
-          m.hasSubmitted = false;
-        });
-        state.room.foodFightStarted = true;
-        P.saveState();
-
-        const activeCount = state.room.members.filter(m => m.isActive).length;
-        const observerCount = state.room.members.length - activeCount;
-        P.showToast(`FoodFight started! ${activeCount} Active, ${observerCount} Observers.`, 'success');
-        P.navigateTo('#/foodfight/preferences');
       };
     }
   }
 
   /** Screen: Join Room Hub */
   function renderRoomJoinHub() {
+    const t = P.t;
     return `
       <main class="app-shell" aria-labelledby="join-hub-title">
         <header class="top-bar">
-          <a href="#/home" class="top-bar-action" aria-label="Back to Home">
+          <a href="#/home" class="top-bar-action" aria-label="${t('common.back')}">
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="15 18 9 12 15 6"></polyline></svg>
           </a>
-          <h1 class="top-bar-title">Join a Room</h1>
-          <div class="top-bar-placeholder"></div>
+          <h1 class="top-bar-title">${t('home.joinRoom.title')}</h1>
+          <div style="display:flex;align-items:center;gap:0.35rem;">
+            ${P.renderLanguageSwitch ? P.renderLanguageSwitch() : ''}
+          </div>
         </header>
 
         <div class="page-shell">
           <section class="screen-header">
-            <h2 id="join-hub-title" class="font-heading-1">How would you like to join?</h2>
-            <p class="screen-subtitle">Choose the method shared by your session host.</p>
+            <h2 id="join-hub-title" class="font-heading-1">${t('room.join.title')}</h2>
+            <p class="screen-subtitle">${t('room.join.subtitle')}</p>
           </section>
 
-          <div style="display:flex;flex-direction:column;gap:0.9rem;margin-top:0.5rem;">
-            <!-- Option 1: Enter Room Code -->
-            <a href="#/room/code" class="action-card" style="flex-direction:row;align-items:center;text-align:left;gap:1rem;padding:1.15rem;">
-              <div class="action-card-icon-bubble" style="background:#FFE1C6;margin-bottom:0;flex-shrink:0;">
-                🔢
-              </div>
+          <div class="join-options-grid" style="display:flex;flex-direction:column;gap:0.85rem;margin-top:1.25rem;">
+            <a href="#/room/code" class="action-card" style="padding:1.15rem;display:flex;align-items:center;gap:1rem;">
+              <div class="action-card-icon-bubble" style="width:48px;height:48px;font-size:1.5rem;flex-shrink:0;">🔢</div>
               <div style="flex:1;">
-                <div class="action-card-title">Enter Room Code</div>
-                <div class="action-card-desc">Type the 6-character code (e.g. FF-4827)</div>
+                <div class="action-card-title" style="font-size:1rem;">${t('room.join.byCode')}</div>
+                <div class="action-card-desc">${t('room.join.byCodeDesc')}</div>
               </div>
-              <span>→</span>
+              <span class="text-secondary">→</span>
             </a>
 
-            <!-- Option 2: Scan QR Code -->
-            <a href="#/room/scan-qr" class="action-card" style="flex-direction:row;align-items:center;text-align:left;gap:1rem;padding:1.15rem;">
-              <div class="action-card-icon-bubble" style="background:#FFC6D9;margin-bottom:0;flex-shrink:0;">
-                📷
-              </div>
+            <a href="#/room/scan-qr" class="action-card" style="padding:1.15rem;display:flex;align-items:center;gap:1rem;">
+              <div class="action-card-icon-bubble" style="width:48px;height:48px;font-size:1.5rem;flex-shrink:0;">📷</div>
               <div style="flex:1;">
-                <div class="action-card-title">Scan QR Code</div>
-                <div class="action-card-desc">Point your camera at the host's screen</div>
+                <div class="action-card-title" style="font-size:1rem;">${t('room.join.byQR')}</div>
+                <div class="action-card-desc">${t('room.join.byQRDesc')}</div>
               </div>
-              <span>→</span>
+              <span class="text-secondary">→</span>
             </a>
 
-            <!-- Option 3: Invite Link -->
-            <a href="#/room/invite" class="action-card" style="flex-direction:row;align-items:center;text-align:left;gap:1rem;padding:1.15rem;">
-              <div class="action-card-icon-bubble" style="background:#FFF7AE;margin-bottom:0;flex-shrink:0;">
-                🔗
-              </div>
+            <a href="#/room/preview" class="action-card" style="padding:1.15rem;display:flex;align-items:center;gap:1rem;">
+              <div class="action-card-icon-bubble" style="width:48px;height:48px;font-size:1.5rem;flex-shrink:0;">🔗</div>
               <div style="flex:1;">
-                <div class="action-card-title">Use Invite Link</div>
-                <div class="action-card-desc">Open directly from a shared WhatsApp or LINE link</div>
+                <div class="action-card-title" style="font-size:1rem;">${t('room.join.byLink')}</div>
+                <div class="action-card-desc">${t('room.join.byLinkDesc')}</div>
               </div>
-              <span>→</span>
-            </a>
-          </div>
-
-          <!-- Demo Quick Join Card -->
-          <div class="card" style="margin-top:1.5rem;background:var(--color-surface-subtle);text-align:center;">
-            <div class="font-label text-muted" style="margin-bottom:0.25rem;">Active Demo Room</div>
-            <div style="font-weight:700;font-size:1.1rem;color:var(--color-brand-primary);">
-              Dinner Food Fight (FF-4827)
-            </div>
-            <a href="#/room/preview" class="btn btn-outline btn-sm" style="margin-top:0.75rem;background:#fff;border-radius:var(--radius-full);">
-              Quick Preview & Join Demo Room
+              <span class="text-secondary">→</span>
             </a>
           </div>
         </div>
@@ -343,42 +174,48 @@
 
   /** Screen: Enter Room Code */
   function renderRoomCode() {
+    const t = P.t;
     return `
       <main class="app-shell" aria-labelledby="code-title">
         <header class="top-bar">
-          <a href="#/room/join" class="top-bar-action"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="15 18 9 12 15 6"></polyline></svg></a>
-          <h1 class="top-bar-title">Enter Room Code</h1>
-          <div class="top-bar-placeholder"></div>
+          <a href="#/room/join" class="top-bar-action" aria-label="${t('common.back')}">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="15 18 9 12 15 6"></polyline></svg>
+          </a>
+          <h1 class="top-bar-title">${t('room.code.title')}</h1>
+          <div style="display:flex;align-items:center;gap:0.35rem;">
+            ${P.renderLanguageSwitch ? P.renderLanguageSwitch() : ''}
+          </div>
         </header>
 
-        <div class="page-shell">
-          <section class="screen-header screen-header-center">
-            <h2 id="code-title" class="font-heading-1">Type 6-Digit Code</h2>
-            <p class="screen-subtitle">Ask your host for the room code displayed in their lobby.</p>
+        <div class="page-shell page-shell-has-bottom-actions">
+          <section class="screen-header" style="text-align:center;">
+            <div style="font-size:36px;margin-bottom:0.5rem;">🔢</div>
+            <h2 id="code-title" class="font-heading-1">${t('room.code.title')}</h2>
+            <p class="screen-subtitle">${t('room.join.byCodeDesc')}</p>
           </section>
 
-          <div id="room-code-alert"></div>
+          <div id="code-alert-area"></div>
 
-          <form id="enter-code-form">
-            <div class="form-group" style="text-align:center;">
-              <input 
-                type="text" 
-                id="input-room-code" 
-                class="form-input" 
-                placeholder="FF-4827" 
-                value="FF-4827"
-                style="text-align:center;font-size:1.5rem;font-weight:700;letter-spacing:0.15em;font-family:monospace;text-transform:uppercase;"
-                required 
-              />
+          <form id="room-code-form" style="margin-top:1.5rem;text-align:center;">
+            <input 
+              type="text" 
+              id="room-code-input" 
+              class="form-input" 
+              placeholder="${t('room.code.placeholder')}" 
+              value="FF-4827" 
+              style="text-align:center;font-size:1.5rem;font-weight:800;letter-spacing:0.1em;text-transform:uppercase;" 
+              required 
+            />
+
+            <div class="font-caption text-muted" style="margin-top:0.75rem;">
+              ${t('room.code.demoHint')}
             </div>
 
-            <div class="alert alert-info" style="font-size:0.8rem;">
-              <span>💡 <strong>Demo Code:</strong> Try <code>FF-4827</code> (or <code>FF-0000</code> to test invalid room error).</span>
+            <div class="bottom-actions">
+              <button type="submit" class="btn btn-primary btn-lg">
+                ${t('room.code.submit')} →
+              </button>
             </div>
-
-            <button type="submit" id="btn-submit-code" class="btn btn-primary btn-lg" style="margin-top:1rem;">
-              Continue to Room →
-            </button>
           </form>
         </div>
       </main>
@@ -386,168 +223,127 @@
   }
 
   function bindRoomCodeEvents() {
-    const form = document.getElementById('enter-code-form');
-    const alertArea = document.getElementById('room-code-alert');
-    const input = document.getElementById('input-room-code');
-    const state = P.getState();
-
+    const form = document.getElementById('room-code-form');
+    const alertArea = document.getElementById('code-alert-area');
     if (form) {
       form.onsubmit = (e) => {
         e.preventDefault();
-        const code = input.value.trim().toUpperCase();
-        if (!code) {
-          alertArea.innerHTML = `<div class="alert alert-danger">Please enter a room code.</div>`;
+        const code = document.getElementById('room-code-input').value.trim().toUpperCase();
+        if (code !== 'FF-4827') {
+          if (alertArea) {
+            alertArea.innerHTML = `<div class="card" style="background:#FFF0F0;color:#8E1F1F;padding:0.75rem;margin-bottom:1rem;font-size:0.85rem;">⚠️ ${P.t('room.code.errorInvalid')}</div>`;
+          }
           return;
         }
-
-        if (code === 'FF-0000') {
-          alertArea.innerHTML = `<div class="alert alert-danger">Room code not found. Please try <code>FF-4827</code>.</div>`;
-        } else {
-          state.room.role = 'member';
-          state.room.roomCode = code;
-          P.saveState();
-          P.showToast(`Found room ${code}!`, 'success');
-          P.navigateTo('#/room/preview');
-        }
+        const state = P.getState();
+        state.room.role = 'member';
+        state.room.roomJoined = true;
+        P.saveState();
+        P.navigateTo('#/room/preview');
       };
     }
   }
 
-  /** Screen: Scan QR Code (Simulation) */
+  /** Screen: Scan QR Code Viewfinder */
   function renderRoomScanQR() {
+    const t = P.t;
     return `
       <main class="app-shell" aria-labelledby="scan-title">
         <header class="top-bar">
-          <a href="#/room/join" class="top-bar-action"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="15 18 9 12 15 6"></polyline></svg></a>
-          <h1 class="top-bar-title">Scan Room QR</h1>
-          <div class="top-bar-placeholder"></div>
+          <a href="#/room/join" class="top-bar-action" aria-label="${t('common.back')}">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="15 18 9 12 15 6"></polyline></svg>
+          </a>
+          <h1 class="top-bar-title">${t('room.scan.title')}</h1>
+          <div style="display:flex;align-items:center;gap:0.35rem;">
+            ${P.renderLanguageSwitch ? P.renderLanguageSwitch() : ''}
+          </div>
         </header>
 
-        <div class="page-shell">
-          <section class="screen-header screen-header-center">
-            <h2 id="scan-title" class="font-heading-1">Scan to Join</h2>
-            <p class="screen-subtitle">Align the host's QR code within the frame below.</p>
+        <div class="page-shell page-shell-has-bottom-actions" style="text-align:center;">
+          <section class="screen-header">
+            <h2 id="scan-title" class="font-heading-1">${t('room.scan.title')}</h2>
+            <p class="screen-subtitle">${t('room.scan.instruction')}</p>
           </section>
 
-          <!-- Camera Viewfinder Simulation -->
-          <div class="camera-scanner-frame">
-            <div class="scanner-reticle">
-              <div class="scanner-laser"></div>
-              <span style="color:rgba(255,255,255,0.7);font-size:0.8rem;text-align:center;padding:1rem;">
-                Align QR Code
-              </span>
+          <!-- Simulated Camera Viewfinder -->
+          <div class="viewfinder-box" style="margin:1.5rem auto;position:relative;width:240px;height:240px;background:#1A131C;border-radius:18px;overflow:hidden;display:flex;align-items:center;justify-content:center;box-shadow:var(--shadow-md);">
+            <div class="viewfinder-corner tl" style="position:absolute;top:12px;left:12px;width:24px;height:24px;border-top:3px solid #FFC6D9;border-left:3px solid #FFC6D9;"></div>
+            <div class="viewfinder-corner tr" style="position:absolute;top:12px;right:12px;width:24px;height:24px;border-top:3px solid #FFC6D9;border-right:3px solid #FFC6D9;"></div>
+            <div class="viewfinder-corner bl" style="position:absolute;bottom:12px;left:12px;width:24px;height:24px;border-bottom:3px solid #FFC6D9;border-left:3px solid #FFC6D9;"></div>
+            <div class="viewfinder-corner br" style="position:absolute;bottom:12px;right:12px;width:24px;height:24px;border-bottom:3px solid #FFC6D9;border-right:3px solid #FFC6D9;"></div>
+
+            <div class="laser-scanner" style="position:absolute;width:100%;height:2px;background:linear-gradient(90deg, transparent, #FFC6D9, transparent);top:40%;"></div>
+            
+            <div style="color:rgba(255,255,255,0.7);font-size:0.8rem;padding:1rem;">
+              📷 ${t('room.scan.simulated')}
             </div>
           </div>
 
-          <div style="text-align:center;margin:1rem 0;">
-            <p class="font-caption text-muted">Zero camera permissions required in prototype mode</p>
+          <div class="bottom-actions">
+            <button type="button" id="btn-trigger-scan" class="btn btn-primary btn-lg">
+              ${t('room.scan.simulateTrigger')}
+            </button>
           </div>
-
-          <button type="button" id="btn-simulate-qr-found" class="btn btn-primary btn-lg">
-            ⚡ Simulate QR Scan Found (FF-4827)
-          </button>
         </div>
       </main>
     `;
   }
 
   function bindRoomScanQREvents() {
-    const simBtn = document.getElementById('btn-simulate-qr-found');
-    const state = P.getState();
-    if (simBtn) {
-      simBtn.onclick = () => {
+    const scanBtn = document.getElementById('btn-trigger-scan');
+    if (scanBtn) {
+      scanBtn.onclick = () => {
+        const state = P.getState();
         state.room.role = 'member';
-        state.room.roomCode = 'FF-4827';
+        state.room.roomJoined = true;
         P.saveState();
-        P.showToast('QR Code scanned: FF-4827', 'success');
+        P.showToast(P.t('room.preview.title') + ' ✓', 'success');
         P.navigateTo('#/room/preview');
       };
     }
   }
 
-  /** Screen: Invite Link / Share View */
-  function renderRoomInviteScreen() {
-    const state = P.getState();
-    const code = state.room.roomCode || 'FF-4827';
-    return `
-      <main class="app-shell">
-        <header class="top-bar">
-          <a href="#/room/join" class="top-bar-action"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="15 18 9 12 15 6"></polyline></svg></a>
-          <h1 class="top-bar-title">Invite Link</h1>
-          <div class="top-bar-placeholder"></div>
-        </header>
-
-        <div class="page-shell">
-          <section class="screen-header screen-header-center">
-            <h2 class="font-heading-1">Invite Link Resolver</h2>
-            <p class="screen-subtitle">Simulating opening a shared FoodFight link</p>
-          </section>
-
-          <div class="card" style="text-align:center;padding:1.5rem;margin:1rem 0;">
-            <div class="font-label text-muted" style="margin-bottom:0.25rem;">Detected URL</div>
-            <code style="font-size:0.85rem;color:var(--color-brand-primary);word-break:break-all;">
-              https://foodfight.app/join/${P.escapeHtml(code)}
-            </code>
-          </div>
-
-          <button type="button" id="btn-resolve-invite-link" class="btn btn-primary btn-lg" style="margin-top:1rem;">
-            Open Room Preview →
-          </button>
-        </div>
-      </main>
-    `;
-  }
-
-  function bindRoomInviteScreenEvents() {
-    const btn = document.getElementById('btn-resolve-invite-link');
-    const state = P.getState();
-    if (btn) {
-      btn.onclick = () => {
-        state.room.role = 'member';
-        P.saveState();
-        P.showToast('Invite link resolved!', 'success');
-        P.navigateTo('#/room/preview');
-      };
-    }
-  }
-
-  /** Screen: Room Preview (Pre-Join Confirmation) */
+  /** Screen: Room Preview */
   function renderRoomPreview() {
     const state = P.getState();
-    const room = state.room;
+    const t = P.t;
+    const roomName = state.room.roomName || 'Dinner Food Fight';
+    const activeCount = (state.room.members || []).filter(m => m.isActive).length;
+
     return `
       <main class="app-shell" aria-labelledby="preview-title">
         <header class="top-bar">
-          <a href="#/room/join" class="top-bar-action"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="15 18 9 12 15 6"></polyline></svg></a>
-          <h1 class="top-bar-title">Room Preview</h1>
-          <div class="top-bar-placeholder"></div>
+          <a href="#/room/join" class="top-bar-action" aria-label="${t('common.back')}">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="15 18 9 12 15 6"></polyline></svg>
+          </a>
+          <h1 class="top-bar-title">${t('room.preview.title')}</h1>
+          <div style="display:flex;align-items:center;gap:0.35rem;">
+            ${P.renderLanguageSwitch ? P.renderLanguageSwitch() : ''}
+          </div>
         </header>
 
         <div class="page-shell page-shell-has-bottom-actions">
-          <section class="screen-header screen-header-center">
-            <div class="brand-badge-logo" style="margin:0 auto 1rem auto;">🍽️</div>
-            <h2 id="preview-title" class="font-heading-1">${P.escapeHtml(room.roomName || 'Dinner Food Fight')}</h2>
-            <p class="screen-subtitle">Hosted by <strong>Alex Johnson</strong> • Code: <code>${P.escapeHtml(room.roomCode || 'FF-4827')}</code></p>
-          </section>
-
-          <div class="card" style="margin:1rem 0;">
-            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.75rem;">
-              <span class="font-label text-secondary">Members in Room</span>
-              <span class="step-badge">${(room.members || []).length} Waiting</span>
+          <div class="card" style="text-align:center;padding:1.5rem;background:#FFFFFF;border-radius:var(--radius-xl);box-shadow:var(--shadow-sm);margin-top:1rem;">
+            <div style="font-size:42px;margin-bottom:0.5rem;">🎉</div>
+            <h2 id="preview-title" class="font-heading-1">${P.escapeHtml(roomName)}</h2>
+            <div class="font-body-small text-secondary" style="margin-top:0.25rem;">
+              ${t('room.preview.host', { hostName: 'Alex Johnson' })}
             </div>
-            
-            <div style="display:flex;align-items:center;gap:0.5rem;padding:0.25rem 0;">
-              ${(room.members || []).map(m => `
-                <div class="avatar-badge ${m.colorClass || 'avatar-petal'}" title="${P.escapeHtml(m.name)}">${P.escapeHtml(m.initials)}</div>
-              `).join('')}
+
+            <div class="card" style="background:var(--color-surface-subtle);margin:1.25rem 0;padding:1rem;">
+              <div style="font-weight:700;color:var(--color-brand-primary);font-size:1.1rem;">
+                ${t('room.preview.activeMembers', { count: activeCount })}
+              </div>
+              <div class="font-caption text-secondary" style="margin-top:0.25rem;">
+                📍 ${P.escapeHtml(state.room.location || 'Sukhumvit, Bangkok')}
+              </div>
             </div>
           </div>
 
           <div class="bottom-actions">
-            <button type="button" id="btn-confirm-join-room" class="btn btn-primary btn-lg">
-              Join Room as Member →
+            <button type="button" id="btn-confirm-join" class="btn btn-primary btn-lg">
+              ${t('room.preview.confirm')}
             </button>
-            <a href="#/room/join" class="btn btn-secondary">Cancel</a>
           </div>
         </div>
       </main>
@@ -555,15 +351,116 @@
   }
 
   function bindRoomPreviewEvents() {
-    const btn = document.getElementById('btn-confirm-join-room');
-    const state = P.getState();
-    if (btn) {
-      btn.onclick = () => {
-        state.room.role = 'member';
-        state.room.roomJoined = true;
-        P.saveState();
-        P.showToast('Joined Dinner Food Fight!', 'success');
+    const confirmBtn = document.getElementById('btn-confirm-join');
+    if (confirmBtn) {
+      confirmBtn.onclick = () => {
         P.navigateTo('#/room/lobby-member');
+      };
+    }
+  }
+
+  /** Screen: Room Lobby — Host */
+  function renderRoomLobbyHost() {
+    const state = P.getState();
+    const t = P.t;
+    const isTH = P.i18n.getLanguage() === 'th';
+    const room = state.room || {};
+    const members = room.members || [];
+    const readyCount = members.filter(m => m.isReady).length;
+    const totalCount = members.length;
+    const canStart = readyCount === totalCount || (readyCount / totalCount >= 0.6 && room.simulatedTwoMinutesElapsed);
+
+    return `
+      <main class="app-shell" aria-labelledby="host-lobby-title" style="padding-bottom: 90px;">
+        <header class="top-bar">
+          <button type="button" class="top-bar-action btn-leave-room" aria-label="${t('room.lobby.leaveRoom')}">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+          </button>
+          <h1 class="top-bar-title" id="host-lobby-title">${t('room.lobby.hostTitle')}</h1>
+          <div style="display:flex;align-items:center;gap:0.35rem;">
+            ${P.renderLanguageSwitch ? P.renderLanguageSwitch() : ''}
+          </div>
+        </header>
+
+        <div class="page-shell">
+          <!-- Room Hero Banner -->
+          <div class="card card-hero" style="margin-bottom:1.25rem;">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+              <div>
+                <span class="step-badge" style="background:#FFF7AE;color:#5E4C00;">👑 ${t('common.host')}</span>
+                <h2 class="font-heading-2" style="margin-top:0.4rem;">${P.escapeHtml(room.roomName || 'Dinner Food Fight')}</h2>
+                <div class="font-caption text-secondary" style="margin-top:0.15rem;">
+                  ${t('room.lobby.roomCode')}: <strong style="font-family:monospace;letter-spacing:0.05em;color:var(--color-brand-primary);">${P.escapeHtml(room.roomCode || 'FF-4827')}</strong>
+                </div>
+              </div>
+              <button type="button" class="btn btn-outline btn-sm btn-open-invite" style="border-radius:var(--radius-full);">
+                ${t('room.lobby.inviteCTA')}
+              </button>
+            </div>
+          </div>
+
+          <!-- Readiness Rule Callout -->
+          <div class="card" style="background:var(--color-surface-subtle);margin-bottom:1.25rem;padding:0.85rem 1rem;">
+            <div class="font-label text-secondary">${t('room.lobby.readyStatus', { readyCount: readyCount, totalCount: totalCount })}</div>
+            <div class="font-caption text-muted" style="margin-top:0.2rem;">${t('room.lobby.readyRule')}</div>
+          </div>
+
+          <!-- Members Roster -->
+          <section aria-label="${t('room.lobby.membersList', { count: members.length, max: room.maxMembers || 6 })}">
+            <h3 class="font-label text-secondary" style="margin-bottom:0.75rem;">
+              ${t('room.lobby.membersList', { count: members.length, max: room.maxMembers || 6 })}
+            </h3>
+            
+            <div class="members-roster-list" style="display:flex;flex-direction:column;gap:0.6rem;">
+              ${members.map(m => `
+                <div class="card member-row" style="display:flex;align-items:center;justify-content:space-between;padding:0.75rem 1rem;">
+                  <div style="display:flex;align-items:center;gap:0.75rem;">
+                    <div class="member-avatar ${m.colorClass || 'avatar-petal'}">${m.initials}</div>
+                    <div>
+                      <div style="font-weight:700;font-size:0.9rem;">
+                        ${P.escapeHtml(m.name)} 
+                        ${m.role === 'Host' ? `<span style="font-size:0.7rem;color:var(--color-brand-secondary);">👑 (${t('common.host')})</span>` : ''}
+                      </div>
+                      <div class="font-caption ${m.isReady ? 'text-success' : 'text-muted'}">
+                        ${m.isReady ? `✓ ${t('common.ready')}` : `⏳ ${t('common.notReady')}`}
+                      </div>
+                    </div>
+                  </div>
+
+                  <span class="step-badge ${m.isReady ? 'status-ready' : 'status-waiting'}" style="font-size:0.7rem;">
+                    ${m.isReady ? t('common.ready') : t('common.notReady')}
+                  </span>
+                </div>
+              `).join('')}
+            </div>
+          </section>
+
+          <!-- Bottom Actions for Host -->
+          <div class="bottom-actions">
+            <button type="button" id="btn-start-battle" class="btn btn-primary btn-lg">
+              ${t('room.lobby.startBattle')}
+            </button>
+          </div>
+        </div>
+      </main>
+    `;
+  }
+
+  function bindRoomLobbyHostEvents() {
+    const leaveBtns = document.querySelectorAll('.btn-leave-room');
+    const inviteBtns = document.querySelectorAll('.btn-open-invite');
+    const startBtn = document.getElementById('btn-start-battle');
+
+    leaveBtns.forEach(btn => btn.onclick = () => P.showLeaveRoomModal());
+    inviteBtns.forEach(btn => btn.onclick = () => P.showInviteModal());
+
+    if (startBtn) {
+      startBtn.onclick = () => {
+        const state = P.getState();
+        state.room.foodFightStarted = true;
+        P.saveState();
+        P.showToast(P.t('room.lobby.startBattle'), 'success');
+        P.navigateTo('#/foodfight/preferences');
       };
     }
   }
@@ -571,129 +468,100 @@
   /** Screen: Room Lobby — Member */
   function renderRoomLobbyMember() {
     const state = P.getState();
-    const room = state.room;
+    const t = P.t;
+    const room = state.room || {};
     const members = room.members || [];
-    const userMember = members.find(m => m.id === 'user') || { isReady: false };
-    const isUserReady = !!userMember.isReady;
+    const userMember = members.find(m => m.id === 'user') || members[0];
 
     return `
-      <main class="app-shell" aria-labelledby="lobby-member-title">
+      <main class="app-shell" aria-labelledby="member-lobby-title" style="padding-bottom: 90px;">
         <header class="top-bar">
-          <button type="button" id="btn-member-leave" class="top-bar-action" aria-label="Leave Room">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+          <button type="button" class="top-bar-action btn-leave-room" aria-label="${t('room.lobby.leaveRoom')}">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
           </button>
-          <h1 class="top-bar-title">Room Lobby</h1>
-          <button type="button" id="btn-member-open-invite" class="top-bar-action" aria-label="Invite Friends">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path><polyline points="16 6 12 2 8 6"></polyline><line x1="12" y1="2" x2="12" y2="15"></line></svg>
-          </button>
+          <h1 class="top-bar-title" id="member-lobby-title">${t('room.lobby.memberTitle')}</h1>
+          <div style="display:flex;align-items:center;gap:0.35rem;">
+            ${P.renderLanguageSwitch ? P.renderLanguageSwitch() : ''}
+          </div>
         </header>
 
-        <div class="page-shell page-shell-has-bottom-actions">
-          
-          <div class="room-identity-card">
+        <div class="page-shell">
+          <!-- Room Hero Banner -->
+          <div class="card card-hero" style="margin-bottom:1.25rem;">
             <div style="display:flex;justify-content:space-between;align-items:flex-start;">
               <div>
-                <span class="step-badge" style="background:#EFF6FC;color:#185582;border-color:#A7D3F3;">Member View</span>
-                <h2 id="lobby-member-title" class="font-heading-2" style="margin-top:0.35rem;">
-                  ${P.escapeHtml(room.roomName || 'Dinner Food Fight')}
-                </h2>
-                <div class="font-caption text-secondary" style="margin-top:0.2rem;">
-                  Host: <strong>Maya Lin</strong> • Radius: ${P.escapeHtml(room.radius || '5 km')}
+                <span class="step-badge" style="background:#EDF9F0;color:#165E2A;">${t('common.member')}</span>
+                <h2 class="font-heading-2" style="margin-top:0.4rem;">${P.escapeHtml(room.roomName || 'Dinner Food Fight')}</h2>
+                <div class="font-caption text-secondary" style="margin-top:0.15rem;">
+                  ${t('room.lobby.roomCode')}: <strong style="font-family:monospace;color:var(--color-brand-primary);">${P.escapeHtml(room.roomCode || 'FF-4827')}</strong>
                 </div>
               </div>
-              
-              <button type="button" id="btn-member-copy-code" class="room-code-badge" title="Click to copy code">
-                <span>${P.escapeHtml(room.roomCode || 'FF-4827')}</span>
+              <button type="button" class="btn btn-outline btn-sm btn-open-invite" style="border-radius:var(--radius-full);">
+                ${t('room.lobby.inviteCTA')}
               </button>
             </div>
           </div>
 
-          <!-- User Personal Readiness Status Card -->
-          <div class="card ${isUserReady ? 'alert-success' : 'alert-warning'}" style="margin-bottom:1.25rem;border-radius:var(--radius-xl);">
-            <div style="display:flex;align-items:center;justify-content:space-between;">
-              <div>
-                <div class="font-label" style="margin-bottom:0.2rem;">Your Status</div>
-                <div style="font-size:1.05rem;font-weight:700;">
-                  ${isUserReady ? '✅ You are READY!' : '⏳ You are NOT READY yet'}
-                </div>
-                <div class="font-caption" style="margin-top:0.25rem;">
-                  ${isUserReady 
-                    ? 'You will participate in AI dish recommendations & voting.' 
-                    : 'Press Ready below before the host starts to participate!'}
-                </div>
-              </div>
+          <!-- Waiting Notice Card -->
+          <div class="card" style="background:var(--color-surface-subtle);margin-bottom:1.25rem;text-align:center;padding:1.25rem;">
+            <div style="font-size:32px;margin-bottom:0.25rem;">⏳</div>
+            <div style="font-weight:700;color:var(--color-brand-primary);font-size:1rem;">${t('room.lobby.waitingForHost')}</div>
+            <div class="font-caption text-secondary" style="margin-top:0.25rem;">
+              ${userMember.isReady ? `✓ ${t('common.ready')}` : `⚠️ ${t('common.notReady')}`}
             </div>
           </div>
 
-          <!-- Group Members List -->
+          <!-- Members List -->
           <section>
-            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.65rem;">
-              <h3 class="font-label text-secondary">Group Members (${members.length})</h3>
-              <button type="button" id="btn-member-invite-link" class="font-caption text-secondary" style="font-weight:600;text-decoration:underline;">
-                + Invite more
-              </button>
-            </div>
-
-            <div class="member-list">
+            <h3 class="font-label text-secondary" style="margin-bottom:0.75rem;">
+              ${t('room.lobby.membersList', { count: members.length, max: room.maxMembers || 6 })}
+            </h3>
+            
+            <div class="members-roster-list" style="display:flex;flex-direction:column;gap:0.6rem;">
               ${members.map(m => `
-                <div class="member-card ${m.id === 'user' ? 'is-you' : ''}">
-                  <div class="member-info">
-                    <div class="avatar-badge ${m.colorClass || 'avatar-petal'}">${P.escapeHtml(m.initials)}</div>
-                    <div>
-                      <div style="font-size:0.9rem;font-weight:600;">
-                        ${P.escapeHtml(m.name)}
-                        ${m.role === 'Host' ? '<span class="step-badge" style="font-size:0.65rem;padding:1px 5px;margin-left:4px;">Host</span>' : ''}
-                      </div>
-                      <div class="font-caption text-secondary">${m.isReady ? 'Ready to vote' : 'Waiting...'}</div>
+                <div class="card member-row" style="display:flex;align-items:center;justify-content:space-between;padding:0.75rem 1rem;">
+                  <div style="display:flex;align-items:center;gap:0.75rem;">
+                    <div class="member-avatar ${m.colorClass || 'avatar-petal'}">${m.initials}</div>
+                    <div style="font-weight:700;font-size:0.9rem;">
+                      ${P.escapeHtml(m.name)} 
+                      ${m.role === 'Host' ? `<span style="font-size:0.7rem;color:var(--color-brand-secondary);">👑 (${t('common.host')})</span>` : ''}
                     </div>
                   </div>
-                  <div>
-                    ${m.isReady 
-                      ? '<span class="member-badge-ready">✓ Ready</span>' 
-                      : '<span class="member-badge-waiting">⏳ Waiting</span>'}
-                  </div>
+                  <span class="step-badge ${m.isReady ? 'status-ready' : 'status-waiting'}" style="font-size:0.7rem;">
+                    ${m.isReady ? t('common.ready') : t('common.notReady')}
+                  </span>
                 </div>
               `).join('')}
             </div>
           </section>
 
-          <!-- Member Toggle Ready CTA -->
+          <!-- Member Toggle Ready Action -->
           <div class="bottom-actions">
-            <button type="button" id="btn-toggle-member-ready" class="btn ${isUserReady ? 'btn-secondary' : 'btn-primary'} btn-lg">
-              <span>${isUserReady ? 'Cancel Ready (Become Not Ready)' : 'I\'m Ready! (Ready to Vote) ✅'}</span>
+            <button type="button" id="btn-toggle-member-ready" class="btn ${userMember.isReady ? 'btn-secondary' : 'btn-primary'} btn-lg">
+              ${userMember.isReady ? `✓ ${t('common.ready')} (${t('room.lobby.toggleReady')})` : `＋ ${t('room.lobby.toggleReady')}`}
             </button>
-            <div class="font-caption text-muted text-center">
-              Host will start FoodFight once members are ready
-            </div>
           </div>
-
         </div>
       </main>
     `;
   }
 
   function bindRoomLobbyMemberEvents() {
-    const leaveBtn = document.getElementById('btn-member-leave');
-    const inviteBtn = document.getElementById('btn-member-open-invite');
-    const inviteLink = document.getElementById('btn-member-invite-link');
-    const copyCodeBtn = document.getElementById('btn-member-copy-code');
-    const readyToggleBtn = document.getElementById('btn-toggle-member-ready');
-    const state = P.getState();
+    const leaveBtns = document.querySelectorAll('.btn-leave-room');
+    const inviteBtns = document.querySelectorAll('.btn-open-invite');
+    const toggleReadyBtn = document.getElementById('btn-toggle-member-ready');
 
-    if (leaveBtn) leaveBtn.onclick = () => P.showLeaveRoomModal();
-    if (inviteBtn) inviteBtn.onclick = () => P.showInviteModal();
-    if (inviteLink) inviteLink.onclick = () => P.showInviteModal();
-    if (copyCodeBtn) {
-      copyCodeBtn.onclick = () => P.copyTextToClipboard(state.room.roomCode || 'FF-4827', 'Room Code');
-    }
+    leaveBtns.forEach(btn => btn.onclick = () => P.showLeaveRoomModal());
+    inviteBtns.forEach(btn => btn.onclick = () => P.showInviteModal());
 
-    if (readyToggleBtn) {
-      readyToggleBtn.onclick = () => {
-        const userMem = state.room.members.find(m => m.id === 'user');
-        if (userMem) {
-          userMem.isReady = !userMem.isReady;
+    if (toggleReadyBtn) {
+      toggleReadyBtn.onclick = () => {
+        const state = P.getState();
+        const user = (state.room.members || []).find(m => m.id === 'user');
+        if (user) {
+          user.isReady = !user.isReady;
           P.saveState();
-          P.showToast(userMem.isReady ? 'You are now Ready!' : 'Ready status cancelled', 'info');
+          P.showToast(user.isReady ? P.t('common.ready') + ' ✓' : P.t('common.notReady'), 'info');
           if (P.renderCurrentRoute) P.renderCurrentRoute();
         }
       };
@@ -701,164 +569,168 @@
   }
 
   /* ==========================================================================
-     2. FoodFight Screens (Preferences, Waiting, Generating)
+     2. FoodFight Preparation & Session Screens
      ========================================================================== */
 
   /** Screen: Meal Preferences */
   function renderMealPreferences() {
     const state = P.getState();
-    const prefs = state.mealPreferences;
+    const t = P.t;
+    const isTH = P.i18n.getLanguage() === 'th';
+    const pref = state.mealPreferences || {};
 
     return `
-      <main class="app-shell" aria-labelledby="pref-title">
+      <main class="app-shell" aria-labelledby="pref-title" style="padding-bottom: 90px;">
         <header class="top-bar">
-          <div style="width:38px;"></div>
-          <h1 class="top-bar-title">Meal Preferences</h1>
-          <button type="button" id="btn-pref-exit" class="top-bar-action" aria-label="Leave Session">✕</button>
+          <a href="#/room/lobby-host" class="top-bar-action" aria-label="${t('common.back')}">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="15 18 9 12 15 6"></polyline></svg>
+          </a>
+          <h1 class="top-bar-title">${t('foodfight.pref.title')}</h1>
+          <div style="display:flex;align-items:center;gap:0.35rem;">
+            ${P.renderLanguageSwitch ? P.renderLanguageSwitch() : ''}
+          </div>
         </header>
 
-        <div class="page-shell page-shell-has-bottom-actions">
-          
+        <div class="page-shell">
           <section class="screen-header">
-            <div style="display:flex;align-items:center;gap:0.45rem;margin-bottom:0.35rem;">
-              <span class="step-badge" style="background:#EDF9F0;color:#165E2A;border-color:#A6DEB4;">Active Member</span>
-              <span class="font-caption text-secondary">Step 1 of 2</span>
-            </div>
-            <h2 id="pref-title" class="font-heading-1">What are you craving?</h2>
-            <p class="screen-subtitle">Select your preferences for this group meal.</p>
+            <h2 id="pref-title" class="font-heading-1">${t('foodfight.pref.title')}</h2>
+            <p class="screen-subtitle">${t('foodfight.pref.subtitle')}</p>
           </section>
 
-          <!-- Category 1: Food Type -->
-          <div class="pref-category-block">
-            <div class="pref-category-title">1. ประเภทอาหาร / Food Type</div>
-            <div class="pref-category-sub">Select one or more categories</div>
-            <div class="pill-list" id="pref-food-types">
-              ${P.PREF_FOOD_TYPES.map(t => {
-                const sel = (prefs.foodTypes || []).includes(t);
-                return `<button type="button" class="pill-item ${sel ? 'selected' : ''}" data-val="${P.escapeHtml(t)}">${P.escapeHtml(t)}</button>`;
-              }).join('')}
-            </div>
-          </div>
-
-          <!-- Category 2: Cuisine / Nationality -->
-          <div class="pref-category-block">
-            <div class="pref-category-title">2. สัญชาติ / Cuisine</div>
-            <div class="pref-category-sub">Nationalities you would like to eat</div>
-            <div class="pill-list" id="pref-cuisines">
-              ${P.PREF_CUISINES.map(c => {
-                const sel = (prefs.cuisines || []).includes(c);
-                return `<button type="button" class="pill-item ${sel ? 'selected' : ''}" data-val="${P.escapeHtml(c)}">${P.escapeHtml(c)}</button>`;
-              }).join('')}
-            </div>
-          </div>
-
-          <!-- Category 3: Ingredients -->
-          <div class="pref-category-block">
-            <div class="pref-category-title">3. วัตถุดิบ / Preferred Ingredients</div>
-            <div class="pref-category-sub">Key proteins or ingredients desired</div>
-            <div class="pill-list" id="pref-ingredients">
-              ${P.PREF_INGREDIENTS.map(i => {
-                const sel = (prefs.ingredients || []).includes(i);
-                return `<button type="button" class="pill-item ${sel ? 'selected' : ''}" data-val="${P.escapeHtml(i)}">${P.escapeHtml(i)}</button>`;
-              }).join('')}
-            </div>
-          </div>
-
-          <!-- Category 4: Price Level -->
-          <div class="pref-category-block">
-            <div class="pref-category-title">4. ระดับราคา / Budget Level</div>
-            <div class="pref-category-sub">Single select budget tier</div>
-            <div class="price-level-grid" id="pref-price-grid">
-              ${P.PREF_PRICE_LEVELS.map(p => {
-                const sel = prefs.priceLevel === p.symbol;
+          <!-- 1. Food Types -->
+          <section class="pref-group-box">
+            <h3 class="font-heading-3">${t('foodfight.pref.foodTypes')}</h3>
+            <div class="pref-chips-container">
+              ${P.PREF_FOOD_TYPES.map(typeStr => {
+                const parts = typeStr.split(' / ');
+                const label = isTH ? (parts[1] || parts[0]) : parts[0];
+                const isSelected = (pref.foodTypes || []).includes(typeStr);
                 return `
-                  <button type="button" class="price-card ${sel ? 'selected' : ''}" data-price="${p.symbol}">
-                    <div class="price-symbol">${p.symbol}</div>
-                    <div style="font-size:0.85rem;font-weight:600;">${p.title}</div>
-                    <div class="price-label">${p.sub}</div>
+                  <button type="button" class="btn-pref-chip ${isSelected ? 'selected' : ''}" data-category="foodTypes" data-val="${P.escapeHtml(typeStr)}">
+                    ${P.escapeHtml(label)}
                   </button>
                 `;
               }).join('')}
             </div>
-          </div>
+          </section>
 
-          <!-- Category 5: Restaurant Style -->
-          <div class="pref-category-block">
-            <div class="pref-category-title">5. สไตล์ร้าน / Dining Style</div>
-            <div class="pref-category-sub">Atmosphere and setting</div>
-            <div class="pill-list" id="pref-styles">
-              ${P.PREF_STYLES.map(s => {
-                const sel = (prefs.restaurantStyles || []).includes(s);
-                return `<button type="button" class="pill-item ${sel ? 'selected' : ''}" data-val="${P.escapeHtml(s)}">${P.escapeHtml(s)}</button>`;
+          <!-- 2. Cuisines -->
+          <section class="pref-group-box">
+            <h3 class="font-heading-3">${t('foodfight.pref.cuisines')}</h3>
+            <div class="pref-chips-container">
+              ${P.PREF_CUISINES.map(cStr => {
+                const parts = cStr.split(' / ');
+                const label = isTH ? (parts[1] || parts[0]) : parts[0];
+                const isSelected = (pref.cuisines || []).includes(cStr);
+                return `
+                  <button type="button" class="btn-pref-chip ${isSelected ? 'selected' : ''}" data-category="cuisines" data-val="${P.escapeHtml(cStr)}">
+                    ${P.escapeHtml(label)}
+                  </button>
+                `;
               }).join('')}
             </div>
-          </div>
+          </section>
 
-          <!-- Category 6: Other Notes -->
-          <div class="pref-category-block">
-            <div class="pref-category-title">6. ความต้องการเพิ่มเติม / Other Notes</div>
-            <div class="pref-category-sub">Specific cravings or extra group notes</div>
-            <textarea id="pref-other-notes" class="form-textarea" placeholder="วันนี้อยากกินอะไรเป็นพิเศษ? (เช่น ไม่อยากกินของทอด, อยากได้ร้านเดินทางสะดวก)">${P.escapeHtml(prefs.otherNotes || '')}</textarea>
-          </div>
+          <!-- 3. Key Ingredients -->
+          <section class="pref-group-box">
+            <h3 class="font-heading-3">${t('foodfight.pref.ingredients')}</h3>
+            <div class="pref-chips-container">
+              ${P.PREF_INGREDIENTS.map(iStr => {
+                const parts = iStr.split(' / ');
+                const label = isTH ? (parts[1] || parts[0]) : parts[0];
+                const isSelected = (pref.ingredients || []).includes(iStr);
+                return `
+                  <button type="button" class="btn-pref-chip ${isSelected ? 'selected' : ''}" data-category="ingredients" data-val="${P.escapeHtml(iStr)}">
+                    ${P.escapeHtml(label)}
+                  </button>
+                `;
+              }).join('')}
+            </div>
+          </section>
 
-          <!-- Submit CTA -->
+          <!-- 4. Price Levels -->
+          <section class="pref-group-box">
+            <h3 class="font-heading-3">${t('foodfight.pref.priceLevel')}</h3>
+            <div style="display:grid;grid-template-columns:repeat(3, 1fr);gap:0.5rem;margin-top:0.6rem;">
+              ${P.PREF_PRICE_LEVELS.map(p => `
+                <button type="button" class="pref-price-btn ${pref.priceLevel === p.symbol ? 'selected' : ''}" data-price="${p.symbol}">
+                  <div style="font-size:1.2rem;font-weight:800;">${p.symbol}</div>
+                  <div class="font-caption">${p.sub}</div>
+                </button>
+              `).join('')}
+            </div>
+          </section>
+
+          <!-- 5. Atmosphere / Styles -->
+          <section class="pref-group-box">
+            <h3 class="font-heading-3">${t('foodfight.pref.restaurantStyles')}</h3>
+            <div class="pref-chips-container">
+              ${P.PREF_STYLES.map(sStr => {
+                const parts = sStr.split(' / ');
+                const label = isTH ? (parts[1] || parts[0]) : parts[0];
+                const isSelected = (pref.restaurantStyles || []).includes(sStr);
+                return `
+                  <button type="button" class="btn-pref-chip ${isSelected ? 'selected' : ''}" data-category="restaurantStyles" data-val="${P.escapeHtml(sStr)}">
+                    ${P.escapeHtml(label)}
+                  </button>
+                `;
+              }).join('')}
+            </div>
+          </section>
+
+          <!-- 6. Additional Notes -->
+          <section class="pref-group-box">
+            <h3 class="font-heading-3">${t('foodfight.pref.otherNotes')}</h3>
+            <textarea id="pref-notes-input" class="form-input" rows="2" placeholder="${t('foodProfile.details.placeholder')}" style="margin-top:0.5rem;resize:vertical;">${P.escapeHtml(pref.otherNotes || '')}</textarea>
+          </section>
+
+          <!-- Bottom Action -->
           <div class="bottom-actions">
             <button type="button" id="btn-submit-preferences" class="btn btn-primary btn-lg">
-              Submit Preferences →
+              ${t('foodfight.pref.submit')}
             </button>
           </div>
-
         </div>
       </main>
     `;
   }
 
   function bindMealPreferencesEvents() {
+    const chips = document.querySelectorAll('.btn-pref-chip');
+    const priceBtns = document.querySelectorAll('.pref-price-btn');
+    const submitBtn = document.getElementById('btn-submit-preferences');
+    const notesInput = document.getElementById('pref-notes-input');
     const state = P.getState();
 
-    const bindPillGroup = (containerId, stateKey) => {
-      const pills = document.querySelectorAll(`#${containerId} .pill-item`);
-      pills.forEach(p => {
-        p.onclick = () => {
-          const val = p.getAttribute('data-val');
-          let current = state.mealPreferences[stateKey] || [];
-          current = current.includes(val) ? current.filter(x => x !== val) : [...current, val];
-          state.mealPreferences[stateKey] = current;
-          p.classList.toggle('selected', current.includes(val));
-          P.saveState();
-        };
-      });
-    };
-
-    bindPillGroup('pref-food-types', 'foodTypes');
-    bindPillGroup('pref-cuisines', 'cuisines');
-    bindPillGroup('pref-ingredients', 'ingredients');
-    bindPillGroup('pref-styles', 'restaurantStyles');
-
-    const priceCards = document.querySelectorAll('#pref-price-grid .price-card');
-    priceCards.forEach(card => {
-      card.onclick = () => {
-        priceCards.forEach(c => c.classList.remove('selected'));
-        card.classList.add('selected');
-        state.mealPreferences.priceLevel = card.getAttribute('data-price');
+    chips.forEach(chip => {
+      chip.onclick = () => {
+        const cat = chip.getAttribute('data-category');
+        const val = chip.getAttribute('data-val');
+        let cur = state.mealPreferences[cat] || [];
+        if (cur.includes(val)) {
+          state.mealPreferences[cat] = cur.filter(x => x !== val);
+          chip.classList.remove('selected');
+        } else {
+          state.mealPreferences[cat] = [...cur, val];
+          chip.classList.add('selected');
+        }
         P.saveState();
       };
     });
 
-    const exitBtn = document.getElementById('btn-pref-exit');
-    if (exitBtn) exitBtn.onclick = () => P.showLeaveRoomModal();
+    priceBtns.forEach(btn => {
+      btn.onclick = () => {
+        priceBtns.forEach(b => b.classList.remove('selected'));
+        btn.classList.add('selected');
+        state.mealPreferences.priceLevel = btn.getAttribute('data-price');
+        P.saveState();
+      };
+    });
 
-    const submitBtn = document.getElementById('btn-submit-preferences');
     if (submitBtn) {
       submitBtn.onclick = () => {
-        const notesInput = document.getElementById('pref-other-notes');
         if (notesInput) state.mealPreferences.otherNotes = notesInput.value.trim();
-
-        const userMem = state.room.members.find(m => m.id === 'user');
-        if (userMem) userMem.hasSubmitted = true;
         P.saveState();
-
-        P.showToast('Preferences submitted!', 'success');
         P.navigateTo('#/foodfight/waiting');
       };
     }
@@ -867,317 +739,166 @@
   /** Screen: Waiting for Members */
   function renderFoodFightWaiting() {
     const state = P.getState();
+    const t = P.t;
     const members = state.room.members || [];
-    const activeMembers = members.filter(m => m.isActive);
-    const observerMembers = members.filter(m => !m.isActive);
-    const submittedCount = activeMembers.filter(m => m.hasSubmitted).length;
-    const totalActive = activeMembers.length;
-    const allSubmitted = submittedCount === totalActive && totalActive > 0;
+    const submittedCount = members.filter(m => m.hasSubmitted).length;
 
     return `
       <main class="app-shell" aria-labelledby="waiting-title">
         <header class="top-bar">
-          <div style="width:38px;"></div>
-          <h1 class="top-bar-title">FoodFight Session</h1>
-          <button type="button" id="btn-waiting-exit" class="top-bar-action" aria-label="Exit">✕</button>
+          <a href="#/foodfight/preferences" class="top-bar-action" aria-label="${t('common.back')}">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="15 18 9 12 15 6"></polyline></svg>
+          </a>
+          <h1 class="top-bar-title">${t('foodfight.waiting.title')}</h1>
+          <div style="display:flex;align-items:center;gap:0.35rem;">
+            ${P.renderLanguageSwitch ? P.renderLanguageSwitch() : ''}
+          </div>
         </header>
 
-        <div class="page-shell">
-          
-          <div class="waiting-hero-card">
-            <div class="brand-badge-logo" style="margin:0 auto 0.75rem auto;">
-              <span class="spinner spinner-primary"></span>
-            </div>
-            <h2 id="waiting-title" class="font-heading-1">Waiting for Group</h2>
-            <p class="screen-subtitle" style="margin-top:0.25rem;">
-              ${allSubmitted 
-                ? '🎉 All active members have submitted! Synthesizing AI recommendations...' 
-                : 'Waiting for active members to complete their cravings.'}
-            </p>
+        <div class="page-shell page-shell-has-bottom-actions" style="text-align:center;">
+          <div style="font-size:42px;margin:1.5rem 0 0.5rem 0;">⏳</div>
+          <h2 id="waiting-title" class="font-heading-1">${t('foodfight.waiting.title')}</h2>
+          <p class="screen-subtitle">${t('foodfight.waiting.submitted', { count: submittedCount, total: members.length })}</p>
 
-            <div style="margin-top:1.25rem;">
-              <div style="display:flex;justify-content:space-between;font-size:0.85rem;font-weight:600;margin-bottom:0.35rem;">
-                <span>Submissions</span>
-                <span>${submittedCount} of ${totalActive} Submitted</span>
+          <div class="members-roster-list" style="margin:1.5rem 0;text-align:left;display:flex;flex-direction:column;gap:0.5rem;">
+            ${members.map(m => `
+              <div class="card member-row" style="display:flex;align-items:center;justify-content:space-between;padding:0.75rem 1rem;">
+                <div style="display:flex;align-items:center;gap:0.75rem;">
+                  <div class="member-avatar ${m.colorClass || 'avatar-petal'}">${m.initials}</div>
+                  <div style="font-weight:700;">${P.escapeHtml(m.name)}</div>
+                </div>
+                <span class="step-badge ${m.hasSubmitted ? 'status-ready' : 'status-waiting'}">
+                  ${m.hasSubmitted ? `✓ ${t('common.done')}` : `⏳ ${t('common.notReady')}`}
+                </span>
               </div>
-              <div class="progress-track" style="height:8px;">
-                <div class="progress-fill" style="width:${Math.round((submittedCount / totalActive) * 100)}%;"></div>
-              </div>
-            </div>
+            `).join('')}
           </div>
 
-          <!-- Active Members List -->
-          <section style="margin-bottom:1.5rem;">
-            <h3 class="font-label text-secondary" style="margin-bottom:0.65rem;">Active Members (${totalActive})</h3>
-            <div class="member-list">
-              ${activeMembers.map(m => `
-                <div class="member-card">
-                  <div class="member-info">
-                    <div class="avatar-badge ${m.colorClass || 'avatar-petal'}">${P.escapeHtml(m.initials)}</div>
-                    <div>
-                      <div style="font-size:0.9rem;font-weight:600;">${P.escapeHtml(m.name)}</div>
-                      <div class="font-caption text-secondary">${m.hasSubmitted ? 'Submitted preferences' : 'Choosing preferences...'}</div>
-                    </div>
-                  </div>
-                  <div>
-                    ${m.hasSubmitted 
-                      ? '<span class="member-badge-ready">✓ Submitted</span>' 
-                      : '<span class="member-badge-waiting"><span class="spinner" style="width:12px;height:12px;"></span> Waiting</span>'}
-                  </div>
-                </div>
-              `).join('')}
-            </div>
-          </section>
-
-          <!-- Observers List (If any) -->
-          ${observerMembers.length > 0 ? `
-            <section style="margin-bottom:1.5rem;">
-              <h3 class="font-label text-muted" style="margin-bottom:0.5rem;">Observers (${observerMembers.length})</h3>
-              <div class="card" style="background:var(--color-surface-subtle);padding:0.75rem 1rem;">
-                <div class="font-caption text-secondary" style="line-height:1.4;">
-                  ${observerMembers.map(m => `<strong>${P.escapeHtml(m.name)}</strong>`).join(', ')} joined as observers (not ready at start) and will follow along without submitting preferences.
-                </div>
-              </div>
-            </section>
-          ` : ''}
-
+          <div class="bottom-actions">
+            <a href="#/foodfight/generating" class="btn btn-primary btn-lg">
+              ${t('foodfight.generating.title')} →
+            </a>
+          </div>
         </div>
       </main>
     `;
   }
 
-  function bindFoodFightWaitingEvents() {
-    const exitBtn = document.getElementById('btn-waiting-exit');
-    if (exitBtn) exitBtn.onclick = () => P.showLeaveRoomModal();
-
-    const state = P.getState();
-    const members = state.room.members || [];
-    const activeMembers = members.filter(m => m.isActive);
-    const submittedCount = activeMembers.filter(m => m.hasSubmitted).length;
-
-    if (submittedCount === activeMembers.length && activeMembers.length > 0) {
-      setTimeout(() => {
-        P.navigateTo('#/foodfight/generating');
-      }, 700);
-    }
-  }
+  function bindFoodFightWaitingEvents() {}
 
   /** Screen: Generating Recommendations */
   function renderFoodFightGenerating() {
+    const t = P.t;
     return `
-      <main class="app-shell" aria-labelledby="generating-title">
-        <header class="top-bar">
-          <div style="width:38px;"></div>
-          <h1 class="top-bar-title">AI Synthesis</h1>
-          <div style="width:38px;"></div>
-        </header>
+      <main class="app-shell" aria-labelledby="gen-title">
+        <div class="page-shell page-shell-has-bottom-actions" style="text-align:center;padding-top:3rem;">
+          <div style="display:flex;justify-content:flex-end;margin-bottom:1rem;">
+            ${P.renderLanguageSwitch ? P.renderLanguageSwitch() : ''}
+          </div>
 
-        <div class="page-shell">
-          <div class="generating-container">
-            
-            <div class="radar-pulse-box">
-              <div class="radar-pulse-ring"></div>
-              <div class="radar-pulse-ring-2"></div>
-              <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
-              </svg>
-            </div>
+          <!-- Radar Pulse Animation -->
+          <div class="radar-pulse-container" style="position:relative;width:120px;height:120px;margin:0 auto 1.5rem auto;display:flex;align-items:center;justify-content:center;">
+            <div class="radar-ring" style="position:absolute;width:100%;height:100%;border-radius:50%;border:2px solid var(--color-brand-secondary);opacity:0.3;animation:pulse 2s infinite;"></div>
+            <div style="font-size:42px;">✨</div>
+          </div>
 
-            <div>
-              <h2 id="generating-title" class="font-heading-1">Finding the Best Match</h2>
-              <p class="screen-subtitle" style="margin-top:0.35rem;max-width:320px;">
-                AI is analyzing active member allergies, dietary constraints, budgets, and cravings...
-              </p>
-            </div>
+          <h2 id="gen-title" class="font-heading-1">${t('foodfight.generating.title')}</h2>
+          <p class="screen-subtitle">${t('foodfight.generating.subtitle')}</p>
 
-            <!-- Live synthesis tags preview -->
-            <div class="synthesis-tag-list">
-              <div class="synthesis-tag-item">
-                <span>🛡️</span>
-                <span>Allergens & Dietary Constraints checked (0 conflicts)</span>
-              </div>
-              <div class="synthesis-tag-item">
-                <span>🍜</span>
-                <span>Top Cravings Synthesized: Noodles & Hot Pot</span>
-              </div>
-              <div class="synthesis-tag-item">
-                <span>💰</span>
-                <span>Budget Tier: ฿฿ Moderate (150-400 THB)</span>
-              </div>
-              <div class="synthesis-tag-item">
-                <span>📍</span>
-                <span>Filtering within 5 km of Sukhumvit</span>
-              </div>
-            </div>
-
-            <div class="progress-track" style="width:200px;height:6px;margin-top:1rem;">
-              <div class="progress-fill" style="width:100%;animation:laserScan 1.5s infinite;"></div>
-            </div>
-
+          <div class="bottom-actions">
+            <a href="#/recommendations" class="btn btn-primary btn-lg">
+              ${t('recommend.round1.title')} →
+            </a>
           </div>
         </div>
       </main>
     `;
   }
 
-  function bindFoodFightGeneratingEvents() {
-    setTimeout(() => {
-      P.showToast('AI recommendations generated successfully!', 'success');
-      P.navigateTo('#/recommendations');
-    }, 1500);
-  }
+  /** Screen: Room Invite Link & QR Screen */
+  function renderRoomInviteScreen() {
+    const state = P.getState();
+    const t = P.t;
+    const code = state.room.roomCode || 'FF-4827';
+    const link = state.room.inviteLink || `https://foodfight.app/join/${code}`;
 
-  /* ==========================================================================
-     3. Recommendations Boundary & Future Shells
-     ========================================================================== */
-
-  /** V3 Boundary Screen: Recommendations Ready */
-  function renderRecommendationsBoundaryShell() {
     return `
-      <main class="app-shell">
+      <main class="app-shell" aria-labelledby="invite-title">
         <header class="top-bar">
-          <a href="#/home" class="top-bar-action" aria-label="Home">
+          <a href="#/room/lobby-host" class="top-bar-action" aria-label="${t('common.back')}">
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="15 18 9 12 15 6"></polyline></svg>
           </a>
-          <h1 class="top-bar-title">Recommended Menus</h1>
-          <a href="#/home" class="top-bar-action"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg></a>
+          <h1 class="top-bar-title" id="invite-title">${t('room.invite.modalTitle')}</h1>
+          <div style="display:flex;align-items:center;gap:0.35rem;">
+            ${P.renderLanguageSwitch ? P.renderLanguageSwitch() : ''}
+          </div>
         </header>
 
-        <div class="page-shell">
-          <div class="future-shell-container">
-            
-            <div class="future-shell-badge" style="background:#EDF9F0;color:#165E2A;border-color:#A6DEB4;">
-              V2 PHASE COMPLETE • CONTINUES IN V3
+        <div class="page-shell page-shell-has-bottom-actions">
+          <section class="screen-header" style="text-align:center;">
+            <h2 class="font-heading-1">${t('room.invite.modalTitle')}</h2>
+            <p class="screen-subtitle">${t('room.invite.modalSubtitle')}</p>
+          </section>
+
+          <!-- Room Code Card -->
+          <div class="card" style="text-align:center;background:var(--color-surface-subtle);padding:1.25rem;margin:1rem 0;">
+            <div class="font-label text-muted" style="margin-bottom:0.25rem;">${t('room.lobby.roomCode')}</div>
+            <div style="font-family:monospace;font-size:1.8rem;font-weight:700;letter-spacing:0.1em;color:var(--color-brand-primary);">
+              ${P.escapeHtml(code)}
             </div>
+            <button type="button" id="btn-copy-code-screen" class="btn btn-outline btn-sm" style="margin-top:0.75rem;background:#fff;border-radius:var(--radius-full);">
+              📋 ${t('room.invite.copyCode')}
+            </button>
+          </div>
 
-            <div class="future-shell-card" style="border-style:solid;border-color:var(--color-brand-secondary);">
-              <div class="future-shell-icon" style="background:var(--color-accent-custard);font-size:32px;">
-                🎉
-              </div>
-
-              <h2 class="font-heading-2" style="margin-top:0.35rem;">
-                Recommendations Are Ready!
-              </h2>
-
-              <p class="font-body-small text-secondary" style="max-width:320px;line-height:1.45;">
-                AI has successfully synthesized your group's food profiles, dietary constraints, and meal preferences.
-              </p>
-
-              <div class="card" style="background:var(--color-surface-subtle);text-align:left;width:100%;margin-top:0.5rem;">
-                <div class="font-label text-secondary" style="margin-bottom:0.25rem;">Next in Prototype V3:</div>
-                <ul style="font-size:0.8rem;color:var(--color-text-secondary);padding-left:1.15rem;line-height:1.4;">
-                  <li>2-Dish Recommendation Cards & Allergens</li>
-                  <li>Interactive OK / PASS Group Voting</li>
-                  <li>Consensus & Round 2 Re-recommendation</li>
-                  <li>4-Dish Final Vote Tie-Break</li>
-                  <li>Final Menu Winner Reveal & Restaurants</li>
-                </ul>
-              </div>
+          <!-- Simulated QR Matrix Box -->
+          <div class="qr-mock-container" style="text-align:center;margin:1rem 0;">
+            <div class="qr-matrix-box" aria-label="Simulated QR Code" style="margin:0 auto;width:160px;height:160px;display:grid;grid-template-columns:repeat(5, 1fr);gap:4px;padding:12px;background:#fff;border:2px solid var(--color-brand-primary);border-radius:16px;">
+              <div style="background:#48284A;border-radius:4px;"></div><div style="background:#48284A;border-radius:4px;"></div><div style="background:#FFE1C6;border-radius:4px;"></div><div style="background:#48284A;border-radius:4px;"></div><div style="background:#48284A;border-radius:4px;"></div>
+              <div style="background:#48284A;border-radius:4px;"></div><div style="background:#FFE1C6;border-radius:4px;"></div><div style="background:#48284A;border-radius:4px;"></div><div style="background:#FFE1C6;border-radius:4px;"></div><div style="background:#48284A;border-radius:4px;"></div>
+              <div style="background:#FFE1C6;border-radius:4px;"></div><div style="background:#48284A;border-radius:4px;"></div><div style="background:#FFC6D9;border-radius:4px;"></div><div style="background:#48284A;border-radius:4px;"></div><div style="background:#FFE1C6;border-radius:4px;"></div>
+              <div style="background:#48284A;border-radius:4px;"></div><div style="background:#FFE1C6;border-radius:4px;"></div><div style="background:#48284A;border-radius:4px;"></div><div style="background:#FFE1C6;border-radius:4px;"></div><div style="background:#48284A;border-radius:4px;"></div>
+              <div style="background:#48284A;border-radius:4px;"></div><div style="background:#48284A;border-radius:4px;"></div><div style="background:#FFE1C6;border-radius:4px;"></div><div style="background:#48284A;border-radius:4px;"></div><div style="background:#48284A;border-radius:4px;"></div>
             </div>
+          </div>
 
-            <div style="width:100%;display:flex;flex-direction:column;gap:0.65rem;margin-top:1rem;">
-              <a href="#/home" class="btn btn-primary">
-                Return to Home Dashboard
-              </a>
-              <button type="button" id="btn-open-proto-nav-v3" class="btn btn-secondary">
-                Open Screen Navigator
+          <!-- Share Link Box -->
+          <div class="form-group" style="margin-bottom:1.5rem;">
+            <label class="form-label">${t('room.join.byLink')}</label>
+            <div style="display:flex;gap:0.5rem;">
+              <input type="text" readonly value="${P.escapeHtml(link)}" class="form-input" style="font-size:0.8rem;background:var(--color-surface-subtle);" />
+              <button type="button" id="btn-copy-link-screen" class="btn btn-secondary" style="width:auto;white-space:nowrap;padding:0 0.85rem;">
+                ${t('room.invite.copyLink')}
               </button>
             </div>
+          </div>
 
+          <div class="bottom-actions">
+            <a href="#/room/lobby-host" class="btn btn-primary btn-lg">
+              ${t('common.done')}
+            </a>
           </div>
         </div>
       </main>
     `;
   }
 
-  function bindRecommendationsBoundaryEvents() {
-    const navBtn = document.getElementById('btn-open-proto-nav-v3');
-    if (navBtn) navBtn.onclick = () => P.openPrototypeNavigator();
+  function bindRoomInviteScreenEvents() {
+    const state = P.getState();
+    const code = state.room.roomCode || 'FF-4827';
+    const link = state.room.inviteLink || `https://foodfight.app/join/${code}`;
+    const copyCodeBtn = document.getElementById('btn-copy-code-screen');
+    const copyLinkBtn = document.getElementById('btn-copy-link-screen');
+
+    if (copyCodeBtn) copyCodeBtn.onclick = () => P.copyTextToClipboard(code, P.t('room.lobby.roomCode'));
+    if (copyLinkBtn) copyLinkBtn.onclick = () => P.copyTextToClipboard(link, P.t('room.join.byLink'));
   }
 
-  /** Future Screen Shell (For Unimplemented Screens) */
-  function renderFutureShell(screen) {
-    const isExploration = screen.scope === 'PROTOTYPE_EXPLORATION';
-
-    return `
-      <main class="app-shell" aria-labelledby="shell-screen-title">
-        <header class="top-bar">
-          <button type="button" id="btn-shell-back" class="top-bar-action" aria-label="Go Back">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="15 18 9 12 15 6"></polyline></svg>
-          </button>
-          <h1 class="top-bar-title">${P.escapeHtml(screen.title)}</h1>
-          <a href="#/home" class="top-bar-action" aria-label="Go Home">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg>
-          </a>
-        </header>
-
-        <div class="page-shell">
-          <div class="future-shell-container">
-            <div class="future-shell-badge">
-              <span>${P.escapeHtml(screen.category)}</span>
-              ${isExploration ? '• EXPLORATION' : ''}
-            </div>
-
-            <div class="future-shell-card">
-              <div class="future-shell-icon">
-                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
-              </div>
-
-              <h2 id="shell-screen-title" class="font-heading-2" style="margin-top:0.35rem;">
-                ${P.escapeHtml(screen.title)}
-              </h2>
-
-              <p class="font-body-small text-secondary" style="max-width:320px;line-height:1.45;">
-                ${P.escapeHtml(screen.description)}
-              </p>
-
-              <div class="step-badge" style="margin-top:0.5rem;background:var(--color-surface-subtle);color:var(--color-brand-secondary);">
-                COMING IN NEXT PROTOTYPE PHASE
-              </div>
-            </div>
-
-            <div style="width:100%;display:flex;flex-direction:column;gap:0.65rem;margin-top:1rem;">
-              <a href="#/home" class="btn btn-primary">Return to Home Dashboard</a>
-              <button type="button" id="btn-open-proto-nav-from-shell" class="btn btn-secondary">Open Screen Navigator</button>
-            </div>
-          </div>
-        </div>
-      </main>
-    `;
-  }
-
-  function bindFutureShellEvents() {
-    const backBtn = document.getElementById('btn-shell-back');
-    if (backBtn) {
-      backBtn.onclick = () => {
-        if (window.history.length > 1) window.history.back();
-        else P.navigateTo('#/home');
-      };
-    }
-    const navBtn = document.getElementById('btn-open-proto-nav-from-shell');
-    if (navBtn) navBtn.onclick = () => P.openPrototypeNavigator();
-  }
-
-  function renderNotFoundShell(hash) {
-    return `
-      <main class="app-shell">
-        <header class="top-bar"><h1 class="top-bar-title">Screen Not Found</h1></header>
-        <div class="page-shell">
-          <div class="future-shell-container">
-            <h2 class="font-heading-1">404</h2>
-            <p class="font-body-small text-secondary">Route <code>${P.escapeHtml(hash)}</code> is not registered.</p>
-            <a href="#/home" class="btn btn-primary" style="margin-top:1rem;">Go to Home</a>
-          </div>
-        </div>
-      </main>
-    `;
-  }
+  function bindFoodFightGeneratingEvents() {}
 
   // Expose to Prototype Namespace
   P.renderRoomCreate = renderRoomCreate;
   P.bindRoomCreateEvents = bindRoomCreateEvents;
-  P.renderRoomLobbyHost = renderRoomLobbyHost;
-  P.bindRoomLobbyHostEvents = bindRoomLobbyHostEvents;
   P.renderRoomJoinHub = renderRoomJoinHub;
   P.bindRoomJoinHubEvents = bindRoomJoinHubEvents;
   P.renderRoomCode = renderRoomCode;
@@ -1188,6 +909,8 @@
   P.bindRoomInviteScreenEvents = bindRoomInviteScreenEvents;
   P.renderRoomPreview = renderRoomPreview;
   P.bindRoomPreviewEvents = bindRoomPreviewEvents;
+  P.renderRoomLobbyHost = renderRoomLobbyHost;
+  P.bindRoomLobbyHostEvents = bindRoomLobbyHostEvents;
   P.renderRoomLobbyMember = renderRoomLobbyMember;
   P.bindRoomLobbyMemberEvents = bindRoomLobbyMemberEvents;
   P.renderMealPreferences = renderMealPreferences;
@@ -1196,10 +919,5 @@
   P.bindFoodFightWaitingEvents = bindFoodFightWaitingEvents;
   P.renderFoodFightGenerating = renderFoodFightGenerating;
   P.bindFoodFightGeneratingEvents = bindFoodFightGeneratingEvents;
-  P.renderRecommendationsBoundaryShell = renderRecommendationsBoundaryShell;
-  P.bindRecommendationsBoundaryEvents = bindRecommendationsBoundaryEvents;
-  P.renderFutureShell = renderFutureShell;
-  P.bindFutureShellEvents = bindFutureShellEvents;
-  P.renderNotFoundShell = renderNotFoundShell;
 
 })();

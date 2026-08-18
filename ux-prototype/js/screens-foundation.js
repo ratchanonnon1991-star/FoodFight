@@ -20,9 +20,14 @@
   /** Screen: Login */
   function renderLogin() {
     const state = P.getState();
+    const t = P.t;
     return `
       <main class="app-shell" aria-labelledby="login-title">
         <div class="page-shell">
+          <div style="display:flex;justify-content:flex-end;margin-bottom:0.5rem;">
+            ${P.renderLanguageSwitch ? P.renderLanguageSwitch() : ''}
+          </div>
+
           <header class="brand-hero">
             <div class="brand-badge-logo" aria-hidden="true">
               <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
@@ -34,19 +39,19 @@
               </svg>
             </div>
             <h1 class="brand-title">FoodFighter</h1>
-            <p class="brand-tagline">Group Food Decisions Made Easy</p>
+            <p class="brand-tagline">${t('common.appTagline')}</p>
           </header>
 
           <section class="screen-header">
-            <h2 id="login-title" class="font-heading-1">Welcome back</h2>
-            <p class="screen-subtitle">Sign in to join a food fight or create a new room</p>
+            <h2 id="login-title" class="font-heading-1">${t('auth.login.title')}</h2>
+            <p class="screen-subtitle">${t('auth.login.subtitle')}</p>
           </section>
 
           <div id="login-alert-area"></div>
 
           <form id="login-form" novalidate>
             <div class="form-group">
-              <label for="login-email" class="form-label form-label-required">Email Address</label>
+              <label for="login-email" class="form-label form-label-required">${t('auth.login.email')}</label>
               <div class="input-wrapper">
                 <input 
                   type="email" 
@@ -63,8 +68,8 @@
 
             <div class="form-group">
               <div class="form-label">
-                <label for="login-password" class="form-label-required" style="margin-bottom:0;">Password</label>
-                <a href="#/forgot-password" class="text-secondary" style="font-size:0.775rem;font-weight:600;">Forgot password?</a>
+                <label for="login-password" class="form-label-required" style="margin-bottom:0;">${t('auth.login.password')}</label>
+                <a href="#/forgot-password" class="text-secondary" style="font-size:0.775rem;font-weight:600;">${t('auth.login.forgotPassword')}</a>
               </div>
               <div class="input-wrapper">
                 <input 
@@ -72,7 +77,7 @@
                   id="login-password" 
                   name="password" 
                   class="form-input form-input-password" 
-                  placeholder="Enter your password" 
+                  placeholder="Password123" 
                   value="Password123"
                   autocomplete="current-password" 
                   required 
@@ -87,11 +92,11 @@
             </div>
 
             <button type="submit" id="btn-login-submit" class="btn btn-primary btn-lg" style="margin-top:0.5rem;">
-              <span id="login-submit-text">Log In</span>
+              <span id="login-submit-text">${t('auth.login.submit')}</span>
             </button>
           </form>
 
-          <div class="divider-text">OR CONTINUE WITH</div>
+          <div class="divider-text">${t('auth.login.orSocial')}</div>
 
           <div style="display:flex;flex-direction:column;gap:0.65rem;">
             <button type="button" id="btn-login-google" class="btn btn-social">
@@ -101,21 +106,21 @@
                 <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
                 <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
               </svg>
-              <span>Continue with Google</span>
+              <span>Google</span>
             </button>
             <button type="button" id="btn-login-line" class="btn btn-social">
               <svg class="social-icon-svg" viewBox="0 0 24 24">
                 <path fill="#00C300" d="M24 10.3c0-4.6-4.9-8.3-10.9-8.3S2.2 5.7 2.2 10.3c0 4.1 3.7 7.6 8.7 8.2.3.1.8.2.9.6.1.3.1.8 0 1.2l-.3 1.7c-.1.5-.4 1.8 1.6 1 2-1 10.9-6.4 10.9-12.7z"/>
                 <path fill="#FFFFFF" d="M9.8 13.5H7.7c-.3 0-.5-.2-.5-.5V8.2c0-.3.2-.5.5-.5s.5.2.5.5v4.3h1.6c.3 0 .5.2.5.5s-.2.5-.5.5zm2.7-.5c0 .3-.2.5-.5.5s-.5-.2-.5-.5V8.2c0-.3.2-.5.5-.5s.5.2.5.5v4.8zm4.4 0c0 .2-.1.4-.3.5-.1.1-.3.1-.4.1-.1 0-.3-.1-.4-.2l-2.1-2.9v2.5c0 .3-.2.5-.5.5s-.5-.2-.5-.5V8.2c0-.2.1-.4.3-.5.2-.1.4-.1.6 0l2.1 2.9V8.2c0-.3.2-.5.5-.5s.5.2.5.5v4.8zm3.5-3.2h-1.6v1.3h1.6c.3 0 .5.2.5.5s-.2.5-.5.5h-2.1c-.3 0-.5-.2-.5-.5V8.2c0-.3.2-.5.5-.5h2.1c.3 0 .5.2.5.5s-.2.5-.5.5h-1.6v1.1h1.6c.3 0 .5.2.5.5s-.2.5-.5.5z"/>
               </svg>
-              <span>Continue with LINE</span>
+              <span>LINE</span>
             </button>
           </div>
 
           <footer style="margin-top:auto;padding-top:1.5rem;text-align:center;">
             <p class="font-body-small text-secondary">
-              Don't have an account? 
-              <a href="#/register" style="color:var(--color-brand-primary);font-weight:700;text-decoration:underline;">Sign up</a>
+              ${t('auth.login.noAccount')} 
+              <a href="#/register" style="color:var(--color-brand-primary);font-weight:700;text-decoration:underline;">${t('auth.login.register')}</a>
             </p>
           </footer>
         </div>
@@ -126,144 +131,125 @@
   function bindLoginEvents() {
     const form = document.getElementById('login-form');
     const pwdInput = document.getElementById('login-password');
-    const togglePwdBtn = document.getElementById('btn-toggle-login-pwd');
+    const toggleBtn = document.getElementById('btn-toggle-login-pwd');
     const alertArea = document.getElementById('login-alert-area');
-    const submitBtn = document.getElementById('btn-login-submit');
-    const submitText = document.getElementById('login-submit-text');
-    const state = P.getState();
+    const googleBtn = document.getElementById('btn-login-google');
+    const lineBtn = document.getElementById('btn-login-line');
 
-    if (togglePwdBtn && pwdInput) {
-      togglePwdBtn.onclick = () => {
+    if (toggleBtn && pwdInput) {
+      toggleBtn.onclick = () => {
         const isPwd = pwdInput.type === 'password';
         pwdInput.type = isPwd ? 'text' : 'password';
       };
     }
 
-    const handleSocialLogin = (provider) => {
-      P.showToast(`Signed in with ${provider} (Demo)`, 'success');
+    const handleSocialAuth = (provider) => {
+      const state = P.getState();
       state.auth.isAuthenticated = true;
+      state.auth.user.name = provider === 'Google' ? 'Alex Google' : 'Alex LINE';
+      state.auth.user.email = provider === 'Google' ? 'alex.g@gmail.com' : 'alex.line@line.me';
       P.saveState();
-      setTimeout(() => {
-        if (!state.foodProfile.completed) {
-          P.navigateTo('#/food-profile/allergies');
-        } else {
-          P.navigateTo('#/home');
-        }
-      }, 400);
+      P.showToast(P.t('auth.login.title') + ` (${provider}) ✓`, 'success');
+      P.navigateTo('#/home');
     };
 
-    const googleBtn = document.getElementById('btn-login-google');
-    const lineBtn = document.getElementById('btn-login-line');
-    if (googleBtn) googleBtn.onclick = () => handleSocialLogin('Google');
-    if (lineBtn) lineBtn.onclick = () => handleSocialLogin('LINE');
+    if (googleBtn) googleBtn.onclick = () => handleSocialAuth('Google');
+    if (lineBtn) lineBtn.onclick = () => handleSocialAuth('LINE');
 
     if (form) {
       form.onsubmit = (e) => {
         e.preventDefault();
-        alertArea.innerHTML = '';
         const email = document.getElementById('login-email').value.trim();
         const password = document.getElementById('login-password').value;
 
         if (!email || !password) {
-          alertArea.innerHTML = `<div class="alert alert-danger">Please enter your email and password.</div>`;
+          if (alertArea) {
+            alertArea.innerHTML = `
+              <div class="card" style="background:#FFF0F0;border-color:#F6B8B8;color:#8E1F1F;padding:0.75rem 1rem;margin-bottom:1rem;font-size:0.85rem;">
+                ⚠️ ${P.t('auth.login.errorRequired')}
+              </div>
+            `;
+          }
           return;
         }
 
-        submitBtn.disabled = true;
-        submitText.innerHTML = `<span class="spinner"></span> Signing in...`;
-
-        setTimeout(() => {
-          submitBtn.disabled = false;
-          submitText.textContent = 'Log In';
-
-          if (email === 'wrong@example.com' || password === 'wrong') {
-            alertArea.innerHTML = `
-              <div class="alert alert-danger">
-                <strong>Invalid credentials.</strong> For demo, use <code>user@example.com</code> / <code>Password123</code>.
-              </div>
-            `;
-          } else {
-            state.auth.isAuthenticated = true;
-            state.auth.user.email = email;
-            P.saveState();
-            P.showToast('Welcome back to FoodFighter!', 'success');
-            if (!state.foodProfile.completed) {
-              P.navigateTo('#/food-profile/allergies');
-            } else {
-              P.navigateTo('#/home');
-            }
-          }
-        }, 350);
+        const state = P.getState();
+        state.auth.isAuthenticated = true;
+        state.auth.user.email = email;
+        P.saveState();
+        P.showToast(P.t('auth.login.title') + ' ✓', 'success');
+        P.navigateTo('#/home');
       };
     }
   }
 
   /** Screen: Register */
   function renderRegister() {
+    const t = P.t;
     return `
       <main class="app-shell" aria-labelledby="register-title">
-        <header class="top-bar">
-          <a href="#/login" class="top-bar-action" aria-label="Back to Login">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="15 18 9 12 15 6"></polyline></svg>
-          </a>
-          <h1 class="top-bar-title">Create Account</h1>
-          <div class="top-bar-placeholder"></div>
-        </header>
-
         <div class="page-shell">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.5rem;">
+            <a href="#/login" class="top-bar-action" aria-label="${t('common.back')}">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="15 18 9 12 15 6"></polyline></svg>
+            </a>
+            ${P.renderLanguageSwitch ? P.renderLanguageSwitch() : ''}
+          </div>
+
           <section class="screen-header">
-            <h2 id="register-title" class="font-heading-1">Join FoodFighter</h2>
-            <p class="screen-subtitle">Sign up to end mealtime arguments with AI recommendations</p>
+            <h2 id="register-title" class="font-heading-1">${t('auth.register.title')}</h2>
+            <p class="screen-subtitle">${t('auth.register.subtitle')}</p>
           </section>
 
           <div id="register-alert-area"></div>
 
           <form id="register-form" novalidate>
             <div class="form-group">
-              <label for="reg-name" class="form-label form-label-required">Full Name</label>
-              <input type="text" id="reg-name" class="form-input" placeholder="Alex Johnson" value="Alex Johnson" required />
-            </div>
-
-            <div class="form-group">
-              <label for="reg-email" class="form-label form-label-required">Email Address</label>
-              <input type="email" id="reg-email" class="form-input" placeholder="alex@example.com" value="alex@example.com" required />
-            </div>
-
-            <div class="form-group">
-              <label for="reg-password" class="form-label form-label-required">Password</label>
+              <label for="reg-name" class="form-label form-label-required">${t('auth.register.name')}</label>
               <div class="input-wrapper">
-                <input type="password" id="reg-password" class="form-input form-input-password" placeholder="At least 8 characters" value="Password123" required />
-                <button type="button" id="btn-toggle-reg-pwd" class="btn-password-toggle">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
-                </button>
+                <input type="text" id="reg-name" class="form-input" placeholder="Alex Johnson" required />
               </div>
             </div>
 
             <div class="form-group">
-              <label for="reg-confirm-password" class="form-label form-label-required">Confirm Password</label>
-              <input type="password" id="reg-confirm-password" class="form-input" value="Password123" required />
+              <label for="reg-email" class="form-label form-label-required">${t('auth.register.email')}</label>
+              <div class="input-wrapper">
+                <input type="email" id="reg-email" class="form-input" placeholder="user@example.com" required />
+              </div>
             </div>
 
-            <label class="checkbox-group" for="reg-terms">
-              <input type="checkbox" id="reg-terms" checked required />
-              <span class="checkbox-custom">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>
-              </span>
-              <span class="checkbox-label-text">
-                I agree to the <span style="text-decoration:underline;">Terms of Service</span> and <span style="text-decoration:underline;">Privacy Policy</span>
-              </span>
-            </label>
+            <div class="form-group">
+              <label for="reg-password" class="form-label form-label-required">${t('auth.register.password')}</label>
+              <div class="input-wrapper">
+                <input type="password" id="reg-password" class="form-input" placeholder="••••••••" required />
+              </div>
+            </div>
 
-            <button type="submit" id="btn-reg-submit" class="btn btn-primary btn-lg">
-              <span id="reg-submit-text">Create Account</span>
+            <div class="form-group">
+              <label for="reg-confirm-password" class="form-label form-label-required">${t('auth.register.confirmPassword')}</label>
+              <div class="input-wrapper">
+                <input type="password" id="reg-confirm-password" class="form-input" placeholder="••••••••" required />
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label style="display:flex;align-items:flex-start;gap:0.5rem;font-size:0.775rem;cursor:pointer;">
+                <input type="checkbox" id="reg-terms" style="margin-top:0.15rem;" checked />
+                <span class="text-secondary">${t('auth.register.terms')}</span>
+              </label>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-lg" style="margin-top:0.5rem;">
+              ${t('auth.register.submit')} →
             </button>
           </form>
 
-          <div style="margin-top:auto;padding-top:1.5rem;text-align:center;">
+          <footer style="margin-top:auto;padding-top:1.5rem;text-align:center;">
             <p class="font-body-small text-secondary">
-              Already have an account? <a href="#/login" style="color:var(--color-brand-primary);font-weight:700;text-decoration:underline;">Log in</a>
+              ${t('auth.register.hasAccount')} 
+              <a href="#/login" style="color:var(--color-brand-primary);font-weight:700;text-decoration:underline;">${t('auth.register.login')}</a>
             </p>
-          </div>
+          </footer>
         </div>
       </main>
     `;
@@ -272,46 +258,43 @@
   function bindRegisterEvents() {
     const form = document.getElementById('register-form');
     const alertArea = document.getElementById('register-alert-area');
-    const togglePwdBtn = document.getElementById('btn-toggle-reg-pwd');
-    const pwdInput = document.getElementById('reg-password');
-    const submitBtn = document.getElementById('btn-reg-submit');
-    const submitText = document.getElementById('reg-submit-text');
-    const state = P.getState();
-
-    if (togglePwdBtn && pwdInput) {
-      togglePwdBtn.onclick = () => {
-        pwdInput.type = pwdInput.type === 'password' ? 'text' : 'password';
-      };
-    }
 
     if (form) {
       form.onsubmit = (e) => {
         e.preventDefault();
         const name = document.getElementById('reg-name').value.trim();
         const email = document.getElementById('reg-email').value.trim();
-        const password = document.getElementById('reg-password').value;
-        const confirmPassword = document.getElementById('reg-confirm-password').value;
+        const pwd = document.getElementById('reg-password').value;
+        const confirmPwd = document.getElementById('reg-confirm-password').value;
+        const terms = document.getElementById('reg-terms').checked;
 
-        if (!name || !email || !password) {
-          alertArea.innerHTML = `<div class="alert alert-danger">Please fill in all required fields.</div>`;
+        if (!name || !email || !pwd) {
+          if (alertArea) {
+            alertArea.innerHTML = `<div class="card" style="background:#FFF0F0;color:#8E1F1F;padding:0.75rem;margin-bottom:1rem;font-size:0.85rem;">⚠️ ${P.t('auth.login.errorRequired')}</div>`;
+          }
           return;
         }
-        if (password !== confirmPassword) {
-          alertArea.innerHTML = `<div class="alert alert-danger">Passwords do not match.</div>`;
+
+        if (pwd !== confirmPwd) {
+          if (alertArea) {
+            alertArea.innerHTML = `<div class="card" style="background:#FFF0F0;color:#8E1F1F;padding:0.75rem;margin-bottom:1rem;font-size:0.85rem;">⚠️ ${P.t('auth.register.errorPasswordMismatch')}</div>`;
+          }
           return;
         }
 
-        submitBtn.disabled = true;
-        submitText.innerHTML = `<span class="spinner"></span> Creating account...`;
+        if (!terms) {
+          if (alertArea) {
+            alertArea.innerHTML = `<div class="card" style="background:#FFF0F0;color:#8E1F1F;padding:0.75rem;margin-bottom:1rem;font-size:0.85rem;">⚠️ ${P.t('auth.register.errorTerms')}</div>`;
+          }
+          return;
+        }
 
-        setTimeout(() => {
-          state.auth.user.name = name;
-          state.auth.user.email = email;
-          state.auth.pendingVerificationEmail = email;
-          P.saveState();
-          P.showToast(`Verification code sent to ${email}`, 'success');
-          P.navigateTo('#/verify-email');
-        }, 350);
+        const state = P.getState();
+        state.auth.pendingVerificationEmail = email;
+        state.auth.user.name = name;
+        state.auth.user.email = email;
+        P.saveState();
+        P.navigateTo('#/verify-email');
       };
     }
   }
@@ -319,125 +302,104 @@
   /** Screen: Verify Email / OTP */
   function renderVerifyEmail() {
     const state = P.getState();
+    const t = P.t;
     const email = state.auth.pendingVerificationEmail || 'user@example.com';
-    return `
-      <main class="app-shell" aria-labelledby="verify-title">
-        <header class="top-bar">
-          <a href="#/register" class="top-bar-action"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="15 18 9 12 15 6"></polyline></svg></a>
-          <h1 class="top-bar-title">Verify Email</h1>
-          <div class="top-bar-placeholder"></div>
-        </header>
 
+    return `
+      <main class="app-shell" aria-labelledby="otp-title">
         <div class="page-shell">
-          <section class="screen-header screen-header-center">
-            <h2 id="verify-title" class="font-heading-1">Enter Verification Code</h2>
-            <p class="screen-subtitle">We sent a 6-digit code to<br /><strong>${P.escapeHtml(email)}</strong></p>
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.5rem;">
+            <a href="#/register" class="top-bar-action" aria-label="${t('common.back')}">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="15 18 9 12 15 6"></polyline></svg>
+            </a>
+            ${P.renderLanguageSwitch ? P.renderLanguageSwitch() : ''}
+          </div>
+
+          <section class="screen-header" style="text-align:center;">
+            <div style="font-size:40px;margin-bottom:0.5rem;">✉️</div>
+            <h2 id="otp-title" class="font-heading-1">${t('auth.otp.title')}</h2>
+            <p class="screen-subtitle">${t('auth.otp.subtitle', { email: P.escapeHtml(email) })}</p>
           </section>
 
           <div id="otp-alert-area"></div>
 
-          <div class="otp-container">
-            <input type="text" maxlength="1" inputmode="numeric" class="otp-box" autofocus />
-            <input type="text" maxlength="1" inputmode="numeric" class="otp-box" />
-            <input type="text" maxlength="1" inputmode="numeric" class="otp-box" />
-            <input type="text" maxlength="1" inputmode="numeric" class="otp-box" />
-            <input type="text" maxlength="1" inputmode="numeric" class="otp-box" />
-            <input type="text" maxlength="1" inputmode="numeric" class="otp-box" />
-          </div>
+          <form id="otp-form" style="text-align:center;margin-top:1.5rem;">
+            <div class="form-group">
+              <label class="form-label">${t('auth.otp.enterCode')}</label>
+              <div style="display:flex;justify-content:center;gap:0.5rem;">
+                <input type="text" maxlength="1" class="form-input otp-digit" style="width:48px;height:52px;text-align:center;font-size:1.4rem;font-weight:700;" value="1" />
+                <input type="text" maxlength="1" class="form-input otp-digit" style="width:48px;height:52px;text-align:center;font-size:1.4rem;font-weight:700;" value="2" />
+                <input type="text" maxlength="1" class="form-input otp-digit" style="width:48px;height:52px;text-align:center;font-size:1.4rem;font-weight:700;" value="3" />
+                <input type="text" maxlength="1" class="form-input otp-digit" style="width:48px;height:52px;text-align:center;font-size:1.4rem;font-weight:700;" value="4" />
+                <input type="text" maxlength="1" class="form-input otp-digit" style="width:48px;height:52px;text-align:center;font-size:1.4rem;font-weight:700;" value="5" />
+                <input type="text" maxlength="1" class="form-input otp-digit" style="width:48px;height:52px;text-align:center;font-size:1.4rem;font-weight:700;" value="6" />
+              </div>
+            </div>
 
-          <div class="alert alert-info" style="font-size:0.8rem;">
-            <span>💡 <strong>Demo Code:</strong> Enter <code>123456</code> (or <code>111111</code> to test invalid error).</span>
-          </div>
+            <div style="margin:1.25rem 0;">
+              <button type="button" id="btn-resend-otp" class="btn-link" style="font-size:0.8rem;color:var(--color-brand-secondary);">
+                ${t('auth.otp.resend')}
+              </button>
+            </div>
 
-          <button type="button" id="btn-verify-otp" class="btn btn-primary btn-lg" style="margin-top:1rem;">
-            Verify & Continue
-          </button>
-
-          <div style="margin-top:1.5rem;text-align:center;display:flex;flex-direction:column;gap:0.5rem;">
-            <button type="button" id="btn-resend-otp" class="btn-ghost font-body-small" style="font-weight:600;">
-              Resend Code
+            <button type="submit" class="btn btn-primary btn-lg">
+              ${t('auth.otp.submit')} ✓
             </button>
-          </div>
+          </form>
         </div>
       </main>
     `;
   }
 
   function bindVerifyEmailEvents() {
-    const otpBoxes = document.querySelectorAll('.otp-box');
-    const verifyBtn = document.getElementById('btn-verify-otp');
-    const alertArea = document.getElementById('otp-alert-area');
+    const form = document.getElementById('otp-form');
     const resendBtn = document.getElementById('btn-resend-otp');
-    const state = P.getState();
-
-    otpBoxes.forEach((box, index) => {
-      box.addEventListener('input', (e) => {
-        if (e.target.value.length === 1 && index < otpBoxes.length - 1) {
-          otpBoxes[index + 1].focus();
-        }
-      });
-      box.addEventListener('keydown', (e) => {
-        if (e.key === 'Backspace' && !box.value && index > 0) {
-          otpBoxes[index - 1].focus();
-        }
-      });
-      box.addEventListener('paste', (e) => {
-        e.preventDefault();
-        const pasteData = (e.clipboardData || window.clipboardData).getData('text').trim();
-        if (/^\d{6}$/.test(pasteData)) {
-          pasteData.split('').forEach((char, i) => {
-            if (otpBoxes[i]) otpBoxes[i].value = char;
-          });
-          otpBoxes[5].focus();
-        }
-      });
-    });
-
-    if (verifyBtn) {
-      verifyBtn.onclick = () => {
-        let code = '';
-        otpBoxes.forEach(b => code += b.value);
-        if (code.length < 6) {
-          alertArea.innerHTML = `<div class="alert alert-danger">Please enter all 6 digits.</div>`;
-          return;
-        }
-
-        if (code === '111111') {
-          alertArea.innerHTML = `<div class="alert alert-danger">Invalid code. Try <code>123456</code>.</div>`;
-        } else {
-          state.auth.isAuthenticated = true;
-          P.saveState();
-          P.showToast('Email verified successfully!', 'success');
-          P.navigateTo('#/food-profile/allergies');
-        }
-      };
-    }
 
     if (resendBtn) {
-      resendBtn.onclick = () => P.showToast('New code sent: 123456', 'info');
+      resendBtn.onclick = () => P.showToast('OTP: 123456', 'info');
+    }
+
+    if (form) {
+      form.onsubmit = (e) => {
+        e.preventDefault();
+        const state = P.getState();
+        state.auth.isAuthenticated = true;
+        P.saveState();
+        P.showToast(P.t('auth.otp.title') + ' ✓', 'success');
+        P.navigateTo('#/food-profile/allergies');
+      };
     }
   }
 
   /** Screen: Forgot Password */
   function renderForgotPassword() {
+    const t = P.t;
     return `
-      <main class="app-shell">
-        <header class="top-bar">
-          <a href="#/login" class="top-bar-action"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="15 18 9 12 15 6"></polyline></svg></a>
-          <h1 class="top-bar-title">Reset Password</h1>
-          <div class="top-bar-placeholder"></div>
-        </header>
+      <main class="app-shell" aria-labelledby="forgot-title">
         <div class="page-shell">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.5rem;">
+            <a href="#/login" class="top-bar-action" aria-label="${t('common.back')}">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="15 18 9 12 15 6"></polyline></svg>
+            </a>
+            ${P.renderLanguageSwitch ? P.renderLanguageSwitch() : ''}
+          </div>
+
           <section class="screen-header">
-            <h2 class="font-heading-1">Forgot your password?</h2>
-            <p class="screen-subtitle">Enter your registered email and we'll send reset instructions.</p>
+            <h2 id="forgot-title" class="font-heading-1">${t('auth.forgot.title')}</h2>
+            <p class="screen-subtitle">${t('auth.forgot.subtitle')}</p>
           </section>
+
           <form id="forgot-form">
             <div class="form-group">
-              <label class="form-label">Email Address</label>
-              <input type="email" id="forgot-email" class="form-input" value="user@example.com" required />
+              <label for="forgot-email" class="form-label">${t('auth.forgot.email')}</label>
+              <div class="input-wrapper">
+                <input type="email" id="forgot-email" class="form-input" placeholder="user@example.com" value="user@example.com" required />
+              </div>
             </div>
-            <button type="submit" class="btn btn-primary btn-lg">Send Reset Link</button>
+
+            <button type="submit" class="btn btn-primary btn-lg" style="margin-top:1rem;">
+              ${t('auth.forgot.submit')} →
+            </button>
           </form>
         </div>
       </main>
@@ -449,57 +411,59 @@
     if (form) {
       form.onsubmit = (e) => {
         e.preventDefault();
-        P.showToast('Password reset link sent to your email!', 'success');
-        setTimeout(() => P.navigateTo('#/login'), 800);
+        P.showToast(P.t('auth.forgot.successTitle'), 'success');
+        P.navigateTo('#/login');
       };
     }
   }
 
   /* ==========================================================================
-     2. Food Profile Onboarding Screens (1/3, 2/3, 3/3)
+     2. Food Profile Onboarding Screens (1-3)
      ========================================================================== */
 
-  /** Food Profile: Allergies (1/3) */
+  /** Step 1: Allergies */
   function renderFoodProfileAllergies() {
     const state = P.getState();
-    const selected = state.foodProfile.allergies || [];
+    const t = P.t;
+    const isTH = P.i18n.getLanguage() === 'th';
+    const fp = state.foodProfile || { allergies: [] };
+
     return `
-      <main class="app-shell">
+      <main class="app-shell" aria-labelledby="allergies-title">
         <header class="top-bar">
-          <a href="#/home" class="top-bar-action"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></a>
-          <h1 class="top-bar-title">Food Profile</h1>
-          <div class="top-bar-placeholder"></div>
+          <a href="#/login" class="top-bar-action"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="15 18 9 12 15 6"></polyline></svg></a>
+          <span class="step-badge">${t('foodProfile.onboarding.step', { step: '1 / 3' })}</span>
+          ${P.renderLanguageSwitch ? P.renderLanguageSwitch() : ''}
         </header>
 
-        <div class="page-shell page-shell-has-bottom-actions">
-          <div class="progress-header">
-            <span class="font-label text-secondary">Step 1 of 3</span>
-            <span class="step-badge">Allergies</span>
-          </div>
-          <div class="progress-track"><div class="progress-fill" style="width:33%;"></div></div>
-
+        <div class="page-shell">
           <section class="screen-header">
-            <h2 class="font-heading-1">Any food allergies?</h2>
-            <p class="screen-subtitle">Select items to strictly exclude for your group.</p>
+            <h2 id="allergies-title" class="font-heading-1">${t('foodProfile.allergies.title')}</h2>
+            <p class="screen-subtitle">${t('foodProfile.allergies.subtitle')}</p>
           </section>
 
-          <div class="chip-grid" id="allergy-chips">
+          <div class="edit-chip-grid" style="margin:1.25rem 0;">
             ${P.ALLERGY_OPTIONS.map(opt => {
-              const isSelected = selected.includes(opt.id);
+              const isSelected = (fp.allergies || []).includes(opt.id);
+              const label = isTH ? (opt.thai || opt.label) : opt.label;
               return `
-                <button type="button" class="chip-card ${isSelected ? 'selected' : ''}" data-allergy-id="${opt.id}">
-                  <span class="chip-card-title">${P.escapeHtml(opt.label)}</span>
-                  <span class="chip-card-sub">${P.escapeHtml(opt.thai)}</span>
-                  <span class="chip-card-check">✓</span>
+                <button 
+                  type="button" 
+                  class="edit-pill-btn btn-fp-allergy ${isSelected ? 'selected-allergy' : ''}" 
+                  data-id="${opt.id}"
+                  aria-pressed="${isSelected}"
+                >
+                  <span>${isSelected ? '⚠️' : '＋'}</span>
+                  <span>${P.escapeHtml(label)}</span>
                 </button>
               `;
             }).join('')}
           </div>
 
           <div class="bottom-actions">
-            <button type="button" id="btn-allergies-continue" class="btn btn-primary btn-lg">
-              Continue (1 / 3) →
-            </button>
+            <a href="#/food-profile/restrictions" class="btn btn-primary btn-lg">
+              ${t('foodProfile.onboarding.next')}
+            </a>
           </div>
         </div>
       </main>
@@ -507,73 +471,67 @@
   }
 
   function bindFoodProfileAllergiesEvents() {
-    const chips = document.querySelectorAll('#allergy-chips .chip-card');
+    const btns = document.querySelectorAll('.btn-fp-allergy');
     const state = P.getState();
-    chips.forEach(chip => {
-      chip.onclick = () => {
-        const id = chip.getAttribute('data-allergy-id');
-        let current = state.foodProfile.allergies || [];
+    btns.forEach(btn => {
+      btn.onclick = () => {
+        const id = btn.getAttribute('data-id');
+        let cur = state.foodProfile.allergies || [];
         if (id === 'none') {
-          current = current.includes('none') ? [] : ['none'];
+          state.foodProfile.allergies = ['none'];
         } else {
-          current = current.filter(x => x !== 'none');
-          current = current.includes(id) ? current.filter(x => x !== id) : [...current, id];
+          cur = cur.filter(a => a !== 'none');
+          state.foodProfile.allergies = cur.includes(id) ? cur.filter(a => a !== id) : [...cur, id];
         }
-        state.foodProfile.allergies = current;
         P.saveState();
         if (P.renderCurrentRoute) P.renderCurrentRoute();
       };
     });
-
-    document.getElementById('btn-allergies-continue').onclick = () => {
-      P.navigateTo('#/food-profile/restrictions');
-    };
   }
 
-  /** Food Profile: Restrictions (2/3) */
+  /** Step 2: Restrictions */
   function renderFoodProfileRestrictions() {
     const state = P.getState();
-    const selected = state.foodProfile.restrictions || [];
+    const t = P.t;
+    const isTH = P.i18n.getLanguage() === 'th';
+    const fp = state.foodProfile || { restrictions: [] };
+
     return `
-      <main class="app-shell">
+      <main class="app-shell" aria-labelledby="restrictions-title">
         <header class="top-bar">
           <a href="#/food-profile/allergies" class="top-bar-action"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="15 18 9 12 15 6"></polyline></svg></a>
-          <h1 class="top-bar-title">Food Profile</h1>
-          <div class="top-bar-placeholder"></div>
+          <span class="step-badge">${t('foodProfile.onboarding.step', { step: '2 / 3' })}</span>
+          ${P.renderLanguageSwitch ? P.renderLanguageSwitch() : ''}
         </header>
 
-        <div class="page-shell page-shell-has-bottom-actions">
-          <div class="progress-header">
-            <span class="font-label text-secondary">Step 2 of 3</span>
-            <span class="step-badge">Dietary Habits</span>
-          </div>
-          <div class="progress-track"><div class="progress-fill" style="width:66%;"></div></div>
-
+        <div class="page-shell">
           <section class="screen-header">
-            <h2 class="font-heading-1">Dietary Restrictions</h2>
-            <p class="screen-subtitle">Choose religious or lifestyle eating habits.</p>
+            <h2 id="restrictions-title" class="font-heading-1">${t('foodProfile.restrictions.title')}</h2>
+            <p class="screen-subtitle">${t('foodProfile.restrictions.subtitle')}</p>
           </section>
 
-          <div class="chip-grid" id="restriction-chips">
+          <div class="edit-chip-grid" style="margin:1.25rem 0;">
             ${P.RESTRICTION_OPTIONS.map(opt => {
-              const isSelected = selected.includes(opt.id);
+              const isSelected = (fp.restrictions || []).includes(opt.id);
+              const label = isTH ? (opt.thai || opt.label) : opt.label;
               return `
-                <button type="button" class="chip-card ${isSelected ? 'selected' : ''}" data-restriction-id="${opt.id}">
-                  <span class="chip-card-title">${P.escapeHtml(opt.label)}</span>
-                  <span class="chip-card-sub">${P.escapeHtml(opt.thai)}</span>
-                  <span class="chip-card-check">✓</span>
+                <button 
+                  type="button" 
+                  class="edit-pill-btn btn-fp-restriction ${isSelected ? 'selected-restriction' : ''}" 
+                  data-id="${opt.id}"
+                  aria-pressed="${isSelected}"
+                >
+                  <span>${isSelected ? '✓' : '＋'}</span>
+                  <span>${P.escapeHtml(label)}</span>
                 </button>
               `;
             }).join('')}
           </div>
 
           <div class="bottom-actions">
-            <div class="bottom-actions-row">
-              <a href="#/food-profile/allergies" class="btn btn-secondary" style="flex:1;">Back</a>
-              <button type="button" id="btn-restrictions-continue" class="btn btn-primary btn-lg" style="flex:2;">
-                Continue (2 / 3) →
-              </button>
-            </div>
+            <a href="#/food-profile/details" class="btn btn-primary btn-lg">
+              ${t('foodProfile.onboarding.next')}
+            </a>
           </div>
         </div>
       </main>
@@ -581,78 +539,67 @@
   }
 
   function bindFoodProfileRestrictionsEvents() {
-    const chips = document.querySelectorAll('#restriction-chips .chip-card');
+    const btns = document.querySelectorAll('.btn-fp-restriction');
     const state = P.getState();
-    chips.forEach(chip => {
-      chip.onclick = () => {
-        const id = chip.getAttribute('data-restriction-id');
-        let current = state.foodProfile.restrictions || [];
+    btns.forEach(btn => {
+      btn.onclick = () => {
+        const id = btn.getAttribute('data-id');
+        let cur = state.foodProfile.restrictions || [];
         if (id === 'none') {
-          current = current.includes('none') ? [] : ['none'];
+          state.foodProfile.restrictions = ['none'];
         } else {
-          current = current.filter(x => x !== 'none');
-          current = current.includes(id) ? current.filter(x => x !== id) : [...current, id];
+          cur = cur.filter(r => r !== 'none');
+          state.foodProfile.restrictions = cur.includes(id) ? cur.filter(r => r !== id) : [...cur, id];
         }
-        state.foodProfile.restrictions = current;
         P.saveState();
         if (P.renderCurrentRoute) P.renderCurrentRoute();
       };
     });
-
-    document.getElementById('btn-restrictions-continue').onclick = () => {
-      P.navigateTo('#/food-profile/details');
-    };
   }
 
-  /** Food Profile: Details (3/3) */
+  /** Step 3: Details */
   function renderFoodProfileDetails() {
     const state = P.getState();
+    const t = P.t;
+    const fp = state.foodProfile || { details: '' };
+
     return `
-      <main class="app-shell">
+      <main class="app-shell" aria-labelledby="details-title">
         <header class="top-bar">
           <a href="#/food-profile/restrictions" class="top-bar-action"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="15 18 9 12 15 6"></polyline></svg></a>
-          <h1 class="top-bar-title">Food Profile</h1>
-          <div class="top-bar-placeholder"></div>
+          <span class="step-badge">${t('foodProfile.onboarding.step', { step: '3 / 3' })}</span>
+          ${P.renderLanguageSwitch ? P.renderLanguageSwitch() : ''}
         </header>
 
-        <div class="page-shell page-shell-has-bottom-actions">
-          <div class="progress-header">
-            <span class="font-label text-secondary">Step 3 of 3</span>
-            <span class="step-badge" style="background:#EDF9F0;color:#165E2A;border-color:#A6DEB4;">Finish</span>
-          </div>
-          <div class="progress-track"><div class="progress-fill" style="width:100%;"></div></div>
-
+        <div class="page-shell">
           <section class="screen-header">
-            <h2 class="font-heading-1">Personal Preferences</h2>
-            <p class="screen-subtitle">Notes, flavor preferences, or dislikes for AI analysis.</p>
+            <h2 id="details-title" class="font-heading-1">${t('foodProfile.details.title')}</h2>
+            <p class="screen-subtitle">${t('foodProfile.details.subtitle')}</p>
           </section>
 
-          <div class="form-group">
-            <label class="form-label">Notes & Dislikes</label>
-            <textarea id="profile-notes" class="form-textarea" placeholder="e.g. Love spicy food, dislike raw onions...">${P.escapeHtml(state.foodProfile.details)}</textarea>
-          </div>
+          <textarea 
+            id="fp-details-input" 
+            class="form-input" 
+            rows="3" 
+            placeholder="${t('foodProfile.details.placeholder')}"
+            style="margin:1rem 0;resize:vertical;"
+          >${P.escapeHtml(fp.details || '')}</textarea>
 
-          <div style="margin-bottom:1.5rem;">
-            <label class="form-label" style="margin-bottom:0.5rem;">Quick Suggestions</label>
-            <div class="pill-list" id="quick-pill-list">
-              ${P.SUGGESTION_PILLS.map(p => {
-                const isSelected = (state.foodProfile.quickTags || []).includes(p.tag);
-                return `
-                  <button type="button" class="pill-item ${isSelected ? 'selected' : ''}" data-tag="${p.tag}">
-                    ${P.escapeHtml(p.text)}
-                  </button>
-                `;
-              }).join('')}
+          <div>
+            <div class="font-caption text-muted" style="margin-bottom:0.35rem;">${t('foodProfile.details.suggestions')}</div>
+            <div class="edit-chip-grid">
+              ${P.SUGGESTION_PILLS.map(p => `
+                <button type="button" class="btn-suggestion-pill edit-pill-btn" data-tag="${P.escapeHtml(p.tag)}">
+                  ${P.escapeHtml(p.text)}
+                </button>
+              `).join('')}
             </div>
           </div>
 
           <div class="bottom-actions">
-            <div class="bottom-actions-row">
-              <a href="#/food-profile/restrictions" class="btn btn-secondary" style="flex:1;">Back</a>
-              <button type="button" id="btn-details-finish" class="btn btn-primary btn-lg" style="flex:2;">
-                Finish & Start Exploring
-              </button>
-            </div>
+            <button type="button" id="btn-finish-fp" class="btn btn-primary btn-lg">
+              ${t('foodProfile.onboarding.finish')}
+            </button>
           </div>
         </div>
       </main>
@@ -660,66 +607,62 @@
   }
 
   function bindFoodProfileDetailsEvents() {
-    const textarea = document.getElementById('profile-notes');
-    const finishBtn = document.getElementById('btn-details-finish');
-    const pills = document.querySelectorAll('#quick-pill-list .pill-item');
+    const input = document.getElementById('fp-details-input');
+    const pills = document.querySelectorAll('.btn-suggestion-pill');
+    const finishBtn = document.getElementById('btn-finish-fp');
     const state = P.getState();
 
-    pills.forEach(pill => {
-      pill.onclick = () => {
-        const tag = pill.getAttribute('data-tag');
-        let current = state.foodProfile.quickTags || [];
-        current = current.includes(tag) ? current.filter(t => t !== tag) : [...current, tag];
-        state.foodProfile.quickTags = current;
-        P.saveState();
-        pill.classList.toggle('selected', current.includes(tag));
+    pills.forEach(p => {
+      p.onclick = () => {
+        const tag = p.getAttribute('data-tag');
+        if (input) {
+          const cur = input.value.trim();
+          input.value = cur ? `${cur}, ${tag}` : tag;
+        }
       };
     });
 
     if (finishBtn) {
       finishBtn.onclick = () => {
-        if (textarea) state.foodProfile.details = textarea.value.trim();
+        if (input) state.foodProfile.details = input.value.trim();
         state.foodProfile.completed = true;
         P.saveState();
-        P.showToast('Food Profile saved successfully!', 'success');
+        P.showToast(P.t('profile.edit.toastSuccess'), 'success');
         P.navigateTo('#/home');
       };
     }
   }
 
   /* ==========================================================================
-     3. Home Dashboard Screen
+     3. Home Dashboard
      ========================================================================== */
 
-  /** Screen: Home Dashboard */
   function renderHome() {
     const state = P.getState();
-    const user = state.auth.user;
-    const allergiesCount = (state.foodProfile.allergies || []).filter(a => a !== 'none').length;
-    const restrictionsCount = (state.foodProfile.restrictions || []).filter(r => r !== 'none').length;
+    const t = P.t;
+    const user = state.auth.user || { name: 'Alex Johnson' };
+    const fp = state.foodProfile || {};
+    const allergiesCount = (fp.allergies || []).filter(a => a !== 'none').length;
+    const restrictionsCount = (fp.restrictions || []).filter(r => r !== 'none').length;
 
     return `
-      <main class="app-shell" aria-labelledby="home-welcome">
+      <main class="app-shell" aria-labelledby="home-welcome" style="padding-bottom: 70px;">
         <header class="top-bar">
-          <div style="display:flex;align-items:center;gap:0.5rem;">
-            <div class="brand-badge-logo" style="width:34px;height:34px;border-radius:10px;" aria-hidden="true">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M18 8h1a4 4 0 0 1 0 8h-1"></path><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"></path></svg>
-            </div>
-            <span style="font-weight:700;font-size:1.15rem;color:var(--color-brand-primary);">FoodFighter</span>
+          <div class="brand-badge-logo" style="width:32px;height:32px;border-radius:8px;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M18 8h1a4 4 0 0 1 0 8h-1"></path><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"></path></svg>
           </div>
-          
-          <a href="#/profile" class="top-bar-action" aria-label="Profile">
-            <div style="width:32px;height:32px;border-radius:var(--radius-full);background:var(--color-accent-petal);color:var(--color-brand-primary);font-size:0.75rem;font-weight:700;display:flex;align-items:center;justify-content:center;border:1.5px solid var(--color-brand-secondary);">
-              ${P.escapeHtml(user.avatarText || 'AJ')}
-            </div>
-          </a>
+          <span style="font-weight:800;color:var(--color-brand-primary);">FoodFighter</span>
+          <div style="display:flex;align-items:center;gap:0.35rem;">
+            ${P.renderLanguageSwitch ? P.renderLanguageSwitch() : ''}
+          </div>
         </header>
 
-        <div class="page-shell page-shell-has-bottom-nav">
+        <div class="page-shell">
+          <!-- Welcome Section -->
           <section style="margin-bottom:1.25rem;">
-            <div class="font-body-small text-secondary">Hello, ${P.escapeHtml(user.name.split(' ')[0])} 👋</div>
+            <div class="font-body-small text-secondary">${t('home.greeting', { name: P.escapeHtml(user.name.split(' ')[0]) })}</div>
             <h2 id="home-welcome" class="font-display" style="margin-top:0.2rem;font-size:1.65rem;">
-              What's the plan today?
+              ${t('home.headline')}
             </h2>
           </section>
 
@@ -727,35 +670,34 @@
           <div class="card card-hero" style="margin-bottom:1.5rem;">
             <div style="display:flex;justify-content:space-between;align-items:flex-start;position:relative;z-index:2;">
               <div>
-                <span class="step-badge" style="background:#EDF9F0;color:#165E2A;border-color:#A6DEB4;">Profile Active</span>
-                <h3 class="font-heading-3" style="margin-top:0.45rem;">Your Food Profile</h3>
+                <span class="step-badge" style="background:#EDF9F0;color:#165E2A;border-color:#A6DEB4;">${t('home.profileActive')}</span>
+                <h3 class="font-heading-3" style="margin-top:0.45rem;">${t('profile.foodSafety')}</h3>
                 <p class="font-body-small text-secondary" style="margin-top:0.2rem;">
-                  ${allergiesCount > 0 ? `${allergiesCount} allergies` : 'No allergies'} • 
-                  ${restrictionsCount > 0 ? `${restrictionsCount} diet rules` : 'Standard diet'}
+                  ${t('home.profileSummary', { allergies: allergiesCount, restrictions: restrictionsCount })}
                 </p>
               </div>
-              <a href="#/food-profile/allergies" class="btn btn-outline btn-sm" style="background:#fff;border-radius:var(--radius-full);">Edit</a>
+              <a href="#/profile/food" class="btn btn-outline btn-sm" style="background:#fff;border-radius:var(--radius-full);">${t('common.edit')}</a>
             </div>
           </div>
 
           <!-- Create / Join Action Cards -->
-          <section aria-label="Room Actions">
-            <h3 class="font-label text-secondary" style="margin-bottom:0.75rem;">Start or Join a Meal Battle</h3>
+          <section aria-label="${t('home.startBattle')}">
+            <h3 class="font-label text-secondary" style="margin-bottom:0.75rem;">${t('home.startBattle')}</h3>
             <div class="action-card-grid">
               <a href="#/room/create" class="action-card action-card-create" role="button">
                 <div class="action-card-icon-bubble">
                   <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="16"></line><line x1="8" y1="12" x2="16" y2="12"></line></svg>
                 </div>
-                <div class="action-card-title">Create Room</div>
-                <div class="action-card-desc">Host session, invite friends via QR or code</div>
+                <div class="action-card-title">${t('home.createRoom.title')}</div>
+                <div class="action-card-desc">${t('home.createRoom.desc')}</div>
               </a>
 
               <a href="#/room/join" class="action-card action-card-join" role="button">
                 <div class="action-card-icon-bubble">
                   <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path><polyline points="10 17 15 12 10 7"></polyline><line x1="15" y1="12" x2="3" y2="12"></line></svg>
                 </div>
-                <div class="action-card-title">Join Room</div>
-                <div class="action-card-desc">Enter code or scan host's QR invite</div>
+                <div class="action-card-title">${t('home.joinRoom.title')}</div>
+                <div class="action-card-desc">${t('home.joinRoom.desc')}</div>
               </a>
             </div>
           </section>
@@ -763,36 +705,21 @@
           <!-- History Preview -->
           <section style="margin-top:1.25rem;">
             <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.75rem;">
-              <h3 class="font-label text-secondary">Recent Battles</h3>
-              <a href="#/history" class="font-caption text-secondary" style="font-weight:600;">View all</a>
+              <h3 class="font-label text-secondary">${t('home.recentBattles')}</h3>
+              <a href="#/history" class="font-caption text-secondary" style="font-weight:600;">${t('home.viewAll')}</a>
             </div>
             <div class="card" style="display:flex;align-items:center;gap:0.85rem;padding:0.95rem;">
               <div style="width:42px;height:42px;border-radius:12px;background:var(--color-accent-custard);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;">🍲</div>
               <div style="flex:1;">
                 <div style="font-size:0.9rem;font-weight:600;">Sukhumvit Dinner Squad</div>
-                <div class="font-caption text-secondary">Winner: Tonkotsu Ramen (Nori House)</div>
+                <div class="font-caption text-secondary">Tonkotsu Ramen (Nori House)</div>
               </div>
-              <span class="step-badge" style="font-size:0.7rem;">Completed</span>
+              <span class="step-badge" style="font-size:0.7rem;">${t('common.done')}</span>
             </div>
           </section>
         </div>
 
-        ${P.renderBottomNavigation ? P.renderBottomNavigation('home') : `
-          <nav class="bottom-nav-bar" aria-label="Main Navigation">
-            <a href="#/home" class="bottom-nav-item active" aria-current="page">
-              <svg class="bottom-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
-              <span>Home</span>
-            </a>
-            <a href="#/history" class="bottom-nav-item">
-              <svg class="bottom-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
-              <span>History</span>
-            </a>
-            <a href="#/profile" class="bottom-nav-item">
-              <svg class="bottom-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
-              <span>Profile</span>
-            </a>
-          </nav>
-        `}
+        ${P.renderBottomNavigation ? P.renderBottomNavigation('home') : ''}
       </main>
     `;
   }

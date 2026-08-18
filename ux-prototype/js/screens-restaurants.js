@@ -55,6 +55,8 @@
 
   function renderRecommendedRestaurants() {
     const state = P.getState();
+    const t = P.t;
+    const isTH = P.i18n.getLanguage() === 'th';
     const finalMenu = getFinalMenu();
     const allRestaurants = getRestaurantList();
     const activeView = state.restaurant?.discoveryView || 'list';
@@ -64,179 +66,162 @@
 
     const filteredRestaurants = getFilteredRestaurants(allRestaurants, activeFilter);
     const activePinRestaurant = allRestaurants.find(r => r.id === activePinId) || allRestaurants[0];
+    const finalMenuDisplayName = isTH ? finalMenu.thaiName : finalMenu.name;
 
     return `
       <main class="app-shell" aria-labelledby="rest-discovery-title">
         <header class="top-bar">
-          <a href="#/final-menu" class="top-bar-action" aria-label="Back to Final Menu">
+          <a href="#/final-menu" class="top-bar-action" aria-label="${t('common.back')}">
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="15 18 9 12 15 6"></polyline></svg>
           </a>
-          <h1 class="top-bar-title">Recommended Places</h1>
-          <a href="#/home" class="top-bar-action"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg></a>
+          <h1 class="top-bar-title">${t('restaurants.title')}</h1>
+          <div style="display:flex;align-items:center;gap:0.35rem;">
+            ${P.renderLanguageSwitch ? P.renderLanguageSwitch() : ''}
+          </div>
         </header>
 
         <div class="page-shell page-shell-has-bottom-actions">
           
           <!-- Final Menu Context Banner -->
-          <div class="rest-context-banner" role="status">
-            <div class="rest-context-info">
-              <div class="rest-context-icon">${finalMenu.icon}</div>
+          <div class="restaurant-context-banner" style="background:var(--color-surface-subtle);border-radius:var(--radius-lg);padding:0.75rem 1rem;margin-bottom:1rem;display:flex;align-items:center;justify-content:space-between;">
+            <div style="display:flex;align-items:center;gap:0.6rem;">
+              <span style="font-size:22px;">${finalMenu.icon || '🍽️'}</span>
               <div>
-                <div class="font-caption text-secondary" style="font-weight:600;">Selected Group Menu</div>
-                <div style="font-size:0.95rem;font-weight:700;color:var(--color-brand-primary);">${P.escapeHtml(finalMenu.name)}</div>
+                <div class="font-caption text-secondary">${t('recommend.finalMenu.title')}</div>
+                <div style="font-weight:700;font-size:0.9rem;color:var(--color-brand-primary);">${P.escapeHtml(finalMenuDisplayName)}</div>
               </div>
             </div>
-            <a href="#/final-menu" class="btn btn-outline btn-sm" style="background:#fff;border-radius:var(--radius-full);">
-              View
-            </a>
+            <span class="step-badge" style="font-size:0.65rem;">${allRestaurants.length} ${t('restaurants.title')}</span>
           </div>
 
-          <!-- Segmented View Toggle (List ↔ Map) & Filter Chips -->
-          <div class="rest-view-toggle-bar">
-            <div class="segmented-control" role="tablist" aria-label="Discovery View Mode">
+          <!-- View Switcher (List ↔ Map) & Filter Chips -->
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;gap:0.5rem;flex-wrap:wrap;">
+            <!-- Segmented Control: List ↔ Map -->
+            <div class="segmented-control" role="tablist">
               <button 
                 type="button" 
-                class="segmented-btn ${activeView === 'list' ? 'active' : ''}" 
-                id="toggle-view-list"
+                class="segmented-btn btn-switch-view ${activeView === 'list' ? 'active' : ''}" 
+                data-view="list"
                 role="tab"
                 aria-selected="${activeView === 'list'}"
               >
-                <span>📋 List</span>
+                ${t('restaurants.viewList')}
               </button>
               <button 
                 type="button" 
-                class="segmented-btn ${activeView === 'map' ? 'active' : ''}" 
-                id="toggle-view-map"
+                class="segmented-btn btn-switch-view ${activeView === 'map' ? 'active' : ''}" 
+                data-view="map"
                 role="tab"
                 aria-selected="${activeView === 'map'}"
               >
-                <span>🗺️ Map</span>
+                ${t('restaurants.viewMap')}
               </button>
             </div>
 
-            <div class="rest-filter-chips" role="group" aria-label="Filter Options">
-              <button type="button" class="filter-chip ${activeFilter === 'all' ? 'active' : ''}" data-filter="all">All (${allRestaurants.length})</button>
-              <button type="button" class="filter-chip ${activeFilter === 'nearest' ? 'active' : ''}" data-filter="nearest">&lt; 1 km</button>
-              <button type="button" class="filter-chip ${activeFilter === 'open' ? 'active' : ''}" data-filter="open">Open Now</button>
+            <!-- Filter Chips -->
+            <div class="filter-chips-row" style="display:flex;gap:0.35rem;">
+              <button type="button" class="filter-chip btn-filter ${activeFilter === 'all' ? 'active' : ''}" data-filter="all">
+                ${t('restaurants.filterAll')}
+              </button>
+              <button type="button" class="filter-chip btn-filter ${activeFilter === 'nearest' ? 'active' : ''}" data-filter="nearest">
+                ${t('restaurants.filterNearest')}
+              </button>
+              <button type="button" class="filter-chip btn-filter ${activeFilter === 'open' ? 'active' : ''}" data-filter="open">
+                ${t('restaurants.filterOpen')}
+              </button>
             </div>
           </div>
 
-          <!-- DISCOVERY MODE 1: LIST VIEW -->
+          <!-- LIST VIEW -->
           ${activeView === 'list' ? `
-            <section aria-label="Restaurant List" class="rest-list-container">
-              ${filteredRestaurants.length === 0 ? `
-                <div class="card" style="text-align:center;padding:1.5rem;">
-                  <p class="font-body-small text-secondary">No restaurants match the selected filter.</p>
-                </div>
-              ` : filteredRestaurants.map(rest => {
-                const isSelected = rest.id === selectedRestId;
-                return `
-                  <div 
-                    class="rest-card ${isSelected ? 'active-selected' : ''}" 
-                    data-rest-id="${rest.id}"
-                    role="button"
-                    tabindex="0"
-                  >
-                    <div class="rest-card-header">
-                      <div>
-                        <h3 class="rest-name">${P.escapeHtml(rest.name)}</h3>
-                        <div class="font-caption text-secondary">${P.escapeHtml(rest.thaiName)}</div>
+            <section class="restaurant-list-container" aria-label="Restaurant List">
+              <div style="display:flex;flex-direction:column;gap:1rem;">
+                ${filteredRestaurants.map(rest => {
+                  const isSelected = selectedRestId === rest.id;
+                  const restName = isTH ? rest.thaiName : rest.name;
+                  return `
+                    <article class="card restaurant-card" style="padding:1rem;background:#FFFFFF;border-radius:var(--radius-xl);border:1.5px solid ${isSelected ? 'var(--color-brand-primary)' : 'var(--color-border)'};box-shadow:var(--shadow-sm);">
+                      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:0.4rem;">
+                        <h3 class="font-heading-3" style="font-size:1.05rem;">${P.escapeHtml(restName)}</h3>
+                        <span class="step-badge ${rest.isOpen ? 'status-ready' : 'status-waiting'}" style="font-size:0.65rem;">
+                          ${rest.isOpen ? t('restaurants.filterOpen') : 'Closed'}
+                        </span>
                       </div>
-                      <span class="rest-distance-badge">
-                        📍 ${P.escapeHtml(rest.distance)}
-                      </span>
-                    </div>
 
-                    <div class="rest-meta-row">
-                      <span><strong>${P.escapeHtml(rest.cuisine)}</strong></span>
-                      <span>•</span>
-                      <span>${P.escapeHtml(rest.priceLevel)}</span>
-                      <span>•</span>
-                      <span style="color:${rest.isOpen ? '#165E2A' : '#784C00'};font-weight:600;">
-                        ${P.escapeHtml(rest.openState.split('•')[0].trim())}
-                      </span>
-                    </div>
+                      <div class="font-caption text-secondary" style="margin-bottom:0.6rem;">
+                        📍 ${P.escapeHtml(rest.address)}
+                      </div>
 
-                    <div class="rest-match-callout">
-                      ${P.escapeHtml(rest.matchReason)}
-                    </div>
+                      <div style="display:flex;gap:0.75rem;font-size:0.8rem;margin-bottom:0.75rem;color:var(--color-text-secondary);">
+                        <span>🚶 ${P.escapeHtml(rest.distance)} (${P.escapeHtml(rest.estimatedTravel)})</span>
+                        <span>•</span>
+                        <span>${P.escapeHtml(rest.priceLevel)}</span>
+                        <span>•</span>
+                        <span>⭐ ${P.escapeHtml(rest.ratingText)}</span>
+                      </div>
 
-                    <div style="display:flex;justify-content:space-between;align-items:center;margin-top:0.35rem;">
-                      <span class="font-caption text-muted">${P.escapeHtml(rest.estimatedTravel)}</span>
-                      <button type="button" class="btn btn-outline btn-sm btn-inspect-rest" data-rest-id="${rest.id}" style="border-radius:var(--radius-full);">
-                        View Details →
-                      </button>
-                    </div>
-                  </div>
-                `;
-              }).join('')}
+                      <div style="display:flex;justify-content:flex-end;gap:0.5rem;padding-top:0.6rem;border-top:1px dashed var(--color-border);">
+                        <button type="button" class="btn btn-outline btn-sm btn-select-restaurant" data-rest-id="${rest.id}">
+                          ${isSelected ? `✓ Selected` : `${t('common.done')}`}
+                        </button>
+                        <button type="button" class="btn btn-primary btn-sm btn-view-detail" data-rest-id="${rest.id}">
+                          ${t('restaurants.detail.chooseCTA')}
+                        </button>
+                      </div>
+                    </article>
+                  `;
+                }).join('')}
+              </div>
             </section>
           ` : `
-            <!-- DISCOVERY MODE 2: INTERACTIVE STYLIZED FAKE MAP VIEW -->
-            <section aria-label="Interactive Map View">
-              <div class="fake-map-viewport" id="restaurant-fake-map">
-                <div class="map-terrain-grid"></div>
-                <div class="map-river-shape"></div>
-                <div class="map-park-shape"></div>
-                <span class="map-park-label">Benchasiri Park</span>
+            <!-- MAP VIEW -->
+            <section class="restaurant-map-container" aria-label="Restaurant Map Discovery">
+              <div class="fake-map-canvas" style="position:relative;height:340px;background:#F2EDE4;border-radius:var(--radius-xl);overflow:hidden;border:1.5px solid var(--color-border);margin-bottom:1rem;">
+                <div class="map-grid-roads" style="position:absolute;inset:0;background-image:linear-gradient(rgba(0,0,0,0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(0,0,0,0.06) 1px, transparent 1px);background-size:40px 40px;"></div>
+                <div class="map-river" style="position:absolute;width:100%;height:35px;background:#D4E8F4;top:48%;transform:rotate(-8deg);"></div>
 
-                <!-- Roads -->
-                <div class="map-road map-road-main-1"></div>
-                <div class="map-road map-road-main-2"></div>
-                <div class="map-road map-road-sec-1"></div>
-                <div class="map-road map-road-sec-2"></div>
-                <div class="map-road map-road-sec-3"></div>
-                <div class="map-road map-road-sec-4"></div>
+                <!-- User Current Location Pulse Marker -->
+                <div class="map-user-marker" style="position:absolute;top:50%;left:50%;transform:translate(-50%, -50%);width:16px;height:16px;background:#1976D2;border:3px solid #fff;border-radius:50%;box-shadow:0 0 10px rgba(25,118,210,0.6);z-index:2;"></div>
 
-                <span class="map-district-label">Sukhumvit • Asoke</span>
-
-                <!-- Simulated Current User Location Marker -->
-                <div class="map-user-location" title="Your Location (Sukhumvit)">
-                  <div class="user-location-pulse"></div>
-                  <div class="user-location-dot"></div>
-                </div>
-
-                <!-- Interactive Restaurant Map Pins -->
-                ${allRestaurants.map(rest => {
-                  const isActivePin = rest.id === activePinId;
+                <!-- Restaurant Interactive Pins -->
+                ${filteredRestaurants.map(rest => {
+                  const isActivePin = activePinId === rest.id;
                   return `
                     <button 
                       type="button" 
-                      class="map-pin ${isActivePin ? 'active-pin' : ''}" 
-                      style="left:${rest.mapX};top:${rest.mapY};"
-                      data-pin-id="${rest.id}"
-                      aria-label="${P.escapeHtml(rest.name)} - ${P.escapeHtml(rest.distance)}"
+                      class="map-restaurant-pin btn-map-pin ${isActivePin ? 'active' : ''}" 
+                      data-rest-id="${rest.id}"
+                      style="position:absolute;top:${rest.mapY};left:${rest.mapX};transform:translate(-50%, -100%);background:${isActivePin ? 'var(--color-brand-primary)' : '#FFFFFF'};color:${isActivePin ? '#FFFFFF' : 'var(--color-brand-primary)'};border:2px solid var(--color-brand-primary);border-radius:var(--radius-full);padding:0.25rem 0.6rem;font-size:0.75rem;font-weight:700;box-shadow:var(--shadow-md);cursor:pointer;z-index:3;transition:transform var(--transition-fast);"
+                      aria-label="Pin for ${P.escapeHtml(rest.name)}"
                     >
-                      <div class="map-pin-bubble">
-                        <span>🍽️</span>
-                        <span>${P.escapeHtml(rest.name.split(' ')[0])}</span>
-                      </div>
-                      <div class="map-pin-point"></div>
+                      📍 ${P.escapeHtml(isTH ? rest.thaiName.split(' ')[0] : rest.name.split(' ')[0])}
                     </button>
                   `;
                 }).join('')}
               </div>
 
-              <!-- Floating Map Pin Preview Drawer -->
-              ${activePinRestaurant ? `
-                <div class="map-preview-card" role="region" aria-label="Selected Restaurant Preview">
-                  <div style="flex:1;">
-                    <div style="font-weight:700;font-size:0.95rem;color:var(--color-brand-primary);">${P.escapeHtml(activePinRestaurant.name)}</div>
-                    <div class="font-caption text-secondary">${P.escapeHtml(activePinRestaurant.cuisine)} • 📍 ${P.escapeHtml(activePinRestaurant.distance)} (${P.escapeHtml(activePinRestaurant.estimatedTravel)})</div>
+              <!-- Selected Pin Bottom Sheet Preview Card -->
+              <div class="card map-preview-card" style="padding:1rem;background:#FFFFFF;border-radius:var(--radius-xl);box-shadow:var(--shadow-md);border:1.5px solid var(--color-brand-primary);">
+                <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+                  <div>
+                    <h3 class="font-heading-3" style="font-size:1.05rem;">${P.escapeHtml(isTH ? activePinRestaurant.thaiName : activePinRestaurant.name)}</h3>
+                    <div class="font-caption text-secondary" style="margin-top:0.15rem;">
+                      🚶 ${P.escapeHtml(activePinRestaurant.distance)} • ${P.escapeHtml(activePinRestaurant.priceLevel)} • ⭐ ${P.escapeHtml(activePinRestaurant.ratingText)}
+                    </div>
                   </div>
-                  <button type="button" class="btn btn-primary btn-sm btn-inspect-rest" data-rest-id="${activePinRestaurant.id}" style="width:auto;white-space:nowrap;padding:0 0.85rem;">
-                    Details →
+                  <button type="button" class="btn btn-primary btn-sm btn-view-detail" data-rest-id="${activePinRestaurant.id}">
+                    ${t('restaurants.detail.chooseCTA')}
                   </button>
                 </div>
-              ` : ''}
+              </div>
             </section>
           `}
 
-          <!-- Bottom Actions: Selection Navigation -->
+          <!-- Bottom Actions: Proceed with Selected Restaurant -->
           <div class="bottom-actions">
-            <button type="button" id="btn-quick-choose-restaurant" class="btn btn-primary btn-lg">
-              <span>View ${P.escapeHtml(selectedRestId ? allRestaurants.find(r => r.id === selectedRestId)?.name || 'Restaurant' : 'Details')} →</span>
-            </button>
+            <a href="#/restaurants/selected" class="btn btn-primary btn-lg">
+              ${t('restaurants.detail.chooseCTA')}
+            </a>
           </div>
 
         </div>
@@ -245,196 +230,123 @@
   }
 
   function bindRecommendedRestaurantsEvents() {
+    const viewBtns = document.querySelectorAll('.btn-switch-view');
+    const filterBtns = document.querySelectorAll('.btn-filter');
+    const selectBtns = document.querySelectorAll('.btn-select-restaurant');
+    const detailBtns = document.querySelectorAll('.btn-view-detail');
+    const pinBtns = document.querySelectorAll('.btn-map-pin');
     const state = P.getState();
-    const allRestaurants = getRestaurantList();
 
-    // List ↔ Map Toggle
-    const listBtn = document.getElementById('toggle-view-list');
-    const mapBtn = document.getElementById('toggle-view-map');
-
-    if (listBtn) {
-      listBtn.onclick = () => {
-        state.restaurant.discoveryView = 'list';
-        P.saveState();
-        if (P.renderCurrentRoute) P.renderCurrentRoute();
-      };
-    }
-
-    if (mapBtn) {
-      mapBtn.onclick = () => {
-        state.restaurant.discoveryView = 'map';
-        P.saveState();
-        if (P.renderCurrentRoute) P.renderCurrentRoute();
-      };
-    }
-
-    // Quick filter chips
-    const filterChips = document.querySelectorAll('.filter-chip');
-    filterChips.forEach(chip => {
-      chip.onclick = () => {
-        state.restaurant.selectedFilter = chip.getAttribute('data-filter');
+    viewBtns.forEach(btn => {
+      btn.onclick = () => {
+        state.restaurant.discoveryView = btn.getAttribute('data-view');
         P.saveState();
         if (P.renderCurrentRoute) P.renderCurrentRoute();
       };
     });
 
-    // List card clicks
-    const restCards = document.querySelectorAll('.rest-card');
-    restCards.forEach(card => {
-      card.onclick = (e) => {
-        if (e.target.closest('.btn-inspect-rest')) return;
-        const restId = card.getAttribute('data-rest-id');
-        state.restaurant.selectedRestaurantId = restId;
-        state.restaurant.activePinId = restId;
+    filterBtns.forEach(btn => {
+      btn.onclick = () => {
+        state.restaurant.selectedFilter = btn.getAttribute('data-filter');
         P.saveState();
-        restCards.forEach(c => c.classList.toggle('active-selected', c.getAttribute('data-rest-id') === restId));
-        P.showToast(`Selected ${allRestaurants.find(r => r.id === restId)?.name}`, 'info');
-      };
-    });
-
-    // Map pin clicks
-    const mapPins = document.querySelectorAll('.map-pin');
-    mapPins.forEach(pin => {
-      pin.onclick = () => {
-        const pinId = pin.getAttribute('data-pin-id');
-        state.restaurant.activePinId = pinId;
-        state.restaurant.selectedRestaurantId = pinId;
-        P.saveState();
-        mapPins.forEach(p => p.classList.toggle('active-pin', p.getAttribute('data-pin-id') === pinId));
         if (P.renderCurrentRoute) P.renderCurrentRoute();
       };
     });
 
-    // Inspect Details buttons (both list and map)
-    const inspectBtns = document.querySelectorAll('.btn-inspect-rest');
-    inspectBtns.forEach(btn => {
-      btn.onclick = (e) => {
-        e.stopPropagation();
-        const restId = btn.getAttribute('data-rest-id');
-        state.restaurant.selectedRestaurantId = restId;
-        state.restaurant.activePinId = restId;
+    selectBtns.forEach(btn => {
+      btn.onclick = () => {
+        const id = btn.getAttribute('data-rest-id');
+        state.restaurant.selectedRestaurantId = id;
+        state.restaurant.activePinId = id;
+        P.saveState();
+        if (P.renderCurrentRoute) P.renderCurrentRoute();
+      };
+    });
+
+    detailBtns.forEach(btn => {
+      btn.onclick = () => {
+        const id = btn.getAttribute('data-rest-id');
+        state.restaurant.selectedRestaurantId = id;
+        state.restaurant.activePinId = id;
         P.saveState();
         P.navigateTo('#/restaurants/detail');
       };
     });
 
-    const quickChooseBtn = document.getElementById('btn-quick-choose-restaurant');
-    if (quickChooseBtn) {
-      quickChooseBtn.onclick = () => {
-        P.navigateTo('#/restaurants/detail');
+    pinBtns.forEach(btn => {
+      btn.onclick = () => {
+        const id = btn.getAttribute('data-rest-id');
+        state.restaurant.activePinId = id;
+        state.restaurant.selectedRestaurantId = id;
+        P.saveState();
+        if (P.renderCurrentRoute) P.renderCurrentRoute();
       };
-    }
+    });
   }
 
   /* ==========================================================================
-     3. Restaurant Detail Screen
+     3. Screen: Restaurant Detail & Map Route
      ========================================================================== */
 
   function renderRestaurantDetail() {
     const restaurant = getSelectedRestaurant();
-    const finalMenu = getFinalMenu();
+    const t = P.t;
+    const isTH = P.i18n.getLanguage() === 'th';
+    const restName = isTH ? restaurant.thaiName : restaurant.name;
 
     return `
       <main class="app-shell" aria-labelledby="rest-detail-title">
         <header class="top-bar">
-          <a href="#/restaurants" class="top-bar-action" aria-label="Back to Restaurant List">
+          <a href="#/restaurants" class="top-bar-action" aria-label="${t('common.back')}">
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="15 18 9 12 15 6"></polyline></svg>
           </a>
-          <h1 class="top-bar-title">Restaurant Details</h1>
-          <a href="#/home" class="top-bar-action"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg></a>
+          <h1 class="top-bar-title">${P.escapeHtml(restName)}</h1>
+          <div style="display:flex;align-items:center;gap:0.35rem;">
+            ${P.renderLanguageSwitch ? P.renderLanguageSwitch() : ''}
+          </div>
         </header>
 
         <div class="page-shell page-shell-has-bottom-actions">
           
-          <article class="rest-detail-hero">
-            <!-- Stylized Header Artwork -->
-            <div class="rest-detail-artwork">
-              🍽️
+          <!-- Mini Route Map Canvas -->
+          <div class="fake-map-canvas" style="position:relative;height:180px;background:#F2EDE4;border-radius:var(--radius-xl);overflow:hidden;border:1.5px solid var(--color-border);margin-bottom:1.25rem;">
+            <div class="map-grid-roads" style="position:absolute;inset:0;background-image:linear-gradient(rgba(0,0,0,0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(0,0,0,0.06) 1px, transparent 1px);background-size:30px 30px;"></div>
+            <!-- Dotted Walking Route Line -->
+            <div style="position:absolute;top:40%;left:30%;width:40%;height:3px;background:repeating-linear-gradient(90deg, var(--color-brand-primary), var(--color-brand-primary) 6px, transparent 6px, transparent 12px);"></div>
+            <div style="position:absolute;top:40%;left:30%;width:12px;height:12px;background:#1976D2;border:2px solid #fff;border-radius:50%;transform:translate(-50%,-50%);"></div>
+            <div style="position:absolute;top:40%;left:70%;transform:translate(-50%,-100%);background:var(--color-brand-primary);color:#fff;border-radius:var(--radius-full);padding:0.2rem 0.5rem;font-size:0.75rem;font-weight:700;">📍 Destination</div>
+          </div>
+
+          <!-- Restaurant Details Card -->
+          <div class="card" style="padding:1.25rem;background:#FFFFFF;border-radius:var(--radius-xl);border:1.5px solid var(--color-border);margin-bottom:1rem;">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+              <div>
+                <h2 id="rest-detail-title" class="font-heading-1" style="font-size:1.35rem;">${P.escapeHtml(restName)}</h2>
+                <div class="font-caption text-secondary" style="margin-top:0.2rem;">${P.escapeHtml(restaurant.cuisine)} • ${P.escapeHtml(restaurant.priceLevel)}</div>
+              </div>
+              <span class="step-badge ${restaurant.isOpen ? 'status-ready' : 'status-waiting'}">
+                ${restaurant.isOpen ? t('restaurants.filterOpen') : 'Closed'}
+              </span>
             </div>
 
-            <div class="rest-detail-content">
-              <div>
-                <div style="display:flex;justify-content:space-between;align-items:flex-start;">
-                  <h2 id="rest-detail-title" class="font-heading-1" style="font-size:1.35rem;">
-                    ${P.escapeHtml(restaurant.name)}
-                  </h2>
-                  <span class="rest-distance-badge">
-                    📍 ${P.escapeHtml(restaurant.distance)}
-                  </span>
-                </div>
-                <div class="font-body-small text-secondary" style="font-weight:600;">
-                  ${P.escapeHtml(restaurant.thaiName)}
-                </div>
-              </div>
-
-              <div class="rest-meta-row">
-                <span><strong>${P.escapeHtml(restaurant.cuisine)}</strong></span>
-                <span>•</span>
-                <span>${P.escapeHtml(restaurant.priceLevel)}</span>
-                <span>•</span>
-                <span style="color:#165E2A;font-weight:600;">${P.escapeHtml(restaurant.openState)}</span>
-              </div>
-
-              <!-- Match Reason with Final Menu -->
-              <div class="card card-hero" style="padding:0.85rem 1rem;">
-                <div class="font-label" style="color:var(--color-brand-primary);margin-bottom:0.25rem;">
-                  Matches Your Group Choice (${P.escapeHtml(finalMenu.name)})
-                </div>
-                <p class="font-body-small text-secondary" style="line-height:1.4;">
-                  ${P.escapeHtml(restaurant.matchReason)}
-                </p>
-              </div>
-
-              <!-- Feature Tags -->
-              <div>
-                <div class="font-label text-secondary" style="margin-bottom:0.45rem;">Restaurant Highlights</div>
-                <div class="menu-card-tags">
-                  ${restaurant.tags.map(t => `<span class="menu-tag">${P.escapeHtml(t)}</span>`).join('')}
-                </div>
-              </div>
-
-              <!-- Address & Location Context -->
-              <div>
-                <div class="font-label text-secondary" style="margin-bottom:0.25rem;">Address</div>
-                <p class="font-body-small text-secondary">
-                  ${P.escapeHtml(restaurant.address)}
-                </p>
-                <div class="font-caption text-muted" style="margin-top:0.2rem;">
-                  Estimated travel: ${P.escapeHtml(restaurant.estimatedTravel)} from Sukhumvit
-                </div>
-              </div>
-
-              <!-- Mini Focused Route Map -->
-              <div class="rest-detail-minomap" aria-label="Route Preview Map">
-                <div class="map-terrain-grid"></div>
-                <div class="map-road map-road-main-1" style="top:50%;"></div>
-                <div class="map-road map-road-sec-3" style="left:60%;"></div>
-
-                <svg class="mini-route-svg" viewBox="0 0 300 160">
-                  <path d="M 50 80 Q 150 40 230 80" fill="none" stroke="var(--color-brand-primary)" stroke-width="3" stroke-dasharray="6,4" />
-                </svg>
-
-                <div class="map-user-location" style="top:50%;left:18%;">
-                  <div class="user-location-dot"></div>
-                </div>
-
-                <div class="map-pin active-pin" style="top:50%;left:76%;">
-                  <div class="map-pin-bubble" style="font-size:9px;padding:2px 6px;">${P.escapeHtml(restaurant.name.split(' ')[0])}</div>
-                  <div class="map-pin-point"></div>
-                </div>
-              </div>
-
+            <div class="card" style="background:var(--color-surface-subtle);padding:0.75rem;border-radius:var(--radius-md);margin:1rem 0;font-size:0.8rem;line-height:1.4;">
+              <strong style="color:var(--color-brand-primary);">✨ ${t('recommend.whyMatch')}</strong>
+              <div class="text-secondary" style="margin-top:0.2rem;">${P.escapeHtml(restaurant.matchReason)}</div>
             </div>
-          </article>
 
-          <!-- Bottom Actions -->
+            <div style="display:flex;flex-direction:column;gap:0.4rem;font-size:0.8rem;color:var(--color-text-secondary);">
+              <div>📍 ${P.escapeHtml(restaurant.address)}</div>
+              <div>🚶 ${t('restaurants.detail.distance')}: ${P.escapeHtml(restaurant.distance)} (${P.escapeHtml(restaurant.estimatedTravel)})</div>
+              <div>🕒 ${P.escapeHtml(restaurant.openState)}</div>
+              <div>⭐ ${P.escapeHtml(restaurant.ratingText)}</div>
+            </div>
+          </div>
+
+          <!-- Bottom Action: Select This Restaurant -->
           <div class="bottom-actions">
             <button type="button" id="btn-choose-this-restaurant" class="btn btn-primary btn-lg">
-              Choose This Restaurant 🍽️ →
+              ${t('restaurants.detail.chooseCTA')}
             </button>
-            <a href="#/restaurants" class="btn btn-secondary">
-              Back to Other Places
-            </a>
           </div>
 
         </div>
@@ -444,106 +356,65 @@
 
   function bindRestaurantDetailEvents() {
     const chooseBtn = document.getElementById('btn-choose-this-restaurant');
-    const state = P.getState();
-    const restaurant = getSelectedRestaurant();
-
     if (chooseBtn) {
       chooseBtn.onclick = () => {
-        state.restaurant.selectedRestaurantId = restaurant.id;
+        const state = P.getState();
         state.restaurant.restaurantConfirmed = true;
         P.saveState();
-        P.showToast(`Selected ${restaurant.name}!`, 'success');
         P.navigateTo('#/restaurants/selected');
       };
     }
   }
 
   /* ==========================================================================
-     4. Restaurant Selected Screen (Confirmation & Transition to Bill V5)
+     4. Screen: Restaurant Selected Confirmation (Transitions to V5 Boundary)
      ========================================================================== */
 
   function renderRestaurantSelected() {
     const restaurant = getSelectedRestaurant();
-    const finalMenu = getFinalMenu();
-    const state = P.getState();
-    const activeMembers = (state.room.members || []).filter(m => m.isActive);
+    const t = P.t;
+    const isTH = P.i18n.getLanguage() === 'th';
+    const restName = isTH ? restaurant.thaiName : restaurant.name;
 
     return `
-      <main class="app-shell" aria-labelledby="confirmed-title">
+      <main class="app-shell" aria-labelledby="selected-title" style="padding-bottom: 90px;">
         <header class="top-bar">
-          <a href="#/home" class="top-bar-action" aria-label="Home">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg>
+          <a href="#/restaurants" class="top-bar-action" aria-label="${t('common.back')}">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="15 18 9 12 15 6"></polyline></svg>
           </a>
-          <h1 class="top-bar-title">Destination Confirmed</h1>
-          <a href="#/history" class="top-bar-action" aria-label="History">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
-          </a>
+          <h1 class="top-bar-title">${t('restaurants.selected.title')}</h1>
+          <div style="display:flex;align-items:center;gap:0.35rem;">
+            ${P.renderLanguageSwitch ? P.renderLanguageSwitch() : ''}
+          </div>
         </header>
 
-        <div class="page-shell page-shell-has-bottom-actions">
+        <div class="page-shell page-shell-has-bottom-actions" style="text-align:center;">
           
-          <div class="rest-selected-hero">
-            <span class="rest-confirmed-badge">
-              ✓ Destination Selected
-            </span>
+          <div style="font-size:54px;margin:1.5rem 0 0.5rem 0;">📍</div>
+          <span class="step-badge" style="background:#EDF9F0;color:#165E2A;font-weight:700;font-size:0.85rem;padding:0.35rem 0.85rem;">
+            ${t('restaurants.selected.title')}
+          </span>
 
-            <div style="font-size:42px;margin:0.25rem 0;">
-              🎉
+          <h2 id="selected-title" class="font-heading-1" style="font-size:1.5rem;margin-top:0.75rem;">
+            ${P.escapeHtml(restName)}
+          </h2>
+          <div class="font-body-small text-secondary" style="margin-top:0.25rem;">
+            ${P.escapeHtml(restaurant.address)}
+          </div>
+
+          <div class="card" style="background:var(--color-surface-subtle);padding:1rem;margin:1.5rem 0;border-radius:var(--radius-xl);text-align:left;">
+            <div style="font-weight:700;color:var(--color-brand-primary);font-size:0.95rem;">
+              🚗 ${t('restaurants.detail.travelTime')}: ${P.escapeHtml(restaurant.estimatedTravel)}
             </div>
-
-            <h2 id="confirmed-title" class="font-heading-1" style="font-size:1.45rem;">
-              You're Heading To
-            </h2>
-
-            <div style="font-size:1.25rem;font-weight:800;color:var(--color-brand-primary);margin-top:0.25rem;">
-              ${P.escapeHtml(restaurant.name)}
-            </div>
-
-            <div class="font-body-small text-secondary" style="font-weight:600;">
-              ${P.escapeHtml(restaurant.thaiName)}
-            </div>
-
-            <div class="font-caption text-muted" style="margin-top:0.35rem;">
-              📍 ${P.escapeHtml(restaurant.address)} (${P.escapeHtml(restaurant.distance)} • ${P.escapeHtml(restaurant.estimatedTravel)})
-            </div>
-
-            <!-- Group Menu Rationale -->
-            <div class="card" style="background:#FFFFFF;margin-top:1rem;text-align:left;padding:0.85rem 1rem;">
-              <div class="font-label text-secondary" style="margin-bottom:0.2rem;">Ordered Winning Dish</div>
-              <div style="font-weight:700;font-size:0.95rem;color:var(--color-brand-primary);display:flex;align-items:center;gap:0.35rem;">
-                <span>${finalMenu.icon}</span>
-                <span>${P.escapeHtml(finalMenu.name)}</span>
-              </div>
-            </div>
-
-            <!-- Active Group Members Presence -->
-            <div style="margin-top:1rem;">
-              <div class="font-caption text-muted" style="margin-bottom:0.35rem;">Going with ${activeMembers.length} active members:</div>
-              <div class="final-participants-badge">
-                ${activeMembers.map(m => `
-                  <div class="avatar-badge ${m.colorClass || 'avatar-petal'}" style="width:32px;height:32px;font-size:0.75rem;" title="${P.escapeHtml(m.name)}">
-                    ${P.escapeHtml(m.initials)}
-                  </div>
-                `).join('')}
-              </div>
+            <div class="font-caption text-secondary" style="margin-top:0.25rem;">
+              ${P.escapeHtml(restaurant.openState)}
             </div>
           </div>
 
-          <!-- Next Step: Split Bill / Payment Flow (V5 Boundary) -->
-          <div class="card" style="background:var(--color-surface-subtle);margin-bottom:1.5rem;text-align:center;padding:1rem;">
-            <div class="font-label text-secondary" style="margin-bottom:0.25rem;">Next: Pay & Split the Bill</div>
-            <p class="font-body-small text-secondary" style="line-height:1.4;">
-              After dining, upload or scan your paper receipt to itemize and split payments fairly among members.
-            </p>
-          </div>
-
-          <!-- Bottom Actions -->
+          <!-- Bottom Action: Transition to V5 Split Bill -->
           <div class="bottom-actions">
-            <a href="#/bill" class="btn btn-primary btn-lg" id="btn-to-split-bill">
-              Split Bill (Upload Receipt) 🧾 →
-            </a>
-            <a href="#/restaurants" class="btn btn-secondary">
-              Change Restaurant
+            <a href="#/bill" class="btn btn-primary btn-lg">
+              ${t('restaurants.selected.splitBillCTA')}
             </a>
           </div>
 
@@ -552,16 +423,12 @@
     `;
   }
 
-  function bindRestaurantSelectedEvents() {
-    const toBillBtn = document.getElementById('btn-to-split-bill');
-    if (toBillBtn) {
-      toBillBtn.onclick = () => {
-        P.showToast('Entering Split Bill & Receipt OCR (V5 Phase)', 'info');
-      };
-    }
-  }
+  function bindRestaurantSelectedEvents() {}
 
   // Expose to Prototype Namespace
+  P.getFinalMenu = getFinalMenu;
+  P.getRestaurantList = getRestaurantList;
+  P.getSelectedRestaurant = getSelectedRestaurant;
   P.renderRecommendedRestaurants = renderRecommendedRestaurants;
   P.bindRecommendedRestaurantsEvents = bindRecommendedRestaurantsEvents;
   P.renderRestaurantDetail = renderRestaurantDetail;

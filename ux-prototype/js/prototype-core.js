@@ -28,6 +28,7 @@
         return {
           ...P.INITIAL_STATE,
           ...parsed,
+          ui: { ...P.INITIAL_STATE.ui, ...(parsed.ui || {}) },
           auth: { ...P.INITIAL_STATE.auth, ...(parsed.auth || {}) },
           foodProfile: { ...P.INITIAL_STATE.foodProfile, ...(parsed.foodProfile || {}) },
           room: { ...P.INITIAL_STATE.room, ...(parsed.room || {}) },
@@ -72,9 +73,14 @@
   }
 
   function resetState() {
+    const currentLang = state.ui?.language || 'th';
     state = JSON.parse(JSON.stringify(P.INITIAL_STATE));
+    state.ui.language = currentLang;
     saveState();
-    showToast('Prototype state reset to fresh defaults.', 'info');
+    if (P.i18n && P.i18n.setLanguage) {
+      P.i18n.setLanguage(currentLang);
+    }
+    showToast(currentLang === 'th' ? 'รีเซ็ตสถานะโปรโตไทป์เรียบร้อยแล้ว' : 'Prototype state reset to fresh defaults.', 'info');
     navigateTo('#/login');
   }
 
@@ -189,6 +195,7 @@
 
   function showLeaveRoomModal() {
     const isHost = state.room.role === 'host';
+    const t = P.t;
     openModal(`
       <div style="text-align:center;padding:0.5rem 0;">
         <div class="brand-badge-logo" style="margin:0 auto 1rem auto;background:#FDF0F0;color:#8E1F1F;">
@@ -198,18 +205,18 @@
             <line x1="21" y1="12" x2="9" y2="12"></line>
           </svg>
         </div>
-        <h3 class="font-heading-2">${isHost ? 'Leave & Close Room?' : 'Leave this Room?'}</h3>
+        <h3 class="font-heading-2">${isHost ? (P.i18n.getLanguage() === 'th' ? 'ปิดและออกจากห้อง?' : 'Leave & Close Room?') : (P.i18n.getLanguage() === 'th' ? 'ออกจากห้องนี้?' : 'Leave this Room?')}</h3>
         <p class="font-body-small text-secondary" style="margin:0.5rem 0 1.25rem 0;line-height:1.45;">
           ${isHost 
-            ? 'As the host, leaving will close this food fight session for all members.' 
-            : 'You will leave the lobby and return to the Home dashboard.'}
+            ? (P.i18n.getLanguage() === 'th' ? 'ในฐานะโฮสต์ การออกจากห้องจะปิดเซสชัน FoodFight สำหรับทุกคน' : 'As the host, leaving will close this food fight session for all members.')
+            : (P.i18n.getLanguage() === 'th' ? 'คุณจะออกจากห้องและกลับไปยังหน้าหลัก' : 'You will leave the lobby and return to the Home dashboard.')}
         </p>
         <div style="display:flex;flex-direction:column;gap:0.65rem;">
           <button type="button" id="btn-confirm-leave" class="btn btn-danger btn-lg">
-            Confirm & Leave
+            ${P.i18n.getLanguage() === 'th' ? 'ยืนยันและออกจากห้อง' : 'Confirm & Leave'}
           </button>
           <button type="button" id="btn-cancel-leave" class="btn btn-secondary">
-            Stay in Room
+            ${P.i18n.getLanguage() === 'th' ? 'อยู่ในห้องต่อ' : 'Stay in Room'}
           </button>
         </div>
       </div>
@@ -219,7 +226,7 @@
       closeModal();
       state.room.foodFightStarted = false;
       saveState();
-      showToast('You left the room.', 'info');
+      showToast(P.i18n.getLanguage() === 'th' ? 'คุณออกจากห้องแล้ว' : 'You left the room.', 'info');
       navigateTo('#/home');
     };
 
@@ -231,26 +238,27 @@
   function showInviteModal() {
     const code = state.room.roomCode || 'FF-4827';
     const link = state.room.inviteLink || `https://foodfight.app/join/${code}`;
+    const t = P.t;
 
     openModal(`
       <div>
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">
-          <h3 class="font-heading-2">Invite Friends</h3>
-          <button type="button" id="btn-close-invite" class="top-bar-action" aria-label="Close">✕</button>
+          <h3 class="font-heading-2">${t('room.invite.modalTitle')}</h3>
+          <button type="button" id="btn-close-invite" class="top-bar-action" aria-label="${t('common.close')}">✕</button>
         </div>
 
         <p class="font-body-small text-secondary" style="margin-bottom:1rem;">
-          Share your Room Code or QR so friends can jump straight into this FoodFight.
+          ${t('room.invite.modalSubtitle')}
         </p>
 
         <!-- Room Code Display Box -->
         <div class="card" style="text-align:center;background:var(--color-surface-subtle);padding:1rem;margin-bottom:1rem;">
-          <div class="font-label text-muted" style="margin-bottom:0.25rem;">Room Code</div>
+          <div class="font-label text-muted" style="margin-bottom:0.25rem;">${t('room.lobby.roomCode')}</div>
           <div style="font-family:monospace;font-size:1.6rem;font-weight:700;letter-spacing:0.1em;color:var(--color-brand-primary);">
             ${escapeHtml(code)}
           </div>
           <button type="button" id="btn-copy-code-modal" class="btn btn-outline btn-sm" style="margin-top:0.6rem;background:#fff;border-radius:var(--radius-full);">
-            📋 Copy Code
+            📋 ${t('room.invite.copyCode')}
           </button>
         </div>
 
@@ -292,23 +300,23 @@
 
         <!-- Shareable Link Box -->
         <div class="form-group" style="margin-bottom:1rem;">
-          <label class="form-label">Invite Link</label>
+          <label class="form-label">${t('room.join.byLink')}</label>
           <div style="display:flex;gap:0.5rem;">
             <input type="text" readonly value="${escapeHtml(link)}" class="form-input" style="font-size:0.8rem;background:var(--color-surface-subtle);" />
             <button type="button" id="btn-copy-link-modal" class="btn btn-secondary" style="width:auto;white-space:nowrap;padding:0 0.85rem;">
-              Copy
+              ${t('room.invite.copyLink')}
             </button>
           </div>
         </div>
 
-        <button type="button" id="btn-done-invite" class="btn btn-primary">Done</button>
+        <button type="button" id="btn-done-invite" class="btn btn-primary">${t('common.done')}</button>
       </div>
     `);
 
     document.getElementById('btn-close-invite').onclick = () => closeModal();
     document.getElementById('btn-done-invite').onclick = () => closeModal();
-    document.getElementById('btn-copy-code-modal').onclick = () => copyTextToClipboard(code, 'Room Code');
-    document.getElementById('btn-copy-link-modal').onclick = () => copyTextToClipboard(link, 'Invite Link');
+    document.getElementById('btn-copy-code-modal').onclick = () => copyTextToClipboard(code, t('room.lobby.roomCode'));
+    document.getElementById('btn-copy-link-modal').onclick = () => copyTextToClipboard(link, t('room.join.byLink'));
   }
 
   function escapeHtml(str) {

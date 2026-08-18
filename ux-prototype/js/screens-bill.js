@@ -9,7 +9,6 @@
  *   - Deterministic Split Math & Exact Zero-Satang Reconciliation
  *   - Bill Summary Breakdown Accordions
  *   - Real-Time Group Payment Status & All Settled Celebration
- *   - Transition to V6 Boundary (Home & Bill History Shell)
  */
 
 (function () {
@@ -31,7 +30,6 @@
     const restId = state.restaurant?.selectedRestaurantId || restList[0]?.id;
     const restaurant = restList.find(r => r.id === restId) || restList[0];
 
-    // Use active participating members, fallback to demo 4 members
     let members = (state.room.members || []).filter(m => m.isActive);
     if (!members || members.length === 0) {
       members = (state.room.members || []).slice(0, 4);
@@ -59,10 +57,6 @@
     return items.reduce((sum, item) => sum + calculateItemLineTotal(item), 0);
   }
 
-  /**
-   * Deterministic Split Math & Exact Zero-Satang Reconciliation
-   * Distributes remainder evenly so that sum of member totals ALWAYS equals bill total.
-   */
   function calculateMemberTotals(items, assignments, members) {
     const memberTotals = {};
     const memberItemDetails = {};
@@ -79,25 +73,25 @@
       const assignedIds = (assignments[item.id] || []).filter(id => members.some(m => m.id === id));
       const N = assignedIds.length;
 
-      if (N > 0 && lineTotal > 0) {
+      if (N > 0) {
         const baseShare = Math.floor(lineTotal / N);
         const remainder = lineTotal - (baseShare * N);
 
-        assignedIds.forEach((mId, index) => {
-          const share = baseShare + (index < remainder ? 1 : 0);
-          if (memberTotals[mId] !== undefined) {
-            memberTotals[mId] += share;
-            memberItemDetails[mId].push({
+        assignedIds.forEach((memId, idx) => {
+          const share = baseShare + (idx < remainder ? 1 : 0);
+          memberTotals[memId] = (memberTotals[memId] || 0) + share;
+          totalAllocated += share;
+
+          if (memberItemDetails[memId]) {
+            memberItemDetails[memId].push({
               itemId: item.id,
               name: item.name,
               quantity: item.quantity,
               unitPrice: item.unitPrice,
               lineTotal: lineTotal,
-              shareAmount: share,
-              isShared: N > 1,
-              totalMembers: N
+              splitCount: N,
+              memberShare: share
             });
-            totalAllocated += share;
           }
         });
       }
@@ -106,316 +100,284 @@
     return { memberTotals, memberItemDetails, totalAllocated };
   }
 
-  function calculatePaymentProgress(members, memberTotals, paymentStatuses) {
+  function calculatePaymentProgress(members, paymentStatuses, memberTotals) {
+    const totalCount = members.length;
     let paidCount = 0;
-    let collectedAmount = 0;
-    let totalBill = 0;
+    let paidAmount = 0;
+    let totalBillAmount = 0;
 
     members.forEach(m => {
-      const amount = memberTotals[m.id] || 0;
-      totalBill += amount;
-      const status = paymentStatuses[m.id] || 'unpaid';
-      if (status === 'paid') {
+      const share = memberTotals[m.id] || 0;
+      totalBillAmount += share;
+      if (paymentStatuses[m.id] === 'paid') {
         paidCount++;
-        collectedAmount += amount;
+        paidAmount += share;
       }
     });
 
-    const totalCount = members.length;
     const isAllPaid = totalCount > 0 && paidCount === totalCount;
-    const percentage = totalBill > 0 ? Math.round((collectedAmount / totalBill) * 100) : 0;
+    const progressPercent = totalBillAmount > 0 ? Math.round((paidAmount / totalBillAmount) * 100) : 0;
 
-    return { paidCount, totalCount, collectedAmount, totalBill, isAllPaid, percentage };
+    return { totalCount, paidCount, paidAmount, totalBillAmount, isAllPaid, progressPercent };
   }
 
   /* ==========================================================================
-     2. Split Bill Overview Screen (#/bill)
+     2. Screen: Split Bill Overview
      ========================================================================== */
 
   function renderSplitBill() {
     const { restaurant, finalMenu, members } = getBillContext();
+    const t = P.t;
+    const isTH = P.i18n.getLanguage() === 'th';
+    const restName = isTH ? restaurant.thaiName : restaurant.name;
 
     return `
-      <main class="app-shell" aria-labelledby="split-bill-title">
+      <main class="app-shell" aria-labelledby="split-bill-overview-title" style="padding-bottom: 90px;">
         <header class="top-bar">
-          <a href="#/restaurants/selected" class="top-bar-action" aria-label="Back to Selected Destination">
+          <a href="#/restaurants/selected" class="top-bar-action" aria-label="${t('common.back')}">
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="15 18 9 12 15 6"></polyline></svg>
           </a>
-          <h1 class="top-bar-title">Split the Bill</h1>
-          <a href="#/home" class="top-bar-action"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg></a>
+          <h1 class="top-bar-title">${t('bill.overview.title')}</h1>
+          <div style="display:flex;align-items:center;gap:0.35rem;">
+            ${P.renderLanguageSwitch ? P.renderLanguageSwitch() : ''}
+          </div>
         </header>
 
-        <div class="page-shell page-shell-has-bottom-actions">
-          
-          <!-- Venue & Order Context Card -->
-          <div class="bill-context-card">
-            <div style="display:flex;justify-content:space-between;align-items:flex-start;">
-              <div>
-                <div class="font-caption text-secondary" style="font-weight:600;">Dining Destination</div>
-                <div style="font-size:1.1rem;font-weight:800;color:var(--color-brand-primary);">${P.escapeHtml(restaurant.name)}</div>
-                <div class="font-caption text-muted">${P.escapeHtml(restaurant.thaiName)}</div>
-              </div>
-              <div style="font-size:32px;">🧾</div>
+        <div class="page-shell">
+          <!-- Venue & Final Dish Context -->
+          <div class="card card-hero" style="margin-bottom:1.25rem;">
+            <span class="step-badge" style="background:var(--color-surface-subtle);color:var(--color-brand-primary);">
+              🧾 ${t('bill.overview.title')}
+            </span>
+            <h2 class="font-heading-2" style="margin-top:0.4rem;">${P.escapeHtml(restName)}</h2>
+            <div class="font-caption text-secondary" style="margin-top:0.15rem;">
+              ${P.escapeHtml(restaurant.address.split(',')[0])} • ${members.length} ${t('common.member')}
             </div>
+          </div>
 
-            <div style="margin-top:0.75rem;padding-top:0.65rem;border-top:1px dashed var(--color-border);display:flex;justify-content:space-between;align-items:center;">
-              <div class="font-caption text-secondary">
-                Winning Dish: <strong>${P.escapeHtml(finalMenu.name.split('&')[0])}</strong>
+          <!-- 3-Step Journey Box -->
+          <div class="card" style="background:#FFFFFF;border:1.5px solid var(--color-border);border-radius:var(--radius-xl);padding:1.25rem;margin-bottom:1.25rem;">
+            <h3 class="font-heading-3" style="margin-bottom:0.75rem;">3 Easy Steps</h3>
+            <div style="display:flex;flex-direction:column;gap:0.75rem;">
+              <div style="display:flex;align-items:center;gap:0.75rem;">
+                <div style="width:32px;height:32px;border-radius:50%;background:var(--color-surface-subtle);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.85rem;color:var(--color-brand-primary);">1</div>
+                <div>
+                  <div style="font-weight:700;font-size:0.9rem;">${t('bill.scanner.title')}</div>
+                  <div class="font-caption text-secondary">${t('bill.scanner.instruction')}</div>
+                </div>
               </div>
-              <div class="font-caption text-secondary">
-                <strong>${members.length} Members</strong>
+              <div style="display:flex;align-items:center;gap:0.75rem;">
+                <div style="width:32px;height:32px;border-radius:50%;background:var(--color-surface-subtle);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.85rem;color:var(--color-brand-primary);">2</div>
+                <div>
+                  <div style="font-weight:700;font-size:0.9rem;">${t('bill.assign.title')}</div>
+                  <div class="font-caption text-secondary">${t('bill.assign.instruction')}</div>
+                </div>
+              </div>
+              <div style="display:flex;align-items:center;gap:0.75rem;">
+                <div style="width:32px;height:32px;border-radius:50%;background:var(--color-surface-subtle);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.85rem;color:var(--color-brand-primary);">3</div>
+                <div>
+                  <div style="font-weight:700;font-size:0.9rem;">${t('bill.payment.title')}</div>
+                  <div class="font-caption text-secondary">${t('bill.summary.reconciledBadge')}</div>
+                </div>
               </div>
             </div>
           </div>
 
-          <!-- 3-Step Journey Cards -->
-          <div class="bill-step-grid">
-            <div class="bill-step-card">
-              <div class="bill-step-num">1</div>
-              <div>
-                <div style="font-weight:700;font-size:0.875rem;color:var(--color-brand-primary);">Scan Paper Receipt</div>
-                <div class="font-caption text-secondary">AI instantly detects items and itemized prices.</div>
-              </div>
-            </div>
-
-            <div class="bill-step-card">
-              <div class="bill-step-num">2</div>
-              <div>
-                <div style="font-weight:700;font-size:0.875rem;color:var(--color-brand-primary);">Select Who Ate What</div>
-                <div class="font-caption text-secondary">Assign individual or shared dishes with 1 tap.</div>
-              </div>
-            </div>
-
-            <div class="bill-step-card">
-              <div class="bill-step-num">3</div>
-              <div>
-                <div style="font-weight:700;font-size:0.875rem;color:var(--color-brand-primary);">Settle Fair Payouts</div>
-                <div class="font-caption text-secondary">Exact zero-satang math with live payment status.</div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Bottom Actions: Acquisition Choices -->
-          <div class="bottom-actions">
-            <a href="#/bill/receipt" class="btn btn-primary btn-lg" id="btn-start-scan">
-              Scan Receipt Camera 📸 →
+          <!-- Acquisition Options -->
+          <div style="display:flex;flex-direction:column;gap:0.75rem;margin-bottom:1.5rem;">
+            <a href="#/bill/receipt" class="btn btn-primary btn-lg">
+              ${t('bill.overview.scanReceipt')}
             </a>
-            <button type="button" class="btn btn-secondary" id="btn-upload-sample">
-              Load Sample Receipt 📄
+            <button type="button" id="btn-load-sample-receipt" class="btn btn-secondary btn-lg">
+              ${t('bill.overview.loadSample')}
             </button>
           </div>
-
         </div>
       </main>
     `;
   }
 
   function bindSplitBillEvents() {
-    const uploadBtn = document.getElementById('btn-upload-sample');
-    if (uploadBtn) {
-      uploadBtn.onclick = () => {
+    const sampleBtn = document.getElementById('btn-load-sample-receipt');
+    if (sampleBtn) {
+      sampleBtn.onclick = () => {
         const state = P.getState();
-        state.bill.receiptSource = 'sample';
         state.bill.receiptItems = JSON.parse(JSON.stringify(P.DEFAULT_RECEIPT_ITEMS));
+        state.bill.receiptSource = 'sample';
         P.saveState();
-        P.showToast('Sample receipt loaded successfully!', 'success');
+        P.showToast(P.t('bill.items.title') + ' ✓', 'success');
         P.navigateTo('#/bill/items');
       };
     }
   }
 
   /* ==========================================================================
-     3. Simulated Receipt Scanner Viewfinder (#/bill/receipt)
+     3. Screen: Scan / Upload Receipt (Simulated Viewfinder)
      ========================================================================== */
 
   function renderBillReceipt() {
+    const t = P.t;
     return `
-      <main class="app-shell" aria-labelledby="receipt-scanner-title">
+      <main class="app-shell" aria-labelledby="scanner-title">
         <header class="top-bar">
-          <a href="#/bill" class="top-bar-action" aria-label="Back to Bill Overview">
+          <a href="#/bill" class="top-bar-action" aria-label="${t('common.back')}">
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="15 18 9 12 15 6"></polyline></svg>
           </a>
-          <h1 class="top-bar-title" id="receipt-scanner-title">Scanning Receipt</h1>
-          <a href="#/home" class="top-bar-action"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg></a>
+          <h1 class="top-bar-title">${t('bill.scanner.title')}</h1>
+          <div style="display:flex;align-items:center;gap:0.35rem;">
+            ${P.renderLanguageSwitch ? P.renderLanguageSwitch() : ''}
+          </div>
         </header>
 
-        <div class="page-shell page-shell-has-bottom-actions">
-          
-          <!-- Scanner Viewfinder Simulation -->
-          <div class="scanner-viewport" role="region" aria-label="Receipt Camera Scanner">
-            
-            <div class="scanner-receipt-frame">
-              <div class="scanner-corner scanner-corner-tl"></div>
-              <div class="scanner-corner scanner-corner-tr"></div>
-              <div class="scanner-corner scanner-corner-bl"></div>
-              <div class="scanner-corner scanner-corner-br"></div>
+        <div class="page-shell page-shell-has-bottom-actions" style="text-align:center;">
+          <section class="screen-header">
+            <h2 id="scanner-title" class="font-heading-1">${t('bill.scanner.title')}</h2>
+            <p class="screen-subtitle">${t('bill.scanner.instruction')}</p>
+          </section>
 
-              <div class="scanner-laser-line"></div>
+          <!-- Simulated Laser Scanner Viewfinder -->
+          <div class="receipt-viewfinder-canvas" style="position:relative;width:260px;height:320px;background:#1A131C;border-radius:20px;margin:1.5rem auto;overflow:hidden;box-shadow:var(--shadow-md);">
+            <div style="position:absolute;top:14px;left:14px;width:28px;height:28px;border-top:3px solid #FFC6D9;border-left:3px solid #FFC6D9;"></div>
+            <div style="position:absolute;top:14px;right:14px;width:28px;height:28px;border-top:3px solid #FFC6D9;border-right:3px solid #FFC6D9;"></div>
+            <div style="position:absolute;bottom:14px;left:14px;width:28px;height:28px;border-bottom:3px solid #FFC6D9;border-left:3px solid #FFC6D9;"></div>
+            <div style="position:absolute;bottom:14px;right:14px;width:28px;height:28px;border-bottom:3px solid #FFC6D9;border-right:3px solid #FFC6D9;"></div>
 
-              <div style="opacity:0.3;text-align:center;font-size:11px;line-height:1.6;font-family:monospace;">
-                ===================<br>
-                SIAM EMBER KITCHEN<br>
-                -------------------<br>
-                WAGYU KRAPOW x2<br>
-                FRIED DUCK EGG x2<br>
-                LEMONGRASS WINGS x1<br>
-                THAI MILK TEA x3<br>
-                PANDAN PUDDING x1<br>
-                ===================
-              </div>
+            <!-- Animated Laser Scanning Line -->
+            <div class="laser-scanner" style="position:absolute;width:100%;height:3px;background:linear-gradient(90deg, transparent, #FFC6D9, #FFE1C6, transparent);top:35%;"></div>
+
+            <div style="color:rgba(255,255,255,0.75);font-size:0.8rem;padding:2rem 1rem;">
+              <div>📸 Scanning Receipt...</div>
+              <div style="font-size:0.7rem;margin-top:0.5rem;color:rgba(255,255,255,0.5);">Detecting line items</div>
             </div>
-
-            <div class="scanner-status-pill" id="scanner-status-text" aria-live="polite">
-              <span class="loading-spinner" style="width:14px;height:14px;border-width:2px;"></span>
-              <span>Reading receipt…</span>
-            </div>
-
           </div>
 
-          <div style="text-align:center;margin-bottom:1.25rem;">
-            <p class="font-body-small text-secondary">
-              Hold the receipt flat within the frame. AI parses items and totals automatically.
-            </p>
-          </div>
-
-          <!-- Bottom Actions -->
           <div class="bottom-actions">
             <button type="button" id="btn-skip-scan" class="btn btn-primary btn-lg">
-              Proceed to Review Items →
+              ${t('bill.scanner.instantSkip')}
             </button>
           </div>
-
         </div>
       </main>
     `;
   }
 
   function bindBillReceiptEvents() {
-    const statusText = document.getElementById('scanner-status-text');
     const skipBtn = document.getElementById('btn-skip-scan');
-
     const state = P.getState();
-    state.bill.receiptItems = JSON.parse(JSON.stringify(P.DEFAULT_RECEIPT_ITEMS));
-    P.saveState();
 
-    // Sequence stages: Reading -> Finding -> Done -> Navigate
-    const t1 = setTimeout(() => {
-      if (statusText) statusText.innerHTML = `<span>⚡ Finding items & prices…</span>`;
-    }, 600);
-
-    const t2 = setTimeout(() => {
-      if (statusText) statusText.innerHTML = `<span>✓ 6 items detected!</span>`;
-    }, 1100);
-
-    const t3 = setTimeout(() => {
+    const finishScan = () => {
+      state.bill.receiptItems = JSON.parse(JSON.stringify(P.DEFAULT_RECEIPT_ITEMS));
+      state.bill.scanStatus = 'done';
+      P.saveState();
       P.navigateTo('#/bill/items');
-    }, 1500);
+    };
 
-    if (skipBtn) {
-      skipBtn.onclick = () => {
-        clearTimeout(t1);
-        clearTimeout(t2);
-        clearTimeout(t3);
-        P.navigateTo('#/bill/items');
-      };
-    }
+    if (skipBtn) skipBtn.onclick = finishScan;
+    setTimeout(() => {
+      if (window.location.hash === '#/bill/receipt') finishScan();
+    }, 1200);
   }
 
   /* ==========================================================================
-     4. Review Receipt Items Screen (#/bill/items)
+     4. Screen: Review & Edit Receipt Items
      ========================================================================== */
 
   function renderBillItems() {
     const state = P.getState();
-    const { restaurant } = getBillContext();
+    const t = P.t;
     const items = state.bill.receiptItems || [];
-    const totalBill = calculateReceiptTotal(items);
+    const total = calculateReceiptTotal(items);
 
     return `
-      <main class="app-shell" aria-labelledby="receipt-items-title">
+      <main class="app-shell" aria-labelledby="review-items-title" style="padding-bottom: 90px;">
         <header class="top-bar">
-          <a href="#/bill" class="top-bar-action" aria-label="Back to Bill Options">
+          <a href="#/bill" class="top-bar-action" aria-label="${t('common.back')}">
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="15 18 9 12 15 6"></polyline></svg>
           </a>
-          <h1 class="top-bar-title" id="receipt-items-title">Review Receipt</h1>
-          <a href="#/home" class="top-bar-action"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg></a>
+          <h1 class="top-bar-title">${t('bill.items.title')}</h1>
+          <div style="display:flex;align-items:center;gap:0.35rem;">
+            ${P.renderLanguageSwitch ? P.renderLanguageSwitch() : ''}
+          </div>
         </header>
 
-        <div class="page-shell page-shell-has-bottom-actions">
-          
-          <!-- Thermal Paper Styled Receipt Container -->
-          <div class="receipt-paper">
-            <div class="receipt-paper-header">
-              <div style="font-weight:800;font-size:1.05rem;color:var(--color-brand-primary);">${P.escapeHtml(restaurant.name)}</div>
-              <div class="font-caption text-muted">Table 04 • Sukhumvit Branch • Today</div>
-              <div class="font-caption text-secondary" style="margin-top:0.25rem;">Scanned Line Items (${items.length})</div>
+        <div class="page-shell">
+          <section class="screen-header">
+            <h2 id="review-items-title" class="font-heading-1">${t('bill.items.title')}</h2>
+            <p class="screen-subtitle">Adjust item names, quantities, or prices before assigning.</p>
+          </section>
+
+          <!-- Thermal Receipt Container -->
+          <div class="thermal-receipt-paper" style="background:#FCFCFA;border:1px dashed #D5D1C5;border-radius:var(--radius-lg);padding:1.25rem 1rem;margin-bottom:1.25rem;box-shadow:0 4px 12px rgba(0,0,0,0.03);">
+            
+            <div style="text-align:center;padding-bottom:0.75rem;border-bottom:1px dashed #D5D1C5;margin-bottom:1rem;">
+              <div style="font-weight:800;font-size:1.05rem;color:var(--color-brand-primary);">RECEIPT #4827</div>
+              <div class="font-caption text-secondary">Siam Ember Kitchen</div>
             </div>
 
-            <!-- Itemized List with Inline Inputs -->
-            <div class="receipt-item-list" id="receipt-item-rows">
-              ${items.map((item, index) => {
-                const lineTotal = calculateItemLineTotal(item);
-                return `
-                  <div class="receipt-item-row" data-item-id="${item.id}">
+            <!-- Items List -->
+            <div id="receipt-items-container" style="display:flex;flex-direction:column;gap:0.85rem;">
+              ${items.map((item, idx) => `
+                <div class="receipt-item-row" data-item-id="${item.id}" style="padding-bottom:0.75rem;border-bottom:1px dashed #E5E2D9;">
+                  <div style="display:flex;justify-content:space-between;align-items:center;gap:0.5rem;margin-bottom:0.35rem;">
                     <input 
                       type="text" 
-                      class="receipt-input-name input-item-name" 
+                      class="form-input item-name-input" 
                       value="${P.escapeHtml(item.name)}" 
-                      placeholder="Item name"
-                      aria-label="Item name"
+                      style="font-size:0.85rem;padding:0.35rem 0.5rem;font-weight:600;" 
                     />
-                    <input 
-                      type="number" 
-                      class="receipt-input-qty input-item-qty" 
-                      value="${item.quantity}" 
-                      min="1" 
-                      max="99"
-                      aria-label="Quantity"
-                    />
-                    <span class="font-caption text-muted">×</span>
-                    <input 
-                      type="number" 
-                      class="receipt-input-price input-item-price" 
-                      value="${item.unitPrice}" 
-                      min="0" 
-                      step="1"
-                      aria-label="Unit Price"
-                    />
-                    <div style="font-weight:700;font-size:0.85rem;font-family:monospace;width:60px;text-align:right;">
-                      ฿${lineTotal}
-                    </div>
-                    <button type="button" class="receipt-btn-delete btn-delete-item" title="Delete item" aria-label="Delete item">
-                      ✕
-                    </button>
+                    <button type="button" class="btn-delete-item top-bar-action" data-item-id="${item.id}" aria-label="Delete Item" style="color:#D32F2F;">✕</button>
                   </div>
-                `;
-              }).join('')}
+
+                  <div style="display:flex;justify-content:space-between;align-items:center;">
+                    <div style="display:flex;align-items:center;gap:0.35rem;">
+                      <span class="font-caption text-secondary">Qty:</span>
+                      <input 
+                        type="number" 
+                        class="form-input item-qty-input" 
+                        value="${item.quantity}" 
+                        min="1" 
+                        style="width:50px;padding:0.25rem;text-align:center;font-size:0.85rem;" 
+                      />
+                      <span class="font-caption text-secondary">× ฿</span>
+                      <input 
+                        type="number" 
+                        class="form-input item-price-input" 
+                        value="${item.unitPrice}" 
+                        min="0" 
+                        style="width:70px;padding:0.25rem;text-align:right;font-size:0.85rem;" 
+                      />
+                    </div>
+
+                    <div style="font-family:monospace;font-weight:800;font-size:0.95rem;color:var(--color-brand-primary);">
+                      ฿${calculateItemLineTotal(item).toLocaleString()}
+                    </div>
+                  </div>
+                </div>
+              `).join('')}
             </div>
 
-            <button type="button" id="btn-add-receipt-item" class="btn btn-outline btn-sm" style="width:100%;margin-bottom:1rem;border-style:dashed;">
-              ＋ Add Receipt Item
-            </button>
+            <!-- Add Item Button -->
+            <div style="margin-top:1rem;text-align:center;">
+              <button type="button" id="btn-add-receipt-item" class="btn btn-outline btn-sm" style="border-radius:var(--radius-full);">
+                ${t('bill.items.addItem')}
+              </button>
+            </div>
 
-            <!-- Derived Receipt Totals -->
-            <div class="receipt-summary-box">
-              <div style="display:flex;justify-content:space-between;font-size:0.8rem;color:var(--color-text-secondary);">
-                <span>Item Subtotal (${items.length} items)</span>
-                <span style="font-family:monospace;font-weight:600;">฿${totalBill}</span>
-              </div>
-              <div class="receipt-total-row">
-                <span>Total Bill</span>
-                <span id="receipt-total-display">฿${totalBill.toLocaleString()}</span>
-              </div>
+            <!-- Receipt Total -->
+            <div style="display:flex;justify-content:space-between;align-items:baseline;margin-top:1.25rem;padding-top:0.85rem;border-top:2px solid #333;">
+              <span style="font-weight:800;font-size:1.05rem;">${t('bill.items.total')}</span>
+              <span id="receipt-total-display" style="font-family:monospace;font-size:1.35rem;font-weight:800;color:var(--color-brand-primary);">
+                ฿${total.toLocaleString()}
+              </span>
             </div>
           </div>
 
-          <!-- Bottom Actions -->
+          <!-- Bottom Action: Proceed to Assign -->
           <div class="bottom-actions">
-            <button type="button" id="btn-continue-to-assign" class="btn btn-primary btn-lg">
-              Continue to Assign Members →
-            </button>
+            <a href="#/bill/assign" class="btn btn-primary btn-lg">
+              ${t('bill.items.proceedAssign')}
+            </a>
           </div>
-
         </div>
       </main>
     `;
@@ -423,363 +385,292 @@
 
   function bindBillItemsEvents() {
     const state = P.getState();
-    const items = state.bill.receiptItems || [];
+    state.bill.receiptItems = state.bill.receiptItems || [];
 
-    function syncAndRecalculate() {
-      const rows = document.querySelectorAll('.receipt-item-row');
-      rows.forEach(row => {
-        const itemId = row.getAttribute('data-item-id');
-        const item = items.find(i => i.id === itemId);
-        if (item) {
-          const nameInput = row.querySelector('.input-item-name');
-          const qtyInput = row.querySelector('.input-item-qty');
-          const priceInput = row.querySelector('.input-item-price');
-
-          item.name = nameInput.value.trim();
-          item.quantity = parseInt(qtyInput.value, 10) || 1;
-          item.unitPrice = parseFloat(priceInput.value) || 0;
-        }
-      });
-      P.saveState();
-      const total = calculateReceiptTotal(items);
+    const updateTotals = () => {
+      const total = calculateReceiptTotal(state.bill.receiptItems);
       const totalDisplay = document.getElementById('receipt-total-display');
       if (totalDisplay) totalDisplay.textContent = `฿${total.toLocaleString()}`;
-    }
+      P.saveState();
+    };
 
-    // Attach listeners to input fields
     const rows = document.querySelectorAll('.receipt-item-row');
     rows.forEach(row => {
-      const inputs = row.querySelectorAll('input');
-      inputs.forEach(input => {
-        input.oninput = syncAndRecalculate;
-      });
+      const id = row.getAttribute('data-item-id');
+      const item = state.bill.receiptItems.find(x => x.id === id);
+      if (!item) return;
 
+      const nameInput = row.querySelector('.item-name-input');
+      const qtyInput = row.querySelector('.item-qty-input');
+      const priceInput = row.querySelector('.item-price-input');
       const delBtn = row.querySelector('.btn-delete-item');
-      if (delBtn) {
-        delBtn.onclick = () => {
-          const itemId = row.getAttribute('data-item-id');
-          state.bill.receiptItems = state.bill.receiptItems.filter(i => i.id !== itemId);
-          delete state.bill.assignments[itemId];
-          P.saveState();
-          P.showToast('Item removed.', 'info');
-          if (P.renderCurrentRoute) P.renderCurrentRoute();
-        };
-      }
+
+      if (nameInput) nameInput.onchange = () => { item.name = nameInput.value.trim(); P.saveState(); };
+      if (qtyInput) qtyInput.onchange = () => { item.quantity = parseInt(qtyInput.value, 10) || 1; updateTotals(); };
+      if (priceInput) priceInput.onchange = () => { item.unitPrice = parseFloat(priceInput.value) || 0; updateTotals(); };
+      if (delBtn) delBtn.onclick = () => {
+        state.bill.receiptItems = state.bill.receiptItems.filter(x => x.id !== id);
+        updateTotals();
+        if (P.renderCurrentRoute) P.renderCurrentRoute();
+      };
     });
 
-    // Add item button
     const addBtn = document.getElementById('btn-add-receipt-item');
     if (addBtn) {
       addBtn.onclick = () => {
-        syncAndRecalculate();
         const newId = `item-${Date.now()}`;
-        state.bill.receiptItems.push({
-          id: newId,
-          name: 'Extra Dish / Beverage',
-          quantity: 1,
-          unitPrice: 100
-        });
-        state.bill.assignments[newId] = [];
+        state.bill.receiptItems.push({ id: newId, name: 'New Item', quantity: 1, unitPrice: 100 });
+        state.bill.assignments[newId] = ['user'];
         P.saveState();
         if (P.renderCurrentRoute) P.renderCurrentRoute();
-      };
-    }
-
-    // Continue to Assignment
-    const continueBtn = document.getElementById('btn-continue-to-assign');
-    if (continueBtn) {
-      continueBtn.onclick = () => {
-        syncAndRecalculate();
-        if (items.length === 0) {
-          P.showToast('Receipt must have at least 1 item.', 'error');
-          return;
-        }
-        const hasInvalid = items.some(i => !i.name || i.quantity <= 0 || i.unitPrice < 0);
-        if (hasInvalid) {
-          P.showToast('Please provide valid name and prices for all items.', 'error');
-          return;
-        }
-        P.navigateTo('#/bill/assign');
       };
     }
   }
 
   /* ==========================================================================
-     5. Select Who Ate What Screen (#/bill/assign)
+     5. Screen: Select Who Ate What (Assignment)
      ========================================================================== */
 
   function renderBillAssign() {
-    const state = P.getState();
     const { members } = getBillContext();
+    const state = P.getState();
+    const t = P.t;
     const items = state.bill.receiptItems || [];
     const assignments = state.bill.assignments || {};
-
     const { memberTotals, totalAllocated } = calculateMemberTotals(items, assignments, members);
     const totalBill = calculateReceiptTotal(items);
 
     return `
-      <main class="app-shell" aria-labelledby="assign-title">
+      <main class="app-shell" aria-labelledby="assign-title" style="padding-bottom: 90px;">
         <header class="top-bar">
-          <a href="#/bill/items" class="top-bar-action" aria-label="Back to Review Items">
+          <a href="#/bill/items" class="top-bar-action" aria-label="${t('common.back')}">
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="15 18 9 12 15 6"></polyline></svg>
           </a>
-          <h1 class="top-bar-title" id="assign-title">Who Ate What?</h1>
-          <a href="#/home" class="top-bar-action"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg></a>
+          <h1 class="top-bar-title">${t('bill.assign.title')}</h1>
+          <div style="display:flex;align-items:center;gap:0.35rem;">
+            ${P.renderLanguageSwitch ? P.renderLanguageSwitch() : ''}
+          </div>
         </header>
 
-        <div class="page-shell page-shell-has-bottom-actions">
-          
-          <div style="margin-bottom:0.85rem;">
-            <p class="font-body-small text-secondary">
-              Tap members who shared each dish. Tap <strong>Everyone</strong> to split shared items equally.
-            </p>
-          </div>
+        <div class="page-shell">
+          <section class="screen-header">
+            <h2 id="assign-title" class="font-heading-1">${t('bill.assign.title')}</h2>
+            <p class="screen-subtitle">${t('bill.assign.instruction')}</p>
+          </section>
 
-          <!-- Running Member Totals Drawer -->
-          <div class="running-totals-drawer">
-            <div style="display:flex;justify-content:space-between;align-items:center;">
-              <span class="font-label" style="color:var(--color-brand-primary);">Running Share Breakdown</span>
-              <span class="font-caption text-secondary">Total: ฿${totalBill}</span>
-            </div>
-            <div class="running-totals-grid">
-              ${members.map(m => `
-                <div class="running-total-pill">
-                  <div style="font-weight:700;color:var(--color-brand-primary);">${P.escapeHtml(m.name.split(' ')[0])}</div>
-                  <div style="font-family:monospace;font-weight:800;color:var(--color-brand-secondary);">฿${memberTotals[m.id] || 0}</div>
-                </div>
-              `).join('')}
-            </div>
-          </div>
+          <div id="assign-alert-area"></div>
 
-          <!-- Per-Item Assignment Cards -->
-          <div style="display:flex;flex-direction:column;gap:0.75rem;margin-bottom:1.5rem;">
+          <!-- Items Assignment List -->
+          <div style="display:flex;flex-direction:column;gap:1rem;margin-bottom:1.5rem;">
             ${items.map(item => {
-              const lineTotal = calculateItemLineTotal(item);
               const assigned = assignments[item.id] || [];
+              const lineTotal = calculateItemLineTotal(item);
               const isUnassigned = assigned.length === 0;
-              const isEveryone = members.length > 0 && members.every(m => assigned.includes(m.id));
 
               return `
-                <div class="assign-item-card ${isUnassigned ? 'unassigned' : ''}" data-item-id="${item.id}">
-                  <div class="assign-item-header">
+                <article class="card ${isUnassigned ? 'unassigned-warning' : ''}" style="padding:1rem;background:#FFFFFF;border-radius:var(--radius-xl);border:1.5px solid ${isUnassigned ? '#E05D5D' : 'var(--color-border)'};">
+                  <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:0.6rem;">
                     <div>
-                      <div class="assign-item-name">${P.escapeHtml(item.name)}</div>
-                      <div class="font-caption text-secondary">Qty: ${item.quantity} × ฿${item.unitPrice}</div>
+                      <h3 class="font-heading-3" style="font-size:0.95rem;">${P.escapeHtml(item.name)}</h3>
+                      <div class="font-caption text-secondary">
+                        ${item.quantity} × ฿${item.unitPrice.toLocaleString()}
+                      </div>
                     </div>
-                    <div class="assign-item-price">฿${lineTotal}</div>
+                    <div style="font-family:monospace;font-weight:800;font-size:1.05rem;color:var(--color-brand-primary);">
+                      ฿${lineTotal.toLocaleString()}
+                    </div>
                   </div>
 
-                  <div class="assign-members-wrap" role="group" aria-label="Assign members to ${P.escapeHtml(item.name)}">
-                    <!-- Everyone Shortcut Chip -->
+                  <!-- Member Chips & Everyone Shortcut -->
+                  <div style="display:flex;flex-wrap:wrap;gap:0.35rem;align-items:center;padding-top:0.6rem;border-top:1px dashed var(--color-border);">
                     <button 
                       type="button" 
-                      class="assign-chip assign-chip-everyone ${isEveryone ? 'selected' : ''}" 
-                      data-action="everyone"
+                      class="btn-everyone-chip edit-pill-btn ${assigned.length === members.length ? 'selected-restriction' : ''}" 
                       data-item-id="${item.id}"
-                      aria-pressed="${isEveryone}"
                     >
-                      <span>👥 Everyone</span>
+                      ${t('common.everyone')}
                     </button>
 
-                    <!-- Individual Member Chips -->
                     ${members.map(m => {
-                      const isSelected = assigned.includes(m.id);
+                      const isMemSelected = assigned.includes(m.id);
                       return `
                         <button 
                           type="button" 
-                          class="assign-chip ${isSelected ? 'selected' : ''}" 
-                          data-action="member"
+                          class="btn-assign-member edit-pill-btn ${isMemSelected ? 'selected-allergy' : ''}" 
                           data-item-id="${item.id}"
                           data-member-id="${m.id}"
-                          aria-pressed="${isSelected}"
+                          aria-pressed="${isMemSelected}"
                         >
-                          <span style="width:18px;height:18px;border-radius:var(--radius-full);background:var(--color-brand-secondary);color:#fff;font-size:9px;display:inline-flex;align-items:center;justify-content:center;">
-                            ${P.escapeHtml(m.initials || m.name.charAt(0))}
-                          </span>
+                          <span>${isMemSelected ? '✓' : '＋'}</span>
                           <span>${P.escapeHtml(m.name.split(' ')[0])}</span>
                         </button>
                       `;
                     }).join('')}
                   </div>
-
-                  ${isUnassigned ? `
-                    <div class="font-caption" style="color:#C05621;font-weight:600;">
-                      ⚠️ Not assigned yet. Tap members above to allocate.
-                    </div>
-                  ` : `
-                    <div class="font-caption text-muted">
-                      Split between ${assigned.length} member${assigned.length > 1 ? 's' : ''} (฿${Math.round(lineTotal / assigned.length)} each)
-                    </div>
-                  `}
-                </div>
+                </article>
               `;
             }).join('')}
           </div>
 
-          <!-- Bottom Actions -->
-          <div class="bottom-actions">
-            <button type="button" id="btn-to-summary" class="btn btn-primary btn-lg">
-              Review Bill Summary →
-            </button>
+          <!-- Running Totals Preview Box -->
+          <div class="card" style="background:var(--color-surface-subtle);border-radius:var(--radius-xl);padding:1rem;margin-bottom:1.5rem;">
+            <div class="font-label" style="margin-bottom:0.5rem;color:var(--color-brand-primary);">Live Shares Preview</div>
+            <div style="display:grid;grid-template-columns:repeat(2, 1fr);gap:0.5rem;">
+              ${members.map(m => `
+                <div style="display:flex;justify-content:space-between;background:#fff;padding:0.4rem 0.6rem;border-radius:var(--radius-md);border:1px solid var(--color-border);font-size:0.8rem;">
+                  <span>${P.escapeHtml(m.name.split(' ')[0])}</span>
+                  <span style="font-family:monospace;font-weight:700;">฿${(memberTotals[m.id] || 0).toLocaleString()}</span>
+                </div>
+              `).join('')}
+            </div>
           </div>
 
+          <!-- Bottom Action: Review Summary -->
+          <div class="bottom-actions">
+            <button type="button" id="btn-proceed-summary" class="btn btn-primary btn-lg">
+              ${t('bill.assign.viewSummary')}
+            </button>
+          </div>
         </div>
       </main>
     `;
   }
 
   function bindBillAssignEvents() {
-    const state = P.getState();
     const { members } = getBillContext();
-    const items = state.bill.receiptItems || [];
+    const state = P.getState();
     state.bill.assignments = state.bill.assignments || {};
 
-    // Individual member chip toggle
-    const memberChips = document.querySelectorAll('.assign-chip[data-action="member"]');
-    memberChips.forEach(chip => {
-      chip.onclick = () => {
-        const itemId = chip.getAttribute('data-item-id');
-        const memberId = chip.getAttribute('data-member-id');
-        
-        let currentList = state.bill.assignments[itemId] || [];
-        if (currentList.includes(memberId)) {
-          state.bill.assignments[itemId] = currentList.filter(id => id !== memberId);
+    const everyoneBtns = document.querySelectorAll('.btn-everyone-chip');
+    const memberBtns = document.querySelectorAll('.btn-assign-member');
+    const summaryBtn = document.getElementById('btn-proceed-summary');
+    const alertArea = document.getElementById('assign-alert-area');
+
+    everyoneBtns.forEach(btn => {
+      btn.onclick = () => {
+        const itemId = btn.getAttribute('data-item-id');
+        const cur = state.bill.assignments[itemId] || [];
+        if (cur.length === members.length) {
+          state.bill.assignments[itemId] = ['user'];
         } else {
-          state.bill.assignments[itemId] = [...currentList, memberId];
+          state.bill.assignments[itemId] = members.map(m => m.id);
         }
         P.saveState();
         if (P.renderCurrentRoute) P.renderCurrentRoute();
       };
     });
 
-    // Everyone shortcut chip toggle
-    const everyoneChips = document.querySelectorAll('.assign-chip[data-action="everyone"]');
-    everyoneChips.forEach(chip => {
-      chip.onclick = () => {
-        const itemId = chip.getAttribute('data-item-id');
-        const allIds = members.map(m => m.id);
-        const currentList = state.bill.assignments[itemId] || [];
-        const isAlreadyEveryone = members.every(m => currentList.includes(m.id));
-
-        if (isAlreadyEveryone) {
-          state.bill.assignments[itemId] = [];
+    memberBtns.forEach(btn => {
+      btn.onclick = () => {
+        const itemId = btn.getAttribute('data-item-id');
+        const memId = btn.getAttribute('data-member-id');
+        let cur = state.bill.assignments[itemId] || [];
+        if (cur.includes(memId)) {
+          cur = cur.filter(x => x !== memId);
         } else {
-          state.bill.assignments[itemId] = [...allIds];
+          cur = [...cur, memId];
         }
+        state.bill.assignments[itemId] = cur;
         P.saveState();
         if (P.renderCurrentRoute) P.renderCurrentRoute();
       };
     });
 
-    // Summary validation & proceed
-    const summaryBtn = document.getElementById('btn-to-summary');
     if (summaryBtn) {
       summaryBtn.onclick = () => {
-        const unassigned = items.some(item => {
-          const assigned = state.bill.assignments[item.id] || [];
-          return assigned.length === 0;
-        });
-
+        const items = state.bill.receiptItems || [];
+        const unassigned = items.some(item => (state.bill.assignments[item.id] || []).length === 0);
         if (unassigned) {
-          P.showToast('Please assign all items before continuing.', 'error');
+          if (alertArea) {
+            alertArea.innerHTML = `<div class="card" style="background:#FFF0F0;color:#8E1F1F;padding:0.75rem;margin-bottom:1rem;font-size:0.85rem;">⚠️ ${P.t('bill.assign.errorUnassigned')}</div>`;
+          }
           return;
         }
-
         P.navigateTo('#/bill/summary');
       };
     }
   }
 
   /* ==========================================================================
-     6. Bill Summary & Reconciliation Screen (#/bill/summary)
+     6. Screen: Bill Summary Breakdown
      ========================================================================== */
 
   function renderBillSummary() {
-    const state = P.getState();
     const { restaurant, members } = getBillContext();
+    const state = P.getState();
+    const t = P.t;
+    const isTH = P.i18n.getLanguage() === 'th';
     const items = state.bill.receiptItems || [];
     const assignments = state.bill.assignments || {};
-
-    const { memberTotals, memberItemDetails, totalAllocated } = calculateMemberTotals(items, assignments, members);
+    const { memberTotals, memberItemDetails } = calculateMemberTotals(items, assignments, members);
     const totalBill = calculateReceiptTotal(items);
-    const isReconciled = totalAllocated === totalBill;
 
     return `
-      <main class="app-shell" aria-labelledby="bill-summary-title">
+      <main class="app-shell" aria-labelledby="summary-title" style="padding-bottom: 90px;">
         <header class="top-bar">
-          <a href="#/bill/assign" class="top-bar-action" aria-label="Back to Assignment">
+          <a href="#/bill/assign" class="top-bar-action" aria-label="${t('common.back')}">
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="15 18 9 12 15 6"></polyline></svg>
           </a>
-          <h1 class="top-bar-title" id="bill-summary-title">Bill Summary</h1>
-          <a href="#/home" class="top-bar-action"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg></a>
+          <h1 class="top-bar-title">${t('bill.summary.title')}</h1>
+          <div style="display:flex;align-items:center;gap:0.35rem;">
+            ${P.renderLanguageSwitch ? P.renderLanguageSwitch() : ''}
+          </div>
         </header>
 
-        <div class="page-shell page-shell-has-bottom-actions">
-          
-          <!-- Summary Hero Banner -->
-          <div class="bill-summary-hero">
-            <span class="reconciliation-badge">
-              ✓ 100% Reconciled
+        <div class="page-shell">
+          <!-- Total Summary Hero -->
+          <div class="card card-hero" style="margin-bottom:1.25rem;text-align:center;">
+            <span class="step-badge" style="background:#EDF9F0;color:#165E2A;font-weight:700;">
+              ${t('bill.summary.reconciledBadge')}
             </span>
-
-            <div class="font-caption text-secondary" style="margin-top:0.5rem;font-weight:600;">Total Bill Amount</div>
-            <div style="font-size:1.85rem;font-weight:800;color:var(--color-brand-primary);font-family:monospace;margin:0.25rem 0;">
+            <div style="font-family:monospace;font-size:2.2rem;font-weight:800;color:var(--color-brand-primary);margin-top:0.4rem;">
               ฿${totalBill.toLocaleString()}
             </div>
-            <div class="font-caption text-muted">${P.escapeHtml(restaurant.name)} • ${members.length} Members</div>
+            <div class="font-caption text-secondary">
+              ${P.escapeHtml(isTH ? restaurant.thaiName : restaurant.name)} • ${members.length} ${t('common.member')}
+            </div>
           </div>
 
-          <!-- Expandable Member Total Cards -->
-          <div style="margin-bottom:1.5rem;">
-            <div class="font-label text-secondary" style="margin-bottom:0.65rem;">Individual Shares</div>
+          <!-- Per-Member Breakdown Cards -->
+          <section aria-label="Member Breakdown">
+            <div style="display:flex;flex-direction:column;gap:0.85rem;margin-bottom:1.5rem;">
+              ${members.map(m => {
+                const shareTotal = memberTotals[m.id] || 0;
+                const details = memberItemDetails[m.id] || [];
 
-            ${members.map(m => {
-              const amount = memberTotals[m.id] || 0;
-              const details = memberItemDetails[m.id] || [];
-
-              return `
-                <div class="summary-member-card">
-                  <div class="summary-member-header">
-                    <div style="display:flex;align-items:center;gap:0.65rem;">
-                      <div class="avatar-badge ${m.colorClass || 'avatar-petal'}" style="width:36px;height:36px;font-size:0.8rem;">
-                        ${P.escapeHtml(m.initials || m.name.charAt(0))}
+                return `
+                  <div class="card" style="padding:1rem;background:#FFFFFF;border-radius:var(--radius-xl);border:1.5px solid var(--color-border);">
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.5rem;">
+                      <div style="display:flex;align-items:center;gap:0.6rem;">
+                        <div class="member-avatar ${m.colorClass || 'avatar-petal'}" style="width:34px;height:34px;font-size:0.8rem;">${m.initials}</div>
+                        <div style="font-weight:700;font-size:0.95rem;">${P.escapeHtml(m.name)}</div>
                       </div>
-                      <div>
-                        <div style="font-weight:700;font-size:0.925rem;color:var(--color-brand-primary);">
-                          ${P.escapeHtml(m.name)}
+                      <div style="font-family:monospace;font-size:1.15rem;font-weight:800;color:var(--color-brand-primary);">
+                        ฿${shareTotal.toLocaleString()}
+                      </div>
+                    </div>
+
+                    <!-- Itemized Breakdown Accordion -->
+                    <div style="padding-top:0.5rem;border-top:1px dashed var(--color-border);font-size:0.8rem;color:var(--color-text-secondary);">
+                      ${details.map(d => `
+                        <div style="display:flex;justify-content:space-between;margin-top:0.25rem;">
+                          <span>${P.escapeHtml(d.name)} (${d.splitCount > 1 ? `1/${d.splitCount}` : 'all'})</span>
+                          <span style="font-family:monospace;font-weight:600;">฿${d.memberShare.toLocaleString()}</span>
                         </div>
-                        <div class="font-caption text-secondary">${details.length} dish${details.length > 1 ? 'es' : ''}</div>
-                      </div>
-                    </div>
-                    <div style="font-family:monospace;font-size:1.1rem;font-weight:800;color:var(--color-brand-primary);">
-                      ฿${amount.toLocaleString()}
+                      `).join('')}
                     </div>
                   </div>
+                `;
+              }).join('')}
+            </div>
+          </section>
 
-                  <!-- Itemized Share Breakdown -->
-                  <div class="summary-member-breakdown">
-                    ${details.map(d => `
-                      <div style="display:flex;justify-content:space-between;color:var(--color-text-secondary);">
-                        <span>${P.escapeHtml(d.name)} ${d.isShared ? `<small style="color:#8E8A85;">(Shared ×${d.totalMembers})</small>` : ''}</span>
-                        <span style="font-family:monospace;font-weight:600;">฿${d.shareAmount}</span>
-                      </div>
-                    `).join('')}
-                  </div>
-                </div>
-              `;
-            }).join('')}
-          </div>
-
-          <!-- Bottom Actions -->
+          <!-- Bottom Action: Confirm Split & Go to Payment -->
           <div class="bottom-actions">
             <button type="button" id="btn-confirm-split" class="btn btn-primary btn-lg">
-              Confirm Split & Request Payments 💸 →
+              ${t('bill.summary.confirm')}
             </button>
-            <a href="#/bill/assign" class="btn btn-secondary">
-              Edit Item Assignments
-            </a>
           </div>
-
         </div>
       </main>
     `;
@@ -787,165 +678,156 @@
 
   function bindBillSummaryEvents() {
     const confirmBtn = document.getElementById('btn-confirm-split');
-    const state = P.getState();
-
     if (confirmBtn) {
       confirmBtn.onclick = () => {
+        const state = P.getState();
+        const { restaurant, members } = getBillContext();
+        const items = state.bill.receiptItems || [];
+        const total = calculateReceiptTotal(items);
+
         state.bill.finalized = true;
+        state.bill.completedRecord = {
+          restaurantName: restaurant.name,
+          dateLabel: 'Today • 20:30',
+          totalBill: total,
+          participantsCount: members.length,
+          paymentComplete: false
+        };
         P.saveState();
-        P.showToast('Split bill confirmed! Payment tracker opened.', 'success');
         P.navigateTo('#/bill/payment');
       };
     }
   }
 
   /* ==========================================================================
-     7. Real-Time Payment Status Screen (#/bill/payment)
+     7. Screen: Payment Status & Settlement
      ========================================================================== */
 
   function renderBillPayment() {
-    const state = P.getState();
     const { restaurant, members } = getBillContext();
+    const state = P.getState();
+    const t = P.t;
+    const isTH = P.i18n.getLanguage() === 'th';
     const items = state.bill.receiptItems || [];
     const assignments = state.bill.assignments || {};
-    const paymentStatuses = state.bill.paymentStatuses || {};
-
     const { memberTotals } = calculateMemberTotals(items, assignments, members);
-    const progress = calculatePaymentProgress(members, memberTotals, paymentStatuses);
-
-    // Save completed history-ready record
-    if (progress.isAllPaid) {
-      state.bill.completedRecord = {
-        restaurantName: restaurant.name,
-        dateLabel: 'Today',
-        totalBill: progress.totalBill,
-        participantsCount: members.length,
-        paymentComplete: true
-      };
-      P.saveState();
-    }
+    const paymentStatuses = state.bill.paymentStatuses || {};
+    const { totalCount, paidCount, paidAmount, totalBillAmount, isAllPaid, progressPercent } = calculatePaymentProgress(members, paymentStatuses, memberTotals);
 
     return `
-      <main class="app-shell" aria-labelledby="payment-status-title">
+      <main class="app-shell" aria-labelledby="payment-title" style="padding-bottom: 90px;">
         <header class="top-bar">
-          <a href="#/bill/summary" class="top-bar-action" aria-label="Back to Summary">
+          <a href="#/bill/summary" class="top-bar-action" aria-label="${t('common.back')}">
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="15 18 9 12 15 6"></polyline></svg>
           </a>
-          <h1 class="top-bar-title" id="payment-status-title">Payment Status</h1>
-          <a href="#/home" class="top-bar-action"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg></a>
+          <h1 class="top-bar-title">${t('bill.payment.title')}</h1>
+          <div style="display:flex;align-items:center;gap:0.35rem;">
+            ${P.renderLanguageSwitch ? P.renderLanguageSwitch() : ''}
+          </div>
         </header>
 
-        <div class="page-shell page-shell-has-bottom-actions">
-          
-          <!-- All Settled Celebration Banner if completed -->
-          ${progress.isAllPaid ? `
-            <div class="all-settled-card">
-              <span class="payment-status-badge status-paid" style="margin-bottom:0.5rem;">
-                ✓ Settled Complete
-              </span>
-              <div style="font-size:40px;margin:0.25rem 0;">🎉</div>
-              <h2 class="font-heading-1" style="font-size:1.4rem;">All Settled!</h2>
-              <p class="font-body-small text-secondary" style="margin-top:0.25rem;">
-                Everyone in the group has completed their payment for ${P.escapeHtml(restaurant.name)}.
+        <div class="page-shell">
+          <!-- All Settled Celebration Banner -->
+          ${isAllPaid ? `
+            <div class="card" style="background:#EDF9F0;border:1.5px solid #A6DEB4;text-align:center;padding:1.25rem;margin-bottom:1.25rem;">
+              <div style="font-size:42px;margin-bottom:0.25rem;">🎉</div>
+              <h2 class="font-heading-2" style="color:#165E2A;">${t('bill.payment.allSettled')}</h2>
+              <p class="font-body-small" style="color:#165E2A;margin-top:0.25rem;">
+                Total ฿${totalBillAmount.toLocaleString()} collected
               </p>
             </div>
-          ` : `
-            <!-- Live Progress Hero -->
-            <div class="payment-progress-hero">
-              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.5rem;">
-                <span class="font-label" style="color:var(--color-brand-primary);">Collected Progress</span>
-                <span class="payment-status-badge status-unpaid">${progress.paidCount} of ${progress.totalCount} Paid</span>
-              </div>
+          ` : ''}
 
-              <div style="font-size:1.5rem;font-weight:800;color:var(--color-brand-primary);font-family:monospace;margin-bottom:0.5rem;">
-                ฿${progress.collectedAmount.toLocaleString()} <span style="font-size:0.95rem;font-weight:500;color:var(--color-text-secondary);">/ ฿${progress.totalBill.toLocaleString()}</span>
+          <!-- Payment Progress Hero -->
+          <div class="card card-hero" style="margin-bottom:1.25rem;">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+              <div>
+                <span class="step-badge" style="background:var(--color-surface-subtle);color:var(--color-brand-primary);">
+                  ${paidCount} of ${totalCount} Paid
+                </span>
+                <div style="font-family:monospace;font-size:1.8rem;font-weight:800;color:var(--color-brand-primary);margin-top:0.4rem;">
+                  ฿${paidAmount.toLocaleString()} / ฿${totalBillAmount.toLocaleString()}
+                </div>
               </div>
-
-              <!-- Visual Progress Bar -->
-              <div style="height:8px;background:var(--color-surface-subtle);border-radius:var(--radius-full);overflow:hidden;border:1px solid var(--color-border);">
-                <div style="width:${progress.percentage}%;height:100%;background:linear-gradient(90deg, #D96B4F, #165E2A);transition:width var(--transition-normal);"></div>
-              </div>
+              <span style="font-family:monospace;font-weight:800;font-size:1.2rem;color:var(--color-brand-secondary);">
+                ${progressPercent}%
+              </span>
             </div>
-          `}
 
-          <!-- Member Payment Status List -->
-          <div style="margin-bottom:1.5rem;">
-            <div class="font-label text-secondary" style="margin-bottom:0.65rem;">Member Payment Roster</div>
+            <!-- Progress Bar -->
+            <div style="width:100%;height:8px;background:rgba(0,0,0,0.06);border-radius:var(--radius-full);margin-top:0.75rem;overflow:hidden;">
+              <div style="width:${progressPercent}%;height:100%;background:var(--color-brand-primary);border-radius:var(--radius-full);transition:width 0.3s ease;"></div>
+            </div>
+          </div>
 
-            ${members.map(m => {
-              const amount = memberTotals[m.id] || 0;
-              const isPaid = paymentStatuses[m.id] === 'paid';
-              const isUser = m.id === 'user';
+          <!-- Members Payment Roster -->
+          <section aria-label="Member Payments">
+            <div style="display:flex;flex-direction:column;gap:0.75rem;margin-bottom:1.5rem;">
+              ${members.map(m => {
+                const isPaid = paymentStatuses[m.id] === 'paid';
+                const isUser = m.id === 'user';
+                const share = memberTotals[m.id] || 0;
 
-              return `
-                <div class="payment-member-row">
-                  <div style="display:flex;align-items:center;gap:0.65rem;">
-                    <div class="avatar-badge ${m.colorClass || 'avatar-petal'}" style="width:36px;height:36px;font-size:0.8rem;">
-                      ${P.escapeHtml(m.initials || m.name.charAt(0))}
-                    </div>
-                    <div>
-                      <div style="font-weight:700;font-size:0.925rem;color:var(--color-brand-primary);">
-                        ${P.escapeHtml(m.name)}
+                return `
+                  <div class="card" style="display:flex;justify-content:space-between;align-items:center;padding:0.85rem 1rem;background:#FFFFFF;border:1.5px solid ${isPaid ? '#A6DEB4' : 'var(--color-border)'};">
+                    <div style="display:flex;align-items:center;gap:0.65rem;">
+                      <div class="member-avatar ${m.colorClass || 'avatar-petal'}">${m.initials}</div>
+                      <div>
+                        <div style="font-weight:700;font-size:0.9rem;">${P.escapeHtml(m.name)}</div>
+                        <div style="font-family:monospace;font-weight:700;font-size:0.85rem;color:var(--color-brand-primary);">
+                          ฿${share.toLocaleString()}
+                        </div>
                       </div>
-                      <div style="font-family:monospace;font-size:0.85rem;font-weight:700;color:var(--color-text-secondary);">
-                        ฿${amount.toLocaleString()}
-                      </div>
                     </div>
-                  </div>
 
-                  <div>
                     ${isUser ? `
                       <button 
                         type="button" 
-                        id="btn-toggle-user-payment"
-                        class="btn btn-sm ${isPaid ? 'btn-outline' : 'btn-primary'} btn-toggle-user-payment" 
-                        style="${isPaid ? 'color:#165E2A;border-color:#A6DEB4;background:#EDF9F0;' : ''}"
+                        id="btn-toggle-user-payment" 
+                        class="btn btn-sm ${isPaid ? 'btn-secondary' : 'btn-primary'}"
+                        style="border-radius:var(--radius-full);"
                       >
-                        ${isPaid ? '✓ Paid' : 'Mark as Paid'}
+                        ${isPaid ? `✓ ${t('bill.payment.paid')}` : t('bill.payment.markAsPaid')}
                       </button>
                     ` : `
                       <span class="payment-status-badge ${isPaid ? 'status-paid' : 'status-unpaid'}">
-                        ${isPaid ? '✓ Paid' : 'Pending'}
+                        ${isPaid ? `✓ ${t('bill.payment.paid')}` : t('bill.payment.unpaid')}
                       </span>
                     `}
                   </div>
-                </div>
-              `;
-            }).join('')}
-          </div>
+                `;
+              }).join('')}
+            </div>
+          </section>
 
-          <!-- Bottom Actions (V6 Boundary) -->
+          <!-- Bottom Action -->
           <div class="bottom-actions">
             <a href="#/home" class="btn btn-primary btn-lg">
-              Return to Home Dashboard 🏠
-            </a>
-            <a href="#/bill-history" class="btn btn-secondary">
-              View in Bill History 📜
+              ${t('bill.payment.returnHome')}
             </a>
           </div>
-
         </div>
       </main>
     `;
   }
 
   function bindBillPaymentEvents() {
-    const userToggleBtn = document.getElementById('btn-toggle-user-payment');
+    const toggleBtn = document.getElementById('btn-toggle-user-payment');
     const state = P.getState();
 
-    if (userToggleBtn) {
-      userToggleBtn.onclick = () => {
-        const current = state.bill.paymentStatuses['user'] || 'unpaid';
-        const next = current === 'paid' ? 'unpaid' : 'paid';
-        state.bill.paymentStatuses['user'] = next;
+    if (toggleBtn) {
+      toggleBtn.onclick = () => {
+        state.bill.paymentStatuses = state.bill.paymentStatuses || {};
+        const cur = state.bill.paymentStatuses['user'];
+        state.bill.paymentStatuses['user'] = cur === 'paid' ? 'unpaid' : 'paid';
         P.saveState();
-        P.showToast(next === 'paid' ? 'Your share marked as Paid ✓' : 'Status marked as Unpaid.', 'info');
         if (P.renderCurrentRoute) P.renderCurrentRoute();
       };
     }
   }
 
   // Expose to Prototype Namespace
+  P.getBillContext = getBillContext;
   P.calculateItemLineTotal = calculateItemLineTotal;
   P.calculateReceiptTotal = calculateReceiptTotal;
   P.calculateMemberTotals = calculateMemberTotals;

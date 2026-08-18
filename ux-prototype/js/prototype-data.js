@@ -727,6 +727,9 @@
   const STORAGE_KEY = 'foodfighter-prototype-v1';
 
   const INITIAL_STATE = {
+    ui: {
+      language: 'th' // 'th' | 'en'
+    },
     auth: {
       isAuthenticated: false,
       user: {

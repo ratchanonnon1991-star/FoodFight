@@ -7,6 +7,7 @@ This directory contains the standalone, high-fidelity interactive prototype for 
 ## 🎯 Purpose & Scope
 
 - **UX / UI Exploration & Validation**: Validates user journeys, screen hierarchies, mobile touch targets, and interaction models.
+- **Bilingual Localization (TH / EN)**: Full native Thai (Default) and English language support across all 38 product screens, with instant switching via the top-bar `[ TH | EN ]` control without losing state or route.
 - **Design System Reference**: Implements FoodFighter brand tokens (Petal, Apricot, Custard, Mauve, Plum), typography (Poppins & Noto Sans Thai), accessible button states, and form controls.
 - **Zero Framework / Zero Build Step**: 100% standard HTML, CSS, and Vanilla JavaScript compatible with the `file://` protocol.
 - **Prototype Status**: **38 of 38 screens fully implemented (0 future shells remaining)**.
