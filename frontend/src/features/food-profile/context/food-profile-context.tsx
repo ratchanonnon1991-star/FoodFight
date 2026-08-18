@@ -115,6 +115,14 @@ export function FoodProfileProvider({ children, initialDraft }: FoodProfileProvi
     });
   }, []);
 
+  // --- Step 3: Details Actions ---
+  const setAdditionalNotes = React.useCallback((additionalNotes: string) => {
+    setDraft((prev) => ({
+      ...prev,
+      additionalNotes,
+    }));
+  }, []);
+
   // --- Shared Actions ---
   const updateDraft = React.useCallback((updates: Partial<FoodProfileDraft>) => {
     setDraft((prev) => ({
@@ -151,6 +159,8 @@ export function FoodProfileProvider({ children, initialDraft }: FoodProfileProvi
       setHasNoRestrictions,
       toggleRestriction,
       isRestrictionsStepValid,
+      // Details
+      setAdditionalNotes,
       // Shared
       updateDraft,
       resetDraft,
@@ -167,6 +177,7 @@ export function FoodProfileProvider({ children, initialDraft }: FoodProfileProvi
       setHasNoRestrictions,
       toggleRestriction,
       isRestrictionsStepValid,
+      setAdditionalNotes,
       updateDraft,
       resetDraft,
     ]

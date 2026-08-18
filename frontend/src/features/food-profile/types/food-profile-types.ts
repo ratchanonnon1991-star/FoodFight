@@ -41,6 +41,9 @@ export interface FoodProfileContextValue {
   toggleRestriction: (restrictionId: string) => void;
   isRestrictionsStepValid: boolean;
 
+  // Details Step 3
+  setAdditionalNotes: (notes: string) => void;
+
   // Shared
   updateDraft: (updates: Partial<FoodProfileDraft>) => void;
   resetDraft: () => void;
