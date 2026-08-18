@@ -1,0 +1,321 @@
+/**
+ * FoodFighter UX Prototype — Account, History & Profile Screen Styles (V6)
+ * 
+ * Styles for:
+ *   - History Feed & Chronological Session Cards
+ *   - Bill History Thermal Receipt Cards
+ *   - History / Bill Detail Modals
+ *   - User Profile Hero & Food Safety Summary Cards
+ *   - Edit Food Profile Form, Multi-Select Chips & Notes
+ *   - Global 3-Tab Bottom Navigation Bar
+ */
+
+/* ==========================================================================
+   1. History Screen & Chronological Session Cards
+   ========================================================================== */
+.history-tabs-bar {
+  display: flex;
+  background: var(--color-surface-subtle);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-full);
+  padding: 3px;
+  margin-bottom: 1.25rem;
+}
+
+.history-tab-btn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  padding: 0.45rem 0.75rem;
+  border-radius: var(--radius-full);
+  font-size: 0.8rem;
+  font-weight: 600;
+  border: none;
+  background: transparent;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  text-decoration: none;
+  transition: all var(--transition-fast);
+}
+
+.history-tab-btn.active {
+  background: #FFFFFF;
+  color: var(--color-brand-primary);
+  box-shadow: var(--shadow-sm);
+  font-weight: 700;
+}
+
+.history-feed {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  margin-bottom: 1.5rem;
+}
+
+.history-card {
+  background: #FFFFFF;
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: 1rem;
+  box-shadow: var(--shadow-sm);
+  cursor: pointer;
+  transition: transform var(--transition-fast), border-color var(--transition-fast), box-shadow var(--transition-fast);
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.history-card:hover {
+  transform: translateY(-2px);
+  border-color: var(--color-brand-secondary);
+  box-shadow: var(--shadow-md);
+}
+
+.history-card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.history-date-badge {
+  font-size: 0.725rem;
+  font-weight: 700;
+  color: var(--color-text-secondary);
+  background: var(--color-surface-subtle);
+  padding: 0.2rem 0.5rem;
+  border-radius: var(--radius-sm);
+}
+
+.history-menu-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--color-brand-primary);
+}
+
+.history-restaurant-sub {
+  font-size: 0.8rem;
+  color: var(--color-brand-secondary);
+  font-weight: 600;
+}
+
+.history-members-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 0.35rem;
+  padding-top: 0.45rem;
+  border-top: 1px dashed var(--color-border);
+}
+
+/* ==========================================================================
+   2. Bill History Cards
+   ========================================================================== */
+.bill-history-card {
+  background: #FCFCFA;
+  border: 1px solid #E5E2D9;
+  border-radius: var(--radius-lg);
+  padding: 1rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  transition: transform var(--transition-fast), border-color var(--transition-fast);
+}
+
+.bill-history-card:hover {
+  transform: translateY(-2px);
+  border-color: var(--color-brand-secondary);
+}
+
+.bill-history-amount-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-top: 0.35rem;
+  padding-top: 0.45rem;
+  border-top: 1px dashed #D5D1C5;
+}
+
+/* ==========================================================================
+   3. User Profile Screen
+   ========================================================================== */
+.profile-hero {
+  background: linear-gradient(135deg, rgba(72, 40, 74, 0.06) 0%, rgba(255, 198, 217, 0.2) 100%);
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  padding: 1.5rem 1.25rem;
+  text-align: center;
+  margin-bottom: 1.25rem;
+}
+
+.profile-avatar-large {
+  width: 72px;
+  height: 72px;
+  border-radius: var(--radius-full);
+  background: var(--color-accent-petal);
+  color: var(--color-brand-primary);
+  font-size: 1.75rem;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 0.75rem auto;
+  border: 3px solid #FFFFFF;
+  box-shadow: var(--shadow-md);
+}
+
+.profile-badge-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.25rem 0.65rem;
+  border-radius: var(--radius-full);
+  background: #FFFFFF;
+  border: 1px solid var(--color-border);
+  font-size: 0.725rem;
+  font-weight: 700;
+  color: var(--color-brand-secondary);
+  margin-top: 0.4rem;
+}
+
+.profile-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.5rem;
+  margin-bottom: 1.25rem;
+}
+
+.profile-stat-box {
+  background: #FFFFFF;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: 0.75rem 0.5rem;
+  text-align: center;
+}
+
+.profile-stat-num {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: var(--color-brand-primary);
+}
+
+.profile-stat-label {
+  font-size: 0.675rem;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  margin-top: 0.15rem;
+}
+
+.profile-food-card {
+  background: #FFFFFF;
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  padding: 1.25rem;
+  box-shadow: var(--shadow-sm);
+  margin-bottom: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+/* ==========================================================================
+   4. Edit Food Profile Screen
+   ========================================================================== */
+.edit-food-section {
+  background: #FFFFFF;
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  padding: 1.25rem;
+  margin-bottom: 1rem;
+  box-shadow: var(--shadow-sm);
+}
+
+.edit-chip-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  margin-top: 0.65rem;
+}
+
+.edit-pill-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.4rem 0.75rem;
+  border-radius: var(--radius-full);
+  background: var(--color-surface-subtle);
+  border: 1.5px solid var(--color-border);
+  font-size: 0.775rem;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.edit-pill-btn:hover {
+  border-color: var(--color-brand-secondary);
+}
+
+.edit-pill-btn.selected-allergy {
+  background: #FFF0F0;
+  border-color: #F6B8B8;
+  color: #8E1F1F;
+  font-weight: 700;
+}
+
+.edit-pill-btn.selected-restriction {
+  background: #EDF9F0;
+  border-color: #A6DEB4;
+  color: #165E2A;
+  font-weight: 700;
+}
+
+/* ==========================================================================
+   5. Global 3-Tab Bottom Navigation Bar
+   ========================================================================== */
+.bottom-nav-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #FFFFFF;
+  border-top: 1px solid var(--color-border);
+  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
+  display: flex;
+  justify-content: space-around;
+  padding: 0.45rem 1rem env(safe-area-inset-bottom, 0.45rem);
+  z-index: var(--z-sticky);
+  max-width: var(--breakpoint-mobile);
+  margin: 0 auto;
+}
+
+.bottom-nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.2rem;
+  color: var(--color-text-secondary);
+  text-decoration: none;
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 0.25rem 0.75rem;
+  border-radius: var(--radius-md);
+  transition: color var(--transition-fast);
+}
+
+.bottom-nav-item:hover {
+  color: var(--color-brand-primary);
+}
+
+.bottom-nav-item.active {
+  color: var(--color-brand-primary);
+  font-weight: 700;
+}
+
+.bottom-nav-icon {
+  width: 20px;
+  height: 20px;
+}

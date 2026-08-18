@@ -1,0 +1,519 @@
+/**
+ * FoodFighter UX Prototype — Restaurant Discovery & Map Screen Styles (V4)
+ * 
+ * Styles for:
+ *   - Final Menu Context Bar
+ *   - Segmented View Toggle (List ↔ Map) & Filter Chips
+ *   - Restaurant Cards (List Mode)
+ *   - High-Fidelity Stylized Fake Map (Roads, Blocks, Water/Park, Current Location Pulse, Interactive Pins)
+ *   - Floating Map Pin Preview Drawer / Bottom Card
+ *   - Restaurant Detail Page & Mini Route Map
+ *   - Restaurant Selected Confirmation Hero & V5 Boundary CTA
+ */
+
+/* ==========================================================================
+   1. Final Menu Context Bar & Discovery Header
+   ========================================================================== */
+.rest-context-banner {
+  background: linear-gradient(135deg, rgba(255, 198, 217, 0.4) 0%, rgba(255, 225, 198, 0.4) 100%);
+  border: 1.5px solid var(--color-brand-secondary);
+  border-radius: var(--radius-lg);
+  padding: 0.75rem 1rem;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.rest-context-info {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.rest-context-icon {
+  font-size: 26px;
+  flex-shrink: 0;
+}
+
+/* ==========================================================================
+   2. Segmented List / Map Toggle & Quick Filters
+   ========================================================================== */
+.rest-view-toggle-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.segmented-control {
+  display: flex;
+  background: var(--color-surface-subtle);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-full);
+  padding: 3px;
+  width: 170px;
+}
+
+.segmented-btn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  padding: 0.35rem 0.65rem;
+  border-radius: var(--radius-full);
+  font-size: 0.775rem;
+  font-weight: 600;
+  border: none;
+  background: transparent;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.segmented-btn.active {
+  background: #FFFFFF;
+  color: var(--color-brand-primary);
+  box-shadow: var(--shadow-sm);
+  font-weight: 700;
+}
+
+.rest-filter-chips {
+  display: flex;
+  gap: 0.4rem;
+  overflow-x: auto;
+  padding-bottom: 2px;
+}
+
+.filter-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.35rem 0.65rem;
+  border-radius: var(--radius-full);
+  background: #FFFFFF;
+  border: 1px solid var(--color-border);
+  font-size: 0.725rem;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all var(--transition-fast);
+}
+
+.filter-chip:hover {
+  border-color: var(--color-brand-secondary);
+}
+
+.filter-chip.active {
+  background: var(--color-brand-primary);
+  color: #FFFFFF;
+  border-color: var(--color-brand-primary);
+}
+
+/* ==========================================================================
+   3. Restaurant List Cards (List View)
+   ========================================================================== */
+.rest-list-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  margin-bottom: 1.5rem;
+}
+
+.rest-card {
+  background: #FFFFFF;
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: 1rem;
+  box-shadow: var(--shadow-sm);
+  cursor: pointer;
+  transition: transform var(--transition-fast), border-color var(--transition-fast), box-shadow var(--transition-fast);
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  text-decoration: none;
+  color: inherit;
+}
+
+.rest-card:hover {
+  transform: translateY(-2px);
+  border-color: var(--color-brand-secondary);
+  box-shadow: var(--shadow-md);
+}
+
+.rest-card.active-selected {
+  border-color: var(--color-brand-primary);
+  background: #FCFAFC;
+  box-shadow: 0 0 0 1px var(--color-brand-primary);
+}
+
+.rest-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.rest-name {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--color-brand-primary);
+  line-height: 1.25;
+}
+
+.rest-distance-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.2rem 0.55rem;
+  border-radius: var(--radius-full);
+  background: var(--color-surface-subtle);
+  color: var(--color-brand-secondary);
+  font-size: 0.725rem;
+  font-weight: 700;
+  border: 1px solid var(--color-border);
+  flex-shrink: 0;
+}
+
+.rest-meta-row {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  font-size: 0.775rem;
+  color: var(--color-text-secondary);
+}
+
+.rest-match-callout {
+  background: var(--color-surface-subtle);
+  border-left: 3px solid var(--color-accent-petal);
+  padding: 0.45rem 0.65rem;
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  font-size: 0.75rem;
+  color: var(--color-text-secondary);
+  line-height: 1.35;
+}
+
+/* ==========================================================================
+   4. High-Fidelity Interactive Fake Map (Map View)
+   ========================================================================== */
+.fake-map-viewport {
+  position: relative;
+  width: 100%;
+  height: 380px;
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  background-color: #E8ECE9;
+  border: 1.5px solid var(--color-border);
+  box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.06);
+  margin-bottom: 1rem;
+}
+
+/* Stylized Map Terrain Layers */
+.map-terrain-grid {
+  position: absolute;
+  inset: 0;
+  background-image: 
+    linear-gradient(to right, rgba(0,0,0,0.03) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(0,0,0,0.03) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+.map-river-shape {
+  position: absolute;
+  top: -20px;
+  left: 35%;
+  width: 70px;
+  height: 420px;
+  background: #C7DFE8;
+  transform: rotate(-18deg);
+  opacity: 0.65;
+  border-radius: 30px;
+  pointer-events: none;
+}
+
+.map-park-shape {
+  position: absolute;
+  bottom: 20px;
+  right: 15px;
+  width: 90px;
+  height: 70px;
+  background: #D5E8D4;
+  border-radius: 16px;
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+.map-park-label {
+  position: absolute;
+  bottom: 25px;
+  right: 25px;
+  font-size: 9px;
+  font-weight: 700;
+  color: #5B805A;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  pointer-events: none;
+}
+
+/* Stylized Road Network */
+.map-road {
+  position: absolute;
+  background: #FFFFFF;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+  pointer-events: none;
+}
+
+.map-road-main-1 {
+  top: 48%;
+  left: 0;
+  right: 0;
+  height: 14px;
+  background: #FDFBF7;
+  border-top: 1px solid #DCD8D0;
+  border-bottom: 1px solid #DCD8D0;
+}
+
+.map-road-main-2 {
+  top: 0;
+  bottom: 0;
+  left: 45%;
+  width: 14px;
+  background: #FDFBF7;
+  border-left: 1px solid #DCD8D0;
+  border-right: 1px solid #DCD8D0;
+}
+
+.map-road-sec-1 {
+  top: 22%;
+  left: 0;
+  right: 0;
+  height: 8px;
+  border-top: 1px solid #E5E0D8;
+  border-bottom: 1px solid #E5E0D8;
+}
+
+.map-road-sec-2 {
+  top: 75%;
+  left: 0;
+  right: 0;
+  height: 8px;
+  border-top: 1px solid #E5E0D8;
+  border-bottom: 1px solid #E5E0D8;
+}
+
+.map-road-sec-3 {
+  top: 0;
+  bottom: 0;
+  left: 78%;
+  width: 8px;
+  border-left: 1px solid #E5E0D8;
+  border-right: 1px solid #E5E0D8;
+}
+
+.map-road-sec-4 {
+  top: 0;
+  bottom: 0;
+  left: 18%;
+  width: 8px;
+  border-left: 1px solid #E5E0D8;
+  border-right: 1px solid #E5E0D8;
+}
+
+.map-district-label {
+  position: absolute;
+  top: 12px;
+  left: 14px;
+  font-size: 10px;
+  font-weight: 700;
+  color: #7E7880;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  background: rgba(255, 255, 255, 0.7);
+  padding: 2px 6px;
+  border-radius: var(--radius-sm);
+  pointer-events: none;
+}
+
+/* User Location Marker (Pulse Animation) */
+.map-user-location {
+  position: absolute;
+  top: 48%;
+  left: 45%;
+  transform: translate(-50%, -50%);
+  width: 20px;
+  height: 20px;
+  z-index: 10;
+  pointer-events: none;
+}
+
+.user-location-dot {
+  width: 14px;
+  height: 14px;
+  background: #185582;
+  border: 2.5px solid #FFFFFF;
+  border-radius: var(--radius-full);
+  box-shadow: 0 0 6px rgba(24, 85, 130, 0.6);
+  position: absolute;
+  top: 3px;
+  left: 3px;
+}
+
+.user-location-pulse {
+  position: absolute;
+  inset: -6px;
+  border: 2px solid rgba(24, 85, 130, 0.4);
+  border-radius: var(--radius-full);
+  animation: userPulse 2s ease-out infinite;
+}
+
+@keyframes userPulse {
+  0% { transform: scale(0.6); opacity: 1; }
+  100% { transform: scale(1.8); opacity: 0; }
+}
+
+/* Interactive Map Restaurant Pins */
+.map-pin {
+  position: absolute;
+  transform: translate(-50%, -100%);
+  z-index: 15;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transition: transform var(--transition-fast), filter var(--transition-fast);
+  background: none;
+  border: none;
+  padding: 0;
+}
+
+.map-pin:hover {
+  transform: translate(-50%, -105%) scale(1.1);
+}
+
+.map-pin.active-pin {
+  z-index: 25;
+  transform: translate(-50%, -108%) scale(1.15);
+}
+
+.map-pin-bubble {
+  background: #FFFFFF;
+  color: var(--color-brand-primary);
+  border: 2px solid var(--color-brand-primary);
+  border-radius: var(--radius-full);
+  padding: 4px 8px;
+  font-size: 11px;
+  font-weight: 700;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  white-space: nowrap;
+}
+
+.map-pin.active-pin .map-pin-bubble {
+  background: var(--color-brand-primary);
+  color: #FFFFFF;
+  border-color: #FFFFFF;
+  box-shadow: 0 6px 14px rgba(72, 40, 74, 0.35);
+}
+
+.map-pin-point {
+  width: 0;
+  height: 0;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-top: 6px solid var(--color-brand-primary);
+  margin-top: -1px;
+}
+
+/* ==========================================================================
+   5. Floating Map Preview Card
+   ========================================================================== */
+.map-preview-card {
+  background: #FFFFFF;
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: 0.9rem 1rem;
+  box-shadow: var(--shadow-md);
+  margin-bottom: 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  animation: fadeIn var(--transition-fast) ease-out;
+}
+
+/* ==========================================================================
+   6. Restaurant Detail Screen
+   ========================================================================== */
+.rest-detail-hero {
+  background: #FFFFFF;
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  margin-bottom: 1.25rem;
+}
+
+.rest-detail-artwork {
+  height: 120px;
+  background: linear-gradient(135deg, #FFE1C6 0%, #FFC6D9 50%, #48284A 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 48px;
+}
+
+.rest-detail-content {
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.rest-detail-minomap {
+  height: 160px;
+  border-radius: var(--radius-lg);
+  position: relative;
+  overflow: hidden;
+  background: #E8ECE9;
+  border: 1px solid var(--color-border);
+  margin: 0.5rem 0;
+}
+
+.mini-route-svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+/* ==========================================================================
+   7. Restaurant Selected Confirmation Screen
+   ========================================================================== */
+.rest-selected-hero {
+  background: linear-gradient(135deg, #EDF9F0 0%, #FFFFFF 100%);
+  border: 2px solid #A6DEB4;
+  border-radius: var(--radius-xl);
+  padding: 1.5rem 1.25rem;
+  text-align: center;
+  box-shadow: var(--shadow-md);
+  margin-bottom: 1.5rem;
+}
+
+.rest-confirmed-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.3rem 0.75rem;
+  border-radius: var(--radius-full);
+  background: #165E2A;
+  color: #FFFFFF;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  margin-bottom: 0.75rem;
+}
