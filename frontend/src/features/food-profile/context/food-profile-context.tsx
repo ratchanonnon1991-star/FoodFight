@@ -17,6 +17,7 @@ export function FoodProfileProvider({ children, initialDraft }: FoodProfileProvi
     ...initialDraft,
   }));
 
+  // --- Step 1: Allergies Actions ---
   const setAllergies = React.useCallback((allergies: string[]) => {
     setDraft((prev) => ({
       ...prev,
@@ -65,6 +66,56 @@ export function FoodProfileProvider({ children, initialDraft }: FoodProfileProvi
     });
   }, []);
 
+  // --- Step 2: Restrictions Actions ---
+  const setRestrictions = React.useCallback((restrictions: string[]) => {
+    setDraft((prev) => ({
+      ...prev,
+      restrictions,
+      hasNoRestrictions: restrictions.length > 0 ? false : prev.hasNoRestrictions,
+    }));
+  }, []);
+
+  const toggleRestriction = React.useCallback((restrictionId: string) => {
+    setDraft((prev) => {
+      const isSelected = prev.restrictions.includes(restrictionId);
+      const nextRestrictions = isSelected
+        ? prev.restrictions.filter((id) => id !== restrictionId)
+        : [...prev.restrictions, restrictionId];
+
+      return {
+        ...prev,
+        restrictions: nextRestrictions,
+        hasNoRestrictions: nextRestrictions.length > 0 ? false : prev.hasNoRestrictions,
+      };
+    });
+  }, []);
+
+  const setOtherRestrictions = React.useCallback((otherRestrictions: string) => {
+    setDraft((prev) => ({
+      ...prev,
+      otherRestrictions,
+      hasNoRestrictions: otherRestrictions.trim().length > 0 ? false : prev.hasNoRestrictions,
+    }));
+  }, []);
+
+  const setHasNoRestrictions = React.useCallback((hasNoRestrictions: boolean) => {
+    setDraft((prev) => {
+      if (hasNoRestrictions) {
+        return {
+          ...prev,
+          restrictions: [],
+          otherRestrictions: "",
+          hasNoRestrictions: true,
+        };
+      }
+      return {
+        ...prev,
+        hasNoRestrictions: false,
+      };
+    });
+  }, []);
+
+  // --- Shared Actions ---
   const updateDraft = React.useCallback((updates: Partial<FoodProfileDraft>) => {
     setDraft((prev) => ({
       ...prev,
@@ -76,20 +127,33 @@ export function FoodProfileProvider({ children, initialDraft }: FoodProfileProvi
     setDraft(INITIAL_FOOD_PROFILE_DRAFT);
   }, []);
 
+  // --- Validation Helpers ---
   const isAllergiesStepValid = React.useMemo(() => {
     return draft.hasNoAllergies || draft.allergies.length > 0 || draft.otherAllergies.trim().length > 0;
   }, [draft.hasNoAllergies, draft.allergies.length, draft.otherAllergies]);
 
+  const isRestrictionsStepValid = React.useMemo(() => {
+    return draft.hasNoRestrictions || draft.restrictions.length > 0 || draft.otherRestrictions.trim().length > 0;
+  }, [draft.hasNoRestrictions, draft.restrictions.length, draft.otherRestrictions]);
+
   const value = React.useMemo(
     () => ({
       draft,
+      // Allergies
       setAllergies,
       setOtherAllergies,
       setHasNoAllergies,
       toggleAllergy,
+      isAllergiesStepValid,
+      // Restrictions
+      setRestrictions,
+      setOtherRestrictions,
+      setHasNoRestrictions,
+      toggleRestriction,
+      isRestrictionsStepValid,
+      // Shared
       updateDraft,
       resetDraft,
-      isAllergiesStepValid,
     }),
     [
       draft,
@@ -97,9 +161,14 @@ export function FoodProfileProvider({ children, initialDraft }: FoodProfileProvi
       setOtherAllergies,
       setHasNoAllergies,
       toggleAllergy,
+      isAllergiesStepValid,
+      setRestrictions,
+      setOtherRestrictions,
+      setHasNoRestrictions,
+      toggleRestriction,
+      isRestrictionsStepValid,
       updateDraft,
       resetDraft,
-      isAllergiesStepValid,
     ]
   );
 

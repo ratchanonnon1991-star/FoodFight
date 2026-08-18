@@ -7,6 +7,11 @@ export interface AllergyOption {
   label: string;
 }
 
+export interface RestrictionOption {
+  id: string;
+  label: string;
+}
+
 export interface FoodProfileDraft {
   allergies: string[];
   otherAllergies: string;
@@ -21,11 +26,22 @@ export interface FoodProfileDraft {
 
 export interface FoodProfileContextValue {
   draft: FoodProfileDraft;
+
+  // Allergies Step 1
   setAllergies: (allergies: string[]) => void;
   setOtherAllergies: (other: string) => void;
   setHasNoAllergies: (hasNoAllergies: boolean) => void;
   toggleAllergy: (allergyId: string) => void;
+  isAllergiesStepValid: boolean;
+
+  // Restrictions Step 2
+  setRestrictions: (restrictions: string[]) => void;
+  setOtherRestrictions: (other: string) => void;
+  setHasNoRestrictions: (hasNoRestrictions: boolean) => void;
+  toggleRestriction: (restrictionId: string) => void;
+  isRestrictionsStepValid: boolean;
+
+  // Shared
   updateDraft: (updates: Partial<FoodProfileDraft>) => void;
   resetDraft: () => void;
-  isAllergiesStepValid: boolean;
 }

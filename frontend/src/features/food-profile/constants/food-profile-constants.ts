@@ -1,4 +1,4 @@
-import type { AllergyOption, FoodProfileDraft } from "../types/food-profile-types";
+import type { AllergyOption, FoodProfileDraft, RestrictionOption } from "../types/food-profile-types";
 
 export const STANDARD_ALLERGIES: readonly AllergyOption[] = [
   { id: "seafood", label: "Seafood" },
@@ -9,6 +9,17 @@ export const STANDARD_ALLERGIES: readonly AllergyOption[] = [
   { id: "soy", label: "Soy" },
   { id: "wheat_gluten", label: "Wheat / Gluten" },
   { id: "sesame", label: "Sesame" },
+] as const;
+
+export const STANDARD_RESTRICTIONS: readonly RestrictionOption[] = [
+  { id: "vegetarian", label: "Vegetarian" },
+  { id: "vegan", label: "Vegan" },
+  { id: "pescatarian", label: "Pescatarian" },
+  { id: "gluten_free", label: "Gluten-free" },
+  { id: "halal", label: "Halal only" },
+  { id: "kosher", label: "Kosher" },
+  { id: "no_pork", label: "No pork" },
+  { id: "no_beef", label: "No beef" },
 ] as const;
 
 export const INITIAL_FOOD_PROFILE_DRAFT: FoodProfileDraft = {
