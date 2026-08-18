@@ -8,14 +8,29 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AuthModule = void 0;
 const common_1 = require("@nestjs/common");
+const jwt_module_1 = require("../infrastructure/jwt/jwt.module");
+const hash_module_1 = require("../infrastructure/hash/hash.module");
+const google_auth_module_1 = require("../infrastructure/google/google-auth.module");
+const line_auth_module_1 = require("../infrastructure/line/line-auth.module");
+const mail_module_1 = require("../infrastructure/mail/mail.module");
 const auth_service_1 = require("./auth.service");
 const auth_controller_1 = require("./auth.controller");
+const password_reset_service_1 = require("./password-reset.service");
+const user_module_1 = require("../user/user.module");
 let AuthModule = class AuthModule {
 };
 exports.AuthModule = AuthModule;
 exports.AuthModule = AuthModule = __decorate([
     (0, common_1.Module)({
-        providers: [auth_service_1.AuthService],
+        imports: [
+            jwt_module_1.JwtModule,
+            hash_module_1.HashModule,
+            google_auth_module_1.GoogleAuthModule,
+            line_auth_module_1.LineAuthModule,
+            mail_module_1.MailModule,
+            user_module_1.UserModule,
+        ],
+        providers: [auth_service_1.AuthService, password_reset_service_1.PasswordResetService],
         controllers: [auth_controller_1.AuthController],
     })
 ], AuthModule);

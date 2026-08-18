@@ -54,7 +54,25 @@ export const ModelName = {
   User: 'User',
   Account: 'Account',
   EmailVerification: 'EmailVerification',
-  PasswordReset: 'PasswordReset'
+  PasswordReset: 'PasswordReset',
+  FoodProfile: 'FoodProfile',
+  Room: 'Room',
+  RoomMember: 'RoomMember',
+  FoodFightSession: 'FoodFightSession',
+  SessionMember: 'SessionMember',
+  MealPreference: 'MealPreference',
+  RecommendationRound: 'RecommendationRound',
+  RecommendationItem: 'RecommendationItem',
+  Vote: 'Vote',
+  FinalVote: 'FinalVote',
+  FinalSelection: 'FinalSelection',
+  RestaurantRecommendation: 'RestaurantRecommendation',
+  RestaurantSelection: 'RestaurantSelection',
+  Bill: 'Bill',
+  Receipt: 'Receipt',
+  ReceiptItem: 'ReceiptItem',
+  ItemShare: 'ItemShare',
+  UserPayment: 'UserPayment'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -78,8 +96,8 @@ export const UserScalarFieldEnum = {
   displayName: 'displayName',
   email: 'email',
   passwordHash: 'passwordHash',
-  emailVerified: 'emailVerified',
   avatarUrl: 'avatarUrl',
+  emailVerified: 'emailVerified',
   role: 'role',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
@@ -127,12 +145,293 @@ export const PasswordResetScalarFieldEnum = {
 export type PasswordResetScalarFieldEnum = (typeof PasswordResetScalarFieldEnum)[keyof typeof PasswordResetScalarFieldEnum]
 
 
+export const FoodProfileScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  allergies: 'allergies',
+  otherAllergies: 'otherAllergies',
+  restrictions: 'restrictions',
+  otherRestrictions: 'otherRestrictions',
+  additionalNotes: 'additionalNotes',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type FoodProfileScalarFieldEnum = (typeof FoodProfileScalarFieldEnum)[keyof typeof FoodProfileScalarFieldEnum]
+
+
+export const RoomScalarFieldEnum = {
+  id: 'id',
+  hostId: 'hostId',
+  name: 'name',
+  roomCode: 'roomCode',
+  inviteToken: 'inviteToken',
+  maxMembers: 'maxMembers',
+  locationName: 'locationName',
+  latitude: 'latitude',
+  longitude: 'longitude',
+  searchRadiusKm: 'searchRadiusKm',
+  scheduledAt: 'scheduledAt',
+  status: 'status',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type RoomScalarFieldEnum = (typeof RoomScalarFieldEnum)[keyof typeof RoomScalarFieldEnum]
+
+
+export const RoomMemberScalarFieldEnum = {
+  id: 'id',
+  roomId: 'roomId',
+  userId: 'userId',
+  isReady: 'isReady',
+  joinedAt: 'joinedAt',
+  leftAt: 'leftAt'
+} as const
+
+export type RoomMemberScalarFieldEnum = (typeof RoomMemberScalarFieldEnum)[keyof typeof RoomMemberScalarFieldEnum]
+
+
+export const FoodFightSessionScalarFieldEnum = {
+  id: 'id',
+  roomId: 'roomId',
+  status: 'status',
+  startedAt: 'startedAt',
+  finalizedAt: 'finalizedAt',
+  completedAt: 'completedAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type FoodFightSessionScalarFieldEnum = (typeof FoodFightSessionScalarFieldEnum)[keyof typeof FoodFightSessionScalarFieldEnum]
+
+
+export const SessionMemberScalarFieldEnum = {
+  id: 'id',
+  sessionId: 'sessionId',
+  userId: 'userId',
+  role: 'role',
+  joinedAt: 'joinedAt'
+} as const
+
+export type SessionMemberScalarFieldEnum = (typeof SessionMemberScalarFieldEnum)[keyof typeof SessionMemberScalarFieldEnum]
+
+
+export const MealPreferenceScalarFieldEnum = {
+  id: 'id',
+  sessionId: 'sessionId',
+  userId: 'userId',
+  cookingTypes: 'cookingTypes',
+  otherCookingType: 'otherCookingType',
+  cuisines: 'cuisines',
+  otherCuisine: 'otherCuisine',
+  ingredients: 'ingredients',
+  otherIngredient: 'otherIngredient',
+  budgetRange: 'budgetRange',
+  restaurantStyles: 'restaurantStyles',
+  otherRestaurantStyle: 'otherRestaurantStyle',
+  otherNote: 'otherNote',
+  submittedAt: 'submittedAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type MealPreferenceScalarFieldEnum = (typeof MealPreferenceScalarFieldEnum)[keyof typeof MealPreferenceScalarFieldEnum]
+
+
+export const RecommendationRoundScalarFieldEnum = {
+  id: 'id',
+  sessionId: 'sessionId',
+  roundNumber: 'roundNumber',
+  status: 'status',
+  generatedAt: 'generatedAt',
+  completedAt: 'completedAt'
+} as const
+
+export type RecommendationRoundScalarFieldEnum = (typeof RecommendationRoundScalarFieldEnum)[keyof typeof RecommendationRoundScalarFieldEnum]
+
+
+export const RecommendationItemScalarFieldEnum = {
+  id: 'id',
+  recommendationRoundId: 'recommendationRoundId',
+  menuName: 'menuName',
+  description: 'description',
+  reason: 'reason',
+  imageUrl: 'imageUrl',
+  recommendationScore: 'recommendationScore',
+  metadata: 'metadata',
+  displayOrder: 'displayOrder',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type RecommendationItemScalarFieldEnum = (typeof RecommendationItemScalarFieldEnum)[keyof typeof RecommendationItemScalarFieldEnum]
+
+
+export const VoteScalarFieldEnum = {
+  id: 'id',
+  recommendationItemId: 'recommendationItemId',
+  userId: 'userId',
+  action: 'action',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type VoteScalarFieldEnum = (typeof VoteScalarFieldEnum)[keyof typeof VoteScalarFieldEnum]
+
+
+export const FinalVoteScalarFieldEnum = {
+  id: 'id',
+  sessionId: 'sessionId',
+  userId: 'userId',
+  recommendationItemId: 'recommendationItemId',
+  voteType: 'voteType',
+  createdAt: 'createdAt'
+} as const
+
+export type FinalVoteScalarFieldEnum = (typeof FinalVoteScalarFieldEnum)[keyof typeof FinalVoteScalarFieldEnum]
+
+
+export const FinalSelectionScalarFieldEnum = {
+  id: 'id',
+  sessionId: 'sessionId',
+  recommendationItemId: 'recommendationItemId',
+  selectedById: 'selectedById',
+  method: 'method',
+  selectedAt: 'selectedAt'
+} as const
+
+export type FinalSelectionScalarFieldEnum = (typeof FinalSelectionScalarFieldEnum)[keyof typeof FinalSelectionScalarFieldEnum]
+
+
+export const RestaurantRecommendationScalarFieldEnum = {
+  id: 'id',
+  sessionId: 'sessionId',
+  externalPlaceId: 'externalPlaceId',
+  name: 'name',
+  address: 'address',
+  latitude: 'latitude',
+  longitude: 'longitude',
+  distanceMeters: 'distanceMeters',
+  phone: 'phone',
+  openingHours: 'openingHours',
+  imageUrl: 'imageUrl',
+  finalMenuMatch: 'finalMenuMatch',
+  varietyScore: 'varietyScore',
+  groupCompatibilityScore: 'groupCompatibilityScore',
+  rankingScore: 'rankingScore',
+  reason: 'reason',
+  status: 'status',
+  displayOrder: 'displayOrder',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type RestaurantRecommendationScalarFieldEnum = (typeof RestaurantRecommendationScalarFieldEnum)[keyof typeof RestaurantRecommendationScalarFieldEnum]
+
+
+export const RestaurantSelectionScalarFieldEnum = {
+  id: 'id',
+  sessionId: 'sessionId',
+  selectedById: 'selectedById',
+  externalPlaceId: 'externalPlaceId',
+  name: 'name',
+  address: 'address',
+  latitude: 'latitude',
+  longitude: 'longitude',
+  distanceMeters: 'distanceMeters',
+  phone: 'phone',
+  openingHours: 'openingHours',
+  imageUrl: 'imageUrl',
+  selectedAt: 'selectedAt'
+} as const
+
+export type RestaurantSelectionScalarFieldEnum = (typeof RestaurantSelectionScalarFieldEnum)[keyof typeof RestaurantSelectionScalarFieldEnum]
+
+
+export const BillScalarFieldEnum = {
+  id: 'id',
+  sessionId: 'sessionId',
+  createdById: 'createdById',
+  status: 'status',
+  subtotal: 'subtotal',
+  serviceCharge: 'serviceCharge',
+  tax: 'tax',
+  discount: 'discount',
+  totalAmount: 'totalAmount',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type BillScalarFieldEnum = (typeof BillScalarFieldEnum)[keyof typeof BillScalarFieldEnum]
+
+
+export const ReceiptScalarFieldEnum = {
+  id: 'id',
+  billId: 'billId',
+  imageUrl: 'imageUrl',
+  ocrStatus: 'ocrStatus',
+  rawOcrText: 'rawOcrText',
+  parsedData: 'parsedData',
+  uploadedAt: 'uploadedAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ReceiptScalarFieldEnum = (typeof ReceiptScalarFieldEnum)[keyof typeof ReceiptScalarFieldEnum]
+
+
+export const ReceiptItemScalarFieldEnum = {
+  id: 'id',
+  billId: 'billId',
+  name: 'name',
+  quantity: 'quantity',
+  unitPrice: 'unitPrice',
+  totalPrice: 'totalPrice',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ReceiptItemScalarFieldEnum = (typeof ReceiptItemScalarFieldEnum)[keyof typeof ReceiptItemScalarFieldEnum]
+
+
+export const ItemShareScalarFieldEnum = {
+  id: 'id',
+  receiptItemId: 'receiptItemId',
+  userId: 'userId',
+  amount: 'amount',
+  createdAt: 'createdAt'
+} as const
+
+export type ItemShareScalarFieldEnum = (typeof ItemShareScalarFieldEnum)[keyof typeof ItemShareScalarFieldEnum]
+
+
+export const UserPaymentScalarFieldEnum = {
+  id: 'id',
+  billId: 'billId',
+  userId: 'userId',
+  amount: 'amount',
+  status: 'status',
+  paidAt: 'paidAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type UserPaymentScalarFieldEnum = (typeof UserPaymentScalarFieldEnum)[keyof typeof UserPaymentScalarFieldEnum]
+
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'
 } as const
 
 export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder]
+
+
+export const NullableJsonNullValueInput = {
+  DbNull: DbNull,
+  JsonNull: JsonNull
+} as const
+
+export type NullableJsonNullValueInput = (typeof NullableJsonNullValueInput)[keyof typeof NullableJsonNullValueInput]
 
 
 export const QueryMode = {
@@ -149,4 +448,13 @@ export const NullsOrder = {
 } as const
 
 export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
+
+
+export const JsonNullValueFilter = {
+  DbNull: DbNull,
+  JsonNull: JsonNull,
+  AnyNull: AnyNull
+} as const
+
+export type JsonNullValueFilter = (typeof JsonNullValueFilter)[keyof typeof JsonNullValueFilter]
 

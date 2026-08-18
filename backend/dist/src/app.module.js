@@ -9,8 +9,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.AppModule = void 0;
 const common_1 = require("@nestjs/common");
 const config_1 = require("@nestjs/config");
+const core_1 = require("@nestjs/core");
 const env_validation_1 = require("./config/env.validation");
 const auth_module_1 = require("./auth/auth.module");
+const jwt_module_1 = require("./infrastructure/jwt/jwt.module");
+const jwt_auth_guard_1 = require("./auth/guards/jwt-auth.guard");
+const user_module_1 = require("./user/user.module");
+const database_module_1 = require("./database/database.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -21,7 +26,16 @@ exports.AppModule = AppModule = __decorate([
                 isGlobal: true,
                 validate: env_validation_1.validate,
             }),
+            database_module_1.DatabaseModule,
+            jwt_module_1.JwtModule,
             auth_module_1.AuthModule,
+            user_module_1.UserModule,
+        ],
+        providers: [
+            {
+                provide: core_1.APP_GUARD,
+                useClass: jwt_auth_guard_1.JwtAuthGuard,
+            },
         ],
     })
 ], AppModule);
