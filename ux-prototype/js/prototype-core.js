@@ -31,7 +31,19 @@
           auth: { ...P.INITIAL_STATE.auth, ...(parsed.auth || {}) },
           foodProfile: { ...P.INITIAL_STATE.foodProfile, ...(parsed.foodProfile || {}) },
           room: { ...P.INITIAL_STATE.room, ...(parsed.room || {}) },
-          mealPreferences: { ...P.INITIAL_STATE.mealPreferences, ...(parsed.mealPreferences || {}) }
+          mealPreferences: { ...P.INITIAL_STATE.mealPreferences, ...(parsed.mealPreferences || {}) },
+          recommendation: {
+            ...P.INITIAL_STATE.recommendation,
+            ...(parsed.recommendation || {}),
+            roundVotes: {
+              1: { ...P.INITIAL_STATE.recommendation.roundVotes[1], ...(parsed.recommendation?.roundVotes?.[1] || {}) },
+              2: { ...P.INITIAL_STATE.recommendation.roundVotes[2], ...(parsed.recommendation?.roundVotes?.[2] || {}) }
+            },
+            finalVotes: {
+              ...P.INITIAL_STATE.recommendation.finalVotes,
+              ...(parsed.recommendation?.finalVotes || {})
+            }
+          }
         };
       }
     } catch (e) {
@@ -53,6 +65,13 @@
     saveState();
     showToast('Prototype state reset to fresh defaults.', 'info');
     navigateTo('#/login');
+  }
+
+  function resetRecommendationState() {
+    state.recommendation = JSON.parse(JSON.stringify(P.INITIAL_STATE.recommendation));
+    saveState();
+    showToast('Recommendation & voting state reset to Round 1.', 'info');
+    navigateTo('#/recommendations');
   }
 
   function getState() {
@@ -339,7 +358,7 @@
         </div>
 
         <div style="font-size:0.75rem;color:var(--color-text-secondary);line-height:1.35;">
-          Simulate multi-user room readiness and preference submission without waiting.
+          Test room readiness, vote scenarios, Recommend Again, and Host Tie Break.
         </div>
 
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.4rem;margin-top:0.25rem;">
@@ -348,28 +367,39 @@
             <span>⇄</span>
           </button>
           <button type="button" id="sim-toggle-threshold" class="proto-sim-btn">
-            <span>2-Min Elapsed: <strong>${state.room.simulatedTwoMinutesElapsed ? 'YES' : 'NO'}</strong></span>
+            <span>2-Min: <strong>${state.room.simulatedTwoMinutesElapsed ? 'YES' : 'NO'}</strong></span>
           </button>
         </div>
 
-        <div style="display:flex;flex-direction:column;gap:0.35rem;margin-top:0.25rem;">
-          <button type="button" id="sim-toggle-maya" class="proto-sim-btn">
-            <span>Maya Ready (${state.room.members[1]?.isReady ? '✅ Ready' : '⏳ Waiting'})</span>
-            <span>Toggle</span>
+        <div style="font-size:0.7rem;font-weight:700;color:var(--color-brand-primary);margin-top:0.4rem;text-transform:uppercase;">
+          V3 Voting Scenarios
+        </div>
+
+        <div style="display:flex;flex-direction:column;gap:0.35rem;">
+          <button type="button" id="sim-vote-all-ok" class="proto-sim-btn" style="background:#EDF9F0;color:#165E2A;border-color:#A6DEB4;">
+            <span>✨ Set All Active OK (Win Menu A)</span>
           </button>
-          <button type="button" id="sim-toggle-nina" class="proto-sim-btn">
-            <span>Nina Ready (${state.room.members[2]?.isReady ? '✅ Ready' : '⏳ Waiting'})</span>
-            <span>Toggle</span>
+          <button type="button" id="sim-vote-split-no-win" class="proto-sim-btn" style="background:#FFF8E6;color:#784C00;border-color:#F6D68A;">
+            <span>⚡ Set No Winner (Trigger Recommend Again)</span>
           </button>
-          <button type="button" id="sim-toggle-ken" class="proto-sim-btn">
-            <span>Ken Ready (${state.room.members[3]?.isReady ? '✅ Ready' : '⏳ Waiting'})</span>
-            <span>Toggle</span>
+          <button type="button" id="sim-vote-final-tie" class="proto-sim-btn" style="background:#EFF6FC;color:#185582;border-color:#A7D3F3;">
+            <span>⚖️ Final Vote: Create 2-2 Tie (Host Tie Break)</span>
           </button>
-          <button type="button" id="sim-all-ready" class="proto-sim-btn" style="background:#EDF9F0;color:#165E2A;border-color:#A6DEB4;">
-            <span>✨ Set All Members Ready (100%)</span>
+          <button type="button" id="sim-reset-recom" class="proto-sim-btn" style="color:#D32F2F;">
+            <span>↺ Reset Recommendation State Only</span>
           </button>
-          <button type="button" id="sim-all-submitted" class="proto-sim-btn" style="background:#FFF8E6;color:#784C00;border-color:#F6D68A;">
-            <span>🍲 Mark All Active Members Submitted</span>
+        </div>
+
+        <div style="font-size:0.7rem;font-weight:700;color:var(--color-brand-primary);margin-top:0.4rem;text-transform:uppercase;">
+          V2 Lobby Readiness
+        </div>
+
+        <div style="display:flex;flex-direction:column;gap:0.35rem;">
+          <button type="button" id="sim-all-ready" class="proto-sim-btn">
+            <span>Set All Members Ready (100%)</span>
+          </button>
+          <button type="button" id="sim-all-submitted" class="proto-sim-btn">
+            <span>Mark Active Members Submitted</span>
           </button>
         </div>
       </div>
@@ -387,7 +417,7 @@
                 <a href="${s.hash}" class="proto-nav-item" data-hash="${s.hash}">
                   <span>${escapeHtml(s.title)}</span>
                   <span class="proto-nav-tag ${isImpl ? 'proto-nav-tag-impl' : 'proto-nav-tag-shell'}">
-                    ${isImpl ? 'Implemented' : 'V3 / Future'}
+                    ${isImpl ? 'Implemented' : 'V4 / Future'}
                   </span>
                 </a>
               `;
@@ -404,11 +434,12 @@
   function bindSimulationControls() {
     const roleBtn = document.getElementById('sim-toggle-role');
     const threshBtn = document.getElementById('sim-toggle-threshold');
-    const mayaBtn = document.getElementById('sim-toggle-maya');
-    const ninaBtn = document.getElementById('sim-toggle-nina');
-    const kenBtn = document.getElementById('sim-toggle-ken');
     const allReadyBtn = document.getElementById('sim-all-ready');
     const allSubBtn = document.getElementById('sim-all-submitted');
+    const voteAllOkBtn = document.getElementById('sim-vote-all-ok');
+    const voteSplitBtn = document.getElementById('sim-vote-split-no-win');
+    const voteFinalTieBtn = document.getElementById('sim-vote-final-tie');
+    const resetRecomBtn = document.getElementById('sim-reset-recom');
 
     if (roleBtn) {
       roleBtn.onclick = () => {
@@ -416,9 +447,7 @@
         saveState();
         showToast(`Switched view to: ${state.room.role.toUpperCase()}`, 'info');
         renderNavigatorContent(document.getElementById('proto-nav-list'));
-        if (window.location.hash.includes('/room/lobby')) {
-          navigateTo(state.room.role === 'host' ? '#/room/lobby-host' : '#/room/lobby-member');
-        }
+        if (P.renderCurrentRoute) P.renderCurrentRoute();
       };
     }
 
@@ -431,20 +460,6 @@
         if (P.renderCurrentRoute) P.renderCurrentRoute();
       };
     }
-
-    const toggleMemberReady = (idx, name) => {
-      if (state.room.members[idx]) {
-        state.room.members[idx].isReady = !state.room.members[idx].isReady;
-        saveState();
-        showToast(`${name} readiness: ${state.room.members[idx].isReady ? 'READY' : 'WAITING'}`, 'info');
-        renderNavigatorContent(document.getElementById('proto-nav-list'));
-        if (P.renderCurrentRoute) P.renderCurrentRoute();
-      }
-    };
-
-    if (mayaBtn) mayaBtn.onclick = () => toggleMemberReady(1, 'Maya');
-    if (ninaBtn) ninaBtn.onclick = () => toggleMemberReady(2, 'Nina');
-    if (kenBtn) kenBtn.onclick = () => toggleMemberReady(3, 'Ken');
 
     if (allReadyBtn) {
       allReadyBtn.onclick = () => {
@@ -465,6 +480,71 @@
         showToast('All active members marked as SUBMITTED!', 'success');
         renderNavigatorContent(document.getElementById('proto-nav-list'));
         if (P.renderCurrentRoute) P.renderCurrentRoute();
+      };
+    }
+
+    if (voteAllOkBtn) {
+      voteAllOkBtn.onclick = () => {
+        const round = state.recommendation.round || 1;
+        const menuKey = round === 1 ? 'menu-a' : 'menu-c';
+        const otherKey = round === 1 ? 'menu-b' : 'menu-d';
+        
+        state.room.members.forEach(m => {
+          if (m.isActive) {
+            state.recommendation.roundVotes[round][m.id] = {
+              [menuKey]: 'OK',
+              [otherKey]: 'PASS'
+            };
+          }
+        });
+        saveState();
+        showToast(`All active members voted OK on ${menuKey.toUpperCase()}!`, 'success');
+        renderNavigatorContent(document.getElementById('proto-nav-list'));
+        if (P.renderCurrentRoute) P.renderCurrentRoute();
+      };
+    }
+
+    if (voteSplitBtn) {
+      voteSplitBtn.onclick = () => {
+        const round = state.recommendation.round || 1;
+        const menu1 = round === 1 ? 'menu-a' : 'menu-c';
+        const menu2 = round === 1 ? 'menu-b' : 'menu-d';
+        
+        // 1 OK / 3 PASS (25% OK -> below 60% threshold)
+        state.recommendation.roundVotes[round]['user'] = { [menu1]: 'PASS', [menu2]: 'PASS' };
+        state.recommendation.roundVotes[round]['maya'] = { [menu1]: 'OK', [menu2]: 'PASS' };
+        state.recommendation.roundVotes[round]['nina'] = { [menu1]: 'PASS', [menu2]: 'PASS' };
+        if (state.recommendation.roundVotes[round]['ken']) {
+          state.recommendation.roundVotes[round]['ken'] = { [menu1]: 'PASS', [menu2]: 'PASS' };
+        }
+        saveState();
+        showToast('Set votes below threshold (25% OK). No winner scenario ready!', 'info');
+        renderNavigatorContent(document.getElementById('proto-nav-list'));
+        if (P.renderCurrentRoute) P.renderCurrentRoute();
+      };
+    }
+
+    if (voteFinalTieBtn) {
+      voteFinalTieBtn.onclick = () => {
+        // 2 votes for Menu A, 2 votes for Menu C
+        state.recommendation.finalVotes = {
+          user: 'menu-a',
+          maya: 'menu-a',
+          nina: 'menu-c',
+          ken: 'menu-c'
+        };
+        state.recommendation.tieBreakWinnerId = null;
+        saveState();
+        showToast('Final Vote set to 2-2 Tie between Menu A & Menu C!', 'info');
+        renderNavigatorContent(document.getElementById('proto-nav-list'));
+        if (P.renderCurrentRoute) P.renderCurrentRoute();
+      };
+    }
+
+    if (resetRecomBtn) {
+      resetRecomBtn.onclick = () => {
+        resetRecommendationState();
+        closePrototypeNavigator();
       };
     }
   }
@@ -506,6 +586,7 @@
   P.getState = getState;
   P.saveState = saveState;
   P.resetState = resetState;
+  P.resetRecommendationState = resetRecommendationState;
   P.showToast = showToast;
   P.copyTextToClipboard = copyTextToClipboard;
   P.openModal = openModal;

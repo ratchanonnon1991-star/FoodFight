@@ -88,7 +88,7 @@
       description: 'Primary landing hub featuring active food profile summary, Create Room CTA, and Join Room CTA.'
     },
 
-    // ROOM FLOW (Implemented in V2)
+    // ROOM FLOW (Implemented V2)
     {
       id: 'room-create',
       hash: '#/room/create',
@@ -154,7 +154,7 @@
       description: 'Member view featuring Ready status toggle, host waiting notice, and invite drawer.'
     },
 
-    // FOODFIGHT SESSION (Implemented in V2)
+    // FOODFIGHT SESSION (Implemented V2)
     {
       id: 'foodfight-preferences',
       hash: '#/foodfight/preferences',
@@ -177,24 +177,24 @@
       title: 'Generating Recommendations',
       category: 'FoodFight',
       status: 'IMPLEMENTED',
-      description: 'AI synthesis screen with animated radar pulse, constraint summary, and transition to V3 boundary.'
+      description: 'AI synthesis screen with animated radar pulse, constraint summary, and transition to recommendations.'
     },
 
-    // MENU RECOMMENDATIONS & VOTING (Future V3)
+    // MENU RECOMMENDATIONS & VOTING (Implemented V3)
     {
       id: 'recommendations',
       hash: '#/recommendations',
-      title: 'Recommended Menus',
+      title: 'Recommended Menus — Round 1',
       category: 'Recommendation',
-      status: 'FUTURE',
-      description: 'Top 2 AI-recommended dishes with reasoning, ingredients, and allergen safety callouts (V3).'
+      status: 'IMPLEMENTED',
+      description: 'Top 2 AI-recommended dishes (Menu A & B) with match reasons, ingredient tags, and OK/PASS voting.'
     },
     {
       id: 'recommendations-vote',
       hash: '#/recommendations/vote',
       title: 'OK / PASS Voting',
       category: 'Recommendation',
-      status: 'FUTURE',
+      status: 'IMPLEMENTED',
       description: 'Interactive OK / PASS voting interface for Active Members.'
     },
     {
@@ -202,35 +202,35 @@
       hash: '#/vote-result',
       title: 'Voting Result',
       category: 'Recommendation',
-      status: 'FUTURE',
-      description: 'Vote outcome tally showing consensus or trigger for Round 2.'
+      status: 'IMPLEMENTED',
+      description: 'Vote outcome tally showing 60% threshold success or trigger for Recommend Again.'
     },
     {
       id: 'recommendations-round-2',
       hash: '#/recommendations/round-2',
       title: 'Round 2 / Recommend Again',
       category: 'Recommendation',
-      status: 'FUTURE',
-      description: 'AI generates 2 brand-new alternative dishes when round 1 lacks consensus.'
+      status: 'IMPLEMENTED',
+      description: 'AI generates 2 brand-new alternative dishes (Menu C & D) when round 1 lacks consensus.'
     },
     {
       id: 'final-vote',
       hash: '#/final-vote',
       title: 'Final Vote (4 Dishes)',
       category: 'Recommendation',
-      status: 'FUTURE',
-      description: 'Tie-break round presenting all 4 candidate dishes for single-choice selection.'
+      status: 'IMPLEMENTED',
+      description: 'Tie-break round presenting all 4 candidate dishes for single-choice selection or Host tie break.'
     },
     {
       id: 'final-menu',
       hash: '#/final-menu',
       title: 'Final Menu Winner',
       category: 'Recommendation',
-      status: 'FUTURE',
-      description: 'Celebratory winning dish announcement and transition to restaurant discovery.'
+      status: 'IMPLEMENTED',
+      description: 'Celebratory winning dish announcement and transition to restaurant discovery (V4 boundary).'
     },
 
-    // RESTAURANTS & MAP (Future)
+    // RESTAURANTS & MAP (Future V4)
     {
       id: 'restaurants',
       hash: '#/restaurants',
@@ -349,7 +349,69 @@
   ];
 
   /* ==========================================================================
-     2. Prototype Initial State Definition
+     2. Candidate Menu Catalogues (4 Distinct Dishes)
+     ========================================================================== */
+  const CANDIDATE_MENUS = {
+    'menu-a': {
+      id: 'menu-a',
+      round: 1,
+      name: 'Krapow Wagyu Beef & Crispy Egg',
+      thaiName: 'ข้าวกะเพราเนื้อวากิวไข่ดาวกรอบ',
+      cuisine: 'Thai / อาหารไทย',
+      category: 'Rice / ข้าว',
+      price: '฿฿ (180 - 240 THB)',
+      style: 'Casual Dining',
+      icon: '🥩',
+      visualClass: 'visual-krapow',
+      tags: ['Spicy / เผ็ดจัดจ้าน', 'Peanut-Free', 'High Protein', 'Halal-Friendly Beef'],
+      matchReason: 'Matches cravings for savory Thai dishes, fits within ฿฿ budget, and avoids all group peanut allergens.'
+    },
+    'menu-b': {
+      id: 'menu-b',
+      round: 1,
+      name: 'Tonkotsu Chashu Ramen',
+      thaiName: 'ราเมงทงคตสึหมูชาชูไข่ยางมะตูม',
+      cuisine: 'Japanese / ญี่ปุ่น',
+      category: 'Noodles / ก๋วยเตี๋ยว',
+      price: '฿฿ (220 - 290 THB)',
+      style: 'Air-Conditioned',
+      icon: '🍜',
+      visualClass: 'visual-ramen',
+      tags: ['Noodles / เส้น', 'Rich Broth / น้ำซุปเข้มข้น', 'Comfort Food', 'Shellfish-Free'],
+      matchReason: 'Satisfies member cravings for rich comforting noodle soup in an air-conditioned setting.'
+    },
+    'menu-c': {
+      id: 'menu-c',
+      round: 2,
+      name: 'Kurobuta Shabu-Shabu Set',
+      thaiName: 'ชุดชาบูหมูคุโรบุตะน้ำดำ & ซุปใส',
+      cuisine: 'Japanese / ญี่ปุ่น',
+      category: 'Hot Pot / ชาบู-สุกี้',
+      price: '฿฿ (299 - 399 THB)',
+      style: 'Casual Buffet / Dine-in',
+      icon: '🍲',
+      visualClass: 'visual-shabu',
+      tags: ['Hot Pot / ชาบู', 'Group Sharing / แชร์กันได้', 'Low Sodium Option', 'Dairy-Free'],
+      matchReason: 'Group sharing hot-pot meal with customizable broth and dips, accommodating personal sodium limits.'
+    },
+    'menu-d': {
+      id: 'menu-d',
+      round: 2,
+      name: 'Stir-Fried Seafood Tom Yum',
+      thaiName: 'ต้มยำซีฟู้ดผัดแห้งราดข้าวสวย',
+      cuisine: 'Thai / อาหารไทย',
+      category: 'Seafood & Rice / ซีฟู้ด',
+      price: '฿฿ (160 - 220 THB)',
+      style: 'Street Food / Air-Con',
+      icon: '🦐',
+      visualClass: 'visual-tomyum',
+      tags: ['Seafood / ซีฟู้ด', 'Aromatic Herbs / สมุนไพร', 'Spicy', 'Gluten-Aware'],
+      matchReason: 'Bold Thai flavors with fresh shrimp and squid, dairy-free with jasmine rice.'
+    }
+  };
+
+  /* ==========================================================================
+     3. Prototype Initial State Definition
      ========================================================================== */
   const STORAGE_KEY = 'foodfighter-prototype-v1';
 
@@ -380,13 +442,13 @@
       radius: '5 km',
       maxMembers: 6,
       members: [
-        { id: 'user', name: 'Alex Johnson (You)', initials: 'AJ', role: 'Host', isReady: true, isActive: true, hasSubmitted: false, colorClass: 'avatar-petal' },
-        { id: 'maya', name: 'Maya Lin', initials: 'ML', role: 'Member', isReady: true, isActive: true, hasSubmitted: false, colorClass: 'avatar-apricot' },
-        { id: 'nina', name: 'Nina Patel', initials: 'NP', role: 'Member', isReady: true, isActive: true, hasSubmitted: false, colorClass: 'avatar-custard' },
+        { id: 'user', name: 'Alex Johnson (You)', initials: 'AJ', role: 'Host', isReady: true, isActive: true, hasSubmitted: true, colorClass: 'avatar-petal' },
+        { id: 'maya', name: 'Maya Lin', initials: 'ML', role: 'Member', isReady: true, isActive: true, hasSubmitted: true, colorClass: 'avatar-apricot' },
+        { id: 'nina', name: 'Nina Patel', initials: 'NP', role: 'Member', isReady: true, isActive: true, hasSubmitted: true, colorClass: 'avatar-custard' },
         { id: 'ken', name: 'Ken Tanaka', initials: 'KT', role: 'Member', isReady: false, isActive: false, hasSubmitted: false, colorClass: 'avatar-mauve' }
       ],
       simulatedTwoMinutesElapsed: false,
-      foodFightStarted: false,
+      foodFightStarted: true,
       roomJoined: true
     },
     mealPreferences: {
@@ -396,11 +458,37 @@
       priceLevel: '฿฿',
       restaurantStyles: ['Casual Dining / ร้านนั่งสบาย', 'Air-Conditioned / ห้องแอร์'],
       otherNotes: 'Prefer places with air conditioning and easy parking'
+    },
+    recommendation: {
+      round: 1, // 1 | 2
+      recommendAgainUsed: false,
+      roundVotes: {
+        1: {
+          user: { 'menu-a': 'OK', 'menu-b': null },
+          maya: { 'menu-a': 'OK', 'menu-b': 'PASS' },
+          nina: { 'menu-a': 'OK', 'menu-b': 'PASS' },
+          ken: { 'menu-a': null, 'menu-b': null } // observer or unvoted
+        },
+        2: {
+          user: { 'menu-c': null, 'menu-d': null },
+          maya: { 'menu-c': 'OK', 'menu-d': 'PASS' },
+          nina: { 'menu-c': 'OK', 'menu-d': 'OK' },
+          ken: { 'menu-c': null, 'menu-d': null }
+        }
+      },
+      finalVotes: {
+        user: 'menu-a',
+        maya: 'menu-a',
+        nina: 'menu-c',
+        ken: 'menu-c'
+      },
+      tieBreakWinnerId: null,
+      finalWinnerMenuId: 'menu-a'
     }
   };
 
   /* ==========================================================================
-     3. Static Option Catalogues
+     4. Static Option Catalogues
      ========================================================================== */
   const ALLERGY_OPTIONS = [
     { id: 'peanuts', label: 'Peanuts', thai: 'ถั่วลิสง' },
@@ -466,6 +554,7 @@
 
   // Expose to Prototype Namespace
   window.FFPrototype.SCREEN_REGISTRY = SCREEN_REGISTRY;
+  window.FFPrototype.CANDIDATE_MENUS = CANDIDATE_MENUS;
   window.FFPrototype.STORAGE_KEY = STORAGE_KEY;
   window.FFPrototype.INITIAL_STATE = INITIAL_STATE;
   window.FFPrototype.ALLERGY_OPTIONS = ALLERGY_OPTIONS;

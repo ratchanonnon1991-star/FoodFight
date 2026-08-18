@@ -114,13 +114,30 @@
         bindFn = P.bindFoodFightGeneratingEvents;
         break;
 
-      // V3 Boundary Shell
+      // V3 Recommendations & Voting Journey
       case '#/recommendations':
-        screenHtml = P.renderRecommendationsBoundaryShell();
-        bindFn = P.bindRecommendationsBoundaryEvents;
+      case '#/recommendations/vote':
+        screenHtml = P.renderRecommendations(1);
+        bindFn = () => P.bindRecommendationsEvents(1);
+        break;
+      case '#/vote-result':
+        screenHtml = P.renderVotingResult();
+        bindFn = P.bindVotingResultEvents;
+        break;
+      case '#/recommendations/round-2':
+        screenHtml = P.renderRecommendations(2);
+        bindFn = () => P.bindRecommendationsEvents(2);
+        break;
+      case '#/final-vote':
+        screenHtml = P.renderFinalVote();
+        bindFn = P.bindFinalVoteEvents;
+        break;
+      case '#/final-menu':
+        screenHtml = P.renderFinalMenu();
+        bindFn = P.bindFinalMenuEvents;
         break;
 
-      // Future Screens / Shell Router
+      // Future Screens / Shell Router (Restaurants V4, Bill, History, Profile)
       default: {
         const screen = P.findScreen(hash);
         if (screen) {

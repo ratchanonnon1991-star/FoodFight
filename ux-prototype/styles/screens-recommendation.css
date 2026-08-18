@@ -1,0 +1,458 @@
+/**
+ * FoodFighter UX Prototype — Recommendation & Voting Screen Styles (V3)
+ * 
+ * Styles for:
+ *   - Round Indicator & Header Banners
+ *   - Recommendation Menu Cards (Polished CSS visual area, tags, match callout)
+ *   - OK / PASS Voting Controls & Live Progress
+ *   - Voting Result Summary & Percentage Progress
+ *   - Final 4-Menu Grid & Semantic Selection
+ *   - Host Tie-Break Decision Interface & Member Waiting State
+ *   - Final Menu Celebratory Card & Subtle Accents
+ */
+
+/* ==========================================================================
+   1. Round Indicator & Session Header
+   ========================================================================== */
+.recom-round-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.75rem;
+}
+
+.recom-round-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.25rem 0.75rem;
+  border-radius: var(--radius-full);
+  background: var(--color-brand-primary);
+  color: #FFFFFF;
+  font-size: var(--font-size-caption);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.recom-round-badge.round-2 {
+  background: linear-gradient(135deg, #48284A 0%, #916C80 100%);
+  border: 1px solid var(--color-accent-petal);
+}
+
+.recom-observer-notice {
+  background: var(--color-surface-subtle);
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 0.65rem 0.85rem;
+  font-size: 0.8rem;
+  color: var(--color-text-secondary);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+/* ==========================================================================
+   2. Recommendation Menu Cards
+   ========================================================================== */
+.recom-cards-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  margin-bottom: 1.5rem;
+}
+
+.menu-card {
+  background: #FFFFFF;
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  transition: transform var(--transition-fast), border-color var(--transition-fast), box-shadow var(--transition-fast);
+  display: flex;
+  flex-direction: column;
+}
+
+.menu-card:hover {
+  border-color: var(--color-brand-secondary);
+}
+
+.menu-card.selected-winner {
+  border-color: #22863A;
+  box-shadow: 0 4px 20px rgba(34, 134, 58, 0.18);
+}
+
+/* CSS Food Artwork Visual Header */
+.menu-card-visual {
+  position: relative;
+  height: 140px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  overflow: hidden;
+}
+
+.visual-krapow {
+  background: linear-gradient(135deg, #FFE1C6 0%, #FFC6D9 50%, #FFF7AE 100%);
+}
+
+.visual-ramen {
+  background: linear-gradient(135deg, #FFF7AE 0%, #FFE1C6 50%, #D4C3CD 100%);
+}
+
+.visual-shabu {
+  background: linear-gradient(135deg, #FFC6D9 0%, #FFE1C6 50%, #916C80 100%);
+}
+
+.visual-tomyum {
+  background: linear-gradient(135deg, #FFE1C6 0%, #FFC6D9 70%, #48284A 100%);
+}
+
+.menu-card-badge-dish {
+  width: 76px;
+  height: 76px;
+  border-radius: var(--radius-full);
+  background: #FFFFFF;
+  box-shadow: var(--shadow-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 38px;
+  border: 3px solid rgba(255, 255, 255, 0.85);
+  position: relative;
+  z-index: 2;
+  transition: transform var(--transition-fast);
+}
+
+.menu-card:hover .menu-card-badge-dish {
+  transform: scale(1.06);
+}
+
+.menu-card-price-tag {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  background: rgba(42, 23, 43, 0.75);
+  color: #FFFFFF;
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  padding: 0.25rem 0.6rem;
+  border-radius: var(--radius-full);
+  font-size: 0.75rem;
+  font-weight: 700;
+  z-index: 3;
+}
+
+.menu-card-body {
+  padding: 1.15rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.menu-card-title {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--color-brand-primary);
+  line-height: 1.25;
+}
+
+.menu-card-thai-title {
+  font-size: 0.825rem;
+  color: var(--color-text-secondary);
+  font-weight: 500;
+}
+
+.menu-card-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.menu-tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.2rem 0.55rem;
+  border-radius: var(--radius-full);
+  background: var(--color-surface-subtle);
+  color: var(--color-text-secondary);
+  font-size: 0.7rem;
+  font-weight: 600;
+  border: 1px solid var(--color-border);
+}
+
+.menu-tag-highlight {
+  background: #EDF9F0;
+  color: #165E2A;
+  border-color: #A6DEB4;
+}
+
+.menu-match-reason {
+  background: var(--color-surface-subtle);
+  border-left: 3px solid var(--color-brand-secondary);
+  padding: 0.55rem 0.75rem;
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  font-size: 0.775rem;
+  color: var(--color-text-secondary);
+  line-height: 1.4;
+}
+
+/* ==========================================================================
+   3. OK / PASS Voting Controls
+   ========================================================================== */
+.menu-vote-controls {
+  padding: 0 1.15rem 1.15rem 1.15rem;
+  display: flex;
+  gap: 0.65rem;
+}
+
+.btn-vote-choice {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  padding: 0.75rem;
+  border-radius: var(--radius-lg);
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  border: 1.5px solid var(--color-border);
+  background: #FFFFFF;
+  color: var(--color-text-primary);
+  transition: all var(--transition-fast);
+  min-height: 48px;
+}
+
+.btn-vote-choice:hover:not(:disabled) {
+  border-color: var(--color-brand-secondary);
+  background: var(--color-surface-subtle);
+}
+
+.btn-vote-ok.selected {
+  background: #EDF9F0;
+  border-color: #22863A;
+  color: #165E2A;
+  box-shadow: inset 0 0 0 1px #22863A;
+}
+
+.btn-vote-pass.selected {
+  background: #FDF0F0;
+  border-color: #D32F2F;
+  color: #8E1F1F;
+  box-shadow: inset 0 0 0 1px #D32F2F;
+}
+
+/* Voting Progress Summary Bar */
+.vote-progress-card {
+  background: #FFFFFF;
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: 0.95rem 1.15rem;
+  margin-bottom: 1.25rem;
+  box-shadow: var(--shadow-sm);
+}
+
+.vote-avatar-tracker {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-top: 0.5rem;
+}
+
+.avatar-voted-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.25rem 0.55rem;
+  border-radius: var(--radius-full);
+  font-size: 0.725rem;
+  font-weight: 600;
+  background: var(--color-surface-subtle);
+  border: 1px solid var(--color-border);
+}
+
+.avatar-voted-pill.done {
+  background: #EDF9F0;
+  color: #165E2A;
+  border-color: #A6DEB4;
+}
+
+/* ==========================================================================
+   4. Voting Result Screen Styles
+   ========================================================================== */
+.result-hero-banner {
+  text-align: center;
+  padding: 1.5rem 1rem;
+  border-radius: var(--radius-xl);
+  margin-bottom: 1.25rem;
+}
+
+.result-hero-banner.winner {
+  background: linear-gradient(180deg, #EDF9F0 0%, #FFFFFF 100%);
+  border: 1.5px solid #A6DEB4;
+}
+
+.result-hero-banner.no-winner {
+  background: linear-gradient(180deg, #FFF8E6 0%, #FFFFFF 100%);
+  border: 1.5px solid #F6D68A;
+}
+
+.result-card-row {
+  background: #FFFFFF;
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: 1rem;
+  margin-bottom: 0.85rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.result-card-row.is-winner {
+  border-color: #22863A;
+  background: #FCFDFB;
+}
+
+.vote-bar-fill-ok {
+  background: #22863A;
+}
+
+/* ==========================================================================
+   5. Final Vote Screen (4 Dishes)
+   ========================================================================== */
+.final-vote-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  margin-bottom: 1.5rem;
+}
+
+.final-vote-card {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  padding: 0.85rem 1rem;
+  background: #FFFFFF;
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  text-align: left;
+}
+
+.final-vote-card:hover {
+  border-color: var(--color-brand-secondary);
+  background: var(--color-surface-subtle);
+}
+
+.final-vote-card.selected {
+  border-color: var(--color-brand-primary);
+  background: rgba(255, 198, 217, 0.22);
+  box-shadow: inset 0 0 0 1px var(--color-brand-primary);
+}
+
+.final-radio-circle {
+  width: 22px;
+  height: 22px;
+  border-radius: var(--radius-full);
+  border: 2px solid var(--color-border-strong);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: all var(--transition-fast);
+}
+
+.final-vote-card.selected .final-radio-circle {
+  border-color: var(--color-brand-primary);
+  background: var(--color-brand-primary);
+}
+
+.final-radio-inner {
+  width: 8px;
+  height: 8px;
+  border-radius: var(--radius-full);
+  background: #FFFFFF;
+  display: none;
+}
+
+.final-vote-card.selected .final-radio-inner {
+  display: block;
+}
+
+/* ==========================================================================
+   6. Host Tie-Break Decision & Member Waiting
+   ========================================================================== */
+.tie-break-hero {
+  background: #FFF8E6;
+  border: 1.5px solid #F6D68A;
+  border-radius: var(--radius-xl);
+  padding: 1.25rem;
+  text-align: center;
+  margin-bottom: 1.25rem;
+}
+
+.tie-options-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  margin-bottom: 1.5rem;
+}
+
+/* ==========================================================================
+   7. Final Menu Celebratory Card
+   ========================================================================== */
+.final-menu-hero {
+  background: linear-gradient(135deg, rgba(255, 198, 217, 0.35) 0%, rgba(255, 225, 198, 0.35) 50%, rgba(255, 247, 174, 0.35) 100%);
+  border: 2px solid var(--color-accent-petal);
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  box-shadow: var(--shadow-md);
+  margin-bottom: 1.5rem;
+  position: relative;
+}
+
+.final-winner-ribbon {
+  background: var(--color-brand-primary);
+  color: #FFFFFF;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-align: center;
+  padding: 0.4rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.final-menu-content {
+  padding: 1.5rem 1.25rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 0.75rem;
+}
+
+.final-menu-avatar-large {
+  width: 96px;
+  height: 96px;
+  border-radius: var(--radius-full);
+  background: #FFFFFF;
+  box-shadow: var(--shadow-lg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 50px;
+  border: 4px solid rgba(255, 255, 255, 0.9);
+}
+
+.final-participants-badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  margin-top: 0.5rem;
+}
