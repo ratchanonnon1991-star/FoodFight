@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../../database/prisma.service';
 import { Role } from '../../database/generated/prisma/enums';
 import { AdminUserQueryDto } from '../dto/admin-user-query.dto';
@@ -22,6 +22,32 @@ export interface AdminUsersPaginatedResponse {
     total: number;
     totalPages: number;
   };
+}
+
+export interface AdminUserFoodProfile {
+  allergies: string[];
+  otherAllergies: string | null;
+  restrictions: string[];
+  otherRestrictions: string | null;
+  additionalNotes: string | null;
+}
+
+export interface AdminUserActivity {
+  hostedRoomsCount: number;
+  joinedRoomsCount: number;
+}
+
+export interface AdminUserDetailResponse {
+  id: string;
+  displayName: string;
+  email: string;
+  emailVerified: boolean;
+  role: Role;
+  avatarUrl: string | null;
+  createdAt: Date;
+  providers: string[];
+  foodProfile: AdminUserFoodProfile | null;
+  activity: AdminUserActivity;
 }
 
 @Injectable()
@@ -78,6 +104,69 @@ export class AdminUsersService {
         limit,
         total,
         totalPages,
+      },
+    };
+  }
+
+  async getUserById(userId: string): Promise<AdminUserDetailResponse> {
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+      select: {
+        id: true,
+        displayName: true,
+        email: true,
+        emailVerified: true,
+        role: true,
+        avatarUrl: true,
+        createdAt: true,
+        foodProfile: {
+          select: {
+            allergies: true,
+            otherAllergies: true,
+            restrictions: true,
+            otherRestrictions: true,
+            additionalNotes: true,
+          },
+        },
+        accounts: {
+          select: {
+            provider: true,
+          },
+        },
+        _count: {
+          select: {
+            hostedRooms: true,
+            roomMembers: true,
+          },
+        },
+      },
+    });
+
+    if (!user) {
+      throw new NotFoundException(`User with id "${userId}" was not found`);
+    }
+
+    return {
+      id: user.id,
+      displayName: user.displayName,
+      email: user.email,
+      emailVerified: user.emailVerified,
+      role: user.role,
+      avatarUrl: user.avatarUrl,
+      createdAt: user.createdAt,
+      providers: user.accounts.map((acc) => acc.provider),
+      foodProfile: user.foodProfile
+        ? {
+            allergies: user.foodProfile.allergies,
+            otherAllergies: user.foodProfile.otherAllergies,
+            restrictions: user.foodProfile.restrictions,
+            otherRestrictions: user.foodProfile.otherRestrictions,
+            additionalNotes: user.foodProfile.additionalNotes,
+          }
+        : null,
+      activity: {
+        hostedRoomsCount: user._count.hostedRooms,
+        joinedRoomsCount: user._count.roomMembers,
       },
     };
   }
