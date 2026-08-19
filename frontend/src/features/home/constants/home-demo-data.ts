@@ -15,7 +15,12 @@ export const DEMO_CURRENT_FOODFIGHT: CurrentFoodFightSession = {
   status: "Lobby",
   memberCount: 4,
   statusDescription: "Waiting for preferences",
-  members: ["Pure", "Alex", "Noon", "Korn"],
+  members: [
+    { id: "member-1", name: "Pure" },
+    { id: "member-2", name: "Alex" },
+    { id: "member-3", name: "Noon" },
+    { id: "member-4", name: "Korn" },
+  ],
 };
 
 export const DEMO_RECENT_FOODFIGHTS: readonly RecentFoodFightItemData[] = [

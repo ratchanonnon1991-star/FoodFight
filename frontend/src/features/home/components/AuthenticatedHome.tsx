@@ -5,8 +5,14 @@ import { useRouter } from "next/navigation";
 import { LogIn, UserPlus } from "lucide-react";
 import { PageContainer } from "@/components/layout/PageContainer";
 import { ROUTES } from "@/config/routes";
+import { API_BASE_URL } from "@/config/api";
+import { roomService } from "@/features/room/services/room-service";
+import type { RoomLobby } from "@/features/room/types/room-types";
+import type {
+  AuthenticatedUserDisplay,
+  CurrentFoodFightSession,
+} from "@/features/home/types/home-types";
 import {
-  DEMO_CURRENT_FOODFIGHT,
   DEMO_RECENT_FOODFIGHTS,
   DEMO_TIP,
 } from "../constants/home-demo-data";
@@ -15,9 +21,6 @@ import { HomeActionCard } from "./HomeActionCard";
 import { CurrentFoodFightCard } from "./CurrentFoodFightCard";
 import { RecentFoodFightsSection } from "./RecentFoodFightsSection";
 import { HomeTipCard } from "./HomeTipCard";
-import { AuthenticatedUserDisplay } from "@/features/home/types/home-types";
-import { API_BASE_URL } from "@/config/api";
-
 export interface AuthenticatedHomeProps {
   onCreateRoom?: () => void;
   onJoinRoom?: () => void;
@@ -33,6 +36,7 @@ export function AuthenticatedHome({
 }: AuthenticatedHomeProps) {
   const router = useRouter();
   const [user, setUser] = React.useState<AuthenticatedUserDisplay | null>(null);
+  const [currentSession, setCurrentSession] = React.useState<CurrentFoodFightSession | null>(null);
 
   React.useEffect(() => {
     let isMounted = true;
@@ -44,6 +48,22 @@ export function AuthenticatedHome({
         isMounted = false;
       };
     }
+
+    const loadCurrentRoom = async () => {
+      try {
+        const currentRoom = await roomService.getCurrentRoom();
+
+        if (isMounted) {
+          setCurrentSession(currentRoom ? toCurrentFoodFightSession(currentRoom) : null);
+        }
+      } catch {
+        if (isMounted) {
+          setCurrentSession(null);
+        }
+      }
+    };
+
+    void loadCurrentRoom();
 
     fetch(`${API_BASE_URL}/auth/me`, {
       headers: {
@@ -86,6 +106,17 @@ export function AuthenticatedHome({
     };
   }, [router]);
 
+  const continueCurrentRoom = () => {
+    if (onContinueCurrent) {
+      onContinueCurrent();
+      return;
+    }
+
+    if (currentSession?.continueHref) {
+      router.push(currentSession.continueHref);
+    }
+  };
+
   return (
     <main className="min-h-dvh bg-background text-text-primary">
       <PageContainer
@@ -117,10 +148,9 @@ export function AuthenticatedHome({
         </div>
 
         {/* 3. Current FoodFight Section */}
-        <CurrentFoodFightCard
-          session={DEMO_CURRENT_FOODFIGHT}
-          onContinue={onContinueCurrent}
-        />
+        {currentSession ? (
+          <CurrentFoodFightCard session={currentSession} onContinue={continueCurrentRoom} />
+        ) : null}
 
         {/* 4. Recent FoodFights Section */}
         <RecentFoodFightsSection
@@ -133,4 +163,29 @@ export function AuthenticatedHome({
       </PageContainer>
     </main>
   );
+}
+
+function toCurrentFoodFightSession(room: RoomLobby): CurrentFoodFightSession {
+  const isLobby = room.status === "LOBBY";
+
+  return {
+    id: room.id,
+    title: room.name,
+    status: isLobby ? "Lobby" : "In progress",
+    memberCount: room.memberCount,
+    statusDescription: isLobby ? "Waiting for preferences" : "FoodFight in progress",
+    members: [
+      {
+        id: `host-${room.id}`,
+        name: room.host.displayName,
+        avatarUrl: room.host.avatarUrl,
+      },
+      ...room.members.map((member) => ({
+        id: member.id,
+        name: member.displayName,
+        avatarUrl: member.avatarUrl,
+      })),
+    ],
+    continueHref: ROUTES.ROOM.LOBBY(room.id),
+  };
 }
