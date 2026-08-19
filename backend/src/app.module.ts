@@ -9,6 +9,7 @@ import { UserModule } from './user/user.module';
 import { DatabaseModule } from './database/database.module';
 import { RoomModule } from './room/room.module';
 import { FoodProfileModule } from './food-profile/food-profile.module';
+import { AdminModule } from './admin/admin.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { FoodProfileModule } from './food-profile/food-profile.module';
     UserModule,
     RoomModule,
     FoodProfileModule,
+    AdminModule,
   ],
   providers: [
     {
