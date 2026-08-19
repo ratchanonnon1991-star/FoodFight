@@ -8,6 +8,7 @@ import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
 import { UserModule } from './user/user.module';
 import { DatabaseModule } from './database/database.module';
 import { RoomModule } from './room/room.module';
+import { FoodProfileModule } from './food-profile/food-profile.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { RoomModule } from './room/room.module';
     AuthModule,
     UserModule,
     RoomModule,
+    FoodProfileModule,
   ],
   providers: [
     {
