@@ -223,19 +223,29 @@ export const mockAuthService: AuthService & {
     };
   },
 
-  async beginGoogleAuth(_idToken: string): Promise<AuthResult> {
+  async beginGoogleAuth(
+    _idToken: string,
+  ): Promise<AuthResult<LoginResultData>> {
     await delay();
 
     return {
       ok: true,
+      data: {
+        foodProfileComplete: mockFoodProfileCompleted,
+      },
     };
   },
 
-  async beginLineAuth(_idToken: string): Promise<AuthResult> {
+  async beginLineAuth(
+    _idToken: string,
+  ): Promise<AuthResult<LoginResultData>> {
     await delay();
 
     return {
       ok: true,
+      data: {
+        foodProfileComplete: mockFoodProfileCompleted,
+      },
     };
   },
 

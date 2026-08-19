@@ -1,14 +1,17 @@
 "use client";
 
 import * as React from "react";
+import { useRouter } from "next/navigation";
 import { LogIn, UserPlus } from "lucide-react";
+import { API_BASE_URL } from "@/config/api";
+import { ROUTES } from "@/config/routes";
 import { PageContainer } from "@/components/layout/PageContainer";
 import {
   DEMO_CURRENT_FOODFIGHT,
   DEMO_RECENT_FOODFIGHTS,
   DEMO_TIP,
-  DEMO_USER,
 } from "../constants/home-demo-data";
+import type { AuthenticatedUserDisplay } from "../types/home-types";
 import { HomeHeader } from "./HomeHeader";
 import { HomeActionCard } from "./HomeActionCard";
 import { CurrentFoodFightCard } from "./CurrentFoodFightCard";
@@ -28,11 +31,66 @@ export function AuthenticatedHome({
   onContinueCurrent,
   onViewAllRecent,
 }: AuthenticatedHomeProps) {
+  const router = useRouter();
+  const [user, setUser] = React.useState<AuthenticatedUserDisplay | null>(null);
+
+  React.useEffect(() => {
+    let isMounted = true;
+    const accessToken = window.localStorage.getItem("accessToken");
+
+    if (!accessToken) {
+      router.replace(ROUTES.AUTH.LOGIN);
+      return () => {
+        isMounted = false;
+      };
+    }
+
+    fetch(`${API_BASE_URL}/auth/me`, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    })
+      .then(async (response) => {
+        if (!response.ok) {
+          throw new Error("Session is no longer valid");
+        }
+
+        return (await response.json()) as {
+          displayName?: string;
+          email?: string;
+          avatarUrl?: string | null;
+        };
+      })
+      .then((currentUser) => {
+        if (!isMounted) {
+          return;
+        }
+
+        const fallbackName = currentUser.email?.split("@")[0] || "FoodFighter";
+
+        setUser({
+          name: currentUser.displayName?.trim() || fallbackName,
+          avatarUrl: currentUser.avatarUrl ?? undefined,
+        });
+      })
+      .catch(() => {
+        window.localStorage.removeItem("accessToken");
+
+        if (isMounted) {
+          router.replace(ROUTES.AUTH.LOGIN);
+        }
+      });
+
+    return () => {
+      isMounted = false;
+    };
+  }, [router]);
+
   return (
     <main className="min-h-dvh bg-background text-text-primary">
       <PageContainer maxWidth="auth" paddingY="none" className="space-y-5 sm:space-y-6 pt-3 sm:pt-4 pb-32">
         {/* 1. Header with greeting and avatar/notification */}
-        <HomeHeader user={DEMO_USER} />
+        <HomeHeader user={user ?? { name: "FoodFighter" }} />
 
         {/* 2. Primary Action Cards (Create Room & Join Room) */}
         <div className="grid grid-cols-2 gap-3 sm:gap-3.5">

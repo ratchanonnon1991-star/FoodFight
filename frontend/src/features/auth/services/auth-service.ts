@@ -13,13 +13,6 @@ export interface LoginResultData {
   foodProfileComplete?: boolean;
 }
 
-/**
- * Frontend Authentication Service Interface
- *
- * Defines the client-side contract for authentication interactions.
- * Returns domain AuthResult models so UI layers handle success and failure
- * without throwing or inventing backend DTOs.
- */
 export interface AuthService {
   register(
     input: RegisterInput,
@@ -41,7 +34,7 @@ export interface AuthService {
 
   resetPassword(input: ResetPasswordInput): Promise<AuthResult>;
 
-  beginGoogleAuth(idToken: string): Promise<AuthResult>;
+  beginGoogleAuth(idToken: string): Promise<AuthResult<LoginResultData>>;
 
-  beginLineAuth(idToken: string): Promise<AuthResult>;
+  beginLineAuth(idToken: string): Promise<AuthResult<LoginResultData>>;
 }

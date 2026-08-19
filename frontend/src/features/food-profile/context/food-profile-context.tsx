@@ -3,6 +3,11 @@
 import * as React from "react";
 import type { FoodProfileContextValue, FoodProfileDraft } from "../types/food-profile-types";
 import { INITIAL_FOOD_PROFILE_DRAFT } from "../constants/food-profile-constants";
+import { resolveAuthMode } from "@/features/auth/services/auth-runtime";
+import {
+  getMyFoodProfile,
+  mapResponseToDraft,
+} from "../services/food-profile-service";
 
 const FoodProfileContext = React.createContext<FoodProfileContextValue | null>(null);
 
@@ -16,6 +21,33 @@ export function FoodProfileProvider({ children, initialDraft }: FoodProfileProvi
     ...INITIAL_FOOD_PROFILE_DRAFT,
     ...initialDraft,
   }));
+
+  React.useEffect(() => {
+    let isCancelled = false;
+
+    const loadFoodProfile = async () => {
+      if (resolveAuthMode() !== "api") {
+        return;
+      }
+
+      const token = window.localStorage.getItem("accessToken");
+      if (!token) {
+        return;
+      }
+
+      const result = await getMyFoodProfile(token);
+
+      if (!isCancelled && result.ok) {
+        setDraft(mapResponseToDraft(result.data));
+      }
+    };
+
+    void loadFoodProfile();
+
+    return () => {
+      isCancelled = true;
+    };
+  }, []);
 
   // --- Step 1: Allergies Actions ---
   const setAllergies = React.useCallback((allergies: string[]) => {

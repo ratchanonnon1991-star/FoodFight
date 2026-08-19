@@ -53,17 +53,29 @@ export declare class AuthService {
     }>;
     login(dto: LoginDto): Promise<{
         accessToken: string;
+        foodProfileComplete: boolean;
+    }>;
+    getCurrentUser(userId: string): Promise<{
+        sub: string;
+        email: string;
+        role: import("../database/generated/prisma/enums").Role;
+        displayName: string;
+        avatarUrl: string | null;
     }>;
     loginWithGoogle(dto: GoogleLoginDto): Promise<{
         accessToken: string;
+        foodProfileComplete: boolean;
     }>;
     loginWithLine(dto: LineLoginDto): Promise<{
         accessToken: string;
+        foodProfileComplete: boolean;
     }>;
     loginWithLineCode(dto: LineCodeDto): Promise<{
         accessToken: string;
+        foodProfileComplete: boolean;
     }>;
     private loginWithOAuth;
+    private createAuthResponse;
     forgotPassword(dto: ForgotPasswordDto): Promise<{
         message: string;
     }>;

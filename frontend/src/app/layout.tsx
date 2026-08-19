@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
 import { Poppins, Noto_Sans_Thai } from "next/font/google";
+
 import { MotionProvider } from "@/components/providers/MotionProvider";
+import { GoogleAuthProvider } from "@/components/providers/GoogleAuthProvider";
+
 import "./globals.css";
 
 const poppins = Poppins({
@@ -33,9 +36,9 @@ export default function RootLayout({
       className={`${poppins.variable} ${notoSansThai.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-background text-text-primary font-sans">
-        <MotionProvider>
-          {children}
-        </MotionProvider>
+        <GoogleAuthProvider>
+          <MotionProvider>{children}</MotionProvider>
+        </GoogleAuthProvider>
       </body>
     </html>
   );
