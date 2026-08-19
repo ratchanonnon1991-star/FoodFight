@@ -402,7 +402,6 @@ export const ModelName = {
   EmailVerification: 'EmailVerification',
   PasswordReset: 'PasswordReset',
   FoodProfile: 'FoodProfile',
-  PaymentAccount: 'PaymentAccount',
   Room: 'Room',
   RoomMember: 'RoomMember',
   FoodFightSession: 'FoodFightSession',
@@ -435,7 +434,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "account" | "emailVerification" | "passwordReset" | "foodProfile" | "paymentAccount" | "room" | "roomMember" | "foodFightSession" | "sessionMember" | "mealPreference" | "recommendationRound" | "recommendationItem" | "vote" | "finalVote" | "finalSelection" | "restaurantRecommendation" | "restaurantSelection" | "bill" | "receipt" | "receiptItem" | "itemShare" | "userPayment"
+    modelProps: "user" | "account" | "emailVerification" | "passwordReset" | "foodProfile" | "room" | "roomMember" | "foodFightSession" | "sessionMember" | "mealPreference" | "recommendationRound" | "recommendationItem" | "vote" | "finalVote" | "finalSelection" | "restaurantRecommendation" | "restaurantSelection" | "bill" | "receipt" | "receiptItem" | "itemShare" | "userPayment"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -806,80 +805,6 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         count: {
           args: Prisma.FoodProfileCountArgs<ExtArgs>
           result: runtime.Types.Utils.Optional<Prisma.FoodProfileCountAggregateOutputType> | number
-        }
-      }
-    }
-    PaymentAccount: {
-      payload: Prisma.$PaymentAccountPayload<ExtArgs>
-      fields: Prisma.PaymentAccountFieldRefs
-      operations: {
-        findUnique: {
-          args: Prisma.PaymentAccountFindUniqueArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$PaymentAccountPayload> | null
-        }
-        findUniqueOrThrow: {
-          args: Prisma.PaymentAccountFindUniqueOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$PaymentAccountPayload>
-        }
-        findFirst: {
-          args: Prisma.PaymentAccountFindFirstArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$PaymentAccountPayload> | null
-        }
-        findFirstOrThrow: {
-          args: Prisma.PaymentAccountFindFirstOrThrowArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$PaymentAccountPayload>
-        }
-        findMany: {
-          args: Prisma.PaymentAccountFindManyArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$PaymentAccountPayload>[]
-        }
-        create: {
-          args: Prisma.PaymentAccountCreateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$PaymentAccountPayload>
-        }
-        createMany: {
-          args: Prisma.PaymentAccountCreateManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        createManyAndReturn: {
-          args: Prisma.PaymentAccountCreateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$PaymentAccountPayload>[]
-        }
-        delete: {
-          args: Prisma.PaymentAccountDeleteArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$PaymentAccountPayload>
-        }
-        update: {
-          args: Prisma.PaymentAccountUpdateArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$PaymentAccountPayload>
-        }
-        deleteMany: {
-          args: Prisma.PaymentAccountDeleteManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        updateMany: {
-          args: Prisma.PaymentAccountUpdateManyArgs<ExtArgs>
-          result: BatchPayload
-        }
-        updateManyAndReturn: {
-          args: Prisma.PaymentAccountUpdateManyAndReturnArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$PaymentAccountPayload>[]
-        }
-        upsert: {
-          args: Prisma.PaymentAccountUpsertArgs<ExtArgs>
-          result: runtime.Types.Utils.PayloadToResult<Prisma.$PaymentAccountPayload>
-        }
-        aggregate: {
-          args: Prisma.PaymentAccountAggregateArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.AggregatePaymentAccount>
-        }
-        groupBy: {
-          args: Prisma.PaymentAccountGroupByArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.PaymentAccountGroupByOutputType>[]
-        }
-        count: {
-          args: Prisma.PaymentAccountCountArgs<ExtArgs>
-          result: runtime.Types.Utils.Optional<Prisma.PaymentAccountCountAggregateOutputType> | number
         }
       }
     }
@@ -2249,21 +2174,6 @@ export const FoodProfileScalarFieldEnum = {
 export type FoodProfileScalarFieldEnum = (typeof FoodProfileScalarFieldEnum)[keyof typeof FoodProfileScalarFieldEnum]
 
 
-export const PaymentAccountScalarFieldEnum = {
-  id: 'id',
-  userId: 'userId',
-  promptPayIdType: 'promptPayIdType',
-  promptPayId: 'promptPayId',
-  accountName: 'accountName',
-  qrImageUrl: 'qrImageUrl',
-  isActive: 'isActive',
-  createdAt: 'createdAt',
-  updatedAt: 'updatedAt'
-} as const
-
-export type PaymentAccountScalarFieldEnum = (typeof PaymentAccountScalarFieldEnum)[keyof typeof PaymentAccountScalarFieldEnum]
-
-
 export const RoomScalarFieldEnum = {
   id: 'id',
   hostId: 'hostId',
@@ -2514,7 +2424,6 @@ export const UserPaymentScalarFieldEnum = {
   userId: 'userId',
   amount: 'amount',
   status: 'status',
-  slipImageUrl: 'slipImageUrl',
   paidAt: 'paidAt',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
@@ -2630,20 +2539,6 @@ export type EnumAuthProviderFieldRefInput<$PrismaModel> = FieldRefInputType<$Pri
  * Reference to a field of type 'AuthProvider[]'
  */
 export type ListEnumAuthProviderFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AuthProvider[]'>
-    
-
-
-/**
- * Reference to a field of type 'PromptPayIdType'
- */
-export type EnumPromptPayIdTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PromptPayIdType'>
-    
-
-
-/**
- * Reference to a field of type 'PromptPayIdType[]'
- */
-export type ListEnumPromptPayIdTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PromptPayIdType[]'>
     
 
 
@@ -3026,7 +2921,6 @@ export type GlobalOmitConfig = {
   emailVerification?: Prisma.EmailVerificationOmit
   passwordReset?: Prisma.PasswordResetOmit
   foodProfile?: Prisma.FoodProfileOmit
-  paymentAccount?: Prisma.PaymentAccountOmit
   room?: Prisma.RoomOmit
   roomMember?: Prisma.RoomMemberOmit
   foodFightSession?: Prisma.FoodFightSessionOmit

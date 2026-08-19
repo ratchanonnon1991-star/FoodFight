@@ -40,7 +40,6 @@ export type UserPaymentMinAggregateOutputType = {
   userId: string | null
   amount: runtime.Decimal | null
   status: $Enums.PaymentStatus | null
-  slipImageUrl: string | null
   paidAt: Date | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -52,7 +51,6 @@ export type UserPaymentMaxAggregateOutputType = {
   userId: string | null
   amount: runtime.Decimal | null
   status: $Enums.PaymentStatus | null
-  slipImageUrl: string | null
   paidAt: Date | null
   createdAt: Date | null
   updatedAt: Date | null
@@ -64,7 +62,6 @@ export type UserPaymentCountAggregateOutputType = {
   userId: number
   amount: number
   status: number
-  slipImageUrl: number
   paidAt: number
   createdAt: number
   updatedAt: number
@@ -86,7 +83,6 @@ export type UserPaymentMinAggregateInputType = {
   userId?: true
   amount?: true
   status?: true
-  slipImageUrl?: true
   paidAt?: true
   createdAt?: true
   updatedAt?: true
@@ -98,7 +94,6 @@ export type UserPaymentMaxAggregateInputType = {
   userId?: true
   amount?: true
   status?: true
-  slipImageUrl?: true
   paidAt?: true
   createdAt?: true
   updatedAt?: true
@@ -110,7 +105,6 @@ export type UserPaymentCountAggregateInputType = {
   userId?: true
   amount?: true
   status?: true
-  slipImageUrl?: true
   paidAt?: true
   createdAt?: true
   updatedAt?: true
@@ -209,7 +203,6 @@ export type UserPaymentGroupByOutputType = {
   userId: string
   amount: runtime.Decimal
   status: $Enums.PaymentStatus
-  slipImageUrl: string | null
   paidAt: Date | null
   createdAt: Date
   updatedAt: Date
@@ -244,7 +237,6 @@ export type UserPaymentWhereInput = {
   userId?: Prisma.StringFilter<"UserPayment"> | string
   amount?: Prisma.DecimalFilter<"UserPayment"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   status?: Prisma.EnumPaymentStatusFilter<"UserPayment"> | $Enums.PaymentStatus
-  slipImageUrl?: Prisma.StringNullableFilter<"UserPayment"> | string | null
   paidAt?: Prisma.DateTimeNullableFilter<"UserPayment"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"UserPayment"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"UserPayment"> | Date | string
@@ -258,7 +250,6 @@ export type UserPaymentOrderByWithRelationInput = {
   userId?: Prisma.SortOrder
   amount?: Prisma.SortOrder
   status?: Prisma.SortOrder
-  slipImageUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   paidAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -276,7 +267,6 @@ export type UserPaymentWhereUniqueInput = Prisma.AtLeast<{
   userId?: Prisma.StringFilter<"UserPayment"> | string
   amount?: Prisma.DecimalFilter<"UserPayment"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   status?: Prisma.EnumPaymentStatusFilter<"UserPayment"> | $Enums.PaymentStatus
-  slipImageUrl?: Prisma.StringNullableFilter<"UserPayment"> | string | null
   paidAt?: Prisma.DateTimeNullableFilter<"UserPayment"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"UserPayment"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"UserPayment"> | Date | string
@@ -290,7 +280,6 @@ export type UserPaymentOrderByWithAggregationInput = {
   userId?: Prisma.SortOrder
   amount?: Prisma.SortOrder
   status?: Prisma.SortOrder
-  slipImageUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   paidAt?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -310,7 +299,6 @@ export type UserPaymentScalarWhereWithAggregatesInput = {
   userId?: Prisma.StringWithAggregatesFilter<"UserPayment"> | string
   amount?: Prisma.DecimalWithAggregatesFilter<"UserPayment"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   status?: Prisma.EnumPaymentStatusWithAggregatesFilter<"UserPayment"> | $Enums.PaymentStatus
-  slipImageUrl?: Prisma.StringNullableWithAggregatesFilter<"UserPayment"> | string | null
   paidAt?: Prisma.DateTimeNullableWithAggregatesFilter<"UserPayment"> | Date | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"UserPayment"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"UserPayment"> | Date | string
@@ -320,7 +308,6 @@ export type UserPaymentCreateInput = {
   id?: string
   amount: runtime.Decimal | runtime.DecimalJsLike | number | string
   status?: $Enums.PaymentStatus
-  slipImageUrl?: string | null
   paidAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -334,7 +321,6 @@ export type UserPaymentUncheckedCreateInput = {
   userId: string
   amount: runtime.Decimal | runtime.DecimalJsLike | number | string
   status?: $Enums.PaymentStatus
-  slipImageUrl?: string | null
   paidAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -344,7 +330,6 @@ export type UserPaymentUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   amount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   status?: Prisma.EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
-  slipImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   paidAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -358,7 +343,6 @@ export type UserPaymentUncheckedUpdateInput = {
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   amount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   status?: Prisma.EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
-  slipImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   paidAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -370,7 +354,6 @@ export type UserPaymentCreateManyInput = {
   userId: string
   amount: runtime.Decimal | runtime.DecimalJsLike | number | string
   status?: $Enums.PaymentStatus
-  slipImageUrl?: string | null
   paidAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -380,7 +363,6 @@ export type UserPaymentUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   amount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   status?: Prisma.EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
-  slipImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   paidAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -392,7 +374,6 @@ export type UserPaymentUncheckedUpdateManyInput = {
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   amount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   status?: Prisma.EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
-  slipImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   paidAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -419,7 +400,6 @@ export type UserPaymentCountOrderByAggregateInput = {
   userId?: Prisma.SortOrder
   amount?: Prisma.SortOrder
   status?: Prisma.SortOrder
-  slipImageUrl?: Prisma.SortOrder
   paidAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -435,7 +415,6 @@ export type UserPaymentMaxOrderByAggregateInput = {
   userId?: Prisma.SortOrder
   amount?: Prisma.SortOrder
   status?: Prisma.SortOrder
-  slipImageUrl?: Prisma.SortOrder
   paidAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -447,7 +426,6 @@ export type UserPaymentMinOrderByAggregateInput = {
   userId?: Prisma.SortOrder
   amount?: Prisma.SortOrder
   status?: Prisma.SortOrder
-  slipImageUrl?: Prisma.SortOrder
   paidAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -549,7 +527,6 @@ export type UserPaymentCreateWithoutUserInput = {
   id?: string
   amount: runtime.Decimal | runtime.DecimalJsLike | number | string
   status?: $Enums.PaymentStatus
-  slipImageUrl?: string | null
   paidAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -561,7 +538,6 @@ export type UserPaymentUncheckedCreateWithoutUserInput = {
   billId: string
   amount: runtime.Decimal | runtime.DecimalJsLike | number | string
   status?: $Enums.PaymentStatus
-  slipImageUrl?: string | null
   paidAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -602,7 +578,6 @@ export type UserPaymentScalarWhereInput = {
   userId?: Prisma.StringFilter<"UserPayment"> | string
   amount?: Prisma.DecimalFilter<"UserPayment"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   status?: Prisma.EnumPaymentStatusFilter<"UserPayment"> | $Enums.PaymentStatus
-  slipImageUrl?: Prisma.StringNullableFilter<"UserPayment"> | string | null
   paidAt?: Prisma.DateTimeNullableFilter<"UserPayment"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"UserPayment"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"UserPayment"> | Date | string
@@ -612,7 +587,6 @@ export type UserPaymentCreateWithoutBillInput = {
   id?: string
   amount: runtime.Decimal | runtime.DecimalJsLike | number | string
   status?: $Enums.PaymentStatus
-  slipImageUrl?: string | null
   paidAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -624,7 +598,6 @@ export type UserPaymentUncheckedCreateWithoutBillInput = {
   userId: string
   amount: runtime.Decimal | runtime.DecimalJsLike | number | string
   status?: $Enums.PaymentStatus
-  slipImageUrl?: string | null
   paidAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -661,7 +634,6 @@ export type UserPaymentCreateManyUserInput = {
   billId: string
   amount: runtime.Decimal | runtime.DecimalJsLike | number | string
   status?: $Enums.PaymentStatus
-  slipImageUrl?: string | null
   paidAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -671,7 +643,6 @@ export type UserPaymentUpdateWithoutUserInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   amount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   status?: Prisma.EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
-  slipImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   paidAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -683,7 +654,6 @@ export type UserPaymentUncheckedUpdateWithoutUserInput = {
   billId?: Prisma.StringFieldUpdateOperationsInput | string
   amount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   status?: Prisma.EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
-  slipImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   paidAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -694,7 +664,6 @@ export type UserPaymentUncheckedUpdateManyWithoutUserInput = {
   billId?: Prisma.StringFieldUpdateOperationsInput | string
   amount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   status?: Prisma.EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
-  slipImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   paidAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -705,7 +674,6 @@ export type UserPaymentCreateManyBillInput = {
   userId: string
   amount: runtime.Decimal | runtime.DecimalJsLike | number | string
   status?: $Enums.PaymentStatus
-  slipImageUrl?: string | null
   paidAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -715,7 +683,6 @@ export type UserPaymentUpdateWithoutBillInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   amount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   status?: Prisma.EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
-  slipImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   paidAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -727,7 +694,6 @@ export type UserPaymentUncheckedUpdateWithoutBillInput = {
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   amount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   status?: Prisma.EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
-  slipImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   paidAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -738,7 +704,6 @@ export type UserPaymentUncheckedUpdateManyWithoutBillInput = {
   userId?: Prisma.StringFieldUpdateOperationsInput | string
   amount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   status?: Prisma.EnumPaymentStatusFieldUpdateOperationsInput | $Enums.PaymentStatus
-  slipImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   paidAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -752,7 +717,6 @@ export type UserPaymentSelect<ExtArgs extends runtime.Types.Extensions.InternalA
   userId?: boolean
   amount?: boolean
   status?: boolean
-  slipImageUrl?: boolean
   paidAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -766,7 +730,6 @@ export type UserPaymentSelectCreateManyAndReturn<ExtArgs extends runtime.Types.E
   userId?: boolean
   amount?: boolean
   status?: boolean
-  slipImageUrl?: boolean
   paidAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -780,7 +743,6 @@ export type UserPaymentSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.E
   userId?: boolean
   amount?: boolean
   status?: boolean
-  slipImageUrl?: boolean
   paidAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
@@ -794,13 +756,12 @@ export type UserPaymentSelectScalar = {
   userId?: boolean
   amount?: boolean
   status?: boolean
-  slipImageUrl?: boolean
   paidAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type UserPaymentOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "billId" | "userId" | "amount" | "status" | "slipImageUrl" | "paidAt" | "createdAt" | "updatedAt", ExtArgs["result"]["userPayment"]>
+export type UserPaymentOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "billId" | "userId" | "amount" | "status" | "paidAt" | "createdAt" | "updatedAt", ExtArgs["result"]["userPayment"]>
 export type UserPaymentInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   bill?: boolean | Prisma.BillDefaultArgs<ExtArgs>
   user?: boolean | Prisma.UserDefaultArgs<ExtArgs>
@@ -826,7 +787,6 @@ export type $UserPaymentPayload<ExtArgs extends runtime.Types.Extensions.Interna
     userId: string
     amount: runtime.Decimal
     status: $Enums.PaymentStatus
-    slipImageUrl: string | null
     paidAt: Date | null
     createdAt: Date
     updatedAt: Date
@@ -1260,7 +1220,6 @@ export interface UserPaymentFieldRefs {
   readonly userId: Prisma.FieldRef<"UserPayment", 'String'>
   readonly amount: Prisma.FieldRef<"UserPayment", 'Decimal'>
   readonly status: Prisma.FieldRef<"UserPayment", 'PaymentStatus'>
-  readonly slipImageUrl: Prisma.FieldRef<"UserPayment", 'String'>
   readonly paidAt: Prisma.FieldRef<"UserPayment", 'DateTime'>
   readonly createdAt: Prisma.FieldRef<"UserPayment", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"UserPayment", 'DateTime'>

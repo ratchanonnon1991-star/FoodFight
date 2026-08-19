@@ -65,11 +65,6 @@ export type PasswordReset = Prisma.PasswordResetModel
  */
 export type FoodProfile = Prisma.FoodProfileModel
 /**
- * Model PaymentAccount
- * 
- */
-export type PaymentAccount = Prisma.PaymentAccountModel
-/**
  * Model Room
  * 
  */
