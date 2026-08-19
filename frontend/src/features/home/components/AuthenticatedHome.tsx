@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { useRouter } from "next/navigation";
 import { LogIn, UserPlus } from "lucide-react";
 import { PageContainer } from "@/components/layout/PageContainer";
 import { ROUTES } from "@/config/routes";
@@ -8,14 +9,12 @@ import {
   DEMO_CURRENT_FOODFIGHT,
   DEMO_RECENT_FOODFIGHTS,
   DEMO_TIP,
-  DEMO_USER,
 } from "../constants/home-demo-data";
 import { HomeHeader } from "./HomeHeader";
 import { HomeActionCard } from "./HomeActionCard";
 import { CurrentFoodFightCard } from "./CurrentFoodFightCard";
 import { RecentFoodFightsSection } from "./RecentFoodFightsSection";
 import { HomeTipCard } from "./HomeTipCard";
-import { useRouter } from "next/router";
 import { AuthenticatedUserDisplay } from "@/features/home/types/home-types";
 import { API_BASE_URL } from "@/config/api";
 

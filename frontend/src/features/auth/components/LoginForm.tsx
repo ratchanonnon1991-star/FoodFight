@@ -52,16 +52,18 @@ export function LoginForm() {
 
       setIsFoodProfileCompleted(foodProfileComplete);
 
-    const returnTo = searchParams.get("returnTo");
+      const returnTo = searchParams.get("returnTo");
 
-    if (returnTo?.startsWith("/") && !returnTo.startsWith("//")) {
-      router.push(returnTo);
-    } else if (foodProfileComplete) {
-      router.push(ROUTES.AUTHENTICATED_HOME);
-    } else {
-      router.push(ROUTES.FOOD_PROFILE.ALLERGIES);
-    }
-  };
+      if (returnTo?.startsWith("/") && !returnTo.startsWith("//")) {
+        router.push(returnTo);
+      } else if (foodProfileComplete) {
+        router.push(ROUTES.AUTHENTICATED_HOME);
+      } else {
+        router.push(ROUTES.FOOD_PROFILE.ALLERGIES);
+      }
+    },
+    [router, searchParams, setIsAuthenticated, setIsFoodProfileCompleted],
+  );
 
   const onSubmit = async (values: LoginFormValues) => {
     setGeneralError(null);

@@ -5,26 +5,26 @@ export declare class FoodProfileService {
     constructor(prisma: PrismaService);
     private readonly foodProfileSelect;
     findByUserId(userId: string): Promise<{
+        id: string;
+        createdAt: Date;
+        updatedAt: Date;
+        userId: string;
         allergies: string[];
         otherAllergies: string | null;
         restrictions: string[];
         otherRestrictions: string | null;
         additionalNotes: string | null;
-        id: string;
-        userId: string;
-        createdAt: Date;
-        updatedAt: Date;
     }>;
     upsert(userId: string, dto: UpsertFoodProfileDto): Promise<{
+        id: string;
+        createdAt: Date;
+        updatedAt: Date;
+        userId: string;
         allergies: string[];
         otherAllergies: string | null;
         restrictions: string[];
         otherRestrictions: string | null;
         additionalNotes: string | null;
-        id: string;
-        userId: string;
-        createdAt: Date;
-        updatedAt: Date;
     }>;
     private normalizeOptionalString;
 }
