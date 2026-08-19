@@ -157,6 +157,23 @@ export type EnumAuthProviderWithAggregatesFilter<$PrismaModel = never> = {
   _max?: Prisma.NestedEnumAuthProviderFilter<$PrismaModel>
 }
 
+export type EnumPromptPayIdTypeFilter<$PrismaModel = never> = {
+  equals?: $Enums.PromptPayIdType | Prisma.EnumPromptPayIdTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.PromptPayIdType[] | Prisma.ListEnumPromptPayIdTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.PromptPayIdType[] | Prisma.ListEnumPromptPayIdTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumPromptPayIdTypeFilter<$PrismaModel> | $Enums.PromptPayIdType
+}
+
+export type EnumPromptPayIdTypeWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.PromptPayIdType | Prisma.EnumPromptPayIdTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.PromptPayIdType[] | Prisma.ListEnumPromptPayIdTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.PromptPayIdType[] | Prisma.ListEnumPromptPayIdTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumPromptPayIdTypeWithAggregatesFilter<$PrismaModel> | $Enums.PromptPayIdType
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumPromptPayIdTypeFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumPromptPayIdTypeFilter<$PrismaModel>
+}
+
 export type IntFilter<$PrismaModel = never> = {
   equals?: number | Prisma.IntFieldRefInput<$PrismaModel>
   in?: number[] | Prisma.ListIntFieldRefInput<$PrismaModel>
@@ -726,6 +743,23 @@ export type NestedEnumAuthProviderWithAggregatesFilter<$PrismaModel = never> = {
   _count?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedEnumAuthProviderFilter<$PrismaModel>
   _max?: Prisma.NestedEnumAuthProviderFilter<$PrismaModel>
+}
+
+export type NestedEnumPromptPayIdTypeFilter<$PrismaModel = never> = {
+  equals?: $Enums.PromptPayIdType | Prisma.EnumPromptPayIdTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.PromptPayIdType[] | Prisma.ListEnumPromptPayIdTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.PromptPayIdType[] | Prisma.ListEnumPromptPayIdTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumPromptPayIdTypeFilter<$PrismaModel> | $Enums.PromptPayIdType
+}
+
+export type NestedEnumPromptPayIdTypeWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.PromptPayIdType | Prisma.EnumPromptPayIdTypeFieldRefInput<$PrismaModel>
+  in?: $Enums.PromptPayIdType[] | Prisma.ListEnumPromptPayIdTypeFieldRefInput<$PrismaModel>
+  notIn?: $Enums.PromptPayIdType[] | Prisma.ListEnumPromptPayIdTypeFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumPromptPayIdTypeWithAggregatesFilter<$PrismaModel> | $Enums.PromptPayIdType
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumPromptPayIdTypeFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumPromptPayIdTypeFilter<$PrismaModel>
 }
 
 export type NestedFloatNullableFilter<$PrismaModel = never> = {

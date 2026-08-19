@@ -139,3 +139,11 @@ export const OcrStatus = {
 } as const
 
 export type OcrStatus = (typeof OcrStatus)[keyof typeof OcrStatus]
+
+
+export const PromptPayIdType = {
+  PHONE: 'PHONE',
+  CITIZEN_ID: 'CITIZEN_ID'
+} as const
+
+export type PromptPayIdType = (typeof PromptPayIdType)[keyof typeof PromptPayIdType]

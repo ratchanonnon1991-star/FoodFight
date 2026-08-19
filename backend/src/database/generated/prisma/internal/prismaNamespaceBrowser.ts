@@ -56,6 +56,7 @@ export const ModelName = {
   EmailVerification: 'EmailVerification',
   PasswordReset: 'PasswordReset',
   FoodProfile: 'FoodProfile',
+  PaymentAccount: 'PaymentAccount',
   Room: 'Room',
   RoomMember: 'RoomMember',
   FoodFightSession: 'FoodFightSession',
@@ -158,6 +159,21 @@ export const FoodProfileScalarFieldEnum = {
 } as const
 
 export type FoodProfileScalarFieldEnum = (typeof FoodProfileScalarFieldEnum)[keyof typeof FoodProfileScalarFieldEnum]
+
+
+export const PaymentAccountScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  promptPayIdType: 'promptPayIdType',
+  promptPayId: 'promptPayId',
+  accountName: 'accountName',
+  qrImageUrl: 'qrImageUrl',
+  isActive: 'isActive',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type PaymentAccountScalarFieldEnum = (typeof PaymentAccountScalarFieldEnum)[keyof typeof PaymentAccountScalarFieldEnum]
 
 
 export const RoomScalarFieldEnum = {
@@ -410,6 +426,7 @@ export const UserPaymentScalarFieldEnum = {
   userId: 'userId',
   amount: 'amount',
   status: 'status',
+  slipImageUrl: 'slipImageUrl',
   paidAt: 'paidAt',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
