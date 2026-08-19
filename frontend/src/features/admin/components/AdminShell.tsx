@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { LayoutDashboard, Users, DoorOpen, LogOut, ArrowLeft, Shield } from "lucide-react";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
@@ -15,7 +15,11 @@ export interface AdminShellProps {
 
 export function AdminShell({ children }: AdminShellProps) {
   const router = useRouter();
+  const pathname = usePathname();
   const adminUser = useAdminUser();
+
+  const isDashboard = pathname === ROUTES.ADMIN;
+  const isUsers = pathname === ROUTES.ADMIN_USERS || pathname?.startsWith("/admin/users");
 
   const handleLogout = () => {
     window.localStorage.removeItem("accessToken");
@@ -78,21 +82,26 @@ export function AdminShell({ children }: AdminShellProps) {
           <div className="mx-auto flex max-w-7xl items-center gap-2 px-4 sm:px-6 lg:px-8 py-2 overflow-x-auto">
             <Link
               href={ROUTES.ADMIN}
-              className="inline-flex items-center gap-2 rounded-md bg-surface px-3 py-1.5 text-xs font-semibold text-brand-primary shadow-xs border border-border"
+              className={`inline-flex items-center gap-2 rounded-md px-3 py-1.5 text-xs transition-colors ${
+                isDashboard
+                  ? "bg-surface font-semibold text-brand-primary shadow-xs border border-border"
+                  : "font-medium text-text-secondary hover:text-text-primary hover:bg-surface-subtle"
+              }`}
             >
               <LayoutDashboard className="size-4" />
               <span>Dashboard</span>
             </Link>
-            <div
-              className="inline-flex items-center gap-2 rounded-md px-3 py-1.5 text-xs font-medium text-text-secondary opacity-60 cursor-not-allowed select-none"
-              title="Coming in next phase"
+            <Link
+              href={ROUTES.ADMIN_USERS}
+              className={`inline-flex items-center gap-2 rounded-md px-3 py-1.5 text-xs transition-colors ${
+                isUsers
+                  ? "bg-surface font-semibold text-brand-primary shadow-xs border border-border"
+                  : "font-medium text-text-secondary hover:text-text-primary hover:bg-surface-subtle"
+              }`}
             >
               <Users className="size-4" />
               <span>Users</span>
-              <Badge variant="neutral" size="sm" className="ml-1 text-[10px] py-0 px-1.5">
-                Soon
-              </Badge>
-            </div>
+            </Link>
             <div
               className="inline-flex items-center gap-2 rounded-md px-3 py-1.5 text-xs font-medium text-text-secondary opacity-60 cursor-not-allowed select-none"
               title="Coming in next phase"
