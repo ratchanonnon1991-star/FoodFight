@@ -9,12 +9,14 @@ export function GoogleAuthProvider({
 }) {
   const clientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID;
 
-  if (!clientId && process.env.NODE_ENV !== 'production') {
-    console.warn('NEXT_PUBLIC_GOOGLE_CLIENT_ID is not configured');
+  if (!clientId && process.env.NODE_ENV !== "production") {
+    console.warn(
+      "NEXT_PUBLIC_GOOGLE_CLIENT_ID is not configured; Google sign-in will not work.",
+    );
   }
 
   return (
-    <GoogleOAuthProvider clientId={clientId ?? ''}>
+    <GoogleOAuthProvider clientId={clientId ?? ""}>
       {children}
     </GoogleOAuthProvider>
   );

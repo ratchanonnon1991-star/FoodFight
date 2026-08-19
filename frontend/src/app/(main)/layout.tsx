@@ -9,7 +9,7 @@ export default function MainAuthenticatedLayout({
   return (
     <div className="relative min-h-dvh flex flex-col justify-between bg-background text-text-primary">
       {children}
-      <BottomNavigation activeTab="home" />
+      <BottomNavigation />
     </div>
   );
 }
