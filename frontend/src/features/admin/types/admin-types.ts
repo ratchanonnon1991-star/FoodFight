@@ -37,3 +37,29 @@ export interface AdminUsersQuery {
   search?: string;
   role?: AdminUserRole;
 }
+
+export interface AdminUserFoodProfile {
+  allergies: string[];
+  otherAllergies: string | null;
+  restrictions: string[];
+  otherRestrictions: string | null;
+  additionalNotes: string | null;
+}
+
+export interface AdminUserActivity {
+  hostedRoomsCount: number;
+  joinedRoomsCount: number;
+}
+
+export interface AdminUserDetail {
+  id: string;
+  displayName: string | null;
+  email: string;
+  emailVerified: boolean;
+  role: AdminUserRole;
+  avatarUrl: string | null;
+  createdAt: string;
+  providers: string[];
+  foodProfile: AdminUserFoodProfile | null;
+  activity: AdminUserActivity;
+}

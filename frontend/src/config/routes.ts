@@ -8,6 +8,8 @@ export const ROUTES = {
   HOME: "/",
   ADMIN: "/admin",
   ADMIN_USERS: "/admin/users",
+  ADMIN_USER_DETAIL: (userId: string) =>
+    `/admin/users/${encodeURIComponent(userId)}`,
   AUTH: {
     REGISTER: "/register",
     VERIFY_EMAIL: "/verify-email",

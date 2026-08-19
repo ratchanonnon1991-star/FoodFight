@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import Link from "next/link";
 import {
   Search,
   Users,
@@ -19,6 +20,7 @@ import { Badge } from "@/components/ui/Badge";
 import { Input } from "@/components/ui/Input";
 import { Card } from "@/components/ui/Card";
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/Alert";
+import { ROUTES } from "@/config/routes";
 import { fetchAdminUsers } from "../services/api-admin-service";
 import type {
   AdminUserListItem,
@@ -276,6 +278,9 @@ export function AdminUsersPage() {
                   <th scope="col" className="px-4 py-3.5">
                     Registered At
                   </th>
+                  <th scope="col" className="px-4 py-3.5 text-right">
+                    Actions
+                  </th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-border-subtle bg-surface">
@@ -333,6 +338,13 @@ export function AdminUsersPage() {
                         month: "short",
                         day: "numeric",
                       })}
+                    </td>
+                    <td className="px-4 py-3.5 text-right whitespace-nowrap">
+                      <Link href={ROUTES.ADMIN_USER_DETAIL(user.id)}>
+                        <Button variant="outline" size="sm">
+                          View details
+                        </Button>
+                      </Link>
                     </td>
                   </tr>
                 ))}
@@ -398,6 +410,14 @@ export function AdminUsersPage() {
                       day: "numeric",
                     })}
                   </span>
+                </div>
+
+                <div className="border-t border-border-subtle pt-2.5">
+                  <Link href={ROUTES.ADMIN_USER_DETAIL(user.id)} className="block w-full">
+                    <Button variant="outline" size="sm" fullWidth>
+                      View details
+                    </Button>
+                  </Link>
                 </div>
               </Card>
             ))}

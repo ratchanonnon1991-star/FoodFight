@@ -1,6 +1,7 @@
 import { API_BASE_URL } from "@/config/api";
 import type {
   AdminDashboardMetrics,
+  AdminUserDetail,
   AdminUsersQuery,
   AdminUsersResponse,
 } from "../types/admin-types";
@@ -57,4 +58,28 @@ export async function fetchAdminUsers(
   }
 
   return (await response.json()) as AdminUsersResponse;
+}
+
+export async function fetchAdminUserById(
+  userId: string,
+  token: string
+): Promise<AdminUserDetail> {
+  const response = await fetch(
+    `${API_BASE_URL}/admin/users/${encodeURIComponent(userId)}`,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+
+  if (response.status === 404) {
+    throw new Error("USER_NOT_FOUND");
+  }
+
+  if (!response.ok) {
+    throw new Error(`Failed to fetch user details.`);
+  }
+
+  return (await response.json()) as AdminUserDetail;
 }
