@@ -5,13 +5,17 @@ import { JwtService } from '../infrastructure/jwt/jwt.service';
 import { LineAuthService } from '../infrastructure/line/line-auth.service';
 import { MailService } from '../infrastructure/mail/mail.service';
 import { UserService } from '../user/user.service';
+import { ChangeVerificationEmailDto } from './dto/change-verification-email.dto';
 import { ForgotPasswordDto } from './dto/forgot-password.dto';
 import { GoogleLoginDto } from './dto/google-login.dto';
+import { LineCodeDto } from './dto/line-code.dto';
 import { LineLoginDto } from './dto/line-login.dto';
 import { LoginDto } from './dto/login.dto';
-import { PasswordResetService } from './password-reset.service';
 import { RegisterDto } from './dto/register.dto';
+import { ResendVerificationDto } from './dto/resend-verification.dto';
 import { ResetPasswordDto } from './dto/reset-password.dto';
+import { VerifyEmailDto } from './dto/verify-email.dto';
+import { PasswordResetService } from './password-reset.service';
 export declare class AuthService {
     private readonly prisma;
     private readonly userService;
@@ -25,6 +29,27 @@ export declare class AuthService {
     register(dto: RegisterDto): Promise<{
         id: string;
         email: string;
+        expiresAt: Date;
+        resendAvailableAt: Date;
+        message: string;
+    }>;
+    verifyEmail(dto: VerifyEmailDto): Promise<{
+        message: string;
+    }>;
+    resendVerification(dto: ResendVerificationDto): Promise<{
+        message: string;
+        expiresAt?: undefined;
+        resendAvailableAt?: undefined;
+    } | {
+        message: string;
+        expiresAt: Date;
+        resendAvailableAt: Date;
+    }>;
+    changeVerificationEmail(dto: ChangeVerificationEmailDto): Promise<{
+        email: string;
+        expiresAt: Date;
+        resendAvailableAt: Date;
+        message: string;
     }>;
     login(dto: LoginDto): Promise<{
         accessToken: string;
@@ -33,6 +58,9 @@ export declare class AuthService {
         accessToken: string;
     }>;
     loginWithLine(dto: LineLoginDto): Promise<{
+        accessToken: string;
+    }>;
+    loginWithLineCode(dto: LineCodeDto): Promise<{
         accessToken: string;
     }>;
     private loginWithOAuth;

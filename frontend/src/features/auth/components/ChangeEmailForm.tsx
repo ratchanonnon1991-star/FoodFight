@@ -44,8 +44,16 @@ export function ChangeEmailForm() {
   const onSubmit = async (values: ChangeEmailFormValues) => {
     setGeneralError(null);
 
+    if (!challenge) {
+      setGeneralError("Verification session not found. Please register again.");
+      return;
+    }
+
     try {
-      const result = await authService.changeVerificationEmail(values);
+      const result = await authService.changeVerificationEmail({
+        currentEmail: challenge.email,
+        newEmail: values.newEmail,
+      });
 
       if (!result.ok) {
         if (result.error.kind === "duplicate_email") {

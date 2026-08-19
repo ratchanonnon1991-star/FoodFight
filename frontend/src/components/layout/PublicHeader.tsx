@@ -1,15 +1,99 @@
+"use client";
+
 import * as React from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { ROUTES } from "@/config/routes";
 import { PageContainer } from "@/components/layout/PageContainer";
-import { buttonVariants } from "@/components/ui/Button";
+import { Button, buttonVariants } from "@/components/ui/Button";
 import { cn } from "@/lib/utils/cn";
+
+const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8888";
+
+type AuthenticatedUser = {
+  sub: string;
+  email: string;
+  role: string;
+};
 
 export interface PublicHeaderProps {
   className?: string;
 }
 
 export function PublicHeader({ className }: PublicHeaderProps) {
+  const router = useRouter();
+  const [user, setUser] = React.useState<AuthenticatedUser | null>(null);
+  const [isCheckingSession, setIsCheckingSession] = React.useState(true);
+  const [isLoggingOut, setIsLoggingOut] = React.useState(false);
+
+  React.useEffect(() => {
+    let isMounted = true;
+    const accessToken = window.localStorage.getItem("accessToken");
+
+    if (!accessToken) {
+      setIsCheckingSession(false);
+      return () => {
+        isMounted = false;
+      };
+    }
+
+    fetch(`${API_URL}/auth/me`, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    })
+      .then(async (response) => {
+        if (!response.ok) {
+          throw new Error("Session is no longer valid");
+        }
+
+        return (await response.json()) as AuthenticatedUser;
+      })
+      .then((authenticatedUser) => {
+        if (isMounted) {
+          setUser(authenticatedUser);
+        }
+      })
+      .catch(() => {
+        window.localStorage.removeItem("accessToken");
+
+        if (isMounted) {
+          setUser(null);
+        }
+      })
+      .finally(() => {
+        if (isMounted) {
+          setIsCheckingSession(false);
+        }
+      });
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  const handleLogout = async () => {
+    const accessToken = window.localStorage.getItem("accessToken");
+
+    setIsLoggingOut(true);
+
+    try {
+      if (accessToken) {
+        await fetch(`${API_URL}/auth/logout`, {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        });
+      }
+    } finally {
+      window.localStorage.removeItem("accessToken");
+      setUser(null);
+      setIsLoggingOut(false);
+      router.replace(ROUTES.AUTH.LOGIN);
+    }
+  };
+
   return (
     <header className={cn("border-b border-border bg-surface", className)}>
       <PageContainer
@@ -26,26 +110,53 @@ export function PublicHeader({ className }: PublicHeaderProps) {
           FoodFighter
         </Link>
 
-        {/* Public Navigation */}
+        {/* Account Navigation */}
         <nav aria-label="Account actions" className="flex items-center gap-2 sm:gap-3">
-          <Link
-            href={ROUTES.AUTH.LOGIN}
-            className={cn(
-              buttonVariants({ variant: "ghost", size: "sm" }),
-              "text-xs sm:text-sm font-semibold text-text-secondary hover:text-text-primary px-3 sm:px-4 min-h-[40px] inline-flex items-center justify-center"
-            )}
-          >
-            Log in
-          </Link>
-          <Link
-            href={ROUTES.AUTH.REGISTER}
-            className={cn(
-              buttonVariants({ variant: "primary", size: "sm" }),
-              "text-xs sm:text-sm font-semibold px-3 sm:px-4 min-h-[40px] inline-flex items-center justify-center"
-            )}
-          >
-            Register
-          </Link>
+          {isCheckingSession ? (
+            <span className="text-xs text-text-muted" aria-live="polite">
+              Checking session...
+            </span>
+          ) : user ? (
+            <>
+              <span
+                className="hidden max-w-56 truncate text-xs font-medium text-text-secondary sm:inline"
+                title={user.email}
+              >
+                {user.email}
+              </span>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                loading={isLoggingOut}
+                onClick={handleLogout}
+                className="text-xs sm:text-sm min-h-[40px]"
+              >
+                Log out
+              </Button>
+            </>
+          ) : (
+            <>
+              <Link
+                href={ROUTES.AUTH.LOGIN}
+                className={cn(
+                  buttonVariants({ variant: "ghost", size: "sm" }),
+                  "text-xs sm:text-sm font-semibold text-text-secondary hover:text-text-primary px-3 sm:px-4 min-h-[40px] inline-flex items-center justify-center",
+                )}
+              >
+                Log in
+              </Link>
+              <Link
+                href={ROUTES.AUTH.REGISTER}
+                className={cn(
+                  buttonVariants({ variant: "primary", size: "sm" }),
+                  "text-xs sm:text-sm font-semibold px-3 sm:px-4 min-h-[40px] inline-flex items-center justify-center",
+                )}
+              >
+                Register
+              </Link>
+            </>
+          )}
         </nav>
       </PageContainer>
     </header>

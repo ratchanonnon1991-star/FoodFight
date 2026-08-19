@@ -6,11 +6,14 @@ declare const envSchema: z.ZodObject<{
     JWT_EXPIRES_IN: z.ZodString;
     GOOGLE_CLIENT_ID: z.ZodString;
     LINE_CHANNEL_ID: z.ZodString;
+    LINE_CHANNEL_SECRET: z.ZodString;
+    LINE_CALLBACK_URL: z.ZodString;
     MAIL_HOST: z.ZodString;
     MAIL_PORT: z.ZodCoercedNumber<unknown>;
     MAIL_USER: z.ZodString;
     MAIL_PASSWORD: z.ZodString;
     MAIL_FROM: z.ZodString;
+    FRONTEND_URL: z.ZodDefault<z.ZodString>;
 }, z.core.$strip>;
 export declare function validate(config: Record<string, any>): {
     PORT: number;
@@ -19,11 +22,14 @@ export declare function validate(config: Record<string, any>): {
     JWT_EXPIRES_IN: string;
     GOOGLE_CLIENT_ID: string;
     LINE_CHANNEL_ID: string;
+    LINE_CHANNEL_SECRET: string;
+    LINE_CALLBACK_URL: string;
     MAIL_HOST: string;
     MAIL_PORT: number;
     MAIL_USER: string;
     MAIL_PASSWORD: string;
     MAIL_FROM: string;
+    FRONTEND_URL: string;
 };
 export type EnvVariable = z.infer<typeof envSchema>;
 export {};

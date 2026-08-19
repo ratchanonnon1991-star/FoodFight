@@ -35,8 +35,11 @@ const createMockChallenge = (email: string): EmailVerificationChallenge => ({
  * without hitting real backend endpoints or fabricating JWT tokens.
  */
 export const mockAuthService: AuthService = {
-  async register(input: RegisterInput): Promise<AuthResult<EmailVerificationChallenge>> {
+  async register(
+    input: RegisterInput,
+  ): Promise<AuthResult<EmailVerificationChallenge>> {
     await delay();
+
     if (input.email.toLowerCase() === MOCK_DUPLICATE_EMAIL.toLowerCase()) {
       return {
         ok: false,
@@ -46,6 +49,7 @@ export const mockAuthService: AuthService = {
         },
       };
     }
+
     return {
       ok: true,
       data: createMockChallenge(input.email),
@@ -54,8 +58,10 @@ export const mockAuthService: AuthService = {
 
   async login(input: LoginInput): Promise<AuthResult> {
     await delay();
+
     if (
-      input.email.toLowerCase() === MOCK_INVALID_CREDENTIALS_EMAIL.toLowerCase() ||
+      input.email.toLowerCase() ===
+        MOCK_INVALID_CREDENTIALS_EMAIL.toLowerCase() ||
       input.password === MOCK_INVALID_PASSWORD
     ) {
       return {
@@ -66,11 +72,15 @@ export const mockAuthService: AuthService = {
         },
       };
     }
-    return { ok: true };
+
+    return {
+      ok: true,
+    };
   },
 
   async verifyEmail(input: EmailVerificationInput): Promise<AuthResult> {
     await delay();
+
     if (input.code.length !== EMAIL_VERIFICATION_POLICY.codeLength) {
       return {
         ok: false,
@@ -101,19 +111,27 @@ export const mockAuthService: AuthService = {
       };
     }
 
-    return { ok: true };
+    return {
+      ok: true,
+    };
   },
 
-  async resendVerificationCode(email: string): Promise<AuthResult<EmailVerificationChallenge>> {
+  async resendVerificationCode(
+    email: string,
+  ): Promise<AuthResult<EmailVerificationChallenge>> {
     await delay();
+
     return {
       ok: true,
       data: createMockChallenge(email),
     };
   },
 
-  async changeVerificationEmail(input: ChangeEmailInput): Promise<AuthResult<EmailVerificationChallenge>> {
+  async changeVerificationEmail(
+    input: ChangeEmailInput,
+  ): Promise<AuthResult<EmailVerificationChallenge>> {
     await delay();
+
     if (input.newEmail.toLowerCase() === MOCK_DUPLICATE_EMAIL.toLowerCase()) {
       return {
         ok: false,
@@ -123,19 +141,26 @@ export const mockAuthService: AuthService = {
         },
       };
     }
+
     return {
       ok: true,
       data: createMockChallenge(input.newEmail),
     };
   },
 
-  async beginGoogleAuth(): Promise<AuthResult> {
+  async beginGoogleAuth(_idToken: string): Promise<AuthResult> {
     await delay();
-    return { ok: true };
+
+    return {
+      ok: true,
+    };
   },
 
-  async beginLineAuth(): Promise<AuthResult> {
+  async beginLineAuth(_idToken: string): Promise<AuthResult> {
     await delay();
-    return { ok: true };
+
+    return {
+      ok: true,
+    };
   },
 };

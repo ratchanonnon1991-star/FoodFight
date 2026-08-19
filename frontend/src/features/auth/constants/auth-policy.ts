@@ -11,6 +11,7 @@ export const AUTH_PASSWORD_POLICY = {
   requireLowercase: true,
   requireUppercase: true,
   requireNumber: true,
+  requireSpecialCharacter: true,
 } as const;
 
 export const EMAIL_VERIFICATION_POLICY = {

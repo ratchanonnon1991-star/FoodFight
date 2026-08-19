@@ -15,11 +15,23 @@ import type {
  * without throwing or inventing backend DTOs.
  */
 export interface AuthService {
-  register(input: RegisterInput): Promise<AuthResult<EmailVerificationChallenge>>;
+  register(
+    input: RegisterInput,
+  ): Promise<AuthResult<EmailVerificationChallenge>>;
+
   login(input: LoginInput): Promise<AuthResult>;
+
   verifyEmail(input: EmailVerificationInput): Promise<AuthResult>;
-  resendVerificationCode(email: string): Promise<AuthResult<EmailVerificationChallenge>>;
-  changeVerificationEmail(input: ChangeEmailInput): Promise<AuthResult<EmailVerificationChallenge>>;
-  beginGoogleAuth(): Promise<AuthResult>;
-  beginLineAuth(): Promise<AuthResult>;
+
+  resendVerificationCode(
+    email: string,
+  ): Promise<AuthResult<EmailVerificationChallenge>>;
+
+  changeVerificationEmail(
+    input: ChangeEmailInput,
+  ): Promise<AuthResult<EmailVerificationChallenge>>;
+
+  beginGoogleAuth(idToken: string): Promise<AuthResult>;
+
+  beginLineAuth(idToken: string): Promise<AuthResult>;
 }

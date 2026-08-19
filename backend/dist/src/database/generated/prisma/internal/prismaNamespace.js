@@ -33,7 +33,7 @@ var __importStar = (this && this.__importStar) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.defineExtension = exports.NullsOrder = exports.QueryMode = exports.SortOrder = exports.PasswordResetScalarFieldEnum = exports.EmailVerificationScalarFieldEnum = exports.AccountScalarFieldEnum = exports.UserScalarFieldEnum = exports.TransactionIsolationLevel = exports.ModelName = exports.AnyNull = exports.JsonNull = exports.DbNull = exports.NullTypes = exports.prismaVersion = exports.getExtensionContext = exports.Decimal = exports.Sql = exports.raw = exports.join = exports.empty = exports.sql = exports.PrismaClientValidationError = exports.PrismaClientInitializationError = exports.PrismaClientRustPanicError = exports.PrismaClientUnknownRequestError = exports.PrismaClientKnownRequestError = void 0;
+exports.defineExtension = exports.JsonNullValueFilter = exports.NullsOrder = exports.QueryMode = exports.NullableJsonNullValueInput = exports.SortOrder = exports.UserPaymentScalarFieldEnum = exports.ItemShareScalarFieldEnum = exports.ReceiptItemScalarFieldEnum = exports.ReceiptScalarFieldEnum = exports.BillScalarFieldEnum = exports.RestaurantSelectionScalarFieldEnum = exports.RestaurantRecommendationScalarFieldEnum = exports.FinalSelectionScalarFieldEnum = exports.FinalVoteScalarFieldEnum = exports.VoteScalarFieldEnum = exports.RecommendationItemScalarFieldEnum = exports.RecommendationRoundScalarFieldEnum = exports.MealPreferenceScalarFieldEnum = exports.SessionMemberScalarFieldEnum = exports.FoodFightSessionScalarFieldEnum = exports.RoomMemberScalarFieldEnum = exports.RoomScalarFieldEnum = exports.FoodProfileScalarFieldEnum = exports.PasswordResetScalarFieldEnum = exports.EmailVerificationScalarFieldEnum = exports.AccountScalarFieldEnum = exports.UserScalarFieldEnum = exports.TransactionIsolationLevel = exports.ModelName = exports.AnyNull = exports.JsonNull = exports.DbNull = exports.NullTypes = exports.prismaVersion = exports.getExtensionContext = exports.Decimal = exports.Sql = exports.raw = exports.join = exports.empty = exports.sql = exports.PrismaClientValidationError = exports.PrismaClientInitializationError = exports.PrismaClientRustPanicError = exports.PrismaClientUnknownRequestError = exports.PrismaClientKnownRequestError = void 0;
 const runtime = __importStar(require("@prisma/client/runtime/client"));
 exports.PrismaClientKnownRequestError = runtime.PrismaClientKnownRequestError;
 exports.PrismaClientUnknownRequestError = runtime.PrismaClientUnknownRequestError;
@@ -63,7 +63,25 @@ exports.ModelName = {
     User: 'User',
     Account: 'Account',
     EmailVerification: 'EmailVerification',
-    PasswordReset: 'PasswordReset'
+    PasswordReset: 'PasswordReset',
+    FoodProfile: 'FoodProfile',
+    Room: 'Room',
+    RoomMember: 'RoomMember',
+    FoodFightSession: 'FoodFightSession',
+    SessionMember: 'SessionMember',
+    MealPreference: 'MealPreference',
+    RecommendationRound: 'RecommendationRound',
+    RecommendationItem: 'RecommendationItem',
+    Vote: 'Vote',
+    FinalVote: 'FinalVote',
+    FinalSelection: 'FinalSelection',
+    RestaurantRecommendation: 'RestaurantRecommendation',
+    RestaurantSelection: 'RestaurantSelection',
+    Bill: 'Bill',
+    Receipt: 'Receipt',
+    ReceiptItem: 'ReceiptItem',
+    ItemShare: 'ItemShare',
+    UserPayment: 'UserPayment'
 };
 exports.TransactionIsolationLevel = runtime.makeStrictEnum({
     ReadUncommitted: 'ReadUncommitted',
@@ -109,9 +127,214 @@ exports.PasswordResetScalarFieldEnum = {
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
 };
+exports.FoodProfileScalarFieldEnum = {
+    id: 'id',
+    userId: 'userId',
+    allergies: 'allergies',
+    otherAllergies: 'otherAllergies',
+    restrictions: 'restrictions',
+    otherRestrictions: 'otherRestrictions',
+    additionalNotes: 'additionalNotes',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+};
+exports.RoomScalarFieldEnum = {
+    id: 'id',
+    hostId: 'hostId',
+    name: 'name',
+    roomCode: 'roomCode',
+    inviteToken: 'inviteToken',
+    maxMembers: 'maxMembers',
+    locationName: 'locationName',
+    latitude: 'latitude',
+    longitude: 'longitude',
+    searchRadiusKm: 'searchRadiusKm',
+    scheduledAt: 'scheduledAt',
+    status: 'status',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+};
+exports.RoomMemberScalarFieldEnum = {
+    id: 'id',
+    roomId: 'roomId',
+    userId: 'userId',
+    isReady: 'isReady',
+    joinedAt: 'joinedAt',
+    leftAt: 'leftAt'
+};
+exports.FoodFightSessionScalarFieldEnum = {
+    id: 'id',
+    roomId: 'roomId',
+    status: 'status',
+    startedAt: 'startedAt',
+    finalizedAt: 'finalizedAt',
+    completedAt: 'completedAt',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+};
+exports.SessionMemberScalarFieldEnum = {
+    id: 'id',
+    sessionId: 'sessionId',
+    userId: 'userId',
+    role: 'role',
+    joinedAt: 'joinedAt'
+};
+exports.MealPreferenceScalarFieldEnum = {
+    id: 'id',
+    sessionId: 'sessionId',
+    userId: 'userId',
+    cookingTypes: 'cookingTypes',
+    otherCookingType: 'otherCookingType',
+    cuisines: 'cuisines',
+    otherCuisine: 'otherCuisine',
+    ingredients: 'ingredients',
+    otherIngredient: 'otherIngredient',
+    budgetRange: 'budgetRange',
+    restaurantStyles: 'restaurantStyles',
+    otherRestaurantStyle: 'otherRestaurantStyle',
+    otherNote: 'otherNote',
+    submittedAt: 'submittedAt',
+    updatedAt: 'updatedAt'
+};
+exports.RecommendationRoundScalarFieldEnum = {
+    id: 'id',
+    sessionId: 'sessionId',
+    roundNumber: 'roundNumber',
+    status: 'status',
+    generatedAt: 'generatedAt',
+    completedAt: 'completedAt'
+};
+exports.RecommendationItemScalarFieldEnum = {
+    id: 'id',
+    recommendationRoundId: 'recommendationRoundId',
+    menuName: 'menuName',
+    description: 'description',
+    reason: 'reason',
+    imageUrl: 'imageUrl',
+    recommendationScore: 'recommendationScore',
+    metadata: 'metadata',
+    displayOrder: 'displayOrder',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+};
+exports.VoteScalarFieldEnum = {
+    id: 'id',
+    recommendationItemId: 'recommendationItemId',
+    userId: 'userId',
+    action: 'action',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+};
+exports.FinalVoteScalarFieldEnum = {
+    id: 'id',
+    sessionId: 'sessionId',
+    userId: 'userId',
+    recommendationItemId: 'recommendationItemId',
+    voteType: 'voteType',
+    createdAt: 'createdAt'
+};
+exports.FinalSelectionScalarFieldEnum = {
+    id: 'id',
+    sessionId: 'sessionId',
+    recommendationItemId: 'recommendationItemId',
+    selectedById: 'selectedById',
+    method: 'method',
+    selectedAt: 'selectedAt'
+};
+exports.RestaurantRecommendationScalarFieldEnum = {
+    id: 'id',
+    sessionId: 'sessionId',
+    externalPlaceId: 'externalPlaceId',
+    name: 'name',
+    address: 'address',
+    latitude: 'latitude',
+    longitude: 'longitude',
+    distanceMeters: 'distanceMeters',
+    phone: 'phone',
+    openingHours: 'openingHours',
+    imageUrl: 'imageUrl',
+    finalMenuMatch: 'finalMenuMatch',
+    varietyScore: 'varietyScore',
+    groupCompatibilityScore: 'groupCompatibilityScore',
+    rankingScore: 'rankingScore',
+    reason: 'reason',
+    status: 'status',
+    displayOrder: 'displayOrder',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+};
+exports.RestaurantSelectionScalarFieldEnum = {
+    id: 'id',
+    sessionId: 'sessionId',
+    selectedById: 'selectedById',
+    externalPlaceId: 'externalPlaceId',
+    name: 'name',
+    address: 'address',
+    latitude: 'latitude',
+    longitude: 'longitude',
+    distanceMeters: 'distanceMeters',
+    phone: 'phone',
+    openingHours: 'openingHours',
+    imageUrl: 'imageUrl',
+    selectedAt: 'selectedAt'
+};
+exports.BillScalarFieldEnum = {
+    id: 'id',
+    sessionId: 'sessionId',
+    createdById: 'createdById',
+    status: 'status',
+    subtotal: 'subtotal',
+    serviceCharge: 'serviceCharge',
+    tax: 'tax',
+    discount: 'discount',
+    totalAmount: 'totalAmount',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+};
+exports.ReceiptScalarFieldEnum = {
+    id: 'id',
+    billId: 'billId',
+    imageUrl: 'imageUrl',
+    ocrStatus: 'ocrStatus',
+    rawOcrText: 'rawOcrText',
+    parsedData: 'parsedData',
+    uploadedAt: 'uploadedAt',
+    updatedAt: 'updatedAt'
+};
+exports.ReceiptItemScalarFieldEnum = {
+    id: 'id',
+    billId: 'billId',
+    name: 'name',
+    quantity: 'quantity',
+    unitPrice: 'unitPrice',
+    totalPrice: 'totalPrice',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+};
+exports.ItemShareScalarFieldEnum = {
+    id: 'id',
+    receiptItemId: 'receiptItemId',
+    userId: 'userId',
+    amount: 'amount',
+    createdAt: 'createdAt'
+};
+exports.UserPaymentScalarFieldEnum = {
+    id: 'id',
+    billId: 'billId',
+    userId: 'userId',
+    amount: 'amount',
+    status: 'status',
+    paidAt: 'paidAt',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+};
 exports.SortOrder = {
     asc: 'asc',
     desc: 'desc'
+};
+exports.NullableJsonNullValueInput = {
+    DbNull: exports.DbNull,
+    JsonNull: exports.JsonNull
 };
 exports.QueryMode = {
     default: 'default',
@@ -120,6 +343,11 @@ exports.QueryMode = {
 exports.NullsOrder = {
     first: 'first',
     last: 'last'
+};
+exports.JsonNullValueFilter = {
+    DbNull: exports.DbNull,
+    JsonNull: exports.JsonNull,
+    AnyNull: exports.AnyNull
 };
 exports.defineExtension = runtime.Extensions.defineExtension;
 //# sourceMappingURL=prismaNamespace.js.map

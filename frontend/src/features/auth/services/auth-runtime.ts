@@ -1,5 +1,6 @@
 import type { AuthService } from "./auth-service";
 import { mockAuthService } from "../mocks/mock-auth-service";
+import { apiAuthService } from "./api-auth-service";
 
 export type AuthMode = "mock" | "api";
 
@@ -9,7 +10,7 @@ export type AuthMode = "mock" | "api";
  * Safety Matrix:
  * - "mock" in development: uses MockAuthService
  * - "mock" in production: uses MockAuthService (explicit opt-in only)
- * - "api": fails closed (ApiAuthService not yet implemented)
+ * - "api": uses ApiAuthService
  * - Unknown value: fails closed
  * - Missing in production: fails closed (silent mock fallback strictly prohibited)
  * - Missing in development (NODE_ENV !== "production"): defaults to "mock" for dev convenience
@@ -21,14 +22,15 @@ export function resolveAuthMode(): AuthMode {
     if (rawMode === "mock" || rawMode === "api") {
       return rawMode;
     }
+
     throw new Error(
-      `Invalid NEXT_PUBLIC_AUTH_MODE: "${rawMode}". Expected "mock" or "api".`
+      `Invalid NEXT_PUBLIC_AUTH_MODE: "${rawMode}". Expected "mock" or "api".`,
     );
   }
 
   if (process.env.NODE_ENV === "production") {
     throw new Error(
-      "NEXT_PUBLIC_AUTH_MODE is missing in production. Silent mock fallback is prohibited."
+      "NEXT_PUBLIC_AUTH_MODE is missing in production. Silent mock fallback is prohibited.",
     );
   }
 
@@ -45,9 +47,11 @@ export function getAuthService(): AuthService {
     return mockAuthService;
   }
 
-  throw new Error(
-    'Auth mode "api" is selected, but ApiAuthService is not yet implemented.'
-  );
+  if (mode === "api") {
+    return apiAuthService;
+  }
+
+  throw new Error("Unsupported auth mode.");
 }
 
 /**
@@ -57,10 +61,18 @@ export function getAuthService(): AuthService {
  */
 export const authService: AuthService = {
   register: (input) => getAuthService().register(input),
+
   login: (input) => getAuthService().login(input),
+
   verifyEmail: (input) => getAuthService().verifyEmail(input),
-  resendVerificationCode: (email) => getAuthService().resendVerificationCode(email),
-  changeVerificationEmail: (input) => getAuthService().changeVerificationEmail(input),
-  beginGoogleAuth: () => getAuthService().beginGoogleAuth(),
-  beginLineAuth: () => getAuthService().beginLineAuth(),
+
+  resendVerificationCode: (email) =>
+    getAuthService().resendVerificationCode(email),
+
+  changeVerificationEmail: (input) =>
+    getAuthService().changeVerificationEmail(input),
+
+  beginGoogleAuth: (idToken) => getAuthService().beginGoogleAuth(idToken),
+
+  beginLineAuth: (idToken) => getAuthService().beginLineAuth(idToken),
 };

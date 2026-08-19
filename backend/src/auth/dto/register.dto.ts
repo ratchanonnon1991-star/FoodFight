@@ -4,8 +4,10 @@ import {
   IsEmail,
   IsNotEmpty,
   IsString,
+  Matches,
   MinLength,
 } from 'class-validator';
+
 import { Trim } from '../../common/decorators/trim.decorator';
 
 export class RegisterDto {
@@ -23,6 +25,10 @@ export class RegisterDto {
   @IsNotEmpty()
   @IsString()
   @MinLength(8)
+  @Matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).+$/, {
+    message:
+      'Password must contain uppercase, lowercase, number, and special character',
+  })
   password: string;
 
   @IsBoolean()

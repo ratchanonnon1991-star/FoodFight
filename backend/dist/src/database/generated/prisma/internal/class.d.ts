@@ -42,5 +42,59 @@ export interface PrismaClient<in LogOpts extends Prisma.LogLevel = never, in out
     get passwordReset(): Prisma.PasswordResetDelegate<ExtArgs, {
         omit: OmitOpts;
     }>;
+    get foodProfile(): Prisma.FoodProfileDelegate<ExtArgs, {
+        omit: OmitOpts;
+    }>;
+    get room(): Prisma.RoomDelegate<ExtArgs, {
+        omit: OmitOpts;
+    }>;
+    get roomMember(): Prisma.RoomMemberDelegate<ExtArgs, {
+        omit: OmitOpts;
+    }>;
+    get foodFightSession(): Prisma.FoodFightSessionDelegate<ExtArgs, {
+        omit: OmitOpts;
+    }>;
+    get sessionMember(): Prisma.SessionMemberDelegate<ExtArgs, {
+        omit: OmitOpts;
+    }>;
+    get mealPreference(): Prisma.MealPreferenceDelegate<ExtArgs, {
+        omit: OmitOpts;
+    }>;
+    get recommendationRound(): Prisma.RecommendationRoundDelegate<ExtArgs, {
+        omit: OmitOpts;
+    }>;
+    get recommendationItem(): Prisma.RecommendationItemDelegate<ExtArgs, {
+        omit: OmitOpts;
+    }>;
+    get vote(): Prisma.VoteDelegate<ExtArgs, {
+        omit: OmitOpts;
+    }>;
+    get finalVote(): Prisma.FinalVoteDelegate<ExtArgs, {
+        omit: OmitOpts;
+    }>;
+    get finalSelection(): Prisma.FinalSelectionDelegate<ExtArgs, {
+        omit: OmitOpts;
+    }>;
+    get restaurantRecommendation(): Prisma.RestaurantRecommendationDelegate<ExtArgs, {
+        omit: OmitOpts;
+    }>;
+    get restaurantSelection(): Prisma.RestaurantSelectionDelegate<ExtArgs, {
+        omit: OmitOpts;
+    }>;
+    get bill(): Prisma.BillDelegate<ExtArgs, {
+        omit: OmitOpts;
+    }>;
+    get receipt(): Prisma.ReceiptDelegate<ExtArgs, {
+        omit: OmitOpts;
+    }>;
+    get receiptItem(): Prisma.ReceiptItemDelegate<ExtArgs, {
+        omit: OmitOpts;
+    }>;
+    get itemShare(): Prisma.ItemShareDelegate<ExtArgs, {
+        omit: OmitOpts;
+    }>;
+    get userPayment(): Prisma.UserPaymentDelegate<ExtArgs, {
+        omit: OmitOpts;
+    }>;
 }
 export declare function getPrismaClientClass(): PrismaClientConstructor;

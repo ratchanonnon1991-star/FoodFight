@@ -13,11 +13,14 @@ const envSchema = zod_1.default.object({
     JWT_EXPIRES_IN: zod_1.default.string().min(1),
     GOOGLE_CLIENT_ID: zod_1.default.string().min(1),
     LINE_CHANNEL_ID: zod_1.default.string().min(1),
+    LINE_CHANNEL_SECRET: zod_1.default.string().min(1),
+    LINE_CALLBACK_URL: zod_1.default.string().url(),
     MAIL_HOST: zod_1.default.string().min(1),
     MAIL_PORT: zod_1.default.coerce.number().int().min(0).max(65535),
     MAIL_USER: zod_1.default.string().min(1),
     MAIL_PASSWORD: zod_1.default.string().min(1),
     MAIL_FROM: zod_1.default.string().min(1),
+    FRONTEND_URL: zod_1.default.string().url().default('http://localhost:3000'),
 });
 function validate(config) {
     const parsed = envSchema.safeParse(config);
