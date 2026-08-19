@@ -3,10 +3,13 @@ import type {
   AuthResult,
   LoginInput,
   RegisterInput,
+  ForgotPasswordInput,
+  ResetPasswordInput,
   EmailVerificationInput,
   ChangeEmailInput,
   EmailVerificationChallenge,
 } from "../types/auth-types";
+import type { LoginResultData } from "./auth-service";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8888";
 
@@ -54,7 +57,7 @@ async function readApiError(
 // LOGIN
 // =========================
 
-async function login(input: LoginInput): Promise<AuthResult> {
+async function login(input: LoginInput): Promise<AuthResult<LoginResultData>> {
   try {
     const response = await fetch(`${API_URL}/auth/login`, {
       method: "POST",
@@ -95,6 +98,7 @@ async function login(input: LoginInput): Promise<AuthResult> {
 
     return {
       ok: true,
+      data: {},
     };
   } catch {
     return {
@@ -173,6 +177,78 @@ async function register(
         resendAvailableAt: new Date(data.resendAvailableAt).getTime(),
       },
     };
+  } catch {
+    return {
+      ok: false,
+      error: {
+        kind: "network",
+        message: "Unable to connect to the server.",
+      },
+    };
+  }
+}
+
+// =========================
+// PASSWORD RECOVERY
+// =========================
+
+async function forgotPassword(input: ForgotPasswordInput): Promise<AuthResult> {
+  try {
+    const response = await fetch(`${API_URL}/auth/forgot-password`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ email: input.email }),
+    });
+
+    if (!response.ok) {
+      return {
+        ok: false,
+        error: {
+          kind: "unknown",
+          message: await readApiError(response, "Unable to request a reset code."),
+        },
+      };
+    }
+
+    return { ok: true };
+  } catch {
+    return {
+      ok: false,
+      error: {
+        kind: "network",
+        message: "Unable to connect to the server.",
+      },
+    };
+  }
+}
+
+async function resetPassword(input: ResetPasswordInput): Promise<AuthResult> {
+  try {
+    const response = await fetch(`${API_URL}/auth/reset-password`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        email: input.email,
+        otp: input.otp,
+        password: input.newPassword,
+      }),
+    });
+
+    if (!response.ok) {
+      return {
+        ok: false,
+        error: {
+          kind: "unknown",
+          message: await readApiError(response, "Unable to reset your password."),
+        },
+      };
+    }
+
+    return { ok: true };
   } catch {
     return {
       ok: false,
@@ -464,6 +540,8 @@ async function beginLineAuth(idToken: string): Promise<AuthResult> {
 export const apiAuthService: AuthService = {
   register,
   login,
+  forgotPassword,
+  resetPassword,
   verifyEmail,
   resendVerificationCode,
   changeVerificationEmail,
