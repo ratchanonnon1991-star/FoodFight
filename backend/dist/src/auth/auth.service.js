@@ -50,9 +50,172 @@ let AuthService = class AuthService {
             email: dto.email,
             passwordHash,
         });
+        const otp = this.generateOtp();
+        const otpHash = await this.bcryptService.hash(otp);
+        const now = new Date();
+        const expiresAt = new Date(now.getTime() + 5 * 60 * 1000);
+        const resendAvailableAt = new Date(now.getTime() + 60 * 1000);
+        await this.prisma.emailVerification.create({
+            data: {
+                userId: user.id,
+                otpHash,
+                expiresAt,
+                resendAvailableAt,
+            },
+        });
+        await this.mailService.sendEmailVerificationOtp(user.email, otp);
         return {
             id: user.id,
             email: user.email,
+            expiresAt,
+            resendAvailableAt,
+            message: 'Verification code has been sent to your email',
+        };
+    }
+    async verifyEmail(dto) {
+        const user = await this.userService.findByEmail(dto.email);
+        if (!user) {
+            throw new common_1.UnauthorizedException('Invalid verification code');
+        }
+        if (user.emailVerified) {
+            return {
+                message: 'Email is already verified',
+            };
+        }
+        const verification = await this.prisma.emailVerification.findUnique({
+            where: {
+                userId: user.id,
+            },
+        });
+        if (!verification) {
+            throw new common_1.UnauthorizedException('Verification code expired. Please request a new code.');
+        }
+        if (verification.expiresAt < new Date()) {
+            throw new common_1.UnauthorizedException('Verification code expired. Please request a new code.');
+        }
+        const otpMatches = await this.bcryptService.compare(dto.code, verification.otpHash);
+        if (!otpMatches) {
+            throw new common_1.UnauthorizedException('Invalid verification code. Please check the code and try again.');
+        }
+        await this.prisma.$transaction([
+            this.prisma.user.update({
+                where: {
+                    id: user.id,
+                },
+                data: {
+                    emailVerified: true,
+                },
+            }),
+            this.prisma.emailVerification.delete({
+                where: {
+                    userId: user.id,
+                },
+            }),
+        ]);
+        return {
+            message: 'Email verified successfully',
+        };
+    }
+    async resendVerification(dto) {
+        const message = 'Verification code has been sent to your email';
+        const user = await this.userService.findByEmail(dto.email);
+        if (!user) {
+            return { message };
+        }
+        if (user.emailVerified) {
+            return {
+                message: 'Email is already verified',
+            };
+        }
+        const existing = await this.prisma.emailVerification.findUnique({
+            where: {
+                userId: user.id,
+            },
+        });
+        const now = new Date();
+        if (existing && existing.resendAvailableAt > now) {
+            return {
+                message,
+                expiresAt: existing.expiresAt,
+                resendAvailableAt: existing.resendAvailableAt,
+            };
+        }
+        const otp = this.generateOtp();
+        const otpHash = await this.bcryptService.hash(otp);
+        const expiresAt = new Date(now.getTime() + 5 * 60 * 1000);
+        const resendAvailableAt = new Date(now.getTime() + 60 * 1000);
+        await this.prisma.emailVerification.upsert({
+            where: {
+                userId: user.id,
+            },
+            update: {
+                otpHash,
+                expiresAt,
+                resendAvailableAt,
+            },
+            create: {
+                userId: user.id,
+                otpHash,
+                expiresAt,
+                resendAvailableAt,
+            },
+        });
+        await this.mailService.sendEmailVerificationOtp(user.email, otp);
+        return {
+            message,
+            expiresAt,
+            resendAvailableAt,
+        };
+    }
+    async changeVerificationEmail(dto) {
+        const user = await this.userService.findByEmail(dto.currentEmail);
+        if (!user) {
+            throw new common_1.UnauthorizedException('Verification session not found');
+        }
+        if (user.emailVerified) {
+            throw new common_1.ConflictException('Email is already verified');
+        }
+        const existingUser = await this.userService.findByEmail(dto.newEmail);
+        if (existingUser && existingUser.id !== user.id) {
+            throw new common_1.ConflictException('Email already exists');
+        }
+        const otp = this.generateOtp();
+        const otpHash = await this.bcryptService.hash(otp);
+        const now = new Date();
+        const expiresAt = new Date(now.getTime() + 5 * 60 * 1000);
+        const resendAvailableAt = new Date(now.getTime() + 60 * 1000);
+        await this.prisma.$transaction(async (tx) => {
+            await tx.user.update({
+                where: {
+                    id: user.id,
+                },
+                data: {
+                    email: dto.newEmail,
+                },
+            });
+            await tx.emailVerification.upsert({
+                where: {
+                    userId: user.id,
+                },
+                update: {
+                    otpHash,
+                    expiresAt,
+                    resendAvailableAt,
+                },
+                create: {
+                    userId: user.id,
+                    otpHash,
+                    expiresAt,
+                    resendAvailableAt,
+                },
+            });
+        });
+        await this.mailService.sendEmailVerificationOtp(dto.newEmail, otp);
+        return {
+            email: dto.newEmail,
+            expiresAt,
+            resendAvailableAt,
+            message: 'Verification code has been sent to your new email',
         };
     }
     async login(dto) {
@@ -64,12 +227,17 @@ let AuthService = class AuthService {
         if (!passwordMatches) {
             throw new common_1.UnauthorizedException('Invalid email or password');
         }
+        if (!user.emailVerified) {
+            throw new common_1.UnauthorizedException('Please verify your email before logging in');
+        }
         const accessToken = await this.jwtService.sign({
             sub: user.id,
             email: user.email,
             role: user.role,
         });
-        return { accessToken };
+        return {
+            accessToken,
+        };
     }
     async loginWithGoogle(dto) {
         const profile = await this.googleAuthService.verifyIdToken(dto.idToken);
@@ -82,11 +250,18 @@ let AuthService = class AuthService {
     }
     async loginWithLine(dto) {
         const profile = await this.lineAuthService.verifyIdToken(dto.idToken);
+        const email = profile.email ?? `line_${profile.sub}@line.local`;
         return this.loginWithOAuth(client_1.AuthProvider.LINE, {
             providerAccountId: profile.sub,
-            email: profile.email,
+            email,
             displayName: dto.displayName || profile.name,
             avatarUrl: profile.picture,
+        });
+    }
+    async loginWithLineCode(dto) {
+        const idToken = await this.lineAuthService.exchangeCodeForIdToken(dto.code);
+        return this.loginWithLine({
+            idToken,
         });
     }
     async loginWithOAuth(provider, profile) {
@@ -115,7 +290,9 @@ let AuthService = class AuthService {
             email: user.email,
             role: user.role,
         });
-        return { accessToken };
+        return {
+            accessToken,
+        };
     }
     async forgotPassword(dto) {
         const message = 'A password reset code has been sent to your email';
@@ -131,7 +308,9 @@ let AuthService = class AuthService {
         const tokenHash = await this.bcryptService.hash(otp);
         await this.passwordResetService.create(user.id, tokenHash);
         await this.mailService.sendPasswordResetOtp(user.email, otp);
-        return { message };
+        return {
+            message,
+        };
     }
     async resetPassword(dto) {
         const user = await this.userService.findByEmail(dto.email);
@@ -150,7 +329,9 @@ let AuthService = class AuthService {
             await this.userService.updatePassword(user.id, dto.password, tx);
             await this.passwordResetService.markUsed(passwordReset.id, tx);
         });
-        return { message: 'Password has been reset successfully' };
+        return {
+            message: 'Password has been reset successfully',
+        };
     }
     logout() { }
     generateOtp() {

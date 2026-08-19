@@ -56,4 +56,18 @@ test.describe("Frontend Smoke Tests", () => {
     const nav = page.getByRole("navigation", { name: "Design System Navigation" });
     await expect(nav).toBeVisible();
   });
+
+  test("loads the Food Profile Allergies page successfully", async ({ page }) => {
+    await page.goto("/food-profile/allergies");
+
+    const heading = page.getByRole("heading", { name: "Do you have any food allergies?", level: 1 });
+    await expect(heading).toBeVisible();
+
+    const noAllergiesOption = page.getByRole("checkbox", { name: /i do not have any food allergies/i });
+    await expect(noAllergiesOption).toBeVisible();
+
+    const nextButton = page.getByRole("button", { name: "Next", exact: true });
+    await expect(nextButton).toBeVisible();
+    await expect(nextButton).toBeDisabled();
+  });
 });

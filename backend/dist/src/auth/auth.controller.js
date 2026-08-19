@@ -17,12 +17,16 @@ const common_1 = require("@nestjs/common");
 const current_user_decorator_1 = require("../common/decorators/current-user.decorator");
 const public_decorator_1 = require("../common/decorators/public.decorator");
 const auth_service_1 = require("./auth.service");
+const change_verification_email_dto_1 = require("./dto/change-verification-email.dto");
 const forgot_password_dto_1 = require("./dto/forgot-password.dto");
 const google_login_dto_1 = require("./dto/google-login.dto");
+const line_code_dto_1 = require("./dto/line-code.dto");
 const line_login_dto_1 = require("./dto/line-login.dto");
 const login_dto_1 = require("./dto/login.dto");
 const register_dto_1 = require("./dto/register.dto");
+const resend_verification_dto_1 = require("./dto/resend-verification.dto");
 const reset_password_dto_1 = require("./dto/reset-password.dto");
+const verify_email_dto_1 = require("./dto/verify-email.dto");
 let AuthController = class AuthController {
     authService;
     constructor(authService) {
@@ -30,6 +34,15 @@ let AuthController = class AuthController {
     }
     register(dto) {
         return this.authService.register(dto);
+    }
+    verifyEmail(dto) {
+        return this.authService.verifyEmail(dto);
+    }
+    resendVerification(dto) {
+        return this.authService.resendVerification(dto);
+    }
+    changeVerificationEmail(dto) {
+        return this.authService.changeVerificationEmail(dto);
     }
     login(dto) {
         return this.authService.login(dto);
@@ -39,6 +52,9 @@ let AuthController = class AuthController {
     }
     loginWithLine(dto) {
         return this.authService.loginWithLine(dto);
+    }
+    loginWithLineCode(dto) {
+        return this.authService.loginWithLineCode(dto);
     }
     forgotPassword(dto) {
         return this.authService.forgotPassword(dto);
@@ -62,6 +78,33 @@ __decorate([
     __metadata("design:paramtypes", [register_dto_1.RegisterDto]),
     __metadata("design:returntype", void 0)
 ], AuthController.prototype, "register", null);
+__decorate([
+    (0, public_decorator_1.Public)(),
+    (0, common_1.HttpCode)(common_1.HttpStatus.OK),
+    (0, common_1.Post)('verify-email'),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [verify_email_dto_1.VerifyEmailDto]),
+    __metadata("design:returntype", void 0)
+], AuthController.prototype, "verifyEmail", null);
+__decorate([
+    (0, public_decorator_1.Public)(),
+    (0, common_1.HttpCode)(common_1.HttpStatus.OK),
+    (0, common_1.Post)('resend-verification'),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [resend_verification_dto_1.ResendVerificationDto]),
+    __metadata("design:returntype", void 0)
+], AuthController.prototype, "resendVerification", null);
+__decorate([
+    (0, public_decorator_1.Public)(),
+    (0, common_1.HttpCode)(common_1.HttpStatus.OK),
+    (0, common_1.Post)('change-verification-email'),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [change_verification_email_dto_1.ChangeVerificationEmailDto]),
+    __metadata("design:returntype", void 0)
+], AuthController.prototype, "changeVerificationEmail", null);
 __decorate([
     (0, public_decorator_1.Public)(),
     (0, common_1.HttpCode)(common_1.HttpStatus.OK),
@@ -89,6 +132,15 @@ __decorate([
     __metadata("design:paramtypes", [line_login_dto_1.LineLoginDto]),
     __metadata("design:returntype", void 0)
 ], AuthController.prototype, "loginWithLine", null);
+__decorate([
+    (0, public_decorator_1.Public)(),
+    (0, common_1.HttpCode)(common_1.HttpStatus.OK),
+    (0, common_1.Post)('line/code'),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [line_code_dto_1.LineCodeDto]),
+    __metadata("design:returntype", void 0)
+], AuthController.prototype, "loginWithLineCode", null);
 __decorate([
     (0, public_decorator_1.Public)(),
     (0, common_1.HttpCode)(common_1.HttpStatus.OK),

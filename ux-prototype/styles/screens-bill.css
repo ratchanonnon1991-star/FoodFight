@@ -1,0 +1,475 @@
+/**
+ * FoodFighter UX Prototype — Split Bill, Receipt OCR & Payment Screen Styles (V5)
+ * 
+ * Styles for:
+ *   - Split Bill Overview & Step Journey Cards
+ *   - Simulated Receipt Scanner Viewfinder & Laser Animation
+ *   - Thermal Paper Receipt Styled Container
+ *   - Interactive Receipt Line Item Editor
+ *   - Member Item Assignment Matrix & Avatar Chips
+ *   - Bill Summary Accordion & Reconciliation Badge
+ *   - Real-Time Payment Status List & All Settled Celebration
+ */
+
+/* ==========================================================================
+   1. Split Bill Overview & Journey Cards
+   ========================================================================== */
+.bill-context-card {
+  background: linear-gradient(135deg, rgba(72, 40, 74, 0.06) 0%, rgba(217, 107, 79, 0.08) 100%);
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  padding: 1.25rem;
+  margin-bottom: 1.25rem;
+}
+
+.bill-step-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.bill-step-card {
+  background: #FFFFFF;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: 0.9rem 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  box-shadow: var(--shadow-sm);
+}
+
+.bill-step-num {
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius-full);
+  background: var(--color-brand-secondary);
+  color: #FFFFFF;
+  font-size: 0.8rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+/* ==========================================================================
+   2. Simulated Receipt Scanner Viewfinder
+   ========================================================================== */
+.scanner-viewport {
+  position: relative;
+  width: 100%;
+  height: 380px;
+  background: #1A1A1E;
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #FFFFFF;
+  margin-bottom: 1.25rem;
+  box-shadow: var(--shadow-lg);
+}
+
+.scanner-receipt-frame {
+  width: 230px;
+  height: 270px;
+  border: 2px dashed rgba(255, 255, 255, 0.5);
+  border-radius: 12px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.scanner-corner {
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  border-color: var(--color-brand-secondary);
+  border-style: solid;
+}
+
+.scanner-corner-tl { top: -2px; left: -2px; border-width: 3px 0 0 3px; }
+.scanner-corner-tr { top: -2px; right: -2px; border-width: 3px 3px 0 0; }
+.scanner-corner-bl { bottom: -2px; left: -2px; border-width: 0 0 3px 3px; }
+.scanner-corner-br { bottom: -2px; right: -2px; border-width: 0 3px 3px 0; }
+
+.scanner-laser-line {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, #FF5252, #FF1744, transparent);
+  box-shadow: 0 0 10px #FF5252;
+  animation: laserScan 1.6s ease-in-out infinite alternate;
+}
+
+@keyframes laserScan {
+  0% { top: 5%; opacity: 0.4; }
+  50% { opacity: 1; }
+  100% { top: 92%; opacity: 0.4; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scanner-laser-line {
+    animation: none;
+    top: 50%;
+    opacity: 0.8;
+  }
+}
+
+.scanner-status-pill {
+  position: absolute;
+  bottom: 20px;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(8px);
+  padding: 0.4rem 0.9rem;
+  border-radius: var(--radius-full);
+  font-size: 0.775rem;
+  font-weight: 600;
+  color: #FFFFFF;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+/* ==========================================================================
+   3. Thermal Paper Receipt Container & Line Item Editor
+   ========================================================================== */
+.receipt-paper {
+  background: #FCFCFA;
+  border: 1px solid #E5E2D9;
+  border-radius: var(--radius-lg);
+  padding: 1.25rem 1rem;
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.05);
+  margin-bottom: 1.25rem;
+  position: relative;
+}
+
+.receipt-paper-header {
+  text-align: center;
+  border-bottom: 1.5px dashed #D5D1C5;
+  padding-bottom: 0.85rem;
+  margin-bottom: 1rem;
+}
+
+.receipt-item-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.receipt-item-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: #FFFFFF;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 0.5rem 0.65rem;
+}
+
+.receipt-item-row.invalid-row {
+  border-color: #D32F2F;
+  background: #FFF8F8;
+}
+
+.receipt-input-name {
+  flex: 2;
+  font-size: 0.825rem;
+  font-weight: 600;
+  border: 1px solid transparent;
+  padding: 0.25rem 0.4rem;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--color-text-primary);
+}
+
+.receipt-input-name:focus {
+  background: #FFFFFF;
+  border-color: var(--color-brand-secondary);
+}
+
+.receipt-input-qty {
+  width: 44px;
+  text-align: center;
+  font-size: 0.825rem;
+  font-weight: 600;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  padding: 0.25rem 0.2rem;
+  background: #FFFFFF;
+}
+
+.receipt-input-price {
+  width: 68px;
+  text-align: right;
+  font-size: 0.825rem;
+  font-weight: 700;
+  font-family: monospace;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  padding: 0.25rem 0.35rem;
+  background: #FFFFFF;
+}
+
+.receipt-btn-delete {
+  background: transparent;
+  border: none;
+  color: #8E8A85;
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-sm);
+  transition: color var(--transition-fast);
+}
+
+.receipt-btn-delete:hover {
+  color: #D32F2F;
+  background: #FEE8E8;
+}
+
+.receipt-summary-box {
+  border-top: 1.5px dashed #D5D1C5;
+  padding-top: 0.85rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.receipt-total-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: var(--color-brand-primary);
+  margin-top: 0.35rem;
+}
+
+/* ==========================================================================
+   4. Member Item Assignment Matrix (Select Who Ate What)
+   ========================================================================== */
+.assign-item-card {
+  background: #FFFFFF;
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: 0.9rem 1rem;
+  margin-bottom: 0.85rem;
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  transition: border-color var(--transition-fast);
+}
+
+.assign-item-card.unassigned {
+  border-color: #E08A00;
+  background: #FFFDF9;
+}
+
+.assign-item-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.assign-item-name {
+  font-size: 0.925rem;
+  font-weight: 700;
+  color: var(--color-brand-primary);
+}
+
+.assign-item-price {
+  font-size: 0.95rem;
+  font-weight: 800;
+  font-family: monospace;
+  color: var(--color-text-primary);
+}
+
+.assign-members-wrap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.assign-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.3rem 0.65rem;
+  border-radius: var(--radius-full);
+  background: var(--color-surface-subtle);
+  border: 1.5px solid var(--color-border);
+  font-size: 0.775rem;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.assign-chip:hover {
+  border-color: var(--color-brand-secondary);
+}
+
+.assign-chip.selected {
+  background: #FCF4EB;
+  border-color: var(--color-brand-secondary);
+  color: var(--color-brand-primary);
+  font-weight: 700;
+}
+
+.assign-chip-everyone {
+  background: #FFFFFF;
+  border-style: dashed;
+}
+
+.assign-chip-everyone.selected {
+  background: #48284A;
+  color: #FFFFFF;
+  border-style: solid;
+  border-color: #48284A;
+}
+
+/* Running Member Total Bar */
+.running-totals-drawer {
+  background: #FFFFFF;
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: 0.75rem 1rem;
+  margin-bottom: 1.25rem;
+  box-shadow: var(--shadow-sm);
+}
+
+.running-totals-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.running-total-pill {
+  background: var(--color-surface-subtle);
+  border-radius: var(--radius-md);
+  padding: 0.4rem 0.6rem;
+  font-size: 0.75rem;
+}
+
+/* ==========================================================================
+   5. Bill Summary Screen & Accordions
+   ========================================================================== */
+.bill-summary-hero {
+  background: linear-gradient(135deg, #FFF9F3 0%, #FFFFFF 100%);
+  border: 1.5px solid #F6D68A;
+  border-radius: var(--radius-xl);
+  padding: 1.25rem;
+  text-align: center;
+  box-shadow: var(--shadow-sm);
+  margin-bottom: 1.25rem;
+}
+
+.summary-member-card {
+  background: #FFFFFF;
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  margin-bottom: 0.75rem;
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+}
+
+.summary-member-header {
+  padding: 0.85rem 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+}
+
+.summary-member-breakdown {
+  padding: 0.75rem 1rem;
+  background: var(--color-surface-subtle);
+  border-top: 1px solid var(--color-border);
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  font-size: 0.775rem;
+}
+
+.reconciliation-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.25rem 0.65rem;
+  border-radius: var(--radius-full);
+  background: #EDF9F0;
+  color: #165E2A;
+  border: 1px solid #A6DEB4;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+/* ==========================================================================
+   6. Payment Status Screen & All Settled State
+   ========================================================================== */
+.payment-progress-hero {
+  background: #FFFFFF;
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  padding: 1.25rem;
+  margin-bottom: 1.25rem;
+  box-shadow: var(--shadow-sm);
+}
+
+.payment-member-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.85rem 1rem;
+  background: #FFFFFF;
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  margin-bottom: 0.65rem;
+  box-shadow: var(--shadow-sm);
+}
+
+.payment-status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.25rem 0.65rem;
+  border-radius: var(--radius-full);
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.status-paid {
+  background: #EDF9F0;
+  color: #165E2A;
+  border: 1px solid #A6DEB4;
+}
+
+.status-unpaid {
+  background: #FFF8E6;
+  color: #784C00;
+  border: 1px solid #F6D68A;
+}
+
+.all-settled-card {
+  background: linear-gradient(135deg, #EDF9F0 0%, #FFFFFF 100%);
+  border: 2px solid #A6DEB4;
+  border-radius: var(--radius-xl);
+  padding: 1.5rem;
+  text-align: center;
+  box-shadow: var(--shadow-md);
+  margin-bottom: 1.25rem;
+}
