@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { GoogleLogin } from "@react-oauth/google";
+import { GoogleLogin, GoogleOAuthProvider } from "@react-oauth/google";
 import { Loader2 } from "lucide-react";
 
 import { authService } from "@/features/auth/services/auth-runtime";
@@ -171,17 +171,21 @@ export function SocialAuthButtons({
           </div>
         )}
 
-        <GoogleLogin
-          onSuccess={handleGoogleSuccess}
-          onError={() => {
-            setPending(null);
+        <GoogleOAuthProvider
+          clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID ?? ""}
+        >
+          <GoogleLogin
+            onSuccess={handleGoogleSuccess}
+            onError={() => {
+              setPending(null);
 
-            onError?.("Google authentication failed. Please try again.");
-          }}
-          text="continue_with"
-          shape="rectangular"
-          width="100%"
-        />
+              onError?.("Google authentication failed. Please try again.");
+            }}
+            text="continue_with"
+            shape="rectangular"
+            width="100%"
+          />
+        </GoogleOAuthProvider>
       </div>
 
       {/* LINE */}

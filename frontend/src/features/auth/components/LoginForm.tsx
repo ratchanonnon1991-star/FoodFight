@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ArrowLeft } from "lucide-react";
@@ -20,6 +20,7 @@ import { SocialAuthButtons } from "./SocialAuthButtons";
 
 export function LoginForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { setIsAuthenticated, setIsFoodProfileCompleted } = useAuthFlow();
   const [generalError, setGeneralError] = React.useState<string | null>(null);
   const [isSocialPending, setIsSocialPending] = React.useState(false);
@@ -41,7 +42,11 @@ export function LoginForm() {
     setIsAuthenticated(true);
     setIsFoodProfileCompleted(foodProfileComplete);
 
-    if (foodProfileComplete) {
+    const returnTo = searchParams.get("returnTo");
+
+    if (returnTo?.startsWith("/") && !returnTo.startsWith("//")) {
+      router.push(returnTo);
+    } else if (foodProfileComplete) {
       router.push(ROUTES.AUTHENTICATED_HOME);
     } else {
       router.push(ROUTES.FOOD_PROFILE.ALLERGIES);

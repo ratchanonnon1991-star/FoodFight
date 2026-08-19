@@ -24,7 +24,10 @@ export const ROUTES = {
   ROOM: {
     CREATE: "/room/create",
     JOIN: "/room/join",
+    PREVIEW: "/room/preview",
+    LOBBY: (roomId: string) => `/room/${encodeURIComponent(roomId)}`,
   },
+  ROOM_INVITE: (inviteToken: string) => `/join/${encodeURIComponent(inviteToken)}`,
   HISTORY: "/history",
   BILLS: "/bills",
   PROFILE: "/profile",
