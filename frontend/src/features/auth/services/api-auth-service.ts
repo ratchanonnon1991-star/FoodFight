@@ -9,8 +9,6 @@ import type {
   ForgotPasswordInput,
   ResetPasswordInput,
   EmailVerificationChallenge,
-  ForgotPasswordInput,
-  ResetPasswordInput,
 } from "../types/auth-types";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8888";
