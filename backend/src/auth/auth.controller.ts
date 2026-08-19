@@ -105,6 +105,6 @@ export class AuthController {
 
   @Get('me')
   getMe(@CurrentUser() user: AccessTokenPayload) {
-    return user;
+    return this.authService.getCurrentUser(user.sub);
   }
 }

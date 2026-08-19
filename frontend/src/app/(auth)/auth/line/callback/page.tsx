@@ -3,6 +3,8 @@
 import * as React from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 
+import { ROUTES } from "@/config/routes";
+
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8888";
 
 const LINE_PROCESSED_CODE_KEY = "line_oauth_processed_code";
@@ -16,8 +18,11 @@ export default function LineCallbackPage() {
   React.useEffect(() => {
     const handleCallback = async () => {
       const code = searchParams.get("code");
+
       const state = searchParams.get("state");
+
       const providerError = searchParams.get("error");
+
       const providerErrorDescription = searchParams.get("error_description");
 
       const storedState = sessionStorage.getItem("line_oauth_state");
@@ -28,16 +33,19 @@ export default function LineCallbackPage() {
             ? `${providerError}: ${providerErrorDescription}`
             : `LINE returned an error: ${providerError}`,
         );
+
         return;
       }
 
       if (!code) {
         setError("LINE authorization code is missing.");
+
         return;
       }
 
       if (!state || !storedState || state !== storedState) {
         setError("Invalid LINE authentication state.");
+
         return;
       }
 
@@ -47,8 +55,8 @@ export default function LineCallbackPage() {
         return;
       }
 
-      // Mark before calling backend
-      // so React Strict Mode cannot exchange same code twice.
+      // Prevent React Strict Mode
+      // from exchanging the same LINE code twice.
       sessionStorage.setItem(LINE_PROCESSED_CODE_KEY, code);
 
       try {
@@ -65,7 +73,6 @@ export default function LineCallbackPage() {
         const data = await response.json().catch(() => null);
 
         if (!response.ok) {
-          // Allow a completely new LINE authorization attempt.
           sessionStorage.removeItem(LINE_PROCESSED_CODE_KEY);
 
           setError(
@@ -91,7 +98,15 @@ export default function LineCallbackPage() {
 
         sessionStorage.removeItem(LINE_PROCESSED_CODE_KEY);
 
-        router.replace("/");
+        const foodProfileComplete = data.foodProfileComplete ?? false;
+
+        if (foodProfileComplete) {
+          router.replace(ROUTES.AUTHENTICATED_HOME);
+
+          return;
+        }
+
+        router.replace(ROUTES.FOOD_PROFILE.ALLERGIES);
       } catch {
         sessionStorage.removeItem(LINE_PROCESSED_CODE_KEY);
 

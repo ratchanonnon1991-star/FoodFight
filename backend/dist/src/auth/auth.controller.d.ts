@@ -40,15 +40,19 @@ export declare class AuthController {
     }>;
     login(dto: LoginDto): Promise<{
         accessToken: string;
+        foodProfileComplete: boolean;
     }>;
     loginWithGoogle(dto: GoogleLoginDto): Promise<{
         accessToken: string;
+        foodProfileComplete: boolean;
     }>;
     loginWithLine(dto: LineLoginDto): Promise<{
         accessToken: string;
+        foodProfileComplete: boolean;
     }>;
     loginWithLineCode(dto: LineCodeDto): Promise<{
         accessToken: string;
+        foodProfileComplete: boolean;
     }>;
     forgotPassword(dto: ForgotPasswordDto): Promise<{
         message: string;
@@ -57,5 +61,11 @@ export declare class AuthController {
         message: string;
     }>;
     logout(): void;
-    getMe(user: AccessTokenPayload): AccessTokenPayload;
+    getMe(user: AccessTokenPayload): Promise<{
+        sub: string;
+        email: string;
+        role: import("../database/generated/prisma/enums").Role;
+        displayName: string;
+        avatarUrl: string | null;
+    }>;
 }

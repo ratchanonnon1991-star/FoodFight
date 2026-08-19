@@ -245,6 +245,12 @@ export async function saveFoodProfile(
     return { ok: true, data: mockResponse };
   }
 
+  const accessToken =
+    token ??
+    (typeof window !== "undefined"
+      ? window.localStorage.getItem("accessToken") ?? undefined
+      : undefined);
+
   // Real HTTP execution
-  return saveMyFoodProfile(input, token);
+  return saveMyFoodProfile(input, accessToken);
 }

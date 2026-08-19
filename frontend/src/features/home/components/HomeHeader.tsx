@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { Bell, User } from "lucide-react";
+import { Bell } from "lucide-react";
 import type { AuthenticatedUserDisplay } from "../types/home-types";
 
 export interface HomeHeaderProps {
@@ -15,6 +15,14 @@ export function HomeHeader({
   onNotificationClick,
   onProfileClick,
 }: HomeHeaderProps) {
+  const [imageFailed, setImageFailed] = React.useState(false);
+
+  React.useEffect(() => {
+    setImageFailed(false);
+  }, [user.avatarUrl]);
+
+  const initial = user.name.trim().charAt(0).toUpperCase() || "?";
+
   return (
     <header className="flex items-start justify-between gap-3 pt-2">
       {/* Greeting Text */}
@@ -44,9 +52,24 @@ export function HomeHeader({
           type="button"
           onClick={onProfileClick}
           aria-label="View user profile"
+          title={user.name}
           className="size-10 rounded-full border border-border/80 bg-surface flex items-center justify-center text-text-secondary hover:text-brand-primary hover:border-brand-secondary/50 transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-secondary cursor-pointer shadow-2xs"
         >
-          <User className="size-5" />
+          {user.avatarUrl && !imageFailed ? (
+            <img
+              src={user.avatarUrl}
+              alt={`${user.name}'s profile`}
+              className="size-full rounded-full object-cover"
+              onError={() => setImageFailed(true)}
+            />
+          ) : (
+            <span
+              aria-hidden="true"
+              className="flex size-full items-center justify-center rounded-full bg-brand-primary text-sm font-bold text-white"
+            >
+              {initial}
+            </span>
+          )}
         </button>
       </div>
     </header>

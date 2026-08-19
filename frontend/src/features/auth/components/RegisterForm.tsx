@@ -250,7 +250,13 @@ export function RegisterForm() {
       {/* Social Auth */}
       <SocialAuthButtons
         disabled={isSubmitting}
-        onSuccess={() => router.push(ROUTES.FOOD_PROFILE.ALLERGIES)}
+        onSuccess={(foodProfileComplete) =>
+          router.push(
+            foodProfileComplete
+              ? ROUTES.AUTHENTICATED_HOME
+              : ROUTES.FOOD_PROFILE.ALLERGIES,
+          )
+        }
         onError={(message) => setGeneralError(message)}
       />
 

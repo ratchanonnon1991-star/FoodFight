@@ -66,7 +66,7 @@ let AuthController = class AuthController {
         return this.authService.logout();
     }
     getMe(user) {
-        return user;
+        return this.authService.getCurrentUser(user.sub);
     }
 };
 exports.AuthController = AuthController;

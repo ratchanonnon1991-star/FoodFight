@@ -9,7 +9,7 @@ import { cn } from "@/lib/utils/cn";
 
 export interface SocialAuthButtonsProps {
   disabled?: boolean;
-  onSuccess?: () => void;
+  onSuccess?: (foodProfileComplete: boolean) => void;
   onError?: (message: string) => void;
   onPendingChange?: (isPending: boolean) => void;
   googleLabel?: string;
@@ -87,7 +87,7 @@ export function SocialAuthButtons({
       const result = await authService.beginGoogleAuth(idToken);
 
       if (result.ok) {
-        onSuccess?.();
+        onSuccess?.(result.data?.foodProfileComplete ?? false);
       } else {
         onError?.(result.error.message);
       }

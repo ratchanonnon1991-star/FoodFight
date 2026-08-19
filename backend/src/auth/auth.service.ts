@@ -330,8 +330,22 @@ export class AuthService {
       role: user.role,
     });
 
+    return this.createAuthResponse(user.id, accessToken);
+  }
+
+  async getCurrentUser(userId: string) {
+    const user = await this.userService.findById(userId);
+
+    if (!user) {
+      throw new UnauthorizedException('User not found');
+    }
+
     return {
-      accessToken,
+      sub: user.id,
+      email: user.email,
+      role: user.role,
+      displayName: user.displayName,
+      avatarUrl: user.avatarUrl,
     };
   }
 
@@ -423,8 +437,18 @@ export class AuthService {
       role: user.role,
     });
 
+    return this.createAuthResponse(user.id, accessToken);
+  }
+
+  private async createAuthResponse(userId: string, accessToken: string) {
+    const foodProfile = await this.prisma.foodProfile.findUnique({
+      where: { userId },
+      select: { id: true },
+    });
+
     return {
       accessToken,
+      foodProfileComplete: Boolean(foodProfile),
     };
   }
 

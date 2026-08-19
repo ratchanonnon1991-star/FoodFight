@@ -1,20 +1,21 @@
-import type { AuthService } from "./auth-service";
+import type { AuthService, LoginResultData } from "./auth-service";
+
 import type {
   AuthResult,
   LoginInput,
   RegisterInput,
-  ForgotPasswordInput,
-  ResetPasswordInput,
   EmailVerificationInput,
   ChangeEmailInput,
+  ForgotPasswordInput,
+  ResetPasswordInput,
   EmailVerificationChallenge,
 } from "../types/auth-types";
-import type { LoginResultData } from "./auth-service";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8888";
 
 type LoginResponse = {
   accessToken: string;
+  foodProfileComplete?: boolean;
 };
 
 type RegisterResponse = {
@@ -35,8 +36,6 @@ type VerificationChallengeResponse = {
 type ApiErrorResponse = {
   message?: string | string[];
 };
-
-type OAuthProvider = "google" | "line";
 
 async function readApiError(
   response: Response,
@@ -92,13 +91,15 @@ async function login(input: LoginInput): Promise<AuthResult<LoginResultData>> {
       };
     }
 
-    const data: LoginResponse = await response.json();
+    const data = (await response.json()) as LoginResponse;
 
     localStorage.setItem("accessToken", data.accessToken);
 
     return {
       ok: true,
-      data: {},
+      data: {
+        foodProfileComplete: data.foodProfileComplete ?? false,
+      },
     };
   } catch {
     return {
@@ -167,7 +168,7 @@ async function register(
       };
     }
 
-    const data: RegisterResponse = await response.json();
+    const data = (await response.json()) as RegisterResponse;
 
     return {
       ok: true,
@@ -177,78 +178,6 @@ async function register(
         resendAvailableAt: new Date(data.resendAvailableAt).getTime(),
       },
     };
-  } catch {
-    return {
-      ok: false,
-      error: {
-        kind: "network",
-        message: "Unable to connect to the server.",
-      },
-    };
-  }
-}
-
-// =========================
-// PASSWORD RECOVERY
-// =========================
-
-async function forgotPassword(input: ForgotPasswordInput): Promise<AuthResult> {
-  try {
-    const response = await fetch(`${API_URL}/auth/forgot-password`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ email: input.email }),
-    });
-
-    if (!response.ok) {
-      return {
-        ok: false,
-        error: {
-          kind: "unknown",
-          message: await readApiError(response, "Unable to request a reset code."),
-        },
-      };
-    }
-
-    return { ok: true };
-  } catch {
-    return {
-      ok: false,
-      error: {
-        kind: "network",
-        message: "Unable to connect to the server.",
-      },
-    };
-  }
-}
-
-async function resetPassword(input: ResetPasswordInput): Promise<AuthResult> {
-  try {
-    const response = await fetch(`${API_URL}/auth/reset-password`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        email: input.email,
-        otp: input.otp,
-        password: input.newPassword,
-      }),
-    });
-
-    if (!response.ok) {
-      return {
-        ok: false,
-        error: {
-          kind: "unknown",
-          message: await readApiError(response, "Unable to reset your password."),
-        },
-      };
-    }
-
-    return { ok: true };
   } catch {
     return {
       ok: false,
@@ -358,7 +287,7 @@ async function resendVerificationCode(
       };
     }
 
-    const data: VerificationChallengeResponse = await response.json();
+    const data = (await response.json()) as VerificationChallengeResponse;
 
     const now = Date.now();
 
@@ -369,7 +298,6 @@ async function resendVerificationCode(
         expiresAt: data.expiresAt
           ? new Date(data.expiresAt).getTime()
           : now + 5 * 60 * 1000,
-
         resendAvailableAt: data.resendAvailableAt
           ? new Date(data.resendAvailableAt).getTime()
           : now + 60 * 1000,
@@ -421,16 +349,6 @@ async function changeVerificationEmail(
         };
       }
 
-      if (response.status === 400) {
-        return {
-          ok: false,
-          error: {
-            kind: "validation",
-            message,
-          },
-        };
-      }
-
       return {
         ok: false,
         error: {
@@ -440,7 +358,7 @@ async function changeVerificationEmail(
       };
     }
 
-    const data: VerificationChallengeResponse = await response.json();
+    const data = (await response.json()) as VerificationChallengeResponse;
 
     if (!data.email || !data.expiresAt || !data.resendAvailableAt) {
       return {
@@ -472,44 +390,35 @@ async function changeVerificationEmail(
 }
 
 // =========================
-// GOOGLE / LINE
+// FORGOT PASSWORD
 // =========================
 
-async function authenticateWithOAuth(
-  provider: OAuthProvider,
-  idToken: string,
-): Promise<AuthResult> {
+async function forgotPassword(input: ForgotPasswordInput): Promise<AuthResult> {
   try {
-    const response = await fetch(`${API_URL}/auth/${provider}`, {
+    const response = await fetch(`${API_URL}/auth/forgot-password`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        idToken,
+        email: input.email,
       }),
     });
 
     if (!response.ok) {
-      const providerName = provider === "google" ? "Google" : "LINE";
-
       const message = await readApiError(
         response,
-        `Unable to authenticate with ${providerName}.`,
+        "Unable to request password reset.",
       );
 
       return {
         ok: false,
         error: {
-          kind: "unknown",
+          kind: response.status === 400 ? "validation" : "unknown",
           message,
         },
       };
     }
-
-    const data: LoginResponse = await response.json();
-
-    localStorage.setItem("accessToken", data.accessToken);
 
     return {
       ok: true,
@@ -525,12 +434,168 @@ async function authenticateWithOAuth(
   }
 }
 
-async function beginGoogleAuth(idToken: string): Promise<AuthResult> {
-  return authenticateWithOAuth("google", idToken);
+// =========================
+// RESET PASSWORD
+// =========================
+
+async function resetPassword(input: ResetPasswordInput): Promise<AuthResult> {
+  try {
+    const response = await fetch(`${API_URL}/auth/reset-password`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        email: input.email,
+        otp: input.otp,
+        password: input.newPassword,
+      }),
+    });
+
+    if (!response.ok) {
+      const message = await readApiError(response, "Unable to reset password.");
+
+      if (response.status === 401) {
+        const isExpired = message.toLowerCase().includes("expired");
+
+        return {
+          ok: false,
+          error: {
+            kind: isExpired ? "expired_code" : "invalid_code",
+            message,
+          },
+        };
+      }
+
+      return {
+        ok: false,
+        error: {
+          kind: response.status === 400 ? "validation" : "unknown",
+          message,
+        },
+      };
+    }
+
+    return {
+      ok: true,
+    };
+  } catch {
+    return {
+      ok: false,
+      error: {
+        kind: "network",
+        message: "Unable to connect to the server.",
+      },
+    };
+  }
 }
 
-async function beginLineAuth(idToken: string): Promise<AuthResult> {
-  return authenticateWithOAuth("line", idToken);
+// =========================
+// GOOGLE
+// =========================
+
+async function beginGoogleAuth(
+  idToken: string,
+): Promise<AuthResult<LoginResultData>> {
+  try {
+    const response = await fetch(`${API_URL}/auth/google`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        idToken,
+      }),
+    });
+
+    if (!response.ok) {
+      const message = await readApiError(
+        response,
+        "Unable to authenticate with Google.",
+      );
+
+      return {
+        ok: false,
+        error: {
+          kind: "unknown",
+          message,
+        },
+      };
+    }
+
+    const data = (await response.json()) as LoginResponse;
+
+    localStorage.setItem("accessToken", data.accessToken);
+
+    return {
+      ok: true,
+      data: {
+        foodProfileComplete: data.foodProfileComplete ?? false,
+      },
+    };
+  } catch {
+    return {
+      ok: false,
+      error: {
+        kind: "network",
+        message: "Unable to connect to the server.",
+      },
+    };
+  }
+}
+
+// =========================
+// LINE
+// =========================
+
+async function beginLineAuth(
+  idToken: string,
+): Promise<AuthResult<LoginResultData>> {
+  try {
+    const response = await fetch(`${API_URL}/auth/line`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        idToken,
+      }),
+    });
+
+    if (!response.ok) {
+      const message = await readApiError(
+        response,
+        "Unable to authenticate with LINE.",
+      );
+
+      return {
+        ok: false,
+        error: {
+          kind: "unknown",
+          message,
+        },
+      };
+    }
+
+    const data = (await response.json()) as LoginResponse;
+
+    localStorage.setItem("accessToken", data.accessToken);
+
+    return {
+      ok: true,
+      data: {
+        foodProfileComplete: data.foodProfileComplete ?? false,
+      },
+    };
+  } catch {
+    return {
+      ok: false,
+      error: {
+        kind: "network",
+        message: "Unable to connect to the server.",
+      },
+    };
+  }
 }
 
 // =========================
@@ -540,11 +605,11 @@ async function beginLineAuth(idToken: string): Promise<AuthResult> {
 export const apiAuthService: AuthService = {
   register,
   login,
-  forgotPassword,
-  resetPassword,
   verifyEmail,
   resendVerificationCode,
   changeVerificationEmail,
+  forgotPassword,
+  resetPassword,
   beginGoogleAuth,
   beginLineAuth,
 };
