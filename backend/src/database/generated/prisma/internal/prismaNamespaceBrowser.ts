@@ -52,6 +52,7 @@ export const AnyNull = runtime.AnyNull
 
 export const ModelName = {
   User: 'User',
+  PaymentAccount: 'PaymentAccount',
   Account: 'Account',
   EmailVerification: 'EmailVerification',
   PasswordReset: 'PasswordReset',
@@ -104,6 +105,20 @@ export const UserScalarFieldEnum = {
 } as const
 
 export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum]
+
+
+export const PaymentAccountScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  type: 'type',
+  accountName: 'accountName',
+  promptPayId: 'promptPayId',
+  qrImageUrl: 'qrImageUrl',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type PaymentAccountScalarFieldEnum = (typeof PaymentAccountScalarFieldEnum)[keyof typeof PaymentAccountScalarFieldEnum]
 
 
 export const AccountScalarFieldEnum = {
@@ -383,6 +398,7 @@ export const ReceiptItemScalarFieldEnum = {
   id: 'id',
   billId: 'billId',
   name: 'name',
+  imageUrl: 'imageUrl',
   quantity: 'quantity',
   unitPrice: 'unitPrice',
   totalPrice: 'totalPrice',
@@ -410,6 +426,7 @@ export const UserPaymentScalarFieldEnum = {
   userId: 'userId',
   amount: 'amount',
   status: 'status',
+  slipImageUrl: 'slipImageUrl',
   paidAt: 'paidAt',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'

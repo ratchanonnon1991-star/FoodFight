@@ -12,6 +12,7 @@ export declare const JsonNull: import("@prisma/client/runtime/client").JsonNullC
 export declare const AnyNull: import("@prisma/client/runtime/client").AnyNullClass;
 export declare const ModelName: {
     readonly User: "User";
+    readonly PaymentAccount: "PaymentAccount";
     readonly Account: "Account";
     readonly EmailVerification: "EmailVerification";
     readonly PasswordReset: "PasswordReset";
@@ -54,6 +55,17 @@ export declare const UserScalarFieldEnum: {
     readonly updatedAt: "updatedAt";
 };
 export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum];
+export declare const PaymentAccountScalarFieldEnum: {
+    readonly id: "id";
+    readonly userId: "userId";
+    readonly type: "type";
+    readonly accountName: "accountName";
+    readonly promptPayId: "promptPayId";
+    readonly qrImageUrl: "qrImageUrl";
+    readonly createdAt: "createdAt";
+    readonly updatedAt: "updatedAt";
+};
+export type PaymentAccountScalarFieldEnum = (typeof PaymentAccountScalarFieldEnum)[keyof typeof PaymentAccountScalarFieldEnum];
 export declare const AccountScalarFieldEnum: {
     readonly id: "id";
     readonly userId: "userId";
@@ -277,6 +289,7 @@ export declare const ReceiptItemScalarFieldEnum: {
     readonly id: "id";
     readonly billId: "billId";
     readonly name: "name";
+    readonly imageUrl: "imageUrl";
     readonly quantity: "quantity";
     readonly unitPrice: "unitPrice";
     readonly totalPrice: "totalPrice";
@@ -298,6 +311,7 @@ export declare const UserPaymentScalarFieldEnum: {
     readonly userId: "userId";
     readonly amount: "amount";
     readonly status: "status";
+    readonly slipImageUrl: "slipImageUrl";
     readonly paidAt: "paidAt";
     readonly createdAt: "createdAt";
     readonly updatedAt: "updatedAt";

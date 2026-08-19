@@ -144,6 +144,7 @@ export type UserWhereInput = {
     createdBills?: Prisma.BillListRelationFilter;
     itemShares?: Prisma.ItemShareListRelationFilter;
     payments?: Prisma.UserPaymentListRelationFilter;
+    paymentAccount?: Prisma.XOR<Prisma.PaymentAccountNullableScalarRelationFilter, Prisma.PaymentAccountWhereInput> | null;
 };
 export type UserOrderByWithRelationInput = {
     id?: Prisma.SortOrder;
@@ -170,6 +171,7 @@ export type UserOrderByWithRelationInput = {
     createdBills?: Prisma.BillOrderByRelationAggregateInput;
     itemShares?: Prisma.ItemShareOrderByRelationAggregateInput;
     payments?: Prisma.UserPaymentOrderByRelationAggregateInput;
+    paymentAccount?: Prisma.PaymentAccountOrderByWithRelationInput;
 };
 export type UserWhereUniqueInput = Prisma.AtLeast<{
     id?: string;
@@ -199,6 +201,7 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
     createdBills?: Prisma.BillListRelationFilter;
     itemShares?: Prisma.ItemShareListRelationFilter;
     payments?: Prisma.UserPaymentListRelationFilter;
+    paymentAccount?: Prisma.XOR<Prisma.PaymentAccountNullableScalarRelationFilter, Prisma.PaymentAccountWhereInput> | null;
 }, "id" | "email">;
 export type UserOrderByWithAggregationInput = {
     id?: Prisma.SortOrder;
@@ -253,6 +256,7 @@ export type UserCreateInput = {
     createdBills?: Prisma.BillCreateNestedManyWithoutCreatedByInput;
     itemShares?: Prisma.ItemShareCreateNestedManyWithoutUserInput;
     payments?: Prisma.UserPaymentCreateNestedManyWithoutUserInput;
+    paymentAccount?: Prisma.PaymentAccountCreateNestedOneWithoutUserInput;
 };
 export type UserUncheckedCreateInput = {
     id?: string;
@@ -279,6 +283,7 @@ export type UserUncheckedCreateInput = {
     createdBills?: Prisma.BillUncheckedCreateNestedManyWithoutCreatedByInput;
     itemShares?: Prisma.ItemShareUncheckedCreateNestedManyWithoutUserInput;
     payments?: Prisma.UserPaymentUncheckedCreateNestedManyWithoutUserInput;
+    paymentAccount?: Prisma.PaymentAccountUncheckedCreateNestedOneWithoutUserInput;
 };
 export type UserUpdateInput = {
     id?: Prisma.StringFieldUpdateOperationsInput | string;
@@ -305,6 +310,7 @@ export type UserUpdateInput = {
     createdBills?: Prisma.BillUpdateManyWithoutCreatedByNestedInput;
     itemShares?: Prisma.ItemShareUpdateManyWithoutUserNestedInput;
     payments?: Prisma.UserPaymentUpdateManyWithoutUserNestedInput;
+    paymentAccount?: Prisma.PaymentAccountUpdateOneWithoutUserNestedInput;
 };
 export type UserUncheckedUpdateInput = {
     id?: Prisma.StringFieldUpdateOperationsInput | string;
@@ -331,6 +337,7 @@ export type UserUncheckedUpdateInput = {
     createdBills?: Prisma.BillUncheckedUpdateManyWithoutCreatedByNestedInput;
     itemShares?: Prisma.ItemShareUncheckedUpdateManyWithoutUserNestedInput;
     payments?: Prisma.UserPaymentUncheckedUpdateManyWithoutUserNestedInput;
+    paymentAccount?: Prisma.PaymentAccountUncheckedUpdateOneWithoutUserNestedInput;
 };
 export type UserCreateManyInput = {
     id?: string;
@@ -420,6 +427,18 @@ export type EnumRoleFieldUpdateOperationsInput = {
 };
 export type DateTimeFieldUpdateOperationsInput = {
     set?: Date | string;
+};
+export type UserCreateNestedOneWithoutPaymentAccountInput = {
+    create?: Prisma.XOR<Prisma.UserCreateWithoutPaymentAccountInput, Prisma.UserUncheckedCreateWithoutPaymentAccountInput>;
+    connectOrCreate?: Prisma.UserCreateOrConnectWithoutPaymentAccountInput;
+    connect?: Prisma.UserWhereUniqueInput;
+};
+export type UserUpdateOneRequiredWithoutPaymentAccountNestedInput = {
+    create?: Prisma.XOR<Prisma.UserCreateWithoutPaymentAccountInput, Prisma.UserUncheckedCreateWithoutPaymentAccountInput>;
+    connectOrCreate?: Prisma.UserCreateOrConnectWithoutPaymentAccountInput;
+    upsert?: Prisma.UserUpsertWithoutPaymentAccountInput;
+    connect?: Prisma.UserWhereUniqueInput;
+    update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutPaymentAccountInput, Prisma.UserUpdateWithoutPaymentAccountInput>, Prisma.UserUncheckedUpdateWithoutPaymentAccountInput>;
 };
 export type UserCreateNestedOneWithoutAccountsInput = {
     create?: Prisma.XOR<Prisma.UserCreateWithoutAccountsInput, Prisma.UserUncheckedCreateWithoutAccountsInput>;
@@ -603,6 +622,123 @@ export type UserUpdateOneRequiredWithoutPaymentsNestedInput = {
     connect?: Prisma.UserWhereUniqueInput;
     update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutPaymentsInput, Prisma.UserUpdateWithoutPaymentsInput>, Prisma.UserUncheckedUpdateWithoutPaymentsInput>;
 };
+export type UserCreateWithoutPaymentAccountInput = {
+    id?: string;
+    displayName: string;
+    email: string;
+    passwordHash?: string | null;
+    avatarUrl?: string | null;
+    emailVerified?: boolean;
+    role?: $Enums.Role;
+    createdAt?: Date | string;
+    updatedAt?: Date | string;
+    accounts?: Prisma.AccountCreateNestedManyWithoutUserInput;
+    emailVerification?: Prisma.EmailVerificationCreateNestedOneWithoutUserInput;
+    passwordResets?: Prisma.PasswordResetCreateNestedManyWithoutUserInput;
+    foodProfile?: Prisma.FoodProfileCreateNestedOneWithoutUserInput;
+    hostedRooms?: Prisma.RoomCreateNestedManyWithoutHostInput;
+    roomMembers?: Prisma.RoomMemberCreateNestedManyWithoutUserInput;
+    sessionMembers?: Prisma.SessionMemberCreateNestedManyWithoutUserInput;
+    mealPreferences?: Prisma.MealPreferenceCreateNestedManyWithoutUserInput;
+    votes?: Prisma.VoteCreateNestedManyWithoutUserInput;
+    finalVotes?: Prisma.FinalVoteCreateNestedManyWithoutUserInput;
+    finalSelections?: Prisma.FinalSelectionCreateNestedManyWithoutSelectedByInput;
+    selectedRestaurants?: Prisma.RestaurantSelectionCreateNestedManyWithoutSelectedByInput;
+    createdBills?: Prisma.BillCreateNestedManyWithoutCreatedByInput;
+    itemShares?: Prisma.ItemShareCreateNestedManyWithoutUserInput;
+    payments?: Prisma.UserPaymentCreateNestedManyWithoutUserInput;
+};
+export type UserUncheckedCreateWithoutPaymentAccountInput = {
+    id?: string;
+    displayName: string;
+    email: string;
+    passwordHash?: string | null;
+    avatarUrl?: string | null;
+    emailVerified?: boolean;
+    role?: $Enums.Role;
+    createdAt?: Date | string;
+    updatedAt?: Date | string;
+    accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput;
+    emailVerification?: Prisma.EmailVerificationUncheckedCreateNestedOneWithoutUserInput;
+    passwordResets?: Prisma.PasswordResetUncheckedCreateNestedManyWithoutUserInput;
+    foodProfile?: Prisma.FoodProfileUncheckedCreateNestedOneWithoutUserInput;
+    hostedRooms?: Prisma.RoomUncheckedCreateNestedManyWithoutHostInput;
+    roomMembers?: Prisma.RoomMemberUncheckedCreateNestedManyWithoutUserInput;
+    sessionMembers?: Prisma.SessionMemberUncheckedCreateNestedManyWithoutUserInput;
+    mealPreferences?: Prisma.MealPreferenceUncheckedCreateNestedManyWithoutUserInput;
+    votes?: Prisma.VoteUncheckedCreateNestedManyWithoutUserInput;
+    finalVotes?: Prisma.FinalVoteUncheckedCreateNestedManyWithoutUserInput;
+    finalSelections?: Prisma.FinalSelectionUncheckedCreateNestedManyWithoutSelectedByInput;
+    selectedRestaurants?: Prisma.RestaurantSelectionUncheckedCreateNestedManyWithoutSelectedByInput;
+    createdBills?: Prisma.BillUncheckedCreateNestedManyWithoutCreatedByInput;
+    itemShares?: Prisma.ItemShareUncheckedCreateNestedManyWithoutUserInput;
+    payments?: Prisma.UserPaymentUncheckedCreateNestedManyWithoutUserInput;
+};
+export type UserCreateOrConnectWithoutPaymentAccountInput = {
+    where: Prisma.UserWhereUniqueInput;
+    create: Prisma.XOR<Prisma.UserCreateWithoutPaymentAccountInput, Prisma.UserUncheckedCreateWithoutPaymentAccountInput>;
+};
+export type UserUpsertWithoutPaymentAccountInput = {
+    update: Prisma.XOR<Prisma.UserUpdateWithoutPaymentAccountInput, Prisma.UserUncheckedUpdateWithoutPaymentAccountInput>;
+    create: Prisma.XOR<Prisma.UserCreateWithoutPaymentAccountInput, Prisma.UserUncheckedCreateWithoutPaymentAccountInput>;
+    where?: Prisma.UserWhereInput;
+};
+export type UserUpdateToOneWithWhereWithoutPaymentAccountInput = {
+    where?: Prisma.UserWhereInput;
+    data: Prisma.XOR<Prisma.UserUpdateWithoutPaymentAccountInput, Prisma.UserUncheckedUpdateWithoutPaymentAccountInput>;
+};
+export type UserUpdateWithoutPaymentAccountInput = {
+    id?: Prisma.StringFieldUpdateOperationsInput | string;
+    displayName?: Prisma.StringFieldUpdateOperationsInput | string;
+    email?: Prisma.StringFieldUpdateOperationsInput | string;
+    passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean;
+    role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role;
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput;
+    emailVerification?: Prisma.EmailVerificationUpdateOneWithoutUserNestedInput;
+    passwordResets?: Prisma.PasswordResetUpdateManyWithoutUserNestedInput;
+    foodProfile?: Prisma.FoodProfileUpdateOneWithoutUserNestedInput;
+    hostedRooms?: Prisma.RoomUpdateManyWithoutHostNestedInput;
+    roomMembers?: Prisma.RoomMemberUpdateManyWithoutUserNestedInput;
+    sessionMembers?: Prisma.SessionMemberUpdateManyWithoutUserNestedInput;
+    mealPreferences?: Prisma.MealPreferenceUpdateManyWithoutUserNestedInput;
+    votes?: Prisma.VoteUpdateManyWithoutUserNestedInput;
+    finalVotes?: Prisma.FinalVoteUpdateManyWithoutUserNestedInput;
+    finalSelections?: Prisma.FinalSelectionUpdateManyWithoutSelectedByNestedInput;
+    selectedRestaurants?: Prisma.RestaurantSelectionUpdateManyWithoutSelectedByNestedInput;
+    createdBills?: Prisma.BillUpdateManyWithoutCreatedByNestedInput;
+    itemShares?: Prisma.ItemShareUpdateManyWithoutUserNestedInput;
+    payments?: Prisma.UserPaymentUpdateManyWithoutUserNestedInput;
+};
+export type UserUncheckedUpdateWithoutPaymentAccountInput = {
+    id?: Prisma.StringFieldUpdateOperationsInput | string;
+    displayName?: Prisma.StringFieldUpdateOperationsInput | string;
+    email?: Prisma.StringFieldUpdateOperationsInput | string;
+    passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean;
+    role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role;
+    createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
+    accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput;
+    emailVerification?: Prisma.EmailVerificationUncheckedUpdateOneWithoutUserNestedInput;
+    passwordResets?: Prisma.PasswordResetUncheckedUpdateManyWithoutUserNestedInput;
+    foodProfile?: Prisma.FoodProfileUncheckedUpdateOneWithoutUserNestedInput;
+    hostedRooms?: Prisma.RoomUncheckedUpdateManyWithoutHostNestedInput;
+    roomMembers?: Prisma.RoomMemberUncheckedUpdateManyWithoutUserNestedInput;
+    sessionMembers?: Prisma.SessionMemberUncheckedUpdateManyWithoutUserNestedInput;
+    mealPreferences?: Prisma.MealPreferenceUncheckedUpdateManyWithoutUserNestedInput;
+    votes?: Prisma.VoteUncheckedUpdateManyWithoutUserNestedInput;
+    finalVotes?: Prisma.FinalVoteUncheckedUpdateManyWithoutUserNestedInput;
+    finalSelections?: Prisma.FinalSelectionUncheckedUpdateManyWithoutSelectedByNestedInput;
+    selectedRestaurants?: Prisma.RestaurantSelectionUncheckedUpdateManyWithoutSelectedByNestedInput;
+    createdBills?: Prisma.BillUncheckedUpdateManyWithoutCreatedByNestedInput;
+    itemShares?: Prisma.ItemShareUncheckedUpdateManyWithoutUserNestedInput;
+    payments?: Prisma.UserPaymentUncheckedUpdateManyWithoutUserNestedInput;
+};
 export type UserCreateWithoutAccountsInput = {
     id?: string;
     displayName: string;
@@ -627,6 +763,7 @@ export type UserCreateWithoutAccountsInput = {
     createdBills?: Prisma.BillCreateNestedManyWithoutCreatedByInput;
     itemShares?: Prisma.ItemShareCreateNestedManyWithoutUserInput;
     payments?: Prisma.UserPaymentCreateNestedManyWithoutUserInput;
+    paymentAccount?: Prisma.PaymentAccountCreateNestedOneWithoutUserInput;
 };
 export type UserUncheckedCreateWithoutAccountsInput = {
     id?: string;
@@ -652,6 +789,7 @@ export type UserUncheckedCreateWithoutAccountsInput = {
     createdBills?: Prisma.BillUncheckedCreateNestedManyWithoutCreatedByInput;
     itemShares?: Prisma.ItemShareUncheckedCreateNestedManyWithoutUserInput;
     payments?: Prisma.UserPaymentUncheckedCreateNestedManyWithoutUserInput;
+    paymentAccount?: Prisma.PaymentAccountUncheckedCreateNestedOneWithoutUserInput;
 };
 export type UserCreateOrConnectWithoutAccountsInput = {
     where: Prisma.UserWhereUniqueInput;
@@ -690,6 +828,7 @@ export type UserUpdateWithoutAccountsInput = {
     createdBills?: Prisma.BillUpdateManyWithoutCreatedByNestedInput;
     itemShares?: Prisma.ItemShareUpdateManyWithoutUserNestedInput;
     payments?: Prisma.UserPaymentUpdateManyWithoutUserNestedInput;
+    paymentAccount?: Prisma.PaymentAccountUpdateOneWithoutUserNestedInput;
 };
 export type UserUncheckedUpdateWithoutAccountsInput = {
     id?: Prisma.StringFieldUpdateOperationsInput | string;
@@ -715,6 +854,7 @@ export type UserUncheckedUpdateWithoutAccountsInput = {
     createdBills?: Prisma.BillUncheckedUpdateManyWithoutCreatedByNestedInput;
     itemShares?: Prisma.ItemShareUncheckedUpdateManyWithoutUserNestedInput;
     payments?: Prisma.UserPaymentUncheckedUpdateManyWithoutUserNestedInput;
+    paymentAccount?: Prisma.PaymentAccountUncheckedUpdateOneWithoutUserNestedInput;
 };
 export type UserCreateWithoutEmailVerificationInput = {
     id?: string;
@@ -740,6 +880,7 @@ export type UserCreateWithoutEmailVerificationInput = {
     createdBills?: Prisma.BillCreateNestedManyWithoutCreatedByInput;
     itemShares?: Prisma.ItemShareCreateNestedManyWithoutUserInput;
     payments?: Prisma.UserPaymentCreateNestedManyWithoutUserInput;
+    paymentAccount?: Prisma.PaymentAccountCreateNestedOneWithoutUserInput;
 };
 export type UserUncheckedCreateWithoutEmailVerificationInput = {
     id?: string;
@@ -765,6 +906,7 @@ export type UserUncheckedCreateWithoutEmailVerificationInput = {
     createdBills?: Prisma.BillUncheckedCreateNestedManyWithoutCreatedByInput;
     itemShares?: Prisma.ItemShareUncheckedCreateNestedManyWithoutUserInput;
     payments?: Prisma.UserPaymentUncheckedCreateNestedManyWithoutUserInput;
+    paymentAccount?: Prisma.PaymentAccountUncheckedCreateNestedOneWithoutUserInput;
 };
 export type UserCreateOrConnectWithoutEmailVerificationInput = {
     where: Prisma.UserWhereUniqueInput;
@@ -803,6 +945,7 @@ export type UserUpdateWithoutEmailVerificationInput = {
     createdBills?: Prisma.BillUpdateManyWithoutCreatedByNestedInput;
     itemShares?: Prisma.ItemShareUpdateManyWithoutUserNestedInput;
     payments?: Prisma.UserPaymentUpdateManyWithoutUserNestedInput;
+    paymentAccount?: Prisma.PaymentAccountUpdateOneWithoutUserNestedInput;
 };
 export type UserUncheckedUpdateWithoutEmailVerificationInput = {
     id?: Prisma.StringFieldUpdateOperationsInput | string;
@@ -828,6 +971,7 @@ export type UserUncheckedUpdateWithoutEmailVerificationInput = {
     createdBills?: Prisma.BillUncheckedUpdateManyWithoutCreatedByNestedInput;
     itemShares?: Prisma.ItemShareUncheckedUpdateManyWithoutUserNestedInput;
     payments?: Prisma.UserPaymentUncheckedUpdateManyWithoutUserNestedInput;
+    paymentAccount?: Prisma.PaymentAccountUncheckedUpdateOneWithoutUserNestedInput;
 };
 export type UserCreateWithoutPasswordResetsInput = {
     id?: string;
@@ -853,6 +997,7 @@ export type UserCreateWithoutPasswordResetsInput = {
     createdBills?: Prisma.BillCreateNestedManyWithoutCreatedByInput;
     itemShares?: Prisma.ItemShareCreateNestedManyWithoutUserInput;
     payments?: Prisma.UserPaymentCreateNestedManyWithoutUserInput;
+    paymentAccount?: Prisma.PaymentAccountCreateNestedOneWithoutUserInput;
 };
 export type UserUncheckedCreateWithoutPasswordResetsInput = {
     id?: string;
@@ -878,6 +1023,7 @@ export type UserUncheckedCreateWithoutPasswordResetsInput = {
     createdBills?: Prisma.BillUncheckedCreateNestedManyWithoutCreatedByInput;
     itemShares?: Prisma.ItemShareUncheckedCreateNestedManyWithoutUserInput;
     payments?: Prisma.UserPaymentUncheckedCreateNestedManyWithoutUserInput;
+    paymentAccount?: Prisma.PaymentAccountUncheckedCreateNestedOneWithoutUserInput;
 };
 export type UserCreateOrConnectWithoutPasswordResetsInput = {
     where: Prisma.UserWhereUniqueInput;
@@ -916,6 +1062,7 @@ export type UserUpdateWithoutPasswordResetsInput = {
     createdBills?: Prisma.BillUpdateManyWithoutCreatedByNestedInput;
     itemShares?: Prisma.ItemShareUpdateManyWithoutUserNestedInput;
     payments?: Prisma.UserPaymentUpdateManyWithoutUserNestedInput;
+    paymentAccount?: Prisma.PaymentAccountUpdateOneWithoutUserNestedInput;
 };
 export type UserUncheckedUpdateWithoutPasswordResetsInput = {
     id?: Prisma.StringFieldUpdateOperationsInput | string;
@@ -941,6 +1088,7 @@ export type UserUncheckedUpdateWithoutPasswordResetsInput = {
     createdBills?: Prisma.BillUncheckedUpdateManyWithoutCreatedByNestedInput;
     itemShares?: Prisma.ItemShareUncheckedUpdateManyWithoutUserNestedInput;
     payments?: Prisma.UserPaymentUncheckedUpdateManyWithoutUserNestedInput;
+    paymentAccount?: Prisma.PaymentAccountUncheckedUpdateOneWithoutUserNestedInput;
 };
 export type UserCreateWithoutFoodProfileInput = {
     id?: string;
@@ -966,6 +1114,7 @@ export type UserCreateWithoutFoodProfileInput = {
     createdBills?: Prisma.BillCreateNestedManyWithoutCreatedByInput;
     itemShares?: Prisma.ItemShareCreateNestedManyWithoutUserInput;
     payments?: Prisma.UserPaymentCreateNestedManyWithoutUserInput;
+    paymentAccount?: Prisma.PaymentAccountCreateNestedOneWithoutUserInput;
 };
 export type UserUncheckedCreateWithoutFoodProfileInput = {
     id?: string;
@@ -991,6 +1140,7 @@ export type UserUncheckedCreateWithoutFoodProfileInput = {
     createdBills?: Prisma.BillUncheckedCreateNestedManyWithoutCreatedByInput;
     itemShares?: Prisma.ItemShareUncheckedCreateNestedManyWithoutUserInput;
     payments?: Prisma.UserPaymentUncheckedCreateNestedManyWithoutUserInput;
+    paymentAccount?: Prisma.PaymentAccountUncheckedCreateNestedOneWithoutUserInput;
 };
 export type UserCreateOrConnectWithoutFoodProfileInput = {
     where: Prisma.UserWhereUniqueInput;
@@ -1029,6 +1179,7 @@ export type UserUpdateWithoutFoodProfileInput = {
     createdBills?: Prisma.BillUpdateManyWithoutCreatedByNestedInput;
     itemShares?: Prisma.ItemShareUpdateManyWithoutUserNestedInput;
     payments?: Prisma.UserPaymentUpdateManyWithoutUserNestedInput;
+    paymentAccount?: Prisma.PaymentAccountUpdateOneWithoutUserNestedInput;
 };
 export type UserUncheckedUpdateWithoutFoodProfileInput = {
     id?: Prisma.StringFieldUpdateOperationsInput | string;
@@ -1054,6 +1205,7 @@ export type UserUncheckedUpdateWithoutFoodProfileInput = {
     createdBills?: Prisma.BillUncheckedUpdateManyWithoutCreatedByNestedInput;
     itemShares?: Prisma.ItemShareUncheckedUpdateManyWithoutUserNestedInput;
     payments?: Prisma.UserPaymentUncheckedUpdateManyWithoutUserNestedInput;
+    paymentAccount?: Prisma.PaymentAccountUncheckedUpdateOneWithoutUserNestedInput;
 };
 export type UserCreateWithoutHostedRoomsInput = {
     id?: string;
@@ -1079,6 +1231,7 @@ export type UserCreateWithoutHostedRoomsInput = {
     createdBills?: Prisma.BillCreateNestedManyWithoutCreatedByInput;
     itemShares?: Prisma.ItemShareCreateNestedManyWithoutUserInput;
     payments?: Prisma.UserPaymentCreateNestedManyWithoutUserInput;
+    paymentAccount?: Prisma.PaymentAccountCreateNestedOneWithoutUserInput;
 };
 export type UserUncheckedCreateWithoutHostedRoomsInput = {
     id?: string;
@@ -1104,6 +1257,7 @@ export type UserUncheckedCreateWithoutHostedRoomsInput = {
     createdBills?: Prisma.BillUncheckedCreateNestedManyWithoutCreatedByInput;
     itemShares?: Prisma.ItemShareUncheckedCreateNestedManyWithoutUserInput;
     payments?: Prisma.UserPaymentUncheckedCreateNestedManyWithoutUserInput;
+    paymentAccount?: Prisma.PaymentAccountUncheckedCreateNestedOneWithoutUserInput;
 };
 export type UserCreateOrConnectWithoutHostedRoomsInput = {
     where: Prisma.UserWhereUniqueInput;
@@ -1142,6 +1296,7 @@ export type UserUpdateWithoutHostedRoomsInput = {
     createdBills?: Prisma.BillUpdateManyWithoutCreatedByNestedInput;
     itemShares?: Prisma.ItemShareUpdateManyWithoutUserNestedInput;
     payments?: Prisma.UserPaymentUpdateManyWithoutUserNestedInput;
+    paymentAccount?: Prisma.PaymentAccountUpdateOneWithoutUserNestedInput;
 };
 export type UserUncheckedUpdateWithoutHostedRoomsInput = {
     id?: Prisma.StringFieldUpdateOperationsInput | string;
@@ -1167,6 +1322,7 @@ export type UserUncheckedUpdateWithoutHostedRoomsInput = {
     createdBills?: Prisma.BillUncheckedUpdateManyWithoutCreatedByNestedInput;
     itemShares?: Prisma.ItemShareUncheckedUpdateManyWithoutUserNestedInput;
     payments?: Prisma.UserPaymentUncheckedUpdateManyWithoutUserNestedInput;
+    paymentAccount?: Prisma.PaymentAccountUncheckedUpdateOneWithoutUserNestedInput;
 };
 export type UserCreateWithoutRoomMembersInput = {
     id?: string;
@@ -1192,6 +1348,7 @@ export type UserCreateWithoutRoomMembersInput = {
     createdBills?: Prisma.BillCreateNestedManyWithoutCreatedByInput;
     itemShares?: Prisma.ItemShareCreateNestedManyWithoutUserInput;
     payments?: Prisma.UserPaymentCreateNestedManyWithoutUserInput;
+    paymentAccount?: Prisma.PaymentAccountCreateNestedOneWithoutUserInput;
 };
 export type UserUncheckedCreateWithoutRoomMembersInput = {
     id?: string;
@@ -1217,6 +1374,7 @@ export type UserUncheckedCreateWithoutRoomMembersInput = {
     createdBills?: Prisma.BillUncheckedCreateNestedManyWithoutCreatedByInput;
     itemShares?: Prisma.ItemShareUncheckedCreateNestedManyWithoutUserInput;
     payments?: Prisma.UserPaymentUncheckedCreateNestedManyWithoutUserInput;
+    paymentAccount?: Prisma.PaymentAccountUncheckedCreateNestedOneWithoutUserInput;
 };
 export type UserCreateOrConnectWithoutRoomMembersInput = {
     where: Prisma.UserWhereUniqueInput;
@@ -1255,6 +1413,7 @@ export type UserUpdateWithoutRoomMembersInput = {
     createdBills?: Prisma.BillUpdateManyWithoutCreatedByNestedInput;
     itemShares?: Prisma.ItemShareUpdateManyWithoutUserNestedInput;
     payments?: Prisma.UserPaymentUpdateManyWithoutUserNestedInput;
+    paymentAccount?: Prisma.PaymentAccountUpdateOneWithoutUserNestedInput;
 };
 export type UserUncheckedUpdateWithoutRoomMembersInput = {
     id?: Prisma.StringFieldUpdateOperationsInput | string;
@@ -1280,6 +1439,7 @@ export type UserUncheckedUpdateWithoutRoomMembersInput = {
     createdBills?: Prisma.BillUncheckedUpdateManyWithoutCreatedByNestedInput;
     itemShares?: Prisma.ItemShareUncheckedUpdateManyWithoutUserNestedInput;
     payments?: Prisma.UserPaymentUncheckedUpdateManyWithoutUserNestedInput;
+    paymentAccount?: Prisma.PaymentAccountUncheckedUpdateOneWithoutUserNestedInput;
 };
 export type UserCreateWithoutSessionMembersInput = {
     id?: string;
@@ -1305,6 +1465,7 @@ export type UserCreateWithoutSessionMembersInput = {
     createdBills?: Prisma.BillCreateNestedManyWithoutCreatedByInput;
     itemShares?: Prisma.ItemShareCreateNestedManyWithoutUserInput;
     payments?: Prisma.UserPaymentCreateNestedManyWithoutUserInput;
+    paymentAccount?: Prisma.PaymentAccountCreateNestedOneWithoutUserInput;
 };
 export type UserUncheckedCreateWithoutSessionMembersInput = {
     id?: string;
@@ -1330,6 +1491,7 @@ export type UserUncheckedCreateWithoutSessionMembersInput = {
     createdBills?: Prisma.BillUncheckedCreateNestedManyWithoutCreatedByInput;
     itemShares?: Prisma.ItemShareUncheckedCreateNestedManyWithoutUserInput;
     payments?: Prisma.UserPaymentUncheckedCreateNestedManyWithoutUserInput;
+    paymentAccount?: Prisma.PaymentAccountUncheckedCreateNestedOneWithoutUserInput;
 };
 export type UserCreateOrConnectWithoutSessionMembersInput = {
     where: Prisma.UserWhereUniqueInput;
@@ -1368,6 +1530,7 @@ export type UserUpdateWithoutSessionMembersInput = {
     createdBills?: Prisma.BillUpdateManyWithoutCreatedByNestedInput;
     itemShares?: Prisma.ItemShareUpdateManyWithoutUserNestedInput;
     payments?: Prisma.UserPaymentUpdateManyWithoutUserNestedInput;
+    paymentAccount?: Prisma.PaymentAccountUpdateOneWithoutUserNestedInput;
 };
 export type UserUncheckedUpdateWithoutSessionMembersInput = {
     id?: Prisma.StringFieldUpdateOperationsInput | string;
@@ -1393,6 +1556,7 @@ export type UserUncheckedUpdateWithoutSessionMembersInput = {
     createdBills?: Prisma.BillUncheckedUpdateManyWithoutCreatedByNestedInput;
     itemShares?: Prisma.ItemShareUncheckedUpdateManyWithoutUserNestedInput;
     payments?: Prisma.UserPaymentUncheckedUpdateManyWithoutUserNestedInput;
+    paymentAccount?: Prisma.PaymentAccountUncheckedUpdateOneWithoutUserNestedInput;
 };
 export type UserCreateWithoutMealPreferencesInput = {
     id?: string;
@@ -1418,6 +1582,7 @@ export type UserCreateWithoutMealPreferencesInput = {
     createdBills?: Prisma.BillCreateNestedManyWithoutCreatedByInput;
     itemShares?: Prisma.ItemShareCreateNestedManyWithoutUserInput;
     payments?: Prisma.UserPaymentCreateNestedManyWithoutUserInput;
+    paymentAccount?: Prisma.PaymentAccountCreateNestedOneWithoutUserInput;
 };
 export type UserUncheckedCreateWithoutMealPreferencesInput = {
     id?: string;
@@ -1443,6 +1608,7 @@ export type UserUncheckedCreateWithoutMealPreferencesInput = {
     createdBills?: Prisma.BillUncheckedCreateNestedManyWithoutCreatedByInput;
     itemShares?: Prisma.ItemShareUncheckedCreateNestedManyWithoutUserInput;
     payments?: Prisma.UserPaymentUncheckedCreateNestedManyWithoutUserInput;
+    paymentAccount?: Prisma.PaymentAccountUncheckedCreateNestedOneWithoutUserInput;
 };
 export type UserCreateOrConnectWithoutMealPreferencesInput = {
     where: Prisma.UserWhereUniqueInput;
@@ -1481,6 +1647,7 @@ export type UserUpdateWithoutMealPreferencesInput = {
     createdBills?: Prisma.BillUpdateManyWithoutCreatedByNestedInput;
     itemShares?: Prisma.ItemShareUpdateManyWithoutUserNestedInput;
     payments?: Prisma.UserPaymentUpdateManyWithoutUserNestedInput;
+    paymentAccount?: Prisma.PaymentAccountUpdateOneWithoutUserNestedInput;
 };
 export type UserUncheckedUpdateWithoutMealPreferencesInput = {
     id?: Prisma.StringFieldUpdateOperationsInput | string;
@@ -1506,6 +1673,7 @@ export type UserUncheckedUpdateWithoutMealPreferencesInput = {
     createdBills?: Prisma.BillUncheckedUpdateManyWithoutCreatedByNestedInput;
     itemShares?: Prisma.ItemShareUncheckedUpdateManyWithoutUserNestedInput;
     payments?: Prisma.UserPaymentUncheckedUpdateManyWithoutUserNestedInput;
+    paymentAccount?: Prisma.PaymentAccountUncheckedUpdateOneWithoutUserNestedInput;
 };
 export type UserCreateWithoutVotesInput = {
     id?: string;
@@ -1531,6 +1699,7 @@ export type UserCreateWithoutVotesInput = {
     createdBills?: Prisma.BillCreateNestedManyWithoutCreatedByInput;
     itemShares?: Prisma.ItemShareCreateNestedManyWithoutUserInput;
     payments?: Prisma.UserPaymentCreateNestedManyWithoutUserInput;
+    paymentAccount?: Prisma.PaymentAccountCreateNestedOneWithoutUserInput;
 };
 export type UserUncheckedCreateWithoutVotesInput = {
     id?: string;
@@ -1556,6 +1725,7 @@ export type UserUncheckedCreateWithoutVotesInput = {
     createdBills?: Prisma.BillUncheckedCreateNestedManyWithoutCreatedByInput;
     itemShares?: Prisma.ItemShareUncheckedCreateNestedManyWithoutUserInput;
     payments?: Prisma.UserPaymentUncheckedCreateNestedManyWithoutUserInput;
+    paymentAccount?: Prisma.PaymentAccountUncheckedCreateNestedOneWithoutUserInput;
 };
 export type UserCreateOrConnectWithoutVotesInput = {
     where: Prisma.UserWhereUniqueInput;
@@ -1594,6 +1764,7 @@ export type UserUpdateWithoutVotesInput = {
     createdBills?: Prisma.BillUpdateManyWithoutCreatedByNestedInput;
     itemShares?: Prisma.ItemShareUpdateManyWithoutUserNestedInput;
     payments?: Prisma.UserPaymentUpdateManyWithoutUserNestedInput;
+    paymentAccount?: Prisma.PaymentAccountUpdateOneWithoutUserNestedInput;
 };
 export type UserUncheckedUpdateWithoutVotesInput = {
     id?: Prisma.StringFieldUpdateOperationsInput | string;
@@ -1619,6 +1790,7 @@ export type UserUncheckedUpdateWithoutVotesInput = {
     createdBills?: Prisma.BillUncheckedUpdateManyWithoutCreatedByNestedInput;
     itemShares?: Prisma.ItemShareUncheckedUpdateManyWithoutUserNestedInput;
     payments?: Prisma.UserPaymentUncheckedUpdateManyWithoutUserNestedInput;
+    paymentAccount?: Prisma.PaymentAccountUncheckedUpdateOneWithoutUserNestedInput;
 };
 export type UserCreateWithoutFinalVotesInput = {
     id?: string;
@@ -1644,6 +1816,7 @@ export type UserCreateWithoutFinalVotesInput = {
     createdBills?: Prisma.BillCreateNestedManyWithoutCreatedByInput;
     itemShares?: Prisma.ItemShareCreateNestedManyWithoutUserInput;
     payments?: Prisma.UserPaymentCreateNestedManyWithoutUserInput;
+    paymentAccount?: Prisma.PaymentAccountCreateNestedOneWithoutUserInput;
 };
 export type UserUncheckedCreateWithoutFinalVotesInput = {
     id?: string;
@@ -1669,6 +1842,7 @@ export type UserUncheckedCreateWithoutFinalVotesInput = {
     createdBills?: Prisma.BillUncheckedCreateNestedManyWithoutCreatedByInput;
     itemShares?: Prisma.ItemShareUncheckedCreateNestedManyWithoutUserInput;
     payments?: Prisma.UserPaymentUncheckedCreateNestedManyWithoutUserInput;
+    paymentAccount?: Prisma.PaymentAccountUncheckedCreateNestedOneWithoutUserInput;
 };
 export type UserCreateOrConnectWithoutFinalVotesInput = {
     where: Prisma.UserWhereUniqueInput;
@@ -1707,6 +1881,7 @@ export type UserUpdateWithoutFinalVotesInput = {
     createdBills?: Prisma.BillUpdateManyWithoutCreatedByNestedInput;
     itemShares?: Prisma.ItemShareUpdateManyWithoutUserNestedInput;
     payments?: Prisma.UserPaymentUpdateManyWithoutUserNestedInput;
+    paymentAccount?: Prisma.PaymentAccountUpdateOneWithoutUserNestedInput;
 };
 export type UserUncheckedUpdateWithoutFinalVotesInput = {
     id?: Prisma.StringFieldUpdateOperationsInput | string;
@@ -1732,6 +1907,7 @@ export type UserUncheckedUpdateWithoutFinalVotesInput = {
     createdBills?: Prisma.BillUncheckedUpdateManyWithoutCreatedByNestedInput;
     itemShares?: Prisma.ItemShareUncheckedUpdateManyWithoutUserNestedInput;
     payments?: Prisma.UserPaymentUncheckedUpdateManyWithoutUserNestedInput;
+    paymentAccount?: Prisma.PaymentAccountUncheckedUpdateOneWithoutUserNestedInput;
 };
 export type UserCreateWithoutFinalSelectionsInput = {
     id?: string;
@@ -1757,6 +1933,7 @@ export type UserCreateWithoutFinalSelectionsInput = {
     createdBills?: Prisma.BillCreateNestedManyWithoutCreatedByInput;
     itemShares?: Prisma.ItemShareCreateNestedManyWithoutUserInput;
     payments?: Prisma.UserPaymentCreateNestedManyWithoutUserInput;
+    paymentAccount?: Prisma.PaymentAccountCreateNestedOneWithoutUserInput;
 };
 export type UserUncheckedCreateWithoutFinalSelectionsInput = {
     id?: string;
@@ -1782,6 +1959,7 @@ export type UserUncheckedCreateWithoutFinalSelectionsInput = {
     createdBills?: Prisma.BillUncheckedCreateNestedManyWithoutCreatedByInput;
     itemShares?: Prisma.ItemShareUncheckedCreateNestedManyWithoutUserInput;
     payments?: Prisma.UserPaymentUncheckedCreateNestedManyWithoutUserInput;
+    paymentAccount?: Prisma.PaymentAccountUncheckedCreateNestedOneWithoutUserInput;
 };
 export type UserCreateOrConnectWithoutFinalSelectionsInput = {
     where: Prisma.UserWhereUniqueInput;
@@ -1820,6 +1998,7 @@ export type UserUpdateWithoutFinalSelectionsInput = {
     createdBills?: Prisma.BillUpdateManyWithoutCreatedByNestedInput;
     itemShares?: Prisma.ItemShareUpdateManyWithoutUserNestedInput;
     payments?: Prisma.UserPaymentUpdateManyWithoutUserNestedInput;
+    paymentAccount?: Prisma.PaymentAccountUpdateOneWithoutUserNestedInput;
 };
 export type UserUncheckedUpdateWithoutFinalSelectionsInput = {
     id?: Prisma.StringFieldUpdateOperationsInput | string;
@@ -1845,6 +2024,7 @@ export type UserUncheckedUpdateWithoutFinalSelectionsInput = {
     createdBills?: Prisma.BillUncheckedUpdateManyWithoutCreatedByNestedInput;
     itemShares?: Prisma.ItemShareUncheckedUpdateManyWithoutUserNestedInput;
     payments?: Prisma.UserPaymentUncheckedUpdateManyWithoutUserNestedInput;
+    paymentAccount?: Prisma.PaymentAccountUncheckedUpdateOneWithoutUserNestedInput;
 };
 export type UserCreateWithoutSelectedRestaurantsInput = {
     id?: string;
@@ -1870,6 +2050,7 @@ export type UserCreateWithoutSelectedRestaurantsInput = {
     createdBills?: Prisma.BillCreateNestedManyWithoutCreatedByInput;
     itemShares?: Prisma.ItemShareCreateNestedManyWithoutUserInput;
     payments?: Prisma.UserPaymentCreateNestedManyWithoutUserInput;
+    paymentAccount?: Prisma.PaymentAccountCreateNestedOneWithoutUserInput;
 };
 export type UserUncheckedCreateWithoutSelectedRestaurantsInput = {
     id?: string;
@@ -1895,6 +2076,7 @@ export type UserUncheckedCreateWithoutSelectedRestaurantsInput = {
     createdBills?: Prisma.BillUncheckedCreateNestedManyWithoutCreatedByInput;
     itemShares?: Prisma.ItemShareUncheckedCreateNestedManyWithoutUserInput;
     payments?: Prisma.UserPaymentUncheckedCreateNestedManyWithoutUserInput;
+    paymentAccount?: Prisma.PaymentAccountUncheckedCreateNestedOneWithoutUserInput;
 };
 export type UserCreateOrConnectWithoutSelectedRestaurantsInput = {
     where: Prisma.UserWhereUniqueInput;
@@ -1933,6 +2115,7 @@ export type UserUpdateWithoutSelectedRestaurantsInput = {
     createdBills?: Prisma.BillUpdateManyWithoutCreatedByNestedInput;
     itemShares?: Prisma.ItemShareUpdateManyWithoutUserNestedInput;
     payments?: Prisma.UserPaymentUpdateManyWithoutUserNestedInput;
+    paymentAccount?: Prisma.PaymentAccountUpdateOneWithoutUserNestedInput;
 };
 export type UserUncheckedUpdateWithoutSelectedRestaurantsInput = {
     id?: Prisma.StringFieldUpdateOperationsInput | string;
@@ -1958,6 +2141,7 @@ export type UserUncheckedUpdateWithoutSelectedRestaurantsInput = {
     createdBills?: Prisma.BillUncheckedUpdateManyWithoutCreatedByNestedInput;
     itemShares?: Prisma.ItemShareUncheckedUpdateManyWithoutUserNestedInput;
     payments?: Prisma.UserPaymentUncheckedUpdateManyWithoutUserNestedInput;
+    paymentAccount?: Prisma.PaymentAccountUncheckedUpdateOneWithoutUserNestedInput;
 };
 export type UserCreateWithoutCreatedBillsInput = {
     id?: string;
@@ -1983,6 +2167,7 @@ export type UserCreateWithoutCreatedBillsInput = {
     selectedRestaurants?: Prisma.RestaurantSelectionCreateNestedManyWithoutSelectedByInput;
     itemShares?: Prisma.ItemShareCreateNestedManyWithoutUserInput;
     payments?: Prisma.UserPaymentCreateNestedManyWithoutUserInput;
+    paymentAccount?: Prisma.PaymentAccountCreateNestedOneWithoutUserInput;
 };
 export type UserUncheckedCreateWithoutCreatedBillsInput = {
     id?: string;
@@ -2008,6 +2193,7 @@ export type UserUncheckedCreateWithoutCreatedBillsInput = {
     selectedRestaurants?: Prisma.RestaurantSelectionUncheckedCreateNestedManyWithoutSelectedByInput;
     itemShares?: Prisma.ItemShareUncheckedCreateNestedManyWithoutUserInput;
     payments?: Prisma.UserPaymentUncheckedCreateNestedManyWithoutUserInput;
+    paymentAccount?: Prisma.PaymentAccountUncheckedCreateNestedOneWithoutUserInput;
 };
 export type UserCreateOrConnectWithoutCreatedBillsInput = {
     where: Prisma.UserWhereUniqueInput;
@@ -2046,6 +2232,7 @@ export type UserUpdateWithoutCreatedBillsInput = {
     selectedRestaurants?: Prisma.RestaurantSelectionUpdateManyWithoutSelectedByNestedInput;
     itemShares?: Prisma.ItemShareUpdateManyWithoutUserNestedInput;
     payments?: Prisma.UserPaymentUpdateManyWithoutUserNestedInput;
+    paymentAccount?: Prisma.PaymentAccountUpdateOneWithoutUserNestedInput;
 };
 export type UserUncheckedUpdateWithoutCreatedBillsInput = {
     id?: Prisma.StringFieldUpdateOperationsInput | string;
@@ -2071,6 +2258,7 @@ export type UserUncheckedUpdateWithoutCreatedBillsInput = {
     selectedRestaurants?: Prisma.RestaurantSelectionUncheckedUpdateManyWithoutSelectedByNestedInput;
     itemShares?: Prisma.ItemShareUncheckedUpdateManyWithoutUserNestedInput;
     payments?: Prisma.UserPaymentUncheckedUpdateManyWithoutUserNestedInput;
+    paymentAccount?: Prisma.PaymentAccountUncheckedUpdateOneWithoutUserNestedInput;
 };
 export type UserCreateWithoutItemSharesInput = {
     id?: string;
@@ -2096,6 +2284,7 @@ export type UserCreateWithoutItemSharesInput = {
     selectedRestaurants?: Prisma.RestaurantSelectionCreateNestedManyWithoutSelectedByInput;
     createdBills?: Prisma.BillCreateNestedManyWithoutCreatedByInput;
     payments?: Prisma.UserPaymentCreateNestedManyWithoutUserInput;
+    paymentAccount?: Prisma.PaymentAccountCreateNestedOneWithoutUserInput;
 };
 export type UserUncheckedCreateWithoutItemSharesInput = {
     id?: string;
@@ -2121,6 +2310,7 @@ export type UserUncheckedCreateWithoutItemSharesInput = {
     selectedRestaurants?: Prisma.RestaurantSelectionUncheckedCreateNestedManyWithoutSelectedByInput;
     createdBills?: Prisma.BillUncheckedCreateNestedManyWithoutCreatedByInput;
     payments?: Prisma.UserPaymentUncheckedCreateNestedManyWithoutUserInput;
+    paymentAccount?: Prisma.PaymentAccountUncheckedCreateNestedOneWithoutUserInput;
 };
 export type UserCreateOrConnectWithoutItemSharesInput = {
     where: Prisma.UserWhereUniqueInput;
@@ -2159,6 +2349,7 @@ export type UserUpdateWithoutItemSharesInput = {
     selectedRestaurants?: Prisma.RestaurantSelectionUpdateManyWithoutSelectedByNestedInput;
     createdBills?: Prisma.BillUpdateManyWithoutCreatedByNestedInput;
     payments?: Prisma.UserPaymentUpdateManyWithoutUserNestedInput;
+    paymentAccount?: Prisma.PaymentAccountUpdateOneWithoutUserNestedInput;
 };
 export type UserUncheckedUpdateWithoutItemSharesInput = {
     id?: Prisma.StringFieldUpdateOperationsInput | string;
@@ -2184,6 +2375,7 @@ export type UserUncheckedUpdateWithoutItemSharesInput = {
     selectedRestaurants?: Prisma.RestaurantSelectionUncheckedUpdateManyWithoutSelectedByNestedInput;
     createdBills?: Prisma.BillUncheckedUpdateManyWithoutCreatedByNestedInput;
     payments?: Prisma.UserPaymentUncheckedUpdateManyWithoutUserNestedInput;
+    paymentAccount?: Prisma.PaymentAccountUncheckedUpdateOneWithoutUserNestedInput;
 };
 export type UserCreateWithoutPaymentsInput = {
     id?: string;
@@ -2209,6 +2401,7 @@ export type UserCreateWithoutPaymentsInput = {
     selectedRestaurants?: Prisma.RestaurantSelectionCreateNestedManyWithoutSelectedByInput;
     createdBills?: Prisma.BillCreateNestedManyWithoutCreatedByInput;
     itemShares?: Prisma.ItemShareCreateNestedManyWithoutUserInput;
+    paymentAccount?: Prisma.PaymentAccountCreateNestedOneWithoutUserInput;
 };
 export type UserUncheckedCreateWithoutPaymentsInput = {
     id?: string;
@@ -2234,6 +2427,7 @@ export type UserUncheckedCreateWithoutPaymentsInput = {
     selectedRestaurants?: Prisma.RestaurantSelectionUncheckedCreateNestedManyWithoutSelectedByInput;
     createdBills?: Prisma.BillUncheckedCreateNestedManyWithoutCreatedByInput;
     itemShares?: Prisma.ItemShareUncheckedCreateNestedManyWithoutUserInput;
+    paymentAccount?: Prisma.PaymentAccountUncheckedCreateNestedOneWithoutUserInput;
 };
 export type UserCreateOrConnectWithoutPaymentsInput = {
     where: Prisma.UserWhereUniqueInput;
@@ -2272,6 +2466,7 @@ export type UserUpdateWithoutPaymentsInput = {
     selectedRestaurants?: Prisma.RestaurantSelectionUpdateManyWithoutSelectedByNestedInput;
     createdBills?: Prisma.BillUpdateManyWithoutCreatedByNestedInput;
     itemShares?: Prisma.ItemShareUpdateManyWithoutUserNestedInput;
+    paymentAccount?: Prisma.PaymentAccountUpdateOneWithoutUserNestedInput;
 };
 export type UserUncheckedUpdateWithoutPaymentsInput = {
     id?: Prisma.StringFieldUpdateOperationsInput | string;
@@ -2297,6 +2492,7 @@ export type UserUncheckedUpdateWithoutPaymentsInput = {
     selectedRestaurants?: Prisma.RestaurantSelectionUncheckedUpdateManyWithoutSelectedByNestedInput;
     createdBills?: Prisma.BillUncheckedUpdateManyWithoutCreatedByNestedInput;
     itemShares?: Prisma.ItemShareUncheckedUpdateManyWithoutUserNestedInput;
+    paymentAccount?: Prisma.PaymentAccountUncheckedUpdateOneWithoutUserNestedInput;
 };
 export type UserCountOutputType = {
     accounts: number;
@@ -2395,6 +2591,7 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
     createdBills?: boolean | Prisma.User$createdBillsArgs<ExtArgs>;
     itemShares?: boolean | Prisma.User$itemSharesArgs<ExtArgs>;
     payments?: boolean | Prisma.User$paymentsArgs<ExtArgs>;
+    paymentAccount?: boolean | Prisma.User$paymentAccountArgs<ExtArgs>;
     _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>;
 }, ExtArgs["result"]["user"]>;
 export type UserSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -2447,6 +2644,7 @@ export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
     createdBills?: boolean | Prisma.User$createdBillsArgs<ExtArgs>;
     itemShares?: boolean | Prisma.User$itemSharesArgs<ExtArgs>;
     payments?: boolean | Prisma.User$paymentsArgs<ExtArgs>;
+    paymentAccount?: boolean | Prisma.User$paymentAccountArgs<ExtArgs>;
     _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>;
 };
 export type UserIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {};
@@ -2469,6 +2667,7 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
         createdBills: Prisma.$BillPayload<ExtArgs>[];
         itemShares: Prisma.$ItemSharePayload<ExtArgs>[];
         payments: Prisma.$UserPaymentPayload<ExtArgs>[];
+        paymentAccount: Prisma.$PaymentAccountPayload<ExtArgs> | null;
     };
     scalars: runtime.Types.Extensions.GetPayloadResult<{
         id: string;
@@ -2547,6 +2746,7 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
     createdBills<T extends Prisma.User$createdBillsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$createdBillsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$BillPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>;
     itemShares<T extends Prisma.User$itemSharesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$itemSharesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ItemSharePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>;
     payments<T extends Prisma.User$paymentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$paymentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$UserPaymentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>;
+    paymentAccount<T extends Prisma.User$paymentAccountArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$paymentAccountArgs<ExtArgs>>): Prisma.Prisma__PaymentAccountClient<runtime.Types.Result.GetResult<Prisma.$PaymentAccountPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>;
     then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): runtime.Types.Utils.JsPromise<TResult1 | TResult2>;
     catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): runtime.Types.Utils.JsPromise<T | TResult>;
     finally(onfinally?: (() => void) | undefined | null): runtime.Types.Utils.JsPromise<T>;
@@ -2814,6 +3014,12 @@ export type User$paymentsArgs<ExtArgs extends runtime.Types.Extensions.InternalA
     take?: number;
     skip?: number;
     distinct?: Prisma.UserPaymentScalarFieldEnum | Prisma.UserPaymentScalarFieldEnum[];
+};
+export type User$paymentAccountArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+    select?: Prisma.PaymentAccountSelect<ExtArgs> | null;
+    omit?: Prisma.PaymentAccountOmit<ExtArgs> | null;
+    include?: Prisma.PaymentAccountInclude<ExtArgs> | null;
+    where?: Prisma.PaymentAccountWhereInput;
 };
 export type UserDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
     select?: Prisma.UserSelect<ExtArgs> | null;

@@ -88,3 +88,7 @@ export declare const OcrStatus: {
     readonly FAILED: "FAILED";
 };
 export type OcrStatus = (typeof OcrStatus)[keyof typeof OcrStatus];
+export declare const PaymentAccountType: {
+    readonly PROMPTPAY: "PROMPTPAY";
+};
+export type PaymentAccountType = (typeof PaymentAccountType)[keyof typeof PaymentAccountType];

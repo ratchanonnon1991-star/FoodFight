@@ -9,6 +9,8 @@ import { UserModule } from './user/user.module';
 import { DatabaseModule } from './database/database.module';
 import { RoomModule } from './room/room.module';
 import { FoodProfileModule } from './food-profile/food-profile.module';
+import { BillModule } from './bill/bill.module';
+import { PaymentAccountModule } from './payment-account/payment-account.module';
 
 @Module({
   imports: [
@@ -22,6 +24,8 @@ import { FoodProfileModule } from './food-profile/food-profile.module';
     UserModule,
     RoomModule,
     FoodProfileModule,
+    BillModule,
+    PaymentAccountModule,
   ],
   providers: [
     {

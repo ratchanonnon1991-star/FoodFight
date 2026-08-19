@@ -161,6 +161,7 @@ export type FieldRef<Model, FieldType> = runtime.FieldRef<Model, FieldType>;
 type FieldRefInputType<Model, FieldType> = Model extends never ? never : FieldRef<Model, FieldType>;
 export declare const ModelName: {
     readonly User: "User";
+    readonly PaymentAccount: "PaymentAccount";
     readonly Account: "Account";
     readonly EmailVerification: "EmailVerification";
     readonly PasswordReset: "PasswordReset";
@@ -194,7 +195,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         omit: GlobalOmitOptions;
     };
     meta: {
-        modelProps: "user" | "account" | "emailVerification" | "passwordReset" | "foodProfile" | "room" | "roomMember" | "foodFightSession" | "sessionMember" | "mealPreference" | "recommendationRound" | "recommendationItem" | "vote" | "finalVote" | "finalSelection" | "restaurantRecommendation" | "restaurantSelection" | "bill" | "receipt" | "receiptItem" | "itemShare" | "userPayment";
+        modelProps: "user" | "paymentAccount" | "account" | "emailVerification" | "passwordReset" | "foodProfile" | "room" | "roomMember" | "foodFightSession" | "sessionMember" | "mealPreference" | "recommendationRound" | "recommendationItem" | "vote" | "finalVote" | "finalSelection" | "restaurantRecommendation" | "restaurantSelection" | "bill" | "receipt" | "receiptItem" | "itemShare" | "userPayment";
         txIsolationLevel: TransactionIsolationLevel;
     };
     model: {
@@ -269,6 +270,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
                 count: {
                     args: Prisma.UserCountArgs<ExtArgs>;
                     result: runtime.Types.Utils.Optional<Prisma.UserCountAggregateOutputType> | number;
+                };
+            };
+        };
+        PaymentAccount: {
+            payload: Prisma.$PaymentAccountPayload<ExtArgs>;
+            fields: Prisma.PaymentAccountFieldRefs;
+            operations: {
+                findUnique: {
+                    args: Prisma.PaymentAccountFindUniqueArgs<ExtArgs>;
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$PaymentAccountPayload> | null;
+                };
+                findUniqueOrThrow: {
+                    args: Prisma.PaymentAccountFindUniqueOrThrowArgs<ExtArgs>;
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$PaymentAccountPayload>;
+                };
+                findFirst: {
+                    args: Prisma.PaymentAccountFindFirstArgs<ExtArgs>;
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$PaymentAccountPayload> | null;
+                };
+                findFirstOrThrow: {
+                    args: Prisma.PaymentAccountFindFirstOrThrowArgs<ExtArgs>;
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$PaymentAccountPayload>;
+                };
+                findMany: {
+                    args: Prisma.PaymentAccountFindManyArgs<ExtArgs>;
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$PaymentAccountPayload>[];
+                };
+                create: {
+                    args: Prisma.PaymentAccountCreateArgs<ExtArgs>;
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$PaymentAccountPayload>;
+                };
+                createMany: {
+                    args: Prisma.PaymentAccountCreateManyArgs<ExtArgs>;
+                    result: BatchPayload;
+                };
+                createManyAndReturn: {
+                    args: Prisma.PaymentAccountCreateManyAndReturnArgs<ExtArgs>;
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$PaymentAccountPayload>[];
+                };
+                delete: {
+                    args: Prisma.PaymentAccountDeleteArgs<ExtArgs>;
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$PaymentAccountPayload>;
+                };
+                update: {
+                    args: Prisma.PaymentAccountUpdateArgs<ExtArgs>;
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$PaymentAccountPayload>;
+                };
+                deleteMany: {
+                    args: Prisma.PaymentAccountDeleteManyArgs<ExtArgs>;
+                    result: BatchPayload;
+                };
+                updateMany: {
+                    args: Prisma.PaymentAccountUpdateManyArgs<ExtArgs>;
+                    result: BatchPayload;
+                };
+                updateManyAndReturn: {
+                    args: Prisma.PaymentAccountUpdateManyAndReturnArgs<ExtArgs>;
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$PaymentAccountPayload>[];
+                };
+                upsert: {
+                    args: Prisma.PaymentAccountUpsertArgs<ExtArgs>;
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$PaymentAccountPayload>;
+                };
+                aggregate: {
+                    args: Prisma.PaymentAccountAggregateArgs<ExtArgs>;
+                    result: runtime.Types.Utils.Optional<Prisma.AggregatePaymentAccount>;
+                };
+                groupBy: {
+                    args: Prisma.PaymentAccountGroupByArgs<ExtArgs>;
+                    result: runtime.Types.Utils.Optional<Prisma.PaymentAccountGroupByOutputType>[];
+                };
+                count: {
+                    args: Prisma.PaymentAccountCountArgs<ExtArgs>;
+                    result: runtime.Types.Utils.Optional<Prisma.PaymentAccountCountAggregateOutputType> | number;
                 };
             };
         };
@@ -1869,6 +1944,17 @@ export declare const UserScalarFieldEnum: {
     readonly updatedAt: "updatedAt";
 };
 export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof UserScalarFieldEnum];
+export declare const PaymentAccountScalarFieldEnum: {
+    readonly id: "id";
+    readonly userId: "userId";
+    readonly type: "type";
+    readonly accountName: "accountName";
+    readonly promptPayId: "promptPayId";
+    readonly qrImageUrl: "qrImageUrl";
+    readonly createdAt: "createdAt";
+    readonly updatedAt: "updatedAt";
+};
+export type PaymentAccountScalarFieldEnum = (typeof PaymentAccountScalarFieldEnum)[keyof typeof PaymentAccountScalarFieldEnum];
 export declare const AccountScalarFieldEnum: {
     readonly id: "id";
     readonly userId: "userId";
@@ -2092,6 +2178,7 @@ export declare const ReceiptItemScalarFieldEnum: {
     readonly id: "id";
     readonly billId: "billId";
     readonly name: "name";
+    readonly imageUrl: "imageUrl";
     readonly quantity: "quantity";
     readonly unitPrice: "unitPrice";
     readonly totalPrice: "totalPrice";
@@ -2113,6 +2200,7 @@ export declare const UserPaymentScalarFieldEnum: {
     readonly userId: "userId";
     readonly amount: "amount";
     readonly status: "status";
+    readonly slipImageUrl: "slipImageUrl";
     readonly paidAt: "paidAt";
     readonly createdAt: "createdAt";
     readonly updatedAt: "updatedAt";
@@ -2151,6 +2239,8 @@ export type EnumRoleFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel
 export type ListEnumRoleFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Role[]'>;
 export type DateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime'>;
 export type ListDateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime[]'>;
+export type EnumPaymentAccountTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PaymentAccountType'>;
+export type ListEnumPaymentAccountTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PaymentAccountType[]'>;
 export type EnumAuthProviderFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AuthProvider'>;
 export type ListEnumAuthProviderFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AuthProvider[]'>;
 export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int'>;
@@ -2214,6 +2304,7 @@ export interface PrismaClientOptionsWithAdapter extends PrismaClientBaseOptions 
 export type PrismaClientOptions = PrismaClientOptionsWithAccelerateUrl | PrismaClientOptionsWithAdapter;
 export type GlobalOmitConfig = {
     user?: Prisma.UserOmit;
+    paymentAccount?: Prisma.PaymentAccountOmit;
     account?: Prisma.AccountOmit;
     emailVerification?: Prisma.EmailVerificationOmit;
     passwordReset?: Prisma.PasswordResetOmit;

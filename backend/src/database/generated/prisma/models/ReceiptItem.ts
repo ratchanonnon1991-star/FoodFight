@@ -42,6 +42,7 @@ export type ReceiptItemMinAggregateOutputType = {
   id: string | null
   billId: string | null
   name: string | null
+  imageUrl: string | null
   quantity: number | null
   unitPrice: runtime.Decimal | null
   totalPrice: runtime.Decimal | null
@@ -53,6 +54,7 @@ export type ReceiptItemMaxAggregateOutputType = {
   id: string | null
   billId: string | null
   name: string | null
+  imageUrl: string | null
   quantity: number | null
   unitPrice: runtime.Decimal | null
   totalPrice: runtime.Decimal | null
@@ -64,6 +66,7 @@ export type ReceiptItemCountAggregateOutputType = {
   id: number
   billId: number
   name: number
+  imageUrl: number
   quantity: number
   unitPrice: number
   totalPrice: number
@@ -89,6 +92,7 @@ export type ReceiptItemMinAggregateInputType = {
   id?: true
   billId?: true
   name?: true
+  imageUrl?: true
   quantity?: true
   unitPrice?: true
   totalPrice?: true
@@ -100,6 +104,7 @@ export type ReceiptItemMaxAggregateInputType = {
   id?: true
   billId?: true
   name?: true
+  imageUrl?: true
   quantity?: true
   unitPrice?: true
   totalPrice?: true
@@ -111,6 +116,7 @@ export type ReceiptItemCountAggregateInputType = {
   id?: true
   billId?: true
   name?: true
+  imageUrl?: true
   quantity?: true
   unitPrice?: true
   totalPrice?: true
@@ -209,6 +215,7 @@ export type ReceiptItemGroupByOutputType = {
   id: string
   billId: string
   name: string
+  imageUrl: string | null
   quantity: number
   unitPrice: runtime.Decimal
   totalPrice: runtime.Decimal
@@ -243,6 +250,7 @@ export type ReceiptItemWhereInput = {
   id?: Prisma.StringFilter<"ReceiptItem"> | string
   billId?: Prisma.StringFilter<"ReceiptItem"> | string
   name?: Prisma.StringFilter<"ReceiptItem"> | string
+  imageUrl?: Prisma.StringNullableFilter<"ReceiptItem"> | string | null
   quantity?: Prisma.IntFilter<"ReceiptItem"> | number
   unitPrice?: Prisma.DecimalFilter<"ReceiptItem"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   totalPrice?: Prisma.DecimalFilter<"ReceiptItem"> | runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -256,6 +264,7 @@ export type ReceiptItemOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   billId?: Prisma.SortOrder
   name?: Prisma.SortOrder
+  imageUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   quantity?: Prisma.SortOrder
   unitPrice?: Prisma.SortOrder
   totalPrice?: Prisma.SortOrder
@@ -272,6 +281,7 @@ export type ReceiptItemWhereUniqueInput = Prisma.AtLeast<{
   NOT?: Prisma.ReceiptItemWhereInput | Prisma.ReceiptItemWhereInput[]
   billId?: Prisma.StringFilter<"ReceiptItem"> | string
   name?: Prisma.StringFilter<"ReceiptItem"> | string
+  imageUrl?: Prisma.StringNullableFilter<"ReceiptItem"> | string | null
   quantity?: Prisma.IntFilter<"ReceiptItem"> | number
   unitPrice?: Prisma.DecimalFilter<"ReceiptItem"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   totalPrice?: Prisma.DecimalFilter<"ReceiptItem"> | runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -285,6 +295,7 @@ export type ReceiptItemOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   billId?: Prisma.SortOrder
   name?: Prisma.SortOrder
+  imageUrl?: Prisma.SortOrderInput | Prisma.SortOrder
   quantity?: Prisma.SortOrder
   unitPrice?: Prisma.SortOrder
   totalPrice?: Prisma.SortOrder
@@ -304,6 +315,7 @@ export type ReceiptItemScalarWhereWithAggregatesInput = {
   id?: Prisma.StringWithAggregatesFilter<"ReceiptItem"> | string
   billId?: Prisma.StringWithAggregatesFilter<"ReceiptItem"> | string
   name?: Prisma.StringWithAggregatesFilter<"ReceiptItem"> | string
+  imageUrl?: Prisma.StringNullableWithAggregatesFilter<"ReceiptItem"> | string | null
   quantity?: Prisma.IntWithAggregatesFilter<"ReceiptItem"> | number
   unitPrice?: Prisma.DecimalWithAggregatesFilter<"ReceiptItem"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   totalPrice?: Prisma.DecimalWithAggregatesFilter<"ReceiptItem"> | runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -314,6 +326,7 @@ export type ReceiptItemScalarWhereWithAggregatesInput = {
 export type ReceiptItemCreateInput = {
   id?: string
   name: string
+  imageUrl?: string | null
   quantity?: number
   unitPrice: runtime.Decimal | runtime.DecimalJsLike | number | string
   totalPrice: runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -327,6 +340,7 @@ export type ReceiptItemUncheckedCreateInput = {
   id?: string
   billId: string
   name: string
+  imageUrl?: string | null
   quantity?: number
   unitPrice: runtime.Decimal | runtime.DecimalJsLike | number | string
   totalPrice: runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -338,6 +352,7 @@ export type ReceiptItemUncheckedCreateInput = {
 export type ReceiptItemUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   quantity?: Prisma.IntFieldUpdateOperationsInput | number
   unitPrice?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   totalPrice?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -351,6 +366,7 @@ export type ReceiptItemUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   billId?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   quantity?: Prisma.IntFieldUpdateOperationsInput | number
   unitPrice?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   totalPrice?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -363,6 +379,7 @@ export type ReceiptItemCreateManyInput = {
   id?: string
   billId: string
   name: string
+  imageUrl?: string | null
   quantity?: number
   unitPrice: runtime.Decimal | runtime.DecimalJsLike | number | string
   totalPrice: runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -373,6 +390,7 @@ export type ReceiptItemCreateManyInput = {
 export type ReceiptItemUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   quantity?: Prisma.IntFieldUpdateOperationsInput | number
   unitPrice?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   totalPrice?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -384,6 +402,7 @@ export type ReceiptItemUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   billId?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   quantity?: Prisma.IntFieldUpdateOperationsInput | number
   unitPrice?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   totalPrice?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -405,6 +424,7 @@ export type ReceiptItemCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   billId?: Prisma.SortOrder
   name?: Prisma.SortOrder
+  imageUrl?: Prisma.SortOrder
   quantity?: Prisma.SortOrder
   unitPrice?: Prisma.SortOrder
   totalPrice?: Prisma.SortOrder
@@ -422,6 +442,7 @@ export type ReceiptItemMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   billId?: Prisma.SortOrder
   name?: Prisma.SortOrder
+  imageUrl?: Prisma.SortOrder
   quantity?: Prisma.SortOrder
   unitPrice?: Prisma.SortOrder
   totalPrice?: Prisma.SortOrder
@@ -433,6 +454,7 @@ export type ReceiptItemMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   billId?: Prisma.SortOrder
   name?: Prisma.SortOrder
+  imageUrl?: Prisma.SortOrder
   quantity?: Prisma.SortOrder
   unitPrice?: Prisma.SortOrder
   totalPrice?: Prisma.SortOrder
@@ -518,6 +540,7 @@ export type ReceiptItemUpdateOneRequiredWithoutSharesNestedInput = {
 export type ReceiptItemCreateWithoutBillInput = {
   id?: string
   name: string
+  imageUrl?: string | null
   quantity?: number
   unitPrice: runtime.Decimal | runtime.DecimalJsLike | number | string
   totalPrice: runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -529,6 +552,7 @@ export type ReceiptItemCreateWithoutBillInput = {
 export type ReceiptItemUncheckedCreateWithoutBillInput = {
   id?: string
   name: string
+  imageUrl?: string | null
   quantity?: number
   unitPrice: runtime.Decimal | runtime.DecimalJsLike | number | string
   totalPrice: runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -570,6 +594,7 @@ export type ReceiptItemScalarWhereInput = {
   id?: Prisma.StringFilter<"ReceiptItem"> | string
   billId?: Prisma.StringFilter<"ReceiptItem"> | string
   name?: Prisma.StringFilter<"ReceiptItem"> | string
+  imageUrl?: Prisma.StringNullableFilter<"ReceiptItem"> | string | null
   quantity?: Prisma.IntFilter<"ReceiptItem"> | number
   unitPrice?: Prisma.DecimalFilter<"ReceiptItem"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   totalPrice?: Prisma.DecimalFilter<"ReceiptItem"> | runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -580,6 +605,7 @@ export type ReceiptItemScalarWhereInput = {
 export type ReceiptItemCreateWithoutSharesInput = {
   id?: string
   name: string
+  imageUrl?: string | null
   quantity?: number
   unitPrice: runtime.Decimal | runtime.DecimalJsLike | number | string
   totalPrice: runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -592,6 +618,7 @@ export type ReceiptItemUncheckedCreateWithoutSharesInput = {
   id?: string
   billId: string
   name: string
+  imageUrl?: string | null
   quantity?: number
   unitPrice: runtime.Decimal | runtime.DecimalJsLike | number | string
   totalPrice: runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -618,6 +645,7 @@ export type ReceiptItemUpdateToOneWithWhereWithoutSharesInput = {
 export type ReceiptItemUpdateWithoutSharesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   quantity?: Prisma.IntFieldUpdateOperationsInput | number
   unitPrice?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   totalPrice?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -630,6 +658,7 @@ export type ReceiptItemUncheckedUpdateWithoutSharesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   billId?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   quantity?: Prisma.IntFieldUpdateOperationsInput | number
   unitPrice?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   totalPrice?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -640,6 +669,7 @@ export type ReceiptItemUncheckedUpdateWithoutSharesInput = {
 export type ReceiptItemCreateManyBillInput = {
   id?: string
   name: string
+  imageUrl?: string | null
   quantity?: number
   unitPrice: runtime.Decimal | runtime.DecimalJsLike | number | string
   totalPrice: runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -650,6 +680,7 @@ export type ReceiptItemCreateManyBillInput = {
 export type ReceiptItemUpdateWithoutBillInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   quantity?: Prisma.IntFieldUpdateOperationsInput | number
   unitPrice?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   totalPrice?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -661,6 +692,7 @@ export type ReceiptItemUpdateWithoutBillInput = {
 export type ReceiptItemUncheckedUpdateWithoutBillInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   quantity?: Prisma.IntFieldUpdateOperationsInput | number
   unitPrice?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   totalPrice?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -672,6 +704,7 @@ export type ReceiptItemUncheckedUpdateWithoutBillInput = {
 export type ReceiptItemUncheckedUpdateManyWithoutBillInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   quantity?: Prisma.IntFieldUpdateOperationsInput | number
   unitPrice?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   totalPrice?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -714,6 +747,7 @@ export type ReceiptItemSelect<ExtArgs extends runtime.Types.Extensions.InternalA
   id?: boolean
   billId?: boolean
   name?: boolean
+  imageUrl?: boolean
   quantity?: boolean
   unitPrice?: boolean
   totalPrice?: boolean
@@ -728,6 +762,7 @@ export type ReceiptItemSelectCreateManyAndReturn<ExtArgs extends runtime.Types.E
   id?: boolean
   billId?: boolean
   name?: boolean
+  imageUrl?: boolean
   quantity?: boolean
   unitPrice?: boolean
   totalPrice?: boolean
@@ -740,6 +775,7 @@ export type ReceiptItemSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.E
   id?: boolean
   billId?: boolean
   name?: boolean
+  imageUrl?: boolean
   quantity?: boolean
   unitPrice?: boolean
   totalPrice?: boolean
@@ -752,6 +788,7 @@ export type ReceiptItemSelectScalar = {
   id?: boolean
   billId?: boolean
   name?: boolean
+  imageUrl?: boolean
   quantity?: boolean
   unitPrice?: boolean
   totalPrice?: boolean
@@ -759,7 +796,7 @@ export type ReceiptItemSelectScalar = {
   updatedAt?: boolean
 }
 
-export type ReceiptItemOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "billId" | "name" | "quantity" | "unitPrice" | "totalPrice" | "createdAt" | "updatedAt", ExtArgs["result"]["receiptItem"]>
+export type ReceiptItemOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "billId" | "name" | "imageUrl" | "quantity" | "unitPrice" | "totalPrice" | "createdAt" | "updatedAt", ExtArgs["result"]["receiptItem"]>
 export type ReceiptItemInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   bill?: boolean | Prisma.BillDefaultArgs<ExtArgs>
   shares?: boolean | Prisma.ReceiptItem$sharesArgs<ExtArgs>
@@ -782,6 +819,7 @@ export type $ReceiptItemPayload<ExtArgs extends runtime.Types.Extensions.Interna
     id: string
     billId: string
     name: string
+    imageUrl: string | null
     quantity: number
     unitPrice: runtime.Decimal
     totalPrice: runtime.Decimal
@@ -1215,6 +1253,7 @@ export interface ReceiptItemFieldRefs {
   readonly id: Prisma.FieldRef<"ReceiptItem", 'String'>
   readonly billId: Prisma.FieldRef<"ReceiptItem", 'String'>
   readonly name: Prisma.FieldRef<"ReceiptItem", 'String'>
+  readonly imageUrl: Prisma.FieldRef<"ReceiptItem", 'String'>
   readonly quantity: Prisma.FieldRef<"ReceiptItem", 'Int'>
   readonly unitPrice: Prisma.FieldRef<"ReceiptItem", 'Decimal'>
   readonly totalPrice: Prisma.FieldRef<"ReceiptItem", 'Decimal'>

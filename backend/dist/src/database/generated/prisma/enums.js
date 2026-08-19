@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.OcrStatus = exports.PaymentStatus = exports.BillStatus = exports.RestaurantRecommendationStatus = exports.FinalSelectionMethod = exports.FinalVoteType = exports.VoteAction = exports.RecommendationRoundStatus = exports.MealBudgetRange = exports.SessionMemberRole = exports.FoodFightStatus = exports.RoomStatus = exports.Role = exports.AuthProvider = void 0;
+exports.PaymentAccountType = exports.OcrStatus = exports.PaymentStatus = exports.BillStatus = exports.RestaurantRecommendationStatus = exports.FinalSelectionMethod = exports.FinalVoteType = exports.VoteAction = exports.RecommendationRoundStatus = exports.MealBudgetRange = exports.SessionMemberRole = exports.FoodFightStatus = exports.RoomStatus = exports.Role = exports.AuthProvider = void 0;
 exports.AuthProvider = {
     GOOGLE: 'GOOGLE',
     LINE: 'LINE'
@@ -76,5 +76,8 @@ exports.OcrStatus = {
     PROCESSING: 'PROCESSING',
     COMPLETED: 'COMPLETED',
     FAILED: 'FAILED'
+};
+exports.PaymentAccountType = {
+    PROMPTPAY: 'PROMPTPAY'
 };
 //# sourceMappingURL=enums.js.map

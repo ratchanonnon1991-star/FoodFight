@@ -33,7 +33,7 @@ var __importStar = (this && this.__importStar) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.JsonNullValueFilter = exports.NullsOrder = exports.QueryMode = exports.NullableJsonNullValueInput = exports.SortOrder = exports.UserPaymentScalarFieldEnum = exports.ItemShareScalarFieldEnum = exports.ReceiptItemScalarFieldEnum = exports.ReceiptScalarFieldEnum = exports.BillScalarFieldEnum = exports.RestaurantSelectionScalarFieldEnum = exports.RestaurantRecommendationScalarFieldEnum = exports.FinalSelectionScalarFieldEnum = exports.FinalVoteScalarFieldEnum = exports.VoteScalarFieldEnum = exports.RecommendationItemScalarFieldEnum = exports.RecommendationRoundScalarFieldEnum = exports.MealPreferenceScalarFieldEnum = exports.SessionMemberScalarFieldEnum = exports.FoodFightSessionScalarFieldEnum = exports.RoomMemberScalarFieldEnum = exports.RoomScalarFieldEnum = exports.FoodProfileScalarFieldEnum = exports.PasswordResetScalarFieldEnum = exports.EmailVerificationScalarFieldEnum = exports.AccountScalarFieldEnum = exports.UserScalarFieldEnum = exports.TransactionIsolationLevel = exports.ModelName = exports.AnyNull = exports.JsonNull = exports.DbNull = exports.NullTypes = exports.Decimal = void 0;
+exports.JsonNullValueFilter = exports.NullsOrder = exports.QueryMode = exports.NullableJsonNullValueInput = exports.SortOrder = exports.UserPaymentScalarFieldEnum = exports.ItemShareScalarFieldEnum = exports.ReceiptItemScalarFieldEnum = exports.ReceiptScalarFieldEnum = exports.BillScalarFieldEnum = exports.RestaurantSelectionScalarFieldEnum = exports.RestaurantRecommendationScalarFieldEnum = exports.FinalSelectionScalarFieldEnum = exports.FinalVoteScalarFieldEnum = exports.VoteScalarFieldEnum = exports.RecommendationItemScalarFieldEnum = exports.RecommendationRoundScalarFieldEnum = exports.MealPreferenceScalarFieldEnum = exports.SessionMemberScalarFieldEnum = exports.FoodFightSessionScalarFieldEnum = exports.RoomMemberScalarFieldEnum = exports.RoomScalarFieldEnum = exports.FoodProfileScalarFieldEnum = exports.PasswordResetScalarFieldEnum = exports.EmailVerificationScalarFieldEnum = exports.AccountScalarFieldEnum = exports.PaymentAccountScalarFieldEnum = exports.UserScalarFieldEnum = exports.TransactionIsolationLevel = exports.ModelName = exports.AnyNull = exports.JsonNull = exports.DbNull = exports.NullTypes = exports.Decimal = void 0;
 const runtime = __importStar(require("@prisma/client/runtime/index-browser"));
 exports.Decimal = runtime.Decimal;
 exports.NullTypes = {
@@ -46,6 +46,7 @@ exports.JsonNull = runtime.JsonNull;
 exports.AnyNull = runtime.AnyNull;
 exports.ModelName = {
     User: 'User',
+    PaymentAccount: 'PaymentAccount',
     Account: 'Account',
     EmailVerification: 'EmailVerification',
     PasswordReset: 'PasswordReset',
@@ -82,6 +83,16 @@ exports.UserScalarFieldEnum = {
     avatarUrl: 'avatarUrl',
     emailVerified: 'emailVerified',
     role: 'role',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+};
+exports.PaymentAccountScalarFieldEnum = {
+    id: 'id',
+    userId: 'userId',
+    type: 'type',
+    accountName: 'accountName',
+    promptPayId: 'promptPayId',
+    qrImageUrl: 'qrImageUrl',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
 };
@@ -290,6 +301,7 @@ exports.ReceiptItemScalarFieldEnum = {
     id: 'id',
     billId: 'billId',
     name: 'name',
+    imageUrl: 'imageUrl',
     quantity: 'quantity',
     unitPrice: 'unitPrice',
     totalPrice: 'totalPrice',
@@ -309,6 +321,7 @@ exports.UserPaymentScalarFieldEnum = {
     userId: 'userId',
     amount: 'amount',
     status: 'status',
+    slipImageUrl: 'slipImageUrl',
     paidAt: 'paidAt',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
