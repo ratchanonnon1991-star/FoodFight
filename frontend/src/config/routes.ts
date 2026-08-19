@@ -6,6 +6,7 @@
 
 export const ROUTES = {
   HOME: "/",
+  ADMIN: "/admin",
   AUTH: {
     REGISTER: "/register",
     VERIFY_EMAIL: "/verify-email",
