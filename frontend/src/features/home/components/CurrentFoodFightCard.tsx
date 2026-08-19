@@ -1,8 +1,14 @@
 "use client";
 
+/* Profile images are supplied by external OAuth providers. */
+/* eslint-disable @next/next/no-img-element */
+
 import * as React from "react";
-import { ChevronRight, Clock, User, Users, UtensilsCrossed } from "lucide-react";
-import type { CurrentFoodFightSession } from "../types/home-types";
+import { ChevronRight, Clock, Users, UtensilsCrossed } from "lucide-react";
+import type {
+  CurrentFoodFightMember,
+  CurrentFoodFightSession,
+} from "../types/home-types";
 
 export interface CurrentFoodFightCardProps {
   session: CurrentFoodFightSession;
@@ -13,8 +19,14 @@ export function CurrentFoodFightCard({
   session,
   onContinue,
 }: CurrentFoodFightCardProps) {
+  const visibleMembers = session.members.slice(0, 4);
+  const remainingMemberCount = session.members.length - visibleMembers.length;
+
   return (
-    <section aria-labelledby="current-foodfight-heading" className="space-y-2.5">
+    <section
+      aria-labelledby="current-foodfight-heading"
+      className="space-y-2.5"
+    >
       {/* Section Title */}
       <div className="flex items-center gap-2">
         <UtensilsCrossed className="size-4 text-text-primary stroke-[2.2]" />
@@ -63,19 +75,24 @@ export function CurrentFoodFightCard({
         {/* Bottom Action & Member Stack */}
         <div className="flex items-center justify-between gap-3 pt-3 border-t border-border/50">
           {/* Member Avatar Stack */}
-          <div className="flex items-center -space-x-2" aria-label="Room members">
-            {session.members.slice(0, 4).map((member, index) => (
+          <div
+            className="flex items-center -space-x-2"
+            aria-label="Room members"
+          >
+            {visibleMembers.map((member, index) => (
               <div
-                key={`${member}-${index}`}
+                key={`${member.id}-${index}`}
                 className="size-8 rounded-full bg-surface-subtle border-2 border-surface flex items-center justify-center text-text-muted shadow-2xs"
-                title={member}
+                title={member.name}
               >
-                <User className="size-4" />
+                <MemberAvatar member={member} />
               </div>
             ))}
-            <div className="size-8 rounded-full bg-surface-subtle border-2 border-surface flex items-center justify-center text-xs font-bold text-text-secondary shadow-2xs">
-              +1
-            </div>
+            {remainingMemberCount > 0 ? (
+              <div className="size-8 rounded-full bg-surface-subtle border-2 border-surface flex items-center justify-center text-xs font-bold text-text-secondary shadow-2xs">
+                +{remainingMemberCount}
+              </div>
+            ) : null}
           </div>
 
           {/* Continue Button */}
@@ -91,4 +108,45 @@ export function CurrentFoodFightCard({
       </div>
     </section>
   );
+}
+
+function MemberAvatar({ member }: { member: CurrentFoodFightMember }) {
+  const [failedImageUrl, setFailedImageUrl] = React.useState<string | null>(
+    null,
+  );
+  const shouldShowImage = Boolean(
+    member.avatarUrl && failedImageUrl !== member.avatarUrl,
+  );
+
+  if (shouldShowImage) {
+    return (
+      <img
+        key={member.avatarUrl}
+        src={member.avatarUrl ?? undefined}
+        alt={`${member.name}'s profile`}
+        className="size-full rounded-full object-cover"
+        referrerPolicy="no-referrer"
+        onError={() => setFailedImageUrl(member.avatarUrl ?? null)}
+      />
+    );
+  }
+
+  return (
+    <span
+      className="text-[0.6rem] font-semibold text-text-secondary"
+      aria-hidden="true"
+    >
+      {getInitials(member.name) || "?"}
+    </span>
+  );
+}
+
+function getInitials(name: string) {
+  return name
+    .trim()
+    .split(/\s+/)
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((part) => part[0]?.toUpperCase())
+    .join("");
 }

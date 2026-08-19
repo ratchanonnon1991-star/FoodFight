@@ -1,5 +1,8 @@
 "use client";
 
+/* Profile images are supplied by external OAuth providers. */
+/* eslint-disable @next/next/no-img-element */
+
 import * as React from "react";
 import { Bell } from "lucide-react";
 import type { AuthenticatedUserDisplay } from "../types/home-types";
@@ -15,13 +18,14 @@ export function HomeHeader({
   onNotificationClick,
   onProfileClick,
 }: HomeHeaderProps) {
-  const [imageFailed, setImageFailed] = React.useState(false);
-
-  React.useEffect(() => {
-    setImageFailed(false);
-  }, [user.avatarUrl]);
+  const [failedImageUrl, setFailedImageUrl] = React.useState<string | null>(
+    null,
+  );
 
   const initial = user.name.trim().charAt(0).toUpperCase() || "?";
+  const shouldShowImage = Boolean(
+    user.avatarUrl && failedImageUrl !== user.avatarUrl,
+  );
 
   return (
     <header className="flex items-start justify-between gap-3 pt-2">
@@ -55,12 +59,12 @@ export function HomeHeader({
           title={user.name}
           className="size-10 rounded-full border border-border/80 bg-surface flex items-center justify-center text-text-secondary hover:text-brand-primary hover:border-brand-secondary/50 transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-secondary cursor-pointer shadow-2xs"
         >
-          {user.avatarUrl && !imageFailed ? (
+          {shouldShowImage ? (
             <img
               src={user.avatarUrl}
               alt={`${user.name}'s profile`}
               className="size-full rounded-full object-cover"
-              onError={() => setImageFailed(true)}
+              onError={() => setFailedImageUrl(user.avatarUrl ?? null)}
             />
           ) : (
             <span
