@@ -8,6 +8,7 @@ const AUTH_FLOW_STORAGE_KEY = "foodfighter_auth_flow";
 interface StoredAuthFlow {
   challenge: EmailVerificationChallenge | null;
   verificationCompleted: boolean;
+  isFoodProfileCompleted: boolean;
 }
 
 export interface AuthFlowContextValue {
@@ -19,6 +20,9 @@ export interface AuthFlowContextValue {
 
   isAuthenticated: boolean;
   setIsAuthenticated: (authenticated: boolean) => void;
+
+  isFoodProfileCompleted: boolean;
+  setIsFoodProfileCompleted: (completed: boolean) => void;
 
   clearFlowState: () => void;
 }
@@ -34,9 +38,12 @@ export function AuthFlowProvider({ children }: { children: React.ReactNode }) {
 
   const [isAuthenticated, setIsAuthenticated] = React.useState(false);
 
+  const [isFoodProfileCompleted, setIsFoodProfileCompletedState] =
+    React.useState(false);
+
   const [isHydrated, setIsHydrated] = React.useState(false);
 
-  // Restore OTP flow after refresh
+  // Restore auth flow after refresh
   React.useEffect(() => {
     try {
       const stored = sessionStorage.getItem(AUTH_FLOW_STORAGE_KEY);
@@ -47,6 +54,8 @@ export function AuthFlowProvider({ children }: { children: React.ReactNode }) {
         setChallengeState(parsed.challenge ?? null);
 
         setVerificationCompletedState(parsed.verificationCompleted ?? false);
+
+        setIsFoodProfileCompletedState(parsed.isFoodProfileCompleted ?? false);
       }
     } catch {
       sessionStorage.removeItem(AUTH_FLOW_STORAGE_KEY);
@@ -59,10 +68,12 @@ export function AuthFlowProvider({ children }: { children: React.ReactNode }) {
     (
       nextChallenge: EmailVerificationChallenge | null,
       nextVerificationCompleted: boolean,
+      nextFoodProfileCompleted: boolean,
     ) => {
       const data: StoredAuthFlow = {
         challenge: nextChallenge,
         verificationCompleted: nextVerificationCompleted,
+        isFoodProfileCompleted: nextFoodProfileCompleted,
       };
 
       sessionStorage.setItem(AUTH_FLOW_STORAGE_KEY, JSON.stringify(data));
@@ -74,24 +85,34 @@ export function AuthFlowProvider({ children }: { children: React.ReactNode }) {
     (nextChallenge: EmailVerificationChallenge | null) => {
       setChallengeState(nextChallenge);
 
-      persistFlow(nextChallenge, verificationCompleted);
+      persistFlow(nextChallenge, verificationCompleted, isFoodProfileCompleted);
     },
-    [persistFlow, verificationCompleted],
+    [persistFlow, verificationCompleted, isFoodProfileCompleted],
   );
 
   const setVerificationCompleted = React.useCallback(
     (completed: boolean) => {
       setVerificationCompletedState(completed);
 
-      persistFlow(challenge, completed);
+      persistFlow(challenge, completed, isFoodProfileCompleted);
     },
-    [challenge, persistFlow],
+    [challenge, persistFlow, isFoodProfileCompleted],
+  );
+
+  const setIsFoodProfileCompleted = React.useCallback(
+    (completed: boolean) => {
+      setIsFoodProfileCompletedState(completed);
+
+      persistFlow(challenge, verificationCompleted, completed);
+    },
+    [challenge, verificationCompleted, persistFlow],
   );
 
   const clearFlowState = React.useCallback(() => {
     setChallengeState(null);
     setVerificationCompletedState(false);
     setIsAuthenticated(false);
+    setIsFoodProfileCompletedState(false);
 
     sessionStorage.removeItem(AUTH_FLOW_STORAGE_KEY);
   }, []);
@@ -100,10 +121,16 @@ export function AuthFlowProvider({ children }: { children: React.ReactNode }) {
     () => ({
       challenge,
       setChallenge,
+
       verificationCompleted,
       setVerificationCompleted,
+
       isAuthenticated,
       setIsAuthenticated,
+
+      isFoodProfileCompleted,
+      setIsFoodProfileCompleted,
+
       clearFlowState,
     }),
     [
@@ -112,12 +139,14 @@ export function AuthFlowProvider({ children }: { children: React.ReactNode }) {
       verificationCompleted,
       setVerificationCompleted,
       isAuthenticated,
+      isFoodProfileCompleted,
+      setIsFoodProfileCompleted,
       clearFlowState,
     ],
   );
 
-  // Prevent "Verification session not found"
-  // from flashing before sessionStorage is restored.
+  // Prevent verification fallback from flashing
+  // before sessionStorage has been restored.
   if (!isHydrated) {
     return null;
   }

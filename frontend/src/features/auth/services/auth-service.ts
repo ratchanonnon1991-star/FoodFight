@@ -3,9 +3,15 @@ import type {
   LoginInput,
   EmailVerificationInput,
   ChangeEmailInput,
+  ForgotPasswordInput,
+  ResetPasswordInput,
   EmailVerificationChallenge,
   AuthResult,
 } from "../types/auth-types";
+
+export interface LoginResultData {
+  foodProfileComplete?: boolean;
+}
 
 /**
  * Frontend Authentication Service Interface
@@ -19,7 +25,7 @@ export interface AuthService {
     input: RegisterInput,
   ): Promise<AuthResult<EmailVerificationChallenge>>;
 
-  login(input: LoginInput): Promise<AuthResult>;
+  login(input: LoginInput): Promise<AuthResult<LoginResultData>>;
 
   verifyEmail(input: EmailVerificationInput): Promise<AuthResult>;
 
@@ -30,6 +36,10 @@ export interface AuthService {
   changeVerificationEmail(
     input: ChangeEmailInput,
   ): Promise<AuthResult<EmailVerificationChallenge>>;
+
+  forgotPassword(input: ForgotPasswordInput): Promise<AuthResult>;
+
+  resetPassword(input: ResetPasswordInput): Promise<AuthResult>;
 
   beginGoogleAuth(idToken: string): Promise<AuthResult>;
 

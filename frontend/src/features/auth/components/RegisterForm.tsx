@@ -106,18 +106,21 @@ export function RegisterForm() {
 
   return (
     <div className="w-full space-y-6">
+      {/* Back */}
       <div className="flex items-center justify-between">
         <Link
           href={ROUTES.HOME}
-          className="inline-flex items-center gap-1.5 text-xs font-medium text-text-secondary hover:text-text-primary transition-colors focus-visible:outline-2 focus-visible:outline-brand-secondary rounded-sm"
+          className="inline-flex items-center gap-1.5 rounded-sm text-xs font-medium text-text-secondary transition-colors hover:text-text-primary focus-visible:outline-2 focus-visible:outline-brand-secondary"
           aria-label="Back to home"
         >
           <ArrowLeft className="size-4" aria-hidden="true" />
+
           <span>Back</span>
         </Link>
       </div>
 
-      <div className="text-center space-y-1.5">
+      {/* Header */}
+      <div className="space-y-1.5 text-center">
         <div className="text-xl font-bold tracking-tight text-brand-primary">
           FoodFighter
         </div>
@@ -131,6 +134,7 @@ export function RegisterForm() {
         </p>
       </div>
 
+      {/* General Error */}
       {generalError && (
         <Alert variant="error">
           <AlertTitle>Registration Failed</AlertTitle>
@@ -139,7 +143,9 @@ export function RegisterForm() {
         </Alert>
       )}
 
+      {/* Register Form */}
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4" noValidate>
+        {/* Full Name */}
         <FormField isInvalid={!!errors.name}>
           <FormLabel htmlFor="name" required>
             Full Name
@@ -156,6 +162,7 @@ export function RegisterForm() {
           {errors.name && <FormError>{errors.name.message}</FormError>}
         </FormField>
 
+        {/* Email */}
         <FormField isInvalid={!!errors.email}>
           <FormLabel htmlFor="email" required>
             Email Address
@@ -173,6 +180,7 @@ export function RegisterForm() {
           {errors.email && <FormError>{errors.email.message}</FormError>}
         </FormField>
 
+        {/* Password */}
         <FormField isInvalid={!!errors.password}>
           <FormLabel htmlFor="password" required>
             Password
@@ -194,6 +202,7 @@ export function RegisterForm() {
           {errors.password && <FormError>{errors.password.message}</FormError>}
         </FormField>
 
+        {/* Confirm Password */}
         <FormField isInvalid={!!errors.confirmPassword}>
           <FormLabel htmlFor="confirmPassword" required>
             Confirm Password
@@ -212,17 +221,19 @@ export function RegisterForm() {
           )}
         </FormField>
 
+        {/* Terms */}
         <TermsConsent
           control={control}
           error={errors.termsAccepted?.message}
           disabled={isSubmitting}
         />
 
+        {/* Submit */}
         <div className="pt-2">
           <Button
             type="submit"
             variant="primary"
-            className="w-full h-11 text-sm font-semibold tracking-wide"
+            className="h-11 w-full text-sm font-semibold tracking-wide"
             disabled={isSubmitting}
             loading={isSubmitting}
           >
@@ -231,17 +242,24 @@ export function RegisterForm() {
         </div>
       </form>
 
+      {/* Divider */}
       <div className="relative my-4">
         <Separator text="OR" />
       </div>
 
-      <SocialAuthButtons disabled={isSubmitting} />
+      {/* Social Auth */}
+      <SocialAuthButtons
+        disabled={isSubmitting}
+        onSuccess={() => router.push(ROUTES.FOOD_PROFILE.ALLERGIES)}
+        onError={(message) => setGeneralError(message)}
+      />
 
-      <div className="text-center pt-2 text-xs text-text-secondary">
+      {/* Login */}
+      <div className="pt-2 text-center text-xs text-text-secondary">
         Already have an account?{" "}
         <Link
           href={ROUTES.AUTH.LOGIN}
-          className="font-semibold text-brand-primary hover:text-brand-primary-hover underline underline-offset-2 transition-colors focus-visible:outline-2 focus-visible:outline-brand-secondary rounded-sm"
+          className="rounded-sm font-semibold text-brand-primary underline underline-offset-2 transition-colors hover:text-brand-primary-hover focus-visible:outline-2 focus-visible:outline-brand-secondary"
         >
           Log in
         </Link>

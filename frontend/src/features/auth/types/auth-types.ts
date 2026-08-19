@@ -28,6 +28,17 @@ export interface ChangeEmailInput {
   newEmail: string;
 }
 
+export interface ForgotPasswordInput {
+  email: string;
+}
+
+export interface ResetPasswordInput {
+  email: string;
+  otp: string;
+  newPassword: string;
+  confirmPassword: string;
+}
+
 export interface EmailVerificationChallenge {
   email: string;
   expiresAt: number;

@@ -12,6 +12,7 @@ const ROUTES = [
   { path: "/", name: "Home" },
   { path: "/login", name: "Login" },
   { path: "/register", name: "Register" },
+  { path: "/food-profile/allergies", name: "Food Profile Allergies" },
   { path: "/design-system", name: "Design System" },
 ] as const;
 

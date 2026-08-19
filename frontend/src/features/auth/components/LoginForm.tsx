@@ -7,7 +7,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ArrowLeft } from "lucide-react";
 import { ROUTES } from "@/config/routes";
-import { authService } from "@/features/auth/services/auth-runtime";
+import { authService, isMockFoodProfileComplete } from "@/features/auth/services/auth-runtime";
 import { useAuthFlow } from "@/features/auth/context/auth-flow-context";
 import { loginSchema, type LoginFormValues } from "@/features/auth/schemas/login-schema";
 import { Button } from "@/components/ui/Button";
@@ -20,7 +20,7 @@ import { SocialAuthButtons } from "./SocialAuthButtons";
 
 export function LoginForm() {
   const router = useRouter();
-  const { setIsAuthenticated } = useAuthFlow();
+  const { setIsAuthenticated, setIsFoodProfileCompleted } = useAuthFlow();
   const [generalError, setGeneralError] = React.useState<string | null>(null);
   const [isSocialPending, setIsSocialPending] = React.useState(false);
 
@@ -37,9 +37,15 @@ export function LoginForm() {
     mode: "onBlur",
   });
 
-  const handleAuthSuccess = () => {
+  const handleAuthSuccess = (foodProfileComplete: boolean) => {
     setIsAuthenticated(true);
-    router.push(ROUTES.HOME);
+    setIsFoodProfileCompleted(foodProfileComplete);
+
+    if (foodProfileComplete) {
+      router.push(ROUTES.AUTHENTICATED_HOME);
+    } else {
+      router.push(ROUTES.FOOD_PROFILE.ALLERGIES);
+    }
   };
 
   const onSubmit = async (values: LoginFormValues) => {
@@ -52,14 +58,10 @@ export function LoginForm() {
         return;
       }
 
-      handleAuthSuccess();
+      handleAuthSuccess(result.data?.foodProfileComplete ?? false);
     } catch {
       setGeneralError("An unexpected error occurred during login. Please try again.");
     }
-  };
-
-  const handleForgotPassword = () => {
-    setGeneralError("Password reset is not yet available in this version.");
   };
 
   const isAnyPending = isSubmitting || isSocialPending;
@@ -123,13 +125,12 @@ export function LoginForm() {
             <FormLabel htmlFor="password" required>
               Password
             </FormLabel>
-            <button
-              type="button"
-              onClick={handleForgotPassword}
+            <Link
+              href={ROUTES.AUTH.FORGOT_PASSWORD}
               className="text-xs font-medium text-brand-primary hover:text-brand-primary-hover underline underline-offset-2 transition-colors focus-visible:outline-2 focus-visible:outline-brand-secondary rounded-sm"
             >
               Forgot password?
-            </button>
+            </Link>
           </div>
           <PasswordInput
             id="password"
@@ -163,7 +164,7 @@ export function LoginForm() {
       {/* Social Auth Buttons with concurrency guard */}
       <SocialAuthButtons
         disabled={isAnyPending}
-        onSuccess={handleAuthSuccess}
+        onSuccess={() => handleAuthSuccess(isMockFoodProfileComplete())}
         onError={(msg) => setGeneralError(msg)}
         onPendingChange={(pending) => setIsSocialPending(pending)}
       />

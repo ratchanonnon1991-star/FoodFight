@@ -4,17 +4,6 @@ import { apiAuthService } from "./api-auth-service";
 
 export type AuthMode = "mock" | "api";
 
-/**
- * Resolves the active authentication mode with strict fail-closed safety.
- *
- * Safety Matrix:
- * - "mock" in development: uses MockAuthService
- * - "mock" in production: uses MockAuthService (explicit opt-in only)
- * - "api": uses ApiAuthService
- * - Unknown value: fails closed
- * - Missing in production: fails closed (silent mock fallback strictly prohibited)
- * - Missing in development (NODE_ENV !== "production"): defaults to "mock" for dev convenience
- */
 export function resolveAuthMode(): AuthMode {
   const rawMode = process.env.NEXT_PUBLIC_AUTH_MODE?.trim();
 
@@ -37,9 +26,6 @@ export function resolveAuthMode(): AuthMode {
   return "mock";
 }
 
-/**
- * Returns the active AuthService instance based on resolved configuration.
- */
 export function getAuthService(): AuthService {
   const mode = resolveAuthMode();
 
@@ -54,11 +40,20 @@ export function getAuthService(): AuthService {
   throw new Error("Unsupported auth mode.");
 }
 
-/**
- * Runtime authentication service proxy.
- * Resolves mode on invocation to prevent build-time static evaluation errors
- * while enforcing strict runtime fail-closed guarantees.
- */
+export function setMockFoodProfileComplete(completed: boolean): void {
+  if (resolveAuthMode() === "mock") {
+    mockAuthService.setMockFoodProfileComplete(completed);
+  }
+}
+
+export function isMockFoodProfileComplete(): boolean {
+  if (resolveAuthMode() === "mock") {
+    return mockAuthService.isMockFoodProfileComplete();
+  }
+
+  return false;
+}
+
 export const authService: AuthService = {
   register: (input) => getAuthService().register(input),
 
@@ -71,6 +66,10 @@ export const authService: AuthService = {
 
   changeVerificationEmail: (input) =>
     getAuthService().changeVerificationEmail(input),
+
+  forgotPassword: (input) => getAuthService().forgotPassword(input),
+
+  resetPassword: (input) => getAuthService().resetPassword(input),
 
   beginGoogleAuth: (idToken) => getAuthService().beginGoogleAuth(idToken),
 
