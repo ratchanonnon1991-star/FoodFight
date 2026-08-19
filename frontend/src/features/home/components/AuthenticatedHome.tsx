@@ -1,22 +1,23 @@
 "use client";
 
 import * as React from "react";
-import { useRouter } from "next/navigation";
 import { LogIn, UserPlus } from "lucide-react";
-import { API_BASE_URL } from "@/config/api";
-import { ROUTES } from "@/config/routes";
 import { PageContainer } from "@/components/layout/PageContainer";
+import { ROUTES } from "@/config/routes";
 import {
   DEMO_CURRENT_FOODFIGHT,
   DEMO_RECENT_FOODFIGHTS,
   DEMO_TIP,
+  DEMO_USER,
 } from "../constants/home-demo-data";
-import type { AuthenticatedUserDisplay } from "../types/home-types";
 import { HomeHeader } from "./HomeHeader";
 import { HomeActionCard } from "./HomeActionCard";
 import { CurrentFoodFightCard } from "./CurrentFoodFightCard";
 import { RecentFoodFightsSection } from "./RecentFoodFightsSection";
 import { HomeTipCard } from "./HomeTipCard";
+import { useRouter } from "next/router";
+import { AuthenticatedUserDisplay } from "@/features/home/types/home-types";
+import { API_BASE_URL } from "@/config/api";
 
 export interface AuthenticatedHomeProps {
   onCreateRoom?: () => void;
@@ -88,7 +89,11 @@ export function AuthenticatedHome({
 
   return (
     <main className="min-h-dvh bg-background text-text-primary">
-      <PageContainer maxWidth="auth" paddingY="none" className="space-y-5 sm:space-y-6 pt-3 sm:pt-4 pb-32">
+      <PageContainer
+        maxWidth="auth"
+        paddingY="none"
+        className="space-y-5 sm:space-y-6 pt-3 sm:pt-4 pb-32"
+      >
         {/* 1. Header with greeting and avatar/notification */}
         <HomeHeader user={user ?? { name: "FoodFighter" }} />
 
@@ -99,6 +104,7 @@ export function AuthenticatedHome({
             title="CREATE ROOM"
             description="Start a new FoodFight"
             icon={<UserPlus className="size-6 text-text-primary stroke-[2]" />}
+            href={ROUTES.ROOM.CREATE}
             onClick={onCreateRoom}
           />
           <HomeActionCard
@@ -106,6 +112,7 @@ export function AuthenticatedHome({
             title="JOIN ROOM"
             description="Enter code or scan QR"
             icon={<LogIn className="size-6 text-text-primary stroke-[2]" />}
+            href={ROUTES.ROOM.JOIN}
             onClick={onJoinRoom}
           />
         </div>
