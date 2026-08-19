@@ -4,12 +4,12 @@ import * as React from "react";
 import { useRouter } from "next/navigation";
 import { Info } from "lucide-react";
 import { ROUTES } from "@/config/routes";
-import { setMockFoodProfileComplete } from "@/features/auth/services/auth-runtime";
 import { Button } from "@/components/ui/Button";
 import { Label } from "@/components/ui/Label";
 import { Textarea } from "@/components/ui/Textarea";
 import { Alert, AlertDescription } from "@/components/ui/Alert";
 import { useFoodProfile } from "../context/food-profile-context";
+import { saveFoodProfile } from "../services/food-profile-service";
 import { FoodProfileStepLayout } from "./FoodProfileStepLayout";
 
 export interface DetailsStepProps {
@@ -25,6 +25,8 @@ export function DetailsStep({
 }: DetailsStepProps) {
   const router = useRouter();
   const { draft, setAdditionalNotes } = useFoodProfile();
+  const [isSaving, setIsSaving] = React.useState(false);
+  const [errorMessage, setErrorMessage] = React.useState<string | null>(null);
 
   const notesLength = draft.additionalNotes.length;
 
@@ -35,14 +37,29 @@ export function DetailsStep({
     }
   };
 
-  const handleSaveAndContinue = () => {
-    // Explicit mock-mode profile completion flag
-    setMockFoodProfileComplete(true);
+  const handleSaveAndContinue = async () => {
+    setIsSaving(true);
+    setErrorMessage(null);
 
-    if (onComplete) {
-      onComplete();
-    } else {
-      router.push(ROUTES.AUTHENTICATED_HOME);
+    try {
+      const result = await saveFoodProfile(draft);
+
+      if (!result.ok) {
+        setErrorMessage(result.error.message);
+        setIsSaving(false);
+        return;
+      }
+
+      if (onComplete) {
+        onComplete();
+      } else {
+        router.push(ROUTES.AUTHENTICATED_HOME);
+      }
+    } catch {
+      setErrorMessage(
+        "An unexpected error occurred while saving your profile. Please try again."
+      );
+      setIsSaving(false);
     }
   };
 
@@ -54,6 +71,15 @@ export function DetailsStep({
       backHref={backHref}
       footer={
         <div className="space-y-3">
+          {/* Error Message Alert */}
+          {errorMessage && (
+            <Alert variant="error" className="py-2.5 px-3">
+              <AlertDescription className="text-xs text-status-danger-text leading-snug">
+                {errorMessage}
+              </AlertDescription>
+            </Alert>
+          )}
+
           {/* Informational Notice */}
           <Alert variant="info" className="py-2.5 px-3">
             <Info className="size-4 shrink-0 text-status-info-icon" />
@@ -68,6 +94,8 @@ export function DetailsStep({
             variant="primary"
             size="lg"
             fullWidth
+            loading={isSaving}
+            loadingText="Saving..."
             onClick={handleSaveAndContinue}
             id="details-save-continue-button"
           >
@@ -118,3 +146,4 @@ export function DetailsStep({
     </FoodProfileStepLayout>
   );
 }
+
