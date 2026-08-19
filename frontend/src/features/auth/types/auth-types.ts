@@ -1,7 +1,8 @@
 /**
  * Frontend Authentication Domain & Input Types
  *
- * Types for user input, operation status, challenge state, and client-side results across auth flows.
+ * Types for user input, operation status, challenge state,
+ * and client-side results across auth flows.
  */
 
 export interface RegisterInput {
@@ -18,10 +19,12 @@ export interface LoginInput {
 }
 
 export interface EmailVerificationInput {
+  email: string;
   code: string;
 }
 
 export interface ChangeEmailInput {
+  currentEmail: string;
   newEmail: string;
 }
 
@@ -30,9 +33,10 @@ export interface ForgotPasswordInput {
 }
 
 export interface ResetPasswordInput {
+  email: string;
+  otp: string;
   newPassword: string;
   confirmPassword: string;
-  token?: string;
 }
 
 export interface EmailVerificationChallenge {
@@ -57,5 +61,11 @@ export interface AuthError {
 }
 
 export type AuthResult<T = void> =
-  | { ok: true; data?: T }
-  | { ok: false; error: AuthError };
+  | {
+      ok: true;
+      data?: T;
+    }
+  | {
+      ok: false;
+      error: AuthError;
+    };

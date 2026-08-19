@@ -16,6 +16,7 @@ const jwt_module_1 = require("./infrastructure/jwt/jwt.module");
 const jwt_auth_guard_1 = require("./auth/guards/jwt-auth.guard");
 const user_module_1 = require("./user/user.module");
 const database_module_1 = require("./database/database.module");
+const room_module_1 = require("./room/room.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -30,6 +31,7 @@ exports.AppModule = AppModule = __decorate([
             jwt_module_1.JwtModule,
             auth_module_1.AuthModule,
             user_module_1.UserModule,
+            room_module_1.RoomModule,
         ],
         providers: [
             {

@@ -1,4 +1,5 @@
 import type { AuthService, LoginResultData } from "../services/auth-service";
+
 import type {
   RegisterInput,
   LoginInput,
@@ -9,7 +10,12 @@ import type {
   EmailVerificationChallenge,
   AuthResult,
 } from "../types/auth-types";
-import { EMAIL_VERIFICATION_POLICY, AUTH_PASSWORD_POLICY } from "../constants/auth-policy";
+
+import {
+  EMAIL_VERIFICATION_POLICY,
+  AUTH_PASSWORD_POLICY,
+} from "../constants/auth-policy";
+
 import {
   MOCK_AUTH_DELAY_MS,
   MOCK_OTP_LIFETIME_MS,
@@ -33,22 +39,27 @@ const createMockChallenge = (email: string): EmailVerificationChallenge => ({
 
 /**
  * In-memory state for mock development flow.
- * Resets to false upon new registration; set to true upon Step 3 completion.
+ * Resets to false upon new registration;
+ * set to true upon food-profile completion.
  */
 let mockFoodProfileCompleted = false;
 
 /**
  * Frontend Mock Authentication Service
  *
- * Simulates authentication flows locally for UI validation and development
- * without hitting real backend endpoints or fabricating JWT tokens.
+ * Simulates authentication flows locally for UI validation
+ * and development without hitting real backend endpoints.
  */
 export const mockAuthService: AuthService & {
   setMockFoodProfileComplete: (completed: boolean) => void;
+
   isMockFoodProfileComplete: () => boolean;
 } = {
-  async register(input: RegisterInput): Promise<AuthResult<EmailVerificationChallenge>> {
+  async register(
+    input: RegisterInput,
+  ): Promise<AuthResult<EmailVerificationChallenge>> {
     await delay();
+
     if (input.email.toLowerCase() === MOCK_DUPLICATE_EMAIL.toLowerCase()) {
       return {
         ok: false,
@@ -59,7 +70,6 @@ export const mockAuthService: AuthService & {
       };
     }
 
-    // Newly registered mock accounts start with incomplete food profile
     mockFoodProfileCompleted = false;
 
     return {
@@ -70,8 +80,10 @@ export const mockAuthService: AuthService & {
 
   async login(input: LoginInput): Promise<AuthResult<LoginResultData>> {
     await delay();
+
     if (
-      input.email.toLowerCase() === MOCK_INVALID_CREDENTIALS_EMAIL.toLowerCase() ||
+      input.email.toLowerCase() ===
+        MOCK_INVALID_CREDENTIALS_EMAIL.toLowerCase() ||
       input.password === MOCK_INVALID_PASSWORD
     ) {
       return {
@@ -83,7 +95,6 @@ export const mockAuthService: AuthService & {
       };
     }
 
-    // Seeded returning user or in-memory completed session
     const isComplete =
       input.email.toLowerCase() === MOCK_RETURNING_USER_EMAIL.toLowerCase() ||
       mockFoodProfileCompleted;
@@ -98,6 +109,7 @@ export const mockAuthService: AuthService & {
 
   async verifyEmail(input: EmailVerificationInput): Promise<AuthResult> {
     await delay();
+
     if (input.code.length !== EMAIL_VERIFICATION_POLICY.codeLength) {
       return {
         ok: false,
@@ -128,19 +140,27 @@ export const mockAuthService: AuthService & {
       };
     }
 
-    return { ok: true };
+    return {
+      ok: true,
+    };
   },
 
-  async resendVerificationCode(email: string): Promise<AuthResult<EmailVerificationChallenge>> {
+  async resendVerificationCode(
+    email: string,
+  ): Promise<AuthResult<EmailVerificationChallenge>> {
     await delay();
+
     return {
       ok: true,
       data: createMockChallenge(email),
     };
   },
 
-  async changeVerificationEmail(input: ChangeEmailInput): Promise<AuthResult<EmailVerificationChallenge>> {
+  async changeVerificationEmail(
+    input: ChangeEmailInput,
+  ): Promise<AuthResult<EmailVerificationChallenge>> {
     await delay();
+
     if (input.newEmail.toLowerCase() === MOCK_DUPLICATE_EMAIL.toLowerCase()) {
       return {
         ok: false,
@@ -150,6 +170,7 @@ export const mockAuthService: AuthService & {
         },
       };
     }
+
     return {
       ok: true,
       data: createMockChallenge(input.newEmail),
@@ -158,6 +179,7 @@ export const mockAuthService: AuthService & {
 
   async forgotPassword(input: ForgotPasswordInput): Promise<AuthResult> {
     await delay();
+
     if (!input.email || !input.email.includes("@")) {
       return {
         ok: false,
@@ -167,11 +189,15 @@ export const mockAuthService: AuthService & {
         },
       };
     }
-    return { ok: true };
+
+    return {
+      ok: true,
+    };
   },
 
   async resetPassword(input: ResetPasswordInput): Promise<AuthResult> {
     await delay();
+
     if (input.newPassword.length < AUTH_PASSWORD_POLICY.minLength) {
       return {
         ok: false,
@@ -181,6 +207,7 @@ export const mockAuthService: AuthService & {
         },
       };
     }
+
     if (input.newPassword !== input.confirmPassword) {
       return {
         ok: false,
@@ -190,17 +217,26 @@ export const mockAuthService: AuthService & {
         },
       };
     }
-    return { ok: true };
+
+    return {
+      ok: true,
+    };
   },
 
-  async beginGoogleAuth(): Promise<AuthResult> {
+  async beginGoogleAuth(_idToken: string): Promise<AuthResult> {
     await delay();
-    return { ok: true };
+
+    return {
+      ok: true,
+    };
   },
 
-  async beginLineAuth(): Promise<AuthResult> {
+  async beginLineAuth(_idToken: string): Promise<AuthResult> {
     await delay();
-    return { ok: true };
+
+    return {
+      ok: true,
+    };
   },
 
   setMockFoodProfileComplete(completed: boolean) {

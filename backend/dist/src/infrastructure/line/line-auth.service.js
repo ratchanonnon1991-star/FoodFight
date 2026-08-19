@@ -17,20 +17,72 @@ let LineAuthService = class LineAuthService {
     constructor(configService) {
         this.configService = configService;
     }
+    async exchangeCodeForIdToken(code) {
+        const clientId = this.configService.get('LINE_CHANNEL_ID');
+        const clientSecret = this.configService.get('LINE_CHANNEL_SECRET');
+        const redirectUri = this.configService.get('LINE_CALLBACK_URL');
+        if (!clientId || !clientSecret || !redirectUri) {
+            throw new common_1.UnauthorizedException('LINE authentication is not configured');
+        }
+        let response;
+        try {
+            response = await fetch('https://api.line.me/oauth2/v2.1/token', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: new URLSearchParams({
+                    grant_type: 'authorization_code',
+                    code,
+                    redirect_uri: redirectUri,
+                    client_id: clientId,
+                    client_secret: clientSecret,
+                }),
+            });
+        }
+        catch (error) {
+            console.error('[LINE TOKEN EXCHANGE NETWORK ERROR]', error);
+            throw new common_1.ServiceUnavailableException('Unable to connect to LINE. Please check the backend network connection.');
+        }
+        if (!response.ok) {
+            const errorText = await response.text().catch(() => '');
+            console.error('[LINE TOKEN EXCHANGE FAILED]', response.status, errorText);
+            throw new common_1.UnauthorizedException('Failed to exchange LINE authorization code');
+        }
+        const data = (await response.json());
+        if (!data.id_token) {
+            throw new common_1.UnauthorizedException('LINE did not return an ID token');
+        }
+        return data.id_token;
+    }
     async verifyIdToken(idToken) {
         const clientId = this.configService.get('LINE_CHANNEL_ID');
-        const response = await fetch('https://api.line.me/oauth2/v2.1/verify', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            body: new URLSearchParams({ id_token: idToken, client_id: clientId }),
-        });
+        if (!clientId) {
+            throw new common_1.UnauthorizedException('LINE authentication is not configured');
+        }
+        let response;
+        try {
+            response = await fetch('https://api.line.me/oauth2/v2.1/verify', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: new URLSearchParams({
+                    id_token: idToken,
+                    client_id: clientId,
+                }),
+            });
+        }
+        catch (error) {
+            console.error('[LINE ID TOKEN VERIFY NETWORK ERROR]', error);
+            throw new common_1.ServiceUnavailableException('Unable to connect to LINE. Please check the backend network connection.');
+        }
         if (!response.ok) {
+            const errorText = await response.text().catch(() => '');
+            console.error('[LINE ID TOKEN VERIFY FAILED]', response.status, errorText);
             throw new common_1.UnauthorizedException('Invalid LINE ID token');
         }
         const payload = (await response.json());
-        if (!payload.email) {
-            throw new common_1.UnauthorizedException('LINE account must have a verified email to sign in');
-        }
         return {
             sub: payload.sub,
             email: payload.email,

@@ -21,13 +21,27 @@ export interface LoginResultData {
  * without throwing or inventing backend DTOs.
  */
 export interface AuthService {
-  register(input: RegisterInput): Promise<AuthResult<EmailVerificationChallenge>>;
+  register(
+    input: RegisterInput,
+  ): Promise<AuthResult<EmailVerificationChallenge>>;
+
   login(input: LoginInput): Promise<AuthResult<LoginResultData>>;
+
   verifyEmail(input: EmailVerificationInput): Promise<AuthResult>;
-  resendVerificationCode(email: string): Promise<AuthResult<EmailVerificationChallenge>>;
-  changeVerificationEmail(input: ChangeEmailInput): Promise<AuthResult<EmailVerificationChallenge>>;
+
+  resendVerificationCode(
+    email: string,
+  ): Promise<AuthResult<EmailVerificationChallenge>>;
+
+  changeVerificationEmail(
+    input: ChangeEmailInput,
+  ): Promise<AuthResult<EmailVerificationChallenge>>;
+
   forgotPassword(input: ForgotPasswordInput): Promise<AuthResult>;
+
   resetPassword(input: ResetPasswordInput): Promise<AuthResult>;
-  beginGoogleAuth(): Promise<AuthResult>;
-  beginLineAuth(): Promise<AuthResult>;
+
+  beginGoogleAuth(idToken: string): Promise<AuthResult>;
+
+  beginLineAuth(idToken: string): Promise<AuthResult>;
 }
