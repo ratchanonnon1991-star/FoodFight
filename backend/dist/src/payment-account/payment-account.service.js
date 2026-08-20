@@ -12,81 +12,50 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.PaymentAccountService = void 0;
 const common_1 = require("@nestjs/common");
 const prisma_service_1 = require("../database/prisma.service");
-const local_storage_service_1 = require("../infrastructure/storage/local-storage.service");
 let PaymentAccountService = class PaymentAccountService {
     prisma;
-    storage;
-    constructor(prisma, storage) {
+    constructor(prisma) {
         this.prisma = prisma;
-        this.storage = storage;
     }
-    async getForUser(userId) {
-        const account = await this.prisma.paymentAccount.findUnique({
+    paymentAccountSelect = {
+        id: true,
+        userId: true,
+        paymentType: true,
+        accountName: true,
+        promptPayNumber: true,
+        qrCodeUrl: true,
+        createdAt: true,
+        updatedAt: true,
+    };
+    findByUserId(userId) {
+        return this.prisma.paymentAccount.findUnique({
             where: { userId },
+            select: this.paymentAccountSelect,
         });
-        return account ? this.toResponse(account) : null;
     }
-    async upsert(userId, dto) {
-        const account = await this.prisma.paymentAccount.upsert({
+    upsert(userId, dto) {
+        return this.prisma.paymentAccount.upsert({
             where: { userId },
-            update: {
-                type: dto.type,
-                accountName: dto.accountName,
-                promptPayId: dto.promptPayId,
-            },
             create: {
                 userId,
-                type: dto.type,
+                paymentType: dto.paymentType,
                 accountName: dto.accountName,
-                promptPayId: dto.promptPayId,
+                promptPayNumber: dto.promptPayNumber,
+                qrCodeUrl: dto.qrCodeUrl ?? null,
             },
+            update: {
+                paymentType: dto.paymentType,
+                accountName: dto.accountName,
+                promptPayNumber: dto.promptPayNumber,
+                qrCodeUrl: dto.qrCodeUrl ?? null,
+            },
+            select: this.paymentAccountSelect,
         });
-        return this.toResponse(account);
-    }
-    async uploadQrImage(userId, file) {
-        const account = await this.prisma.paymentAccount.findUnique({
-            where: { userId },
-        });
-        if (!account) {
-            throw new common_1.NotFoundException('Set up a payment account before uploading a QR code');
-        }
-        const qrImageUrl = await this.storage.save(file, 'payment-accounts');
-        await this.storage.delete(account.qrImageUrl);
-        const updated = await this.prisma.paymentAccount.update({
-            where: { userId },
-            data: { qrImageUrl },
-        });
-        return this.toResponse(updated);
-    }
-    async removeQrImage(userId) {
-        const account = await this.prisma.paymentAccount.findUnique({
-            where: { userId },
-        });
-        if (!account) {
-            throw new common_1.NotFoundException('Payment account not found');
-        }
-        await this.storage.delete(account.qrImageUrl);
-        const updated = await this.prisma.paymentAccount.update({
-            where: { userId },
-            data: { qrImageUrl: null },
-        });
-        return this.toResponse(updated);
-    }
-    toResponse(account) {
-        return {
-            id: account.id,
-            type: account.type,
-            accountName: account.accountName,
-            promptPayId: account.promptPayId,
-            qrImageUrl: account.qrImageUrl,
-            updatedAt: account.updatedAt,
-        };
     }
 };
 exports.PaymentAccountService = PaymentAccountService;
 exports.PaymentAccountService = PaymentAccountService = __decorate([
     (0, common_1.Injectable)(),
-    __metadata("design:paramtypes", [prisma_service_1.PrismaService,
-        local_storage_service_1.LocalStorageService])
+    __metadata("design:paramtypes", [prisma_service_1.PrismaService])
 ], PaymentAccountService);
 //# sourceMappingURL=payment-account.service.js.map

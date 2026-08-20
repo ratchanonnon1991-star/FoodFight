@@ -44,17 +44,22 @@ let AuthController = class AuthController {
     changeVerificationEmail(dto) {
         return this.authService.changeVerificationEmail(dto);
     }
-    login(dto) {
-        return this.authService.login(dto);
+    login(dto, response) {
+        return this.withRefreshCookie(response, this.authService.login(dto));
     }
-    loginWithGoogle(dto) {
-        return this.authService.loginWithGoogle(dto);
+    loginWithGoogle(dto, response) {
+        return this.withRefreshCookie(response, this.authService.loginWithGoogle(dto));
     }
-    loginWithLine(dto) {
-        return this.authService.loginWithLine(dto);
+    loginWithLine(dto, response) {
+        return this.withRefreshCookie(response, this.authService.loginWithLine(dto));
     }
-    loginWithLineCode(dto) {
-        return this.authService.loginWithLineCode(dto);
+    loginWithLineCode(dto, response) {
+        return this.withRefreshCookie(response, this.authService.loginWithLineCode(dto));
+    }
+    async refresh(request, response) {
+        const result = await this.authService.refresh(this.readRefreshCookie(request) ?? '');
+        this.setRefreshCookie(response, result.refreshToken);
+        return { accessToken: result.accessToken };
     }
     forgotPassword(dto) {
         return this.authService.forgotPassword(dto);
@@ -62,11 +67,43 @@ let AuthController = class AuthController {
     resetPassword(dto) {
         return this.authService.resetPassword(dto);
     }
-    logout() {
-        return this.authService.logout();
+    async logout(request, response) {
+        await this.authService.logout(this.readRefreshCookie(request));
+        this.clearRefreshCookie(response);
+        return { message: 'Logged out successfully' };
     }
     getMe(user) {
         return this.authService.getCurrentUser(user.sub);
+    }
+    async withRefreshCookie(response, authPromise) {
+        const { refreshToken, ...clientResponse } = await authPromise;
+        this.setRefreshCookie(response, refreshToken);
+        return clientResponse;
+    }
+    setRefreshCookie(response, refreshToken) {
+        const maxAgeSeconds = this.getRefreshTokenMaxAgeSeconds();
+        const secure = process.env.NODE_ENV === 'production' ? '; Secure' : '';
+        response.setHeader('Set-Cookie', `${REFRESH_COOKIE_NAME}=${encodeURIComponent(refreshToken)}; Max-Age=${maxAgeSeconds}; Path=/; HttpOnly; SameSite=Lax${secure}`);
+    }
+    clearRefreshCookie(response) {
+        response.setHeader('Set-Cookie', `${REFRESH_COOKIE_NAME}=; Max-Age=0; Path=/; HttpOnly; SameSite=Lax`);
+    }
+    readRefreshCookie(request) {
+        const cookieHeader = request.headers.cookie;
+        if (!cookieHeader) {
+            return undefined;
+        }
+        const cookie = cookieHeader
+            .split(';')
+            .map((part) => part.trim())
+            .find((part) => part.startsWith(`${REFRESH_COOKIE_NAME}=`));
+        return cookie
+            ? decodeURIComponent(cookie.slice(REFRESH_COOKIE_NAME.length + 1))
+            : undefined;
+    }
+    getRefreshTokenMaxAgeSeconds() {
+        const days = Number(process.env.REFRESH_TOKEN_EXPIRES_DAYS ?? 30);
+        return Math.max(1, days) * 24 * 60 * 60;
     }
 };
 exports.AuthController = AuthController;
@@ -110,8 +147,9 @@ __decorate([
     (0, common_1.HttpCode)(common_1.HttpStatus.OK),
     (0, common_1.Post)('login'),
     __param(0, (0, common_1.Body)()),
+    __param(1, (0, common_1.Res)({ passthrough: true })),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [login_dto_1.LoginDto]),
+    __metadata("design:paramtypes", [login_dto_1.LoginDto, Object]),
     __metadata("design:returntype", void 0)
 ], AuthController.prototype, "login", null);
 __decorate([
@@ -119,8 +157,9 @@ __decorate([
     (0, common_1.HttpCode)(common_1.HttpStatus.OK),
     (0, common_1.Post)('google'),
     __param(0, (0, common_1.Body)()),
+    __param(1, (0, common_1.Res)({ passthrough: true })),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [google_login_dto_1.GoogleLoginDto]),
+    __metadata("design:paramtypes", [google_login_dto_1.GoogleLoginDto, Object]),
     __metadata("design:returntype", void 0)
 ], AuthController.prototype, "loginWithGoogle", null);
 __decorate([
@@ -128,8 +167,9 @@ __decorate([
     (0, common_1.HttpCode)(common_1.HttpStatus.OK),
     (0, common_1.Post)('line'),
     __param(0, (0, common_1.Body)()),
+    __param(1, (0, common_1.Res)({ passthrough: true })),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [line_login_dto_1.LineLoginDto]),
+    __metadata("design:paramtypes", [line_login_dto_1.LineLoginDto, Object]),
     __metadata("design:returntype", void 0)
 ], AuthController.prototype, "loginWithLine", null);
 __decorate([
@@ -137,10 +177,21 @@ __decorate([
     (0, common_1.HttpCode)(common_1.HttpStatus.OK),
     (0, common_1.Post)('line/code'),
     __param(0, (0, common_1.Body)()),
+    __param(1, (0, common_1.Res)({ passthrough: true })),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [line_code_dto_1.LineCodeDto]),
+    __metadata("design:paramtypes", [line_code_dto_1.LineCodeDto, Object]),
     __metadata("design:returntype", void 0)
 ], AuthController.prototype, "loginWithLineCode", null);
+__decorate([
+    (0, public_decorator_1.Public)(),
+    (0, common_1.HttpCode)(common_1.HttpStatus.OK),
+    (0, common_1.Post)('refresh'),
+    __param(0, (0, common_1.Req)()),
+    __param(1, (0, common_1.Res)({ passthrough: true })),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Object]),
+    __metadata("design:returntype", Promise)
+], AuthController.prototype, "refresh", null);
 __decorate([
     (0, public_decorator_1.Public)(),
     (0, common_1.HttpCode)(common_1.HttpStatus.OK),
@@ -160,11 +211,14 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], AuthController.prototype, "resetPassword", null);
 __decorate([
+    (0, public_decorator_1.Public)(),
     (0, common_1.HttpCode)(common_1.HttpStatus.OK),
     (0, common_1.Post)('logout'),
+    __param(0, (0, common_1.Req)()),
+    __param(1, (0, common_1.Res)({ passthrough: true })),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
-    __metadata("design:returntype", void 0)
+    __metadata("design:paramtypes", [Object, Object]),
+    __metadata("design:returntype", Promise)
 ], AuthController.prototype, "logout", null);
 __decorate([
     (0, common_1.Get)('me'),
@@ -177,4 +231,5 @@ exports.AuthController = AuthController = __decorate([
     (0, common_1.Controller)('auth'),
     __metadata("design:paramtypes", [auth_service_1.AuthService])
 ], AuthController);
+const REFRESH_COOKIE_NAME = 'foodfighter_refresh_token';
 //# sourceMappingURL=auth.controller.js.map

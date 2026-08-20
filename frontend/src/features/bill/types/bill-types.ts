@@ -91,10 +91,10 @@ export interface BillDetail {
 
 export interface PaymentAccount {
   id: string;
-  type: "PROMPTPAY";
+  paymentType: "PROMPTPAY";
   accountName: string;
-  promptPayId: string;
-  qrImageUrl: string | null;
+  promptPayNumber: string;
+  qrCodeUrl: string | null;
   updatedAt: string;
 }
 

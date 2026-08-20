@@ -81,8 +81,8 @@ export class BillDetailService {
       paymentAccount: bill.createdBy.paymentAccount
         ? {
             accountName: bill.createdBy.paymentAccount.accountName,
-            promptPayId: bill.createdBy.paymentAccount.promptPayId,
-            qrImageUrl: bill.createdBy.paymentAccount.qrImageUrl,
+            promptPayId: bill.createdBy.paymentAccount.promptPayNumber,
+            qrImageUrl: bill.createdBy.paymentAccount.qrCodeUrl,
           }
         : null,
       payments: bill.payments.map((payment) => ({

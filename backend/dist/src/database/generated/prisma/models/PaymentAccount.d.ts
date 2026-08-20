@@ -1,5 +1,4 @@
 import type * as runtime from "@prisma/client/runtime/client";
-import type * as $Enums from "../enums.js";
 import type * as Prisma from "../internal/prismaNamespace.js";
 export type PaymentAccountModel = runtime.Types.Result.DefaultSelection<Prisma.$PaymentAccountPayload>;
 export type AggregatePaymentAccount = {
@@ -10,30 +9,30 @@ export type AggregatePaymentAccount = {
 export type PaymentAccountMinAggregateOutputType = {
     id: string | null;
     userId: string | null;
-    type: $Enums.PaymentAccountType | null;
+    paymentType: string | null;
     accountName: string | null;
-    promptPayId: string | null;
-    qrImageUrl: string | null;
+    promptPayNumber: string | null;
+    qrCodeUrl: string | null;
     createdAt: Date | null;
     updatedAt: Date | null;
 };
 export type PaymentAccountMaxAggregateOutputType = {
     id: string | null;
     userId: string | null;
-    type: $Enums.PaymentAccountType | null;
+    paymentType: string | null;
     accountName: string | null;
-    promptPayId: string | null;
-    qrImageUrl: string | null;
+    promptPayNumber: string | null;
+    qrCodeUrl: string | null;
     createdAt: Date | null;
     updatedAt: Date | null;
 };
 export type PaymentAccountCountAggregateOutputType = {
     id: number;
     userId: number;
-    type: number;
+    paymentType: number;
     accountName: number;
-    promptPayId: number;
-    qrImageUrl: number;
+    promptPayNumber: number;
+    qrCodeUrl: number;
     createdAt: number;
     updatedAt: number;
     _all: number;
@@ -41,30 +40,30 @@ export type PaymentAccountCountAggregateOutputType = {
 export type PaymentAccountMinAggregateInputType = {
     id?: true;
     userId?: true;
-    type?: true;
+    paymentType?: true;
     accountName?: true;
-    promptPayId?: true;
-    qrImageUrl?: true;
+    promptPayNumber?: true;
+    qrCodeUrl?: true;
     createdAt?: true;
     updatedAt?: true;
 };
 export type PaymentAccountMaxAggregateInputType = {
     id?: true;
     userId?: true;
-    type?: true;
+    paymentType?: true;
     accountName?: true;
-    promptPayId?: true;
-    qrImageUrl?: true;
+    promptPayNumber?: true;
+    qrCodeUrl?: true;
     createdAt?: true;
     updatedAt?: true;
 };
 export type PaymentAccountCountAggregateInputType = {
     id?: true;
     userId?: true;
-    type?: true;
+    paymentType?: true;
     accountName?: true;
-    promptPayId?: true;
-    qrImageUrl?: true;
+    promptPayNumber?: true;
+    qrCodeUrl?: true;
     createdAt?: true;
     updatedAt?: true;
     _all?: true;
@@ -96,10 +95,10 @@ export type PaymentAccountGroupByArgs<ExtArgs extends runtime.Types.Extensions.I
 export type PaymentAccountGroupByOutputType = {
     id: string;
     userId: string;
-    type: $Enums.PaymentAccountType;
+    paymentType: string;
     accountName: string;
-    promptPayId: string;
-    qrImageUrl: string | null;
+    promptPayNumber: string;
+    qrCodeUrl: string | null;
     createdAt: Date;
     updatedAt: Date;
     _count: PaymentAccountCountAggregateOutputType | null;
@@ -115,10 +114,10 @@ export type PaymentAccountWhereInput = {
     NOT?: Prisma.PaymentAccountWhereInput | Prisma.PaymentAccountWhereInput[];
     id?: Prisma.StringFilter<"PaymentAccount"> | string;
     userId?: Prisma.StringFilter<"PaymentAccount"> | string;
-    type?: Prisma.EnumPaymentAccountTypeFilter<"PaymentAccount"> | $Enums.PaymentAccountType;
+    paymentType?: Prisma.StringFilter<"PaymentAccount"> | string;
     accountName?: Prisma.StringFilter<"PaymentAccount"> | string;
-    promptPayId?: Prisma.StringFilter<"PaymentAccount"> | string;
-    qrImageUrl?: Prisma.StringNullableFilter<"PaymentAccount"> | string | null;
+    promptPayNumber?: Prisma.StringFilter<"PaymentAccount"> | string;
+    qrCodeUrl?: Prisma.StringNullableFilter<"PaymentAccount"> | string | null;
     createdAt?: Prisma.DateTimeFilter<"PaymentAccount"> | Date | string;
     updatedAt?: Prisma.DateTimeFilter<"PaymentAccount"> | Date | string;
     user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>;
@@ -126,10 +125,10 @@ export type PaymentAccountWhereInput = {
 export type PaymentAccountOrderByWithRelationInput = {
     id?: Prisma.SortOrder;
     userId?: Prisma.SortOrder;
-    type?: Prisma.SortOrder;
+    paymentType?: Prisma.SortOrder;
     accountName?: Prisma.SortOrder;
-    promptPayId?: Prisma.SortOrder;
-    qrImageUrl?: Prisma.SortOrderInput | Prisma.SortOrder;
+    promptPayNumber?: Prisma.SortOrder;
+    qrCodeUrl?: Prisma.SortOrderInput | Prisma.SortOrder;
     createdAt?: Prisma.SortOrder;
     updatedAt?: Prisma.SortOrder;
     user?: Prisma.UserOrderByWithRelationInput;
@@ -140,10 +139,10 @@ export type PaymentAccountWhereUniqueInput = Prisma.AtLeast<{
     AND?: Prisma.PaymentAccountWhereInput | Prisma.PaymentAccountWhereInput[];
     OR?: Prisma.PaymentAccountWhereInput[];
     NOT?: Prisma.PaymentAccountWhereInput | Prisma.PaymentAccountWhereInput[];
-    type?: Prisma.EnumPaymentAccountTypeFilter<"PaymentAccount"> | $Enums.PaymentAccountType;
+    paymentType?: Prisma.StringFilter<"PaymentAccount"> | string;
     accountName?: Prisma.StringFilter<"PaymentAccount"> | string;
-    promptPayId?: Prisma.StringFilter<"PaymentAccount"> | string;
-    qrImageUrl?: Prisma.StringNullableFilter<"PaymentAccount"> | string | null;
+    promptPayNumber?: Prisma.StringFilter<"PaymentAccount"> | string;
+    qrCodeUrl?: Prisma.StringNullableFilter<"PaymentAccount"> | string | null;
     createdAt?: Prisma.DateTimeFilter<"PaymentAccount"> | Date | string;
     updatedAt?: Prisma.DateTimeFilter<"PaymentAccount"> | Date | string;
     user?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>;
@@ -151,10 +150,10 @@ export type PaymentAccountWhereUniqueInput = Prisma.AtLeast<{
 export type PaymentAccountOrderByWithAggregationInput = {
     id?: Prisma.SortOrder;
     userId?: Prisma.SortOrder;
-    type?: Prisma.SortOrder;
+    paymentType?: Prisma.SortOrder;
     accountName?: Prisma.SortOrder;
-    promptPayId?: Prisma.SortOrder;
-    qrImageUrl?: Prisma.SortOrderInput | Prisma.SortOrder;
+    promptPayNumber?: Prisma.SortOrder;
+    qrCodeUrl?: Prisma.SortOrderInput | Prisma.SortOrder;
     createdAt?: Prisma.SortOrder;
     updatedAt?: Prisma.SortOrder;
     _count?: Prisma.PaymentAccountCountOrderByAggregateInput;
@@ -167,19 +166,19 @@ export type PaymentAccountScalarWhereWithAggregatesInput = {
     NOT?: Prisma.PaymentAccountScalarWhereWithAggregatesInput | Prisma.PaymentAccountScalarWhereWithAggregatesInput[];
     id?: Prisma.StringWithAggregatesFilter<"PaymentAccount"> | string;
     userId?: Prisma.StringWithAggregatesFilter<"PaymentAccount"> | string;
-    type?: Prisma.EnumPaymentAccountTypeWithAggregatesFilter<"PaymentAccount"> | $Enums.PaymentAccountType;
+    paymentType?: Prisma.StringWithAggregatesFilter<"PaymentAccount"> | string;
     accountName?: Prisma.StringWithAggregatesFilter<"PaymentAccount"> | string;
-    promptPayId?: Prisma.StringWithAggregatesFilter<"PaymentAccount"> | string;
-    qrImageUrl?: Prisma.StringNullableWithAggregatesFilter<"PaymentAccount"> | string | null;
+    promptPayNumber?: Prisma.StringWithAggregatesFilter<"PaymentAccount"> | string;
+    qrCodeUrl?: Prisma.StringNullableWithAggregatesFilter<"PaymentAccount"> | string | null;
     createdAt?: Prisma.DateTimeWithAggregatesFilter<"PaymentAccount"> | Date | string;
     updatedAt?: Prisma.DateTimeWithAggregatesFilter<"PaymentAccount"> | Date | string;
 };
 export type PaymentAccountCreateInput = {
     id?: string;
-    type?: $Enums.PaymentAccountType;
+    paymentType?: string;
     accountName: string;
-    promptPayId: string;
-    qrImageUrl?: string | null;
+    promptPayNumber: string;
+    qrCodeUrl?: string | null;
     createdAt?: Date | string;
     updatedAt?: Date | string;
     user: Prisma.UserCreateNestedOneWithoutPaymentAccountInput;
@@ -187,19 +186,19 @@ export type PaymentAccountCreateInput = {
 export type PaymentAccountUncheckedCreateInput = {
     id?: string;
     userId: string;
-    type?: $Enums.PaymentAccountType;
+    paymentType?: string;
     accountName: string;
-    promptPayId: string;
-    qrImageUrl?: string | null;
+    promptPayNumber: string;
+    qrCodeUrl?: string | null;
     createdAt?: Date | string;
     updatedAt?: Date | string;
 };
 export type PaymentAccountUpdateInput = {
     id?: Prisma.StringFieldUpdateOperationsInput | string;
-    type?: Prisma.EnumPaymentAccountTypeFieldUpdateOperationsInput | $Enums.PaymentAccountType;
+    paymentType?: Prisma.StringFieldUpdateOperationsInput | string;
     accountName?: Prisma.StringFieldUpdateOperationsInput | string;
-    promptPayId?: Prisma.StringFieldUpdateOperationsInput | string;
-    qrImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    promptPayNumber?: Prisma.StringFieldUpdateOperationsInput | string;
+    qrCodeUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     user?: Prisma.UserUpdateOneRequiredWithoutPaymentAccountNestedInput;
@@ -207,39 +206,39 @@ export type PaymentAccountUpdateInput = {
 export type PaymentAccountUncheckedUpdateInput = {
     id?: Prisma.StringFieldUpdateOperationsInput | string;
     userId?: Prisma.StringFieldUpdateOperationsInput | string;
-    type?: Prisma.EnumPaymentAccountTypeFieldUpdateOperationsInput | $Enums.PaymentAccountType;
+    paymentType?: Prisma.StringFieldUpdateOperationsInput | string;
     accountName?: Prisma.StringFieldUpdateOperationsInput | string;
-    promptPayId?: Prisma.StringFieldUpdateOperationsInput | string;
-    qrImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    promptPayNumber?: Prisma.StringFieldUpdateOperationsInput | string;
+    qrCodeUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
 };
 export type PaymentAccountCreateManyInput = {
     id?: string;
     userId: string;
-    type?: $Enums.PaymentAccountType;
+    paymentType?: string;
     accountName: string;
-    promptPayId: string;
-    qrImageUrl?: string | null;
+    promptPayNumber: string;
+    qrCodeUrl?: string | null;
     createdAt?: Date | string;
     updatedAt?: Date | string;
 };
 export type PaymentAccountUpdateManyMutationInput = {
     id?: Prisma.StringFieldUpdateOperationsInput | string;
-    type?: Prisma.EnumPaymentAccountTypeFieldUpdateOperationsInput | $Enums.PaymentAccountType;
+    paymentType?: Prisma.StringFieldUpdateOperationsInput | string;
     accountName?: Prisma.StringFieldUpdateOperationsInput | string;
-    promptPayId?: Prisma.StringFieldUpdateOperationsInput | string;
-    qrImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    promptPayNumber?: Prisma.StringFieldUpdateOperationsInput | string;
+    qrCodeUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
 };
 export type PaymentAccountUncheckedUpdateManyInput = {
     id?: Prisma.StringFieldUpdateOperationsInput | string;
     userId?: Prisma.StringFieldUpdateOperationsInput | string;
-    type?: Prisma.EnumPaymentAccountTypeFieldUpdateOperationsInput | $Enums.PaymentAccountType;
+    paymentType?: Prisma.StringFieldUpdateOperationsInput | string;
     accountName?: Prisma.StringFieldUpdateOperationsInput | string;
-    promptPayId?: Prisma.StringFieldUpdateOperationsInput | string;
-    qrImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    promptPayNumber?: Prisma.StringFieldUpdateOperationsInput | string;
+    qrCodeUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
 };
@@ -250,30 +249,30 @@ export type PaymentAccountNullableScalarRelationFilter = {
 export type PaymentAccountCountOrderByAggregateInput = {
     id?: Prisma.SortOrder;
     userId?: Prisma.SortOrder;
-    type?: Prisma.SortOrder;
+    paymentType?: Prisma.SortOrder;
     accountName?: Prisma.SortOrder;
-    promptPayId?: Prisma.SortOrder;
-    qrImageUrl?: Prisma.SortOrder;
+    promptPayNumber?: Prisma.SortOrder;
+    qrCodeUrl?: Prisma.SortOrder;
     createdAt?: Prisma.SortOrder;
     updatedAt?: Prisma.SortOrder;
 };
 export type PaymentAccountMaxOrderByAggregateInput = {
     id?: Prisma.SortOrder;
     userId?: Prisma.SortOrder;
-    type?: Prisma.SortOrder;
+    paymentType?: Prisma.SortOrder;
     accountName?: Prisma.SortOrder;
-    promptPayId?: Prisma.SortOrder;
-    qrImageUrl?: Prisma.SortOrder;
+    promptPayNumber?: Prisma.SortOrder;
+    qrCodeUrl?: Prisma.SortOrder;
     createdAt?: Prisma.SortOrder;
     updatedAt?: Prisma.SortOrder;
 };
 export type PaymentAccountMinOrderByAggregateInput = {
     id?: Prisma.SortOrder;
     userId?: Prisma.SortOrder;
-    type?: Prisma.SortOrder;
+    paymentType?: Prisma.SortOrder;
     accountName?: Prisma.SortOrder;
-    promptPayId?: Prisma.SortOrder;
-    qrImageUrl?: Prisma.SortOrder;
+    promptPayNumber?: Prisma.SortOrder;
+    qrCodeUrl?: Prisma.SortOrder;
     createdAt?: Prisma.SortOrder;
     updatedAt?: Prisma.SortOrder;
 };
@@ -305,24 +304,21 @@ export type PaymentAccountUncheckedUpdateOneWithoutUserNestedInput = {
     connect?: Prisma.PaymentAccountWhereUniqueInput;
     update?: Prisma.XOR<Prisma.XOR<Prisma.PaymentAccountUpdateToOneWithWhereWithoutUserInput, Prisma.PaymentAccountUpdateWithoutUserInput>, Prisma.PaymentAccountUncheckedUpdateWithoutUserInput>;
 };
-export type EnumPaymentAccountTypeFieldUpdateOperationsInput = {
-    set?: $Enums.PaymentAccountType;
-};
 export type PaymentAccountCreateWithoutUserInput = {
     id?: string;
-    type?: $Enums.PaymentAccountType;
+    paymentType?: string;
     accountName: string;
-    promptPayId: string;
-    qrImageUrl?: string | null;
+    promptPayNumber: string;
+    qrCodeUrl?: string | null;
     createdAt?: Date | string;
     updatedAt?: Date | string;
 };
 export type PaymentAccountUncheckedCreateWithoutUserInput = {
     id?: string;
-    type?: $Enums.PaymentAccountType;
+    paymentType?: string;
     accountName: string;
-    promptPayId: string;
-    qrImageUrl?: string | null;
+    promptPayNumber: string;
+    qrCodeUrl?: string | null;
     createdAt?: Date | string;
     updatedAt?: Date | string;
 };
@@ -341,29 +337,29 @@ export type PaymentAccountUpdateToOneWithWhereWithoutUserInput = {
 };
 export type PaymentAccountUpdateWithoutUserInput = {
     id?: Prisma.StringFieldUpdateOperationsInput | string;
-    type?: Prisma.EnumPaymentAccountTypeFieldUpdateOperationsInput | $Enums.PaymentAccountType;
+    paymentType?: Prisma.StringFieldUpdateOperationsInput | string;
     accountName?: Prisma.StringFieldUpdateOperationsInput | string;
-    promptPayId?: Prisma.StringFieldUpdateOperationsInput | string;
-    qrImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    promptPayNumber?: Prisma.StringFieldUpdateOperationsInput | string;
+    qrCodeUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
 };
 export type PaymentAccountUncheckedUpdateWithoutUserInput = {
     id?: Prisma.StringFieldUpdateOperationsInput | string;
-    type?: Prisma.EnumPaymentAccountTypeFieldUpdateOperationsInput | $Enums.PaymentAccountType;
+    paymentType?: Prisma.StringFieldUpdateOperationsInput | string;
     accountName?: Prisma.StringFieldUpdateOperationsInput | string;
-    promptPayId?: Prisma.StringFieldUpdateOperationsInput | string;
-    qrImageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
+    promptPayNumber?: Prisma.StringFieldUpdateOperationsInput | string;
+    qrCodeUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null;
     createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
 };
 export type PaymentAccountSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
     id?: boolean;
     userId?: boolean;
-    type?: boolean;
+    paymentType?: boolean;
     accountName?: boolean;
-    promptPayId?: boolean;
-    qrImageUrl?: boolean;
+    promptPayNumber?: boolean;
+    qrCodeUrl?: boolean;
     createdAt?: boolean;
     updatedAt?: boolean;
     user?: boolean | Prisma.UserDefaultArgs<ExtArgs>;
@@ -371,10 +367,10 @@ export type PaymentAccountSelect<ExtArgs extends runtime.Types.Extensions.Intern
 export type PaymentAccountSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
     id?: boolean;
     userId?: boolean;
-    type?: boolean;
+    paymentType?: boolean;
     accountName?: boolean;
-    promptPayId?: boolean;
-    qrImageUrl?: boolean;
+    promptPayNumber?: boolean;
+    qrCodeUrl?: boolean;
     createdAt?: boolean;
     updatedAt?: boolean;
     user?: boolean | Prisma.UserDefaultArgs<ExtArgs>;
@@ -382,10 +378,10 @@ export type PaymentAccountSelectCreateManyAndReturn<ExtArgs extends runtime.Type
 export type PaymentAccountSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
     id?: boolean;
     userId?: boolean;
-    type?: boolean;
+    paymentType?: boolean;
     accountName?: boolean;
-    promptPayId?: boolean;
-    qrImageUrl?: boolean;
+    promptPayNumber?: boolean;
+    qrCodeUrl?: boolean;
     createdAt?: boolean;
     updatedAt?: boolean;
     user?: boolean | Prisma.UserDefaultArgs<ExtArgs>;
@@ -393,14 +389,14 @@ export type PaymentAccountSelectUpdateManyAndReturn<ExtArgs extends runtime.Type
 export type PaymentAccountSelectScalar = {
     id?: boolean;
     userId?: boolean;
-    type?: boolean;
+    paymentType?: boolean;
     accountName?: boolean;
-    promptPayId?: boolean;
-    qrImageUrl?: boolean;
+    promptPayNumber?: boolean;
+    qrCodeUrl?: boolean;
     createdAt?: boolean;
     updatedAt?: boolean;
 };
-export type PaymentAccountOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "type" | "accountName" | "promptPayId" | "qrImageUrl" | "createdAt" | "updatedAt", ExtArgs["result"]["paymentAccount"]>;
+export type PaymentAccountOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userId" | "paymentType" | "accountName" | "promptPayNumber" | "qrCodeUrl" | "createdAt" | "updatedAt", ExtArgs["result"]["paymentAccount"]>;
 export type PaymentAccountInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
     user?: boolean | Prisma.UserDefaultArgs<ExtArgs>;
 };
@@ -418,10 +414,10 @@ export type $PaymentAccountPayload<ExtArgs extends runtime.Types.Extensions.Inte
     scalars: runtime.Types.Extensions.GetPayloadResult<{
         id: string;
         userId: string;
-        type: $Enums.PaymentAccountType;
+        paymentType: string;
         accountName: string;
-        promptPayId: string;
-        qrImageUrl: string | null;
+        promptPayNumber: string;
+        qrCodeUrl: string | null;
         createdAt: Date;
         updatedAt: Date;
     }, ExtArgs["result"]["paymentAccount"]>;
@@ -484,10 +480,10 @@ export interface Prisma__PaymentAccountClient<T, Null = never, ExtArgs extends r
 export interface PaymentAccountFieldRefs {
     readonly id: Prisma.FieldRef<"PaymentAccount", 'String'>;
     readonly userId: Prisma.FieldRef<"PaymentAccount", 'String'>;
-    readonly type: Prisma.FieldRef<"PaymentAccount", 'PaymentAccountType'>;
+    readonly paymentType: Prisma.FieldRef<"PaymentAccount", 'String'>;
     readonly accountName: Prisma.FieldRef<"PaymentAccount", 'String'>;
-    readonly promptPayId: Prisma.FieldRef<"PaymentAccount", 'String'>;
-    readonly qrImageUrl: Prisma.FieldRef<"PaymentAccount", 'String'>;
+    readonly promptPayNumber: Prisma.FieldRef<"PaymentAccount", 'String'>;
+    readonly qrCodeUrl: Prisma.FieldRef<"PaymentAccount", 'String'>;
     readonly createdAt: Prisma.FieldRef<"PaymentAccount", 'DateTime'>;
     readonly updatedAt: Prisma.FieldRef<"PaymentAccount", 'DateTime'>;
 }

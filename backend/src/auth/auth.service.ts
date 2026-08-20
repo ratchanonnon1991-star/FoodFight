@@ -3,6 +3,8 @@ import {
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+import { createHash, randomBytes } from 'node:crypto';
 
 import { AuthProvider } from '../database/generated/prisma/client';
 import { PrismaService } from '../database/prisma.service';
@@ -33,10 +35,17 @@ type OAuthProfile = {
   avatarUrl?: string;
 };
 
+export type AuthSessionResponse = {
+  accessToken: string;
+  refreshToken: string;
+  foodProfileComplete: boolean;
+};
+
 @Injectable()
 export class AuthService {
   constructor(
     private readonly prisma: PrismaService,
+    private readonly configService: ConfigService,
     private readonly userService: UserService,
     private readonly bcryptService: BcryptService,
     private readonly jwtService: JwtService,
@@ -427,7 +436,10 @@ export class AuthService {
       }
     }
 
-    if (profile.avatarUrl && profile.avatarUrl !== user.avatarUrl) {
+    // Keep a profile picture selected in FoodFighter. Social providers may
+    // return a different picture on every login, so only use their picture
+    // when the account does not have one saved yet.
+    if (profile.avatarUrl && !user.avatarUrl) {
       user = await this.userService.updateAvatarUrl(user.id, profile.avatarUrl);
     }
 
@@ -441,6 +453,7 @@ export class AuthService {
   }
 
   private async createAuthResponse(userId: string, accessToken: string) {
+    const refreshToken = await this.createRefreshToken(userId);
     const foodProfile = await this.prisma.foodProfile.findUnique({
       where: { userId },
       select: { id: true },
@@ -448,7 +461,80 @@ export class AuthService {
 
     return {
       accessToken,
+      refreshToken,
       foodProfileComplete: Boolean(foodProfile),
+    };
+  }
+
+  async refresh(refreshToken: string) {
+    const normalizedToken = refreshToken.trim();
+
+    if (!normalizedToken) {
+      throw new UnauthorizedException('Refresh token is missing');
+    }
+
+    const tokenHash = this.hashRefreshToken(normalizedToken);
+    const storedToken = await this.prisma.refreshToken.findUnique({
+      where: { tokenHash },
+      select: {
+        id: true,
+        userId: true,
+        expiresAt: true,
+        revokedAt: true,
+        user: {
+          select: {
+            id: true,
+            email: true,
+            role: true,
+          },
+        },
+      },
+    });
+
+    if (
+      !storedToken ||
+      storedToken.revokedAt ||
+      storedToken.expiresAt.getTime() <= Date.now()
+    ) {
+      throw new UnauthorizedException('Invalid or expired refresh token');
+    }
+
+    const nextRefreshToken = this.generateRefreshToken();
+    const nextRefreshTokenHash = this.hashRefreshToken(nextRefreshToken);
+    const now = new Date();
+    const expiresAt = this.getRefreshTokenExpiry();
+
+    await this.prisma.$transaction(async (tx) => {
+      const revoked = await tx.refreshToken.updateMany({
+        where: {
+          id: storedToken.id,
+          revokedAt: null,
+        },
+        data: { revokedAt: now },
+      });
+
+      if (revoked.count !== 1) {
+        throw new UnauthorizedException('Refresh token has already been used');
+      }
+
+      await tx.refreshToken.create({
+        data: {
+          userId: storedToken.userId,
+          tokenHash: nextRefreshTokenHash,
+          expiresAt,
+        },
+      });
+    });
+
+    const accessToken = await this.jwtService.sign({
+      sub: storedToken.user.id,
+      email: storedToken.user.email,
+      role: storedToken.user.role,
+    });
+
+    return {
+      accessToken,
+      refreshToken: nextRefreshToken,
     };
   }
 
@@ -529,7 +615,50 @@ export class AuthService {
     };
   }
 
-  logout(): void {}
+  async logout(refreshToken?: string): Promise<void> {
+    const normalizedToken = refreshToken?.trim();
+
+    if (!normalizedToken) {
+      return;
+    }
+
+    await this.prisma.refreshToken.updateMany({
+      where: {
+        tokenHash: this.hashRefreshToken(normalizedToken),
+        revokedAt: null,
+      },
+      data: { revokedAt: new Date() },
+    });
+  }
+
+  private async createRefreshToken(userId: string) {
+    const refreshToken = this.generateRefreshToken();
+
+    await this.prisma.refreshToken.create({
+      data: {
+        userId,
+        tokenHash: this.hashRefreshToken(refreshToken),
+        expiresAt: this.getRefreshTokenExpiry(),
+      },
+    });
+
+    return refreshToken;
+  }
+
+  private generateRefreshToken() {
+    return randomBytes(48).toString('base64url');
+  }
+
+  private hashRefreshToken(token: string) {
+    return createHash('sha256').update(token).digest('hex');
+  }
+
+  private getRefreshTokenExpiry() {
+    const days =
+      this.configService.get<number>('REFRESH_TOKEN_EXPIRES_DAYS') ?? 30;
+
+    return new Date(Date.now() + days * 24 * 60 * 60 * 1000);
+  }
 
   private generateOtp(): string {
     return Math.floor(100000 + Math.random() * 900000).toString();

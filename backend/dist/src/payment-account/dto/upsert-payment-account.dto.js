@@ -10,31 +10,39 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UpsertPaymentAccountDto = void 0;
-const class_transformer_1 = require("class-transformer");
 const class_validator_1 = require("class-validator");
 const trim_decorator_1 = require("../../common/decorators/trim.decorator");
 class UpsertPaymentAccountDto {
-    type;
+    paymentType;
     accountName;
-    promptPayId;
+    promptPayNumber;
+    qrCodeUrl;
 }
 exports.UpsertPaymentAccountDto = UpsertPaymentAccountDto;
 __decorate([
+    (0, class_validator_1.IsString)(),
     (0, class_validator_1.IsIn)(['PROMPTPAY']),
     __metadata("design:type", String)
-], UpsertPaymentAccountDto.prototype, "type", void 0);
+], UpsertPaymentAccountDto.prototype, "paymentType", void 0);
 __decorate([
     (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsNotEmpty)(),
+    (0, class_validator_1.MaxLength)(100),
     (0, trim_decorator_1.Trim)(),
-    (0, class_validator_1.Length)(1, 100),
     __metadata("design:type", String)
 ], UpsertPaymentAccountDto.prototype, "accountName", void 0);
 __decorate([
-    (0, class_transformer_1.Transform)(({ value }) => typeof value === 'string' ? value.replace(/[^0-9]/g, '') : value),
     (0, class_validator_1.IsString)(),
-    (0, class_validator_1.Matches)(/^(0\d{9}|\d{13})$/, {
-        message: 'PromptPay ID must be a 10-digit mobile number or a 13-digit citizen ID',
-    }),
+    (0, class_validator_1.IsNotEmpty)(),
+    (0, class_validator_1.MaxLength)(30),
+    (0, class_validator_1.Matches)(/^[0-9+\-\s]+$/),
+    (0, trim_decorator_1.Trim)(),
     __metadata("design:type", String)
-], UpsertPaymentAccountDto.prototype, "promptPayId", void 0);
+], UpsertPaymentAccountDto.prototype, "promptPayNumber", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.MaxLength)(7_000_000),
+    __metadata("design:type", Object)
+], UpsertPaymentAccountDto.prototype, "qrCodeUrl", void 0);
 //# sourceMappingURL=upsert-payment-account.dto.js.map

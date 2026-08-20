@@ -14,8 +14,6 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.PaymentAccountController = void 0;
 const common_1 = require("@nestjs/common");
-const platform_express_1 = require("@nestjs/platform-express");
-const multer_1 = require("multer");
 const current_user_decorator_1 = require("../common/decorators/current-user.decorator");
 const upsert_payment_account_dto_1 = require("./dto/upsert-payment-account.dto");
 const payment_account_service_1 = require("./payment-account.service");
@@ -24,51 +22,29 @@ let PaymentAccountController = class PaymentAccountController {
     constructor(paymentAccountService) {
         this.paymentAccountService = paymentAccountService;
     }
-    getMyAccount(currentUser) {
-        return this.paymentAccountService.getForUser(currentUser.sub);
+    getMe(currentUser) {
+        return this.paymentAccountService.findByUserId(currentUser.sub);
     }
-    upsertMyAccount(currentUser, dto) {
+    upsertMe(currentUser, dto) {
         return this.paymentAccountService.upsert(currentUser.sub, dto);
-    }
-    uploadQrImage(currentUser, file) {
-        return this.paymentAccountService.uploadQrImage(currentUser.sub, file);
-    }
-    removeQrImage(currentUser) {
-        return this.paymentAccountService.removeQrImage(currentUser.sub);
     }
 };
 exports.PaymentAccountController = PaymentAccountController;
 __decorate([
-    (0, common_1.Get)(),
+    (0, common_1.Get)('me'),
     __param(0, (0, current_user_decorator_1.CurrentUser)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", void 0)
-], PaymentAccountController.prototype, "getMyAccount", null);
+], PaymentAccountController.prototype, "getMe", null);
 __decorate([
-    (0, common_1.Put)(),
+    (0, common_1.Put)('me'),
     __param(0, (0, current_user_decorator_1.CurrentUser)()),
     __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object, upsert_payment_account_dto_1.UpsertPaymentAccountDto]),
     __metadata("design:returntype", void 0)
-], PaymentAccountController.prototype, "upsertMyAccount", null);
-__decorate([
-    (0, common_1.Post)('qr'),
-    (0, common_1.UseInterceptors)((0, platform_express_1.FileInterceptor)('file', { storage: (0, multer_1.memoryStorage)() })),
-    __param(0, (0, current_user_decorator_1.CurrentUser)()),
-    __param(1, (0, common_1.UploadedFile)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, Object]),
-    __metadata("design:returntype", void 0)
-], PaymentAccountController.prototype, "uploadQrImage", null);
-__decorate([
-    (0, common_1.Delete)('qr'),
-    __param(0, (0, current_user_decorator_1.CurrentUser)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
-    __metadata("design:returntype", void 0)
-], PaymentAccountController.prototype, "removeQrImage", null);
+], PaymentAccountController.prototype, "upsertMe", null);
 exports.PaymentAccountController = PaymentAccountController = __decorate([
     (0, common_1.Controller)('payment-account'),
     __metadata("design:paramtypes", [payment_account_service_1.PaymentAccountService])

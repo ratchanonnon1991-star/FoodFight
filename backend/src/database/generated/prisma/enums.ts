@@ -139,10 +139,3 @@ export const OcrStatus = {
 } as const
 
 export type OcrStatus = (typeof OcrStatus)[keyof typeof OcrStatus]
-
-
-export const PaymentAccountType = {
-  PROMPTPAY: 'PROMPTPAY'
-} as const
-
-export type PaymentAccountType = (typeof PaymentAccountType)[keyof typeof PaymentAccountType]

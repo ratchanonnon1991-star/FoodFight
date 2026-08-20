@@ -1,23 +1,33 @@
-import { Transform } from 'class-transformer';
-import { IsIn, IsString, Length, Matches } from 'class-validator';
+import {
+  IsIn,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  Matches,
+  MaxLength,
+} from 'class-validator';
 import { Trim } from '../../common/decorators/trim.decorator';
 
 export class UpsertPaymentAccountDto {
+  @IsString()
   @IsIn(['PROMPTPAY'])
-  type: 'PROMPTPAY';
+  paymentType: string;
 
   @IsString()
+  @IsNotEmpty()
+  @MaxLength(100)
   @Trim()
-  @Length(1, 100)
   accountName: string;
 
-  @Transform(({ value }: { value: unknown }) =>
-    typeof value === 'string' ? value.replace(/[^0-9]/g, '') : value,
-  )
   @IsString()
-  @Matches(/^(0\d{9}|\d{13})$/, {
-    message:
-      'PromptPay ID must be a 10-digit mobile number or a 13-digit citizen ID',
-  })
-  promptPayId: string;
+  @IsNotEmpty()
+  @MaxLength(30)
+  @Matches(/^[0-9+\-\s]+$/)
+  @Trim()
+  promptPayNumber: string;
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(7_000_000)
+  qrCodeUrl?: string | null;
 }

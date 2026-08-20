@@ -42,7 +42,7 @@ export class PaymentService {
     }
 
     const qrDataUrl = await this.promptPay.generateQrDataUrl(
-      bill.createdBy.paymentAccount.promptPayId,
+      bill.createdBy.paymentAccount.promptPayNumber,
       Number(payment.amount),
     );
 

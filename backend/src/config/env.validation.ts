@@ -10,6 +10,8 @@ const envSchema = z.object({
 
   JWT_EXPIRES_IN: z.string().min(1),
 
+  REFRESH_TOKEN_EXPIRES_DAYS: z.coerce.number().int().min(1).default(30),
+
   GOOGLE_CLIENT_ID: z.string().min(1),
 
   LINE_CHANNEL_ID: z.string().min(1),

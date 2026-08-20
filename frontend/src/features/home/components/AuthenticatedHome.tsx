@@ -2,21 +2,52 @@
 
 import * as React from "react";
 import { useRouter } from "next/navigation";
-import { LogIn, UserPlus } from "lucide-react";
+import { LogIn, LogOut, UserPlus } from "lucide-react";
 import { PageContainer } from "@/components/layout/PageContainer";
+import { Button } from "@/components/ui/Button";
 import { ROUTES } from "@/config/routes";
-import {
-  DEMO_CURRENT_FOODFIGHT,
-  DEMO_RECENT_FOODFIGHTS,
-  DEMO_TIP,
-} from "../constants/home-demo-data";
+import { API_BASE_URL } from "@/config/api";
+import { roomService } from "@/features/room/services/room-service";
+import type { RoomLobby } from "@/features/room/types/room-types";
+import type {
+  AuthenticatedUserDisplay,
+  CurrentFoodFightSession,
+} from "@/features/home/types/home-types";
+import { apiFetch, getStoredAccessToken } from "@/config/api-client";
+import { HOME_TIP } from "../constants/home-static-data";
 import { HomeHeader } from "./HomeHeader";
 import { HomeActionCard } from "./HomeActionCard";
 import { CurrentFoodFightCard } from "./CurrentFoodFightCard";
 import { RecentFoodFightsSection } from "./RecentFoodFightsSection";
 import { HomeTipCard } from "./HomeTipCard";
-import { AuthenticatedUserDisplay } from "@/features/home/types/home-types";
-import { API_BASE_URL } from "@/config/api";
+import type { RecentFoodFightItemData } from "@/features/home/types/home-types";
+
+import { getMyHistory } from "@/features/history/services/history-service";
+import type { HistoryItem } from "@/features/history/types/history-types";
+
+import { formatRoomDate } from "@/features/room/utils/room-format";
+
+function mapHistoryToRecentItem(item: HistoryItem): RecentFoodFightItemData {
+  const menuName = item.finalMenu?.name;
+  const restaurantName = item.restaurant?.name;
+  const subtitle = [menuName, restaurantName].filter(Boolean).join(" • ");
+  const normalizedMenuName = menuName?.toLowerCase() ?? "";
+
+  return {
+    id: item.id,
+    title: item.room.name,
+    subtitle: subtitle || item.room.locationName,
+    date: formatRoomDate(item.completedAt),
+    memberCount: item.memberCount,
+    iconType: normalizedMenuName.includes("pizza")
+      ? "pizza"
+      : normalizedMenuName.includes("drink") ||
+          normalizedMenuName.includes("tea")
+        ? "drink"
+        : "soup",
+    href: ROUTES.HISTORY,
+  };
+}
 
 export interface AuthenticatedHomeProps {
   onCreateRoom?: () => void;
@@ -33,10 +64,38 @@ export function AuthenticatedHome({
 }: AuthenticatedHomeProps) {
   const router = useRouter();
   const [user, setUser] = React.useState<AuthenticatedUserDisplay | null>(null);
+  const [currentSession, setCurrentSession] =
+    React.useState<CurrentFoodFightSession | null>(null);
+  const [recentFoodFights, setRecentFoodFights] = React.useState<
+    readonly RecentFoodFightItemData[]
+  >([]);
+  const [isLoggingOut, setIsLoggingOut] = React.useState(false);
+
+  const handleLogout = React.useCallback(async () => {
+    if (isLoggingOut) {
+      return;
+    }
+
+    setIsLoggingOut(true);
+    const accessToken = getStoredAccessToken();
+
+    try {
+      await fetch(`${API_BASE_URL}/auth/logout`, {
+        method: "POST",
+        credentials: "include",
+        headers: accessToken
+          ? { Authorization: `Bearer ${accessToken}` }
+          : undefined,
+      });
+    } finally {
+      window.localStorage.removeItem("accessToken");
+      router.replace(ROUTES.AUTH.LOGIN);
+    }
+  }, [isLoggingOut, router]);
 
   React.useEffect(() => {
     let isMounted = true;
-    const accessToken = window.localStorage.getItem("accessToken");
+    const accessToken = getStoredAccessToken();
 
     if (!accessToken) {
       router.replace(ROUTES.AUTH.LOGIN);
@@ -45,11 +104,33 @@ export function AuthenticatedHome({
       };
     }
 
-    fetch(`${API_BASE_URL}/auth/me`, {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
+    const loadCurrentRoom = async () => {
+      try {
+        const currentRoom = await roomService.getCurrentRoom();
+
+        if (isMounted) {
+          setCurrentSession(
+            currentRoom ? toCurrentFoodFightSession(currentRoom) : null,
+          );
+        }
+      } catch {
+        if (isMounted) {
+          setCurrentSession(null);
+        }
+      }
+    };
+
+    void loadCurrentRoom();
+
+    apiFetch(
+      `${API_BASE_URL}/auth/me`,
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
       },
-    })
+      accessToken,
+    )
       .then(async (response) => {
         if (!response.ok) {
           throw new Error("Session is no longer valid");
@@ -70,6 +151,7 @@ export function AuthenticatedHome({
 
         setUser({
           name: currentUser.displayName?.trim() || fallbackName,
+          email: currentUser.email,
           avatarUrl: currentUser.avatarUrl ?? undefined,
         });
       })
@@ -86,6 +168,48 @@ export function AuthenticatedHome({
     };
   }, [router]);
 
+  React.useEffect(() => {
+    let isMounted = true;
+    const accessToken = getStoredAccessToken();
+
+    if (!accessToken) {
+      return () => {
+        isMounted = false;
+      };
+    }
+
+    const loadHomeData = async () => {
+      const historyResult = await Promise.allSettled([getMyHistory()]);
+
+      if (!isMounted) {
+        return;
+      }
+
+      if (historyResult[0]?.status === "fulfilled") {
+        setRecentFoodFights(
+          historyResult[0].value.slice(0, 3).map(mapHistoryToRecentItem),
+        );
+      }
+    };
+
+    void loadHomeData();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  const continueCurrentRoom = () => {
+    if (onContinueCurrent) {
+      onContinueCurrent();
+      return;
+    }
+
+    if (currentSession?.continueHref) {
+      router.push(currentSession.continueHref);
+    }
+  };
+
   return (
     <main className="min-h-dvh bg-background text-text-primary">
       <PageContainer
@@ -94,7 +218,10 @@ export function AuthenticatedHome({
         className="space-y-5 sm:space-y-6 pt-3 sm:pt-4 pb-32"
       >
         {/* 1. Header with greeting and avatar/notification */}
-        <HomeHeader user={user ?? { name: "FoodFighter" }} />
+        <HomeHeader
+          user={user ?? { name: "FoodFighter" }}
+          onLogout={handleLogout}
+        />
 
         {/* 2. Primary Action Cards (Create Room & Join Room) */}
         <div className="grid grid-cols-2 gap-3 sm:gap-3.5">
@@ -118,19 +245,60 @@ export function AuthenticatedHome({
 
         {/* 3. Current FoodFight Section */}
         <CurrentFoodFightCard
-          session={DEMO_CURRENT_FOODFIGHT}
-          onContinue={onContinueCurrent}
+          session={currentSession}
+          onContinue={continueCurrentRoom}
         />
 
         {/* 4. Recent FoodFights Section */}
         <RecentFoodFightsSection
-          items={DEMO_RECENT_FOODFIGHTS}
-          onViewAll={onViewAllRecent}
+          items={recentFoodFights}
+          onViewAll={onViewAllRecent ?? (() => router.push(ROUTES.HISTORY))}
         />
 
         {/* 5. Helpful Tip Card */}
-        <HomeTipCard tip={DEMO_TIP} />
+        <HomeTipCard tip={HOME_TIP} />
+
+        {/* 6. Quick logout action */}
+        <Button
+          type="button"
+          variant="outline"
+          fullWidth
+          loading={isLoggingOut}
+          loadingText="Logging out..."
+          leftIcon={<LogOut className="size-4" />}
+          onClick={() => void handleLogout()}
+          className="border-status-danger-text/30 text-status-danger-text hover:border-status-danger-text/50 hover:bg-status-danger-bg"
+        >
+          Log out
+        </Button>
       </PageContainer>
     </main>
   );
+}
+
+function toCurrentFoodFightSession(room: RoomLobby): CurrentFoodFightSession {
+  const isLobby = room.status === "LOBBY";
+
+  return {
+    id: room.id,
+    title: room.name,
+    status: isLobby ? "Lobby" : "In progress",
+    memberCount: room.memberCount,
+    statusDescription: isLobby
+      ? "Waiting for preferences"
+      : "FoodFight in progress",
+    members: [
+      {
+        id: `host-${room.id}`,
+        name: room.host.displayName,
+        avatarUrl: room.host.avatarUrl,
+      },
+      ...room.members.map((member) => ({
+        id: member.id,
+        name: member.displayName,
+        avatarUrl: member.avatarUrl,
+      })),
+    ],
+    continueHref: ROUTES.ROOM.LOBBY(room.id),
+  };
 }

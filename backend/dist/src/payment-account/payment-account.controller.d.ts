@@ -4,36 +4,28 @@ import { PaymentAccountService } from './payment-account.service';
 export declare class PaymentAccountController {
     private readonly paymentAccountService;
     constructor(paymentAccountService: PaymentAccountService);
-    getMyAccount(currentUser: AccessTokenPayload): Promise<{
+    getMe(currentUser: AccessTokenPayload): import("../database/generated/prisma/models").Prisma__PaymentAccountClient<{
         id: string;
-        type: string;
-        accountName: string;
-        promptPayId: string;
-        qrImageUrl: string | null;
+        createdAt: Date;
         updatedAt: Date;
-    } | null>;
-    upsertMyAccount(currentUser: AccessTokenPayload, dto: UpsertPaymentAccountDto): Promise<{
-        id: string;
-        type: string;
+        userId: string;
+        paymentType: string;
         accountName: string;
-        promptPayId: string;
-        qrImageUrl: string | null;
-        updatedAt: Date;
+        promptPayNumber: string;
+        qrCodeUrl: string | null;
+    } | null, null, import("@prisma/client/runtime/client").DefaultArgs, {
+        omit: import("../database/generated/prisma/internal/prismaNamespace").GlobalOmitConfig | undefined;
     }>;
-    uploadQrImage(currentUser: AccessTokenPayload, file: Express.Multer.File): Promise<{
+    upsertMe(currentUser: AccessTokenPayload, dto: UpsertPaymentAccountDto): import("../database/generated/prisma/models").Prisma__PaymentAccountClient<{
         id: string;
-        type: string;
-        accountName: string;
-        promptPayId: string;
-        qrImageUrl: string | null;
+        createdAt: Date;
         updatedAt: Date;
-    }>;
-    removeQrImage(currentUser: AccessTokenPayload): Promise<{
-        id: string;
-        type: string;
+        userId: string;
+        paymentType: string;
         accountName: string;
-        promptPayId: string;
-        qrImageUrl: string | null;
-        updatedAt: Date;
+        promptPayNumber: string;
+        qrCodeUrl: string | null;
+    }, never, import("@prisma/client/runtime/client").DefaultArgs, {
+        omit: import("../database/generated/prisma/internal/prismaNamespace").GlobalOmitConfig | undefined;
     }>;
 }

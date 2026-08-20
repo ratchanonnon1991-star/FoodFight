@@ -33,10 +33,10 @@ export interface PrismaClient<in LogOpts extends Prisma.LogLevel = never, in out
     get user(): Prisma.UserDelegate<ExtArgs, {
         omit: OmitOpts;
     }>;
-    get paymentAccount(): Prisma.PaymentAccountDelegate<ExtArgs, {
+    get account(): Prisma.AccountDelegate<ExtArgs, {
         omit: OmitOpts;
     }>;
-    get account(): Prisma.AccountDelegate<ExtArgs, {
+    get refreshToken(): Prisma.RefreshTokenDelegate<ExtArgs, {
         omit: OmitOpts;
     }>;
     get emailVerification(): Prisma.EmailVerificationDelegate<ExtArgs, {
@@ -46,6 +46,9 @@ export interface PrismaClient<in LogOpts extends Prisma.LogLevel = never, in out
         omit: OmitOpts;
     }>;
     get foodProfile(): Prisma.FoodProfileDelegate<ExtArgs, {
+        omit: OmitOpts;
+    }>;
+    get paymentAccount(): Prisma.PaymentAccountDelegate<ExtArgs, {
         omit: OmitOpts;
     }>;
     get room(): Prisma.RoomDelegate<ExtArgs, {

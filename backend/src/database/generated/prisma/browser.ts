@@ -23,15 +23,15 @@ export * from './enums.js';
  */
 export type User = Prisma.UserModel
 /**
- * Model PaymentAccount
- * 
- */
-export type PaymentAccount = Prisma.PaymentAccountModel
-/**
  * Model Account
  * 
  */
 export type Account = Prisma.AccountModel
+/**
+ * Model RefreshToken
+ * 
+ */
+export type RefreshToken = Prisma.RefreshTokenModel
 /**
  * Model EmailVerification
  * 
@@ -47,6 +47,11 @@ export type PasswordReset = Prisma.PasswordResetModel
  * 
  */
 export type FoodProfile = Prisma.FoodProfileModel
+/**
+ * Model PaymentAccount
+ * 
+ */
+export type PaymentAccount = Prisma.PaymentAccountModel
 /**
  * Model Room
  * 

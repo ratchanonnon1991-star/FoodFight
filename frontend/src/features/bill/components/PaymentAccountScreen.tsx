@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Pencil, QrCode, Trash2, UploadCloud } from "lucide-react";
+import { Pencil, QrCode, ShieldCheck, UploadCloud } from "lucide-react";
 import { ROUTES } from "@/config/routes";
 import { PageContainer } from "@/components/layout/PageContainer";
 import { Card } from "@/components/ui/Card";
@@ -12,10 +12,21 @@ import { Label } from "@/components/ui/Label";
 import { Badge } from "@/components/ui/Badge";
 import { Alert, AlertDescription } from "@/components/ui/Alert";
 import { Spinner } from "@/components/ui/Spinner";
-import { ApiError, resolveMediaUrl } from "@/lib/api/client";
+import { ApiError } from "@/lib/api/client";
 import { BillPageHeader } from "./BillPageHeader";
 import { paymentAccountService } from "../services/payment-account-service";
 import type { PaymentAccount } from "../types/bill-types";
+
+const MAX_QR_FILE_SIZE = 5 * 1024 * 1024;
+
+function readFileAsDataUrl(file: File): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(String(reader.result));
+    reader.onerror = () => reject(new Error("Unable to read the selected image."));
+    reader.readAsDataURL(file);
+  });
+}
 
 export function PaymentAccountScreen() {
   const router = useRouter();
@@ -27,10 +38,10 @@ export function PaymentAccountScreen() {
   );
   const [isEditing, setIsEditing] = React.useState(false);
   const [accountName, setAccountName] = React.useState("");
-  const [promptPayId, setPromptPayId] = React.useState("");
+  const [promptPayNumber, setPromptPayNumber] = React.useState("");
+  const [qrCodeUrl, setQrCodeUrl] = React.useState("");
   const [error, setError] = React.useState<string | null>(null);
   const [isSaving, setIsSaving] = React.useState(false);
-  const [isUploadingQr, setIsUploadingQr] = React.useState(false);
   const qrInputRef = React.useRef<HTMLInputElement>(null);
 
   const load = React.useCallback(async () => {
@@ -54,9 +65,36 @@ export function PaymentAccountScreen() {
   React.useEffect(() => {
     if (account) {
       setAccountName(account.accountName);
-      setPromptPayId(account.promptPayId);
+      setPromptPayNumber(account.promptPayNumber);
+      setQrCodeUrl(account.qrCodeUrl ?? "");
     }
   }, [account]);
+
+  const handleQrChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    event.target.value = "";
+    if (!file) {
+      return;
+    }
+
+    setError(null);
+
+    if (!(["image/png", "image/jpeg", "image/jpg"] as string[]).includes(file.type)) {
+      setError("Please upload a PNG or JPG image.");
+      return;
+    }
+
+    if (file.size > MAX_QR_FILE_SIZE) {
+      setError("QR image must be 5 MB or smaller.");
+      return;
+    }
+
+    try {
+      setQrCodeUrl(await readFileAsDataUrl(file));
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Unable to read the QR image.");
+    }
+  };
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -66,7 +104,8 @@ export function PaymentAccountScreen() {
     try {
       const saved = await paymentAccountService.upsert({
         accountName: accountName.trim(),
-        promptPayId,
+        promptPayNumber: promptPayNumber.trim(),
+        qrCodeUrl: qrCodeUrl || null,
       });
       setAccount(saved);
       setIsEditing(false);
@@ -80,37 +119,6 @@ export function PaymentAccountScreen() {
       setIsSaving(false);
     }
   };
-
-  const handleUploadQr = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    event.target.value = "";
-    if (!file) {
-      return;
-    }
-
-    setError(null);
-    setIsUploadingQr(true);
-    try {
-      const saved = await paymentAccountService.uploadQr(file);
-      setAccount(saved);
-    } catch (err) {
-      setError(err instanceof ApiError ? err.message : "Unable to upload QR code.");
-    } finally {
-      setIsUploadingQr(false);
-    }
-  };
-
-  const handleRemoveQr = async () => {
-    setError(null);
-    try {
-      const saved = await paymentAccountService.removeQr();
-      setAccount(saved);
-    } catch (err) {
-      setError(err instanceof ApiError ? err.message : "Unable to remove QR code.");
-    }
-  };
-
-  const qrImageUrl = resolveMediaUrl(account?.qrImageUrl);
 
   return (
     <div className="min-h-dvh flex flex-col bg-background text-text-primary">
@@ -135,9 +143,8 @@ export function PaymentAccountScreen() {
                   Set up your PromptPay account
                 </p>
                 <p className="text-xs text-text-secondary">
-                  Add your PromptPay account so friends can pay you back. We
-                  generate a real, scannable payment QR for every bill you
-                  create.
+                  Add your PromptPay account and QR so friends can pay you back
+                  easily.
                 </p>
               </div>
 
@@ -149,22 +156,71 @@ export function PaymentAccountScreen() {
                     value={accountName}
                     onChange={(e) => setAccountName(e.target.value)}
                     placeholder="e.g. Ploy P."
+                    maxLength={100}
                     required
                   />
                 </div>
 
                 <div className="space-y-1">
-                  <Label htmlFor="promptPayId">PromptPay Number</Label>
+                  <Label htmlFor="promptPayNumber">PromptPay Number</Label>
                   <Input
-                    id="promptPayId"
-                    value={promptPayId}
-                    onChange={(e) => setPromptPayId(e.target.value)}
-                    placeholder="Mobile number or citizen ID"
+                    id="promptPayNumber"
+                    value={promptPayNumber}
+                    onChange={(e) => setPromptPayNumber(e.target.value)}
+                    placeholder="081-234-5678"
+                    maxLength={30}
+                    inputMode="tel"
                     required
                   />
                   <p className="text-xs text-text-muted">
                     Your PromptPay mobile number or 13-digit citizen ID.
                   </p>
+                </div>
+
+                <div className="space-y-2">
+                  <Label>Payment QR</Label>
+                  <input
+                    ref={qrInputRef}
+                    type="file"
+                    accept="image/png,image/jpeg"
+                    className="hidden"
+                    onChange={handleQrChange}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => qrInputRef.current?.click()}
+                    className="flex min-h-28 w-full items-center justify-center rounded-2xl border border-dashed border-border bg-surface-subtle p-4 text-center transition-colors hover:border-brand-secondary hover:bg-brand-secondary/5"
+                  >
+                    {qrCodeUrl ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img
+                        src={qrCodeUrl}
+                        alt="Payment QR preview"
+                        className="max-h-32 rounded-xl object-contain"
+                      />
+                    ) : (
+                      <span className="space-y-2">
+                        <span className="mx-auto flex size-10 items-center justify-center rounded-xl bg-status-success-bg text-status-success-icon">
+                          <UploadCloud className="size-5" />
+                        </span>
+                        <span className="block text-sm font-semibold text-text-primary">
+                          Upload QR Code
+                        </span>
+                        <span className="block text-xs text-text-secondary">
+                          PNG, JPG (max. 5MB)
+                        </span>
+                      </span>
+                    )}
+                  </button>
+                  {qrCodeUrl && (
+                    <button
+                      type="button"
+                      onClick={() => setQrCodeUrl("")}
+                      className="text-xs font-medium text-status-danger-text hover:underline"
+                    >
+                      Remove QR image
+                    </button>
+                  )}
                 </div>
 
                 <div className="flex gap-2">
@@ -206,84 +262,39 @@ export function PaymentAccountScreen() {
                       Edit
                     </Button>
                   </div>
-                  <div>
-                    <p className="text-base font-medium text-text-primary">
-                      {account.accountName}
-                    </p>
-                    <p className="text-sm text-text-secondary">
-                      {account.promptPayId}
-                    </p>
+                  <div className="flex items-center gap-4">
+                    {account.qrCodeUrl && (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img
+                        src={account.qrCodeUrl}
+                        alt="PromptPay QR"
+                        className="size-20 shrink-0 rounded-md border border-border object-contain"
+                      />
+                    )}
+                    <div>
+                      <p className="text-base font-medium text-text-primary">
+                        {account.accountName}
+                      </p>
+                      <p className="text-sm text-text-secondary">
+                        {account.promptPayNumber}
+                      </p>
+                    </div>
                   </div>
-                  <p className="text-xs text-text-muted">
-                    This account is used to generate the payment QR when you
-                    create a bill and receive money from friends.
-                  </p>
                 </Card>
 
-                <Card variant="default" padding="md" className="space-y-3">
-                  <p className="text-sm font-semibold text-text-primary">
-                    Reference QR (optional)
-                  </p>
+                <Card variant="subtle" padding="md" className="flex items-start gap-2">
+                  <ShieldCheck className="size-4 text-text-secondary shrink-0 mt-0.5" />
                   <p className="text-xs text-text-secondary">
-                    A real payment QR is generated automatically for every
-                    bill. You can optionally upload your own bank QR photo
-                    here as a reference image.
+                    Your payment info is only shared for this bill and is never
+                    public.
                   </p>
-
-                  {qrImageUrl ? (
-                    <div className="space-y-2">
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img
-                        src={qrImageUrl}
-                        alt="Uploaded PromptPay QR"
-                        className="w-40 h-40 object-contain rounded-md border border-border mx-auto"
-                      />
-                      <div className="flex gap-2">
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          fullWidth
-                          onClick={() => qrInputRef.current?.click()}
-                        >
-                          Replace QR
-                        </Button>
-                        <Button
-                          size="sm"
-                          variant="destructive"
-                          leftIcon={<Trash2 className="size-3.5" />}
-                          onClick={handleRemoveQr}
-                        >
-                          Remove
-                        </Button>
-                      </div>
-                    </div>
-                  ) : (
-                    <Button
-                      variant="outline"
-                      fullWidth
-                      loading={isUploadingQr}
-                      leftIcon={<UploadCloud className="size-4" />}
-                      onClick={() => qrInputRef.current?.click()}
-                    >
-                      Upload QR Code
-                    </Button>
-                  )}
-
-                  <input
-                    ref={qrInputRef}
-                    type="file"
-                    accept="image/*"
-                    className="hidden"
-                    onChange={handleUploadQr}
-                  />
                 </Card>
 
                 <Card variant="subtle" padding="md" className="flex items-start gap-2">
                   <QrCode className="size-4 text-text-secondary shrink-0 mt-0.5" />
                   <p className="text-xs text-text-secondary">
-                    Members scan a QR generated fresh for each payment amount
-                    from your bill detail screen - no need to share this
-                    reference image with them.
+                    Members scan this QR from your bill detail screen to pay
+                    you back.
                   </p>
                 </Card>
 

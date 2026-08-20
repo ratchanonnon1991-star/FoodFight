@@ -1,5 +1,6 @@
 export declare class UpsertPaymentAccountDto {
-    type: 'PROMPTPAY';
+    paymentType: string;
     accountName: string;
-    promptPayId: string;
+    promptPayNumber: string;
+    qrCodeUrl?: string | null;
 }

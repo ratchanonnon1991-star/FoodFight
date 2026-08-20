@@ -43,7 +43,7 @@ let PaymentService = class PaymentService {
         if (!payment) {
             throw new common_1.NotFoundException('No payment found for this member');
         }
-        const qrDataUrl = await this.promptPay.generateQrDataUrl(bill.createdBy.paymentAccount.promptPayId, Number(payment.amount));
+        const qrDataUrl = await this.promptPay.generateQrDataUrl(bill.createdBy.paymentAccount.promptPayNumber, Number(payment.amount));
         return {
             qrDataUrl,
             amount: Number(payment.amount),

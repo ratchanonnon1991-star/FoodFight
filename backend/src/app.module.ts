@@ -9,8 +9,9 @@ import { UserModule } from './user/user.module';
 import { DatabaseModule } from './database/database.module';
 import { RoomModule } from './room/room.module';
 import { FoodProfileModule } from './food-profile/food-profile.module';
-import { BillModule } from './bill/bill.module';
 import { PaymentAccountModule } from './payment-account/payment-account.module';
+import { HistoryModule } from './history/history.module';
+import { BillModule } from './bill/bill.module';
 
 @Module({
   imports: [
@@ -24,8 +25,9 @@ import { PaymentAccountModule } from './payment-account/payment-account.module';
     UserModule,
     RoomModule,
     FoodProfileModule,
-    BillModule,
     PaymentAccountModule,
+    HistoryModule,
+    BillModule,
   ],
   providers: [
     {

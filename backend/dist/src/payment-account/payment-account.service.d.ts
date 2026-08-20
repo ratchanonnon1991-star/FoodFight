@@ -1,41 +1,31 @@
 import { PrismaService } from '../database/prisma.service';
-import { LocalStorageService } from '../infrastructure/storage/local-storage.service';
 import { UpsertPaymentAccountDto } from './dto/upsert-payment-account.dto';
 export declare class PaymentAccountService {
     private readonly prisma;
-    private readonly storage;
-    constructor(prisma: PrismaService, storage: LocalStorageService);
-    getForUser(userId: string): Promise<{
+    constructor(prisma: PrismaService);
+    private readonly paymentAccountSelect;
+    findByUserId(userId: string): import("../database/generated/prisma/models").Prisma__PaymentAccountClient<{
         id: string;
-        type: string;
-        accountName: string;
-        promptPayId: string;
-        qrImageUrl: string | null;
+        createdAt: Date;
         updatedAt: Date;
-    } | null>;
-    upsert(userId: string, dto: UpsertPaymentAccountDto): Promise<{
-        id: string;
-        type: string;
+        userId: string;
+        paymentType: string;
         accountName: string;
-        promptPayId: string;
-        qrImageUrl: string | null;
-        updatedAt: Date;
+        promptPayNumber: string;
+        qrCodeUrl: string | null;
+    } | null, null, import("@prisma/client/runtime/client").DefaultArgs, {
+        omit: import("../database/generated/prisma/internal/prismaNamespace").GlobalOmitConfig | undefined;
     }>;
-    uploadQrImage(userId: string, file: Express.Multer.File): Promise<{
+    upsert(userId: string, dto: UpsertPaymentAccountDto): import("../database/generated/prisma/models").Prisma__PaymentAccountClient<{
         id: string;
-        type: string;
-        accountName: string;
-        promptPayId: string;
-        qrImageUrl: string | null;
+        createdAt: Date;
         updatedAt: Date;
-    }>;
-    removeQrImage(userId: string): Promise<{
-        id: string;
-        type: string;
+        userId: string;
+        paymentType: string;
         accountName: string;
-        promptPayId: string;
-        qrImageUrl: string | null;
-        updatedAt: Date;
+        promptPayNumber: string;
+        qrCodeUrl: string | null;
+    }, never, import("@prisma/client/runtime/client").DefaultArgs, {
+        omit: import("../database/generated/prisma/internal/prismaNamespace").GlobalOmitConfig | undefined;
     }>;
-    private toResponse;
 }

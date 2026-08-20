@@ -2,9 +2,14 @@
 
 import * as React from "react";
 import Link from "next/link";
-import { ChevronLeft } from "lucide-react";
+import { ChevronLeft, Eye } from "lucide-react";
 import { cn } from "@/lib/utils/cn";
 import { PageContainer } from "@/components/layout/PageContainer";
+import {
+  STANDARD_ALLERGIES,
+  STANDARD_RESTRICTIONS,
+} from "../constants/food-profile-constants";
+import { useFoodProfile } from "../context/food-profile-context";
 import { StepProgress } from "./StepProgress";
 
 export interface FoodProfileStepLayoutProps {
@@ -16,6 +21,110 @@ export interface FoodProfileStepLayoutProps {
   children: React.ReactNode;
   footer?: React.ReactNode;
   className?: string;
+}
+
+function PreviewTag({ children }: { children: React.ReactNode }) {
+  return (
+    <span className="inline-flex items-center rounded-full border border-brand-primary/20 bg-brand-primary/5 px-2.5 py-1 text-xs font-semibold text-text-primary">
+      {children}
+    </span>
+  );
+}
+
+function getOptionLabel(
+  id: string,
+  options: ReadonlyArray<{ id: string; label: string }>,
+) {
+  return options.find((option) => option.id === id)?.label ?? id;
+}
+
+function FoodProfilePreview() {
+  const { draft } = useFoodProfile();
+  const hasAllergies = draft.allergies.length > 0 || Boolean(draft.otherAllergies.trim());
+  const hasRestrictions =
+    draft.restrictions.length > 0 || Boolean(draft.otherRestrictions.trim());
+
+  return (
+    <section
+      aria-label="Food profile preview"
+      className="rounded-2xl border border-brand-primary/15 bg-surface p-4 shadow-xs sm:p-5"
+    >
+      <div className="flex items-start gap-3">
+        <div className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-brand-primary/10 text-brand-primary">
+          <Eye className="size-4.5" />
+        </div>
+        <div className="min-w-0">
+          <h2 className="text-sm font-bold text-text-primary">Current profile preview</h2>
+          <p className="mt-0.5 text-xs leading-relaxed text-text-secondary">
+            Your saved preferences are shown here and update as you edit.
+          </p>
+        </div>
+      </div>
+
+      <div className="mt-4 grid gap-4 sm:grid-cols-2">
+        <div>
+          <p className="text-[11px] font-bold uppercase tracking-wider text-text-secondary">
+            Allergies
+          </p>
+          <div className="mt-2 flex flex-wrap gap-1.5">
+            {draft.hasNoAllergies ? (
+              <span className="rounded-full bg-surface-subtle px-2.5 py-1 text-xs font-semibold text-text-secondary">
+                No allergies
+              </span>
+            ) : hasAllergies ? (
+              <>
+                {draft.allergies.map((allergy) => (
+                  <PreviewTag key={allergy}>
+                    {getOptionLabel(allergy, STANDARD_ALLERGIES)}
+                  </PreviewTag>
+                ))}
+                {draft.otherAllergies.trim() ? (
+                  <PreviewTag>{draft.otherAllergies.trim()}</PreviewTag>
+                ) : null}
+              </>
+            ) : (
+              <span className="text-xs text-text-muted">Not selected yet</span>
+            )}
+          </div>
+        </div>
+
+        <div>
+          <p className="text-[11px] font-bold uppercase tracking-wider text-text-secondary">
+            Dietary restrictions
+          </p>
+          <div className="mt-2 flex flex-wrap gap-1.5">
+            {draft.hasNoRestrictions ? (
+              <span className="rounded-full bg-surface-subtle px-2.5 py-1 text-xs font-semibold text-text-secondary">
+                No restrictions
+              </span>
+            ) : hasRestrictions ? (
+              <>
+                {draft.restrictions.map((restriction) => (
+                  <PreviewTag key={restriction}>
+                    {getOptionLabel(restriction, STANDARD_RESTRICTIONS)}
+                  </PreviewTag>
+                ))}
+                {draft.otherRestrictions.trim() ? (
+                  <PreviewTag>{draft.otherRestrictions.trim()}</PreviewTag>
+                ) : null}
+              </>
+            ) : (
+              <span className="text-xs text-text-muted">Not selected yet</span>
+            )}
+          </div>
+        </div>
+      </div>
+
+      <div className="mt-4 border-t border-border/60 pt-3">
+        <p className="text-[11px] font-bold uppercase tracking-wider text-text-secondary">
+          Additional nuances
+        </p>
+        <p className="mt-1 text-xs leading-relaxed text-text-secondary">
+          {draft.additionalNotes.trim() || "Not added yet"}
+        </p>
+      </div>
+    </section>
+  );
 }
 
 export function FoodProfileStepLayout({
@@ -84,6 +193,8 @@ export function FoodProfileStepLayout({
               {description}
             </p>
           </div>
+
+          <FoodProfilePreview />
 
           {/* Step Content */}
           <div className="space-y-4">

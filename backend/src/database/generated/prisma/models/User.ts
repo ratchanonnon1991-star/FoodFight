@@ -215,9 +215,11 @@ export type UserWhereInput = {
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
   accounts?: Prisma.AccountListRelationFilter
+  refreshTokens?: Prisma.RefreshTokenListRelationFilter
   emailVerification?: Prisma.XOR<Prisma.EmailVerificationNullableScalarRelationFilter, Prisma.EmailVerificationWhereInput> | null
   passwordResets?: Prisma.PasswordResetListRelationFilter
   foodProfile?: Prisma.XOR<Prisma.FoodProfileNullableScalarRelationFilter, Prisma.FoodProfileWhereInput> | null
+  paymentAccount?: Prisma.XOR<Prisma.PaymentAccountNullableScalarRelationFilter, Prisma.PaymentAccountWhereInput> | null
   hostedRooms?: Prisma.RoomListRelationFilter
   roomMembers?: Prisma.RoomMemberListRelationFilter
   sessionMembers?: Prisma.SessionMemberListRelationFilter
@@ -229,7 +231,6 @@ export type UserWhereInput = {
   createdBills?: Prisma.BillListRelationFilter
   itemShares?: Prisma.ItemShareListRelationFilter
   payments?: Prisma.UserPaymentListRelationFilter
-  paymentAccount?: Prisma.XOR<Prisma.PaymentAccountNullableScalarRelationFilter, Prisma.PaymentAccountWhereInput> | null
 }
 
 export type UserOrderByWithRelationInput = {
@@ -243,9 +244,11 @@ export type UserOrderByWithRelationInput = {
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   accounts?: Prisma.AccountOrderByRelationAggregateInput
+  refreshTokens?: Prisma.RefreshTokenOrderByRelationAggregateInput
   emailVerification?: Prisma.EmailVerificationOrderByWithRelationInput
   passwordResets?: Prisma.PasswordResetOrderByRelationAggregateInput
   foodProfile?: Prisma.FoodProfileOrderByWithRelationInput
+  paymentAccount?: Prisma.PaymentAccountOrderByWithRelationInput
   hostedRooms?: Prisma.RoomOrderByRelationAggregateInput
   roomMembers?: Prisma.RoomMemberOrderByRelationAggregateInput
   sessionMembers?: Prisma.SessionMemberOrderByRelationAggregateInput
@@ -257,7 +260,6 @@ export type UserOrderByWithRelationInput = {
   createdBills?: Prisma.BillOrderByRelationAggregateInput
   itemShares?: Prisma.ItemShareOrderByRelationAggregateInput
   payments?: Prisma.UserPaymentOrderByRelationAggregateInput
-  paymentAccount?: Prisma.PaymentAccountOrderByWithRelationInput
 }
 
 export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -274,9 +276,11 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
   accounts?: Prisma.AccountListRelationFilter
+  refreshTokens?: Prisma.RefreshTokenListRelationFilter
   emailVerification?: Prisma.XOR<Prisma.EmailVerificationNullableScalarRelationFilter, Prisma.EmailVerificationWhereInput> | null
   passwordResets?: Prisma.PasswordResetListRelationFilter
   foodProfile?: Prisma.XOR<Prisma.FoodProfileNullableScalarRelationFilter, Prisma.FoodProfileWhereInput> | null
+  paymentAccount?: Prisma.XOR<Prisma.PaymentAccountNullableScalarRelationFilter, Prisma.PaymentAccountWhereInput> | null
   hostedRooms?: Prisma.RoomListRelationFilter
   roomMembers?: Prisma.RoomMemberListRelationFilter
   sessionMembers?: Prisma.SessionMemberListRelationFilter
@@ -288,7 +292,6 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   createdBills?: Prisma.BillListRelationFilter
   itemShares?: Prisma.ItemShareListRelationFilter
   payments?: Prisma.UserPaymentListRelationFilter
-  paymentAccount?: Prisma.XOR<Prisma.PaymentAccountNullableScalarRelationFilter, Prisma.PaymentAccountWhereInput> | null
 }, "id" | "email">
 
 export type UserOrderByWithAggregationInput = {
@@ -332,9 +335,11 @@ export type UserCreateInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
+  refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
   emailVerification?: Prisma.EmailVerificationCreateNestedOneWithoutUserInput
   passwordResets?: Prisma.PasswordResetCreateNestedManyWithoutUserInput
   foodProfile?: Prisma.FoodProfileCreateNestedOneWithoutUserInput
+  paymentAccount?: Prisma.PaymentAccountCreateNestedOneWithoutUserInput
   hostedRooms?: Prisma.RoomCreateNestedManyWithoutHostInput
   roomMembers?: Prisma.RoomMemberCreateNestedManyWithoutUserInput
   sessionMembers?: Prisma.SessionMemberCreateNestedManyWithoutUserInput
@@ -346,7 +351,6 @@ export type UserCreateInput = {
   createdBills?: Prisma.BillCreateNestedManyWithoutCreatedByInput
   itemShares?: Prisma.ItemShareCreateNestedManyWithoutUserInput
   payments?: Prisma.UserPaymentCreateNestedManyWithoutUserInput
-  paymentAccount?: Prisma.PaymentAccountCreateNestedOneWithoutUserInput
 }
 
 export type UserUncheckedCreateInput = {
@@ -360,9 +364,11 @@ export type UserUncheckedCreateInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
+  refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
   emailVerification?: Prisma.EmailVerificationUncheckedCreateNestedOneWithoutUserInput
   passwordResets?: Prisma.PasswordResetUncheckedCreateNestedManyWithoutUserInput
   foodProfile?: Prisma.FoodProfileUncheckedCreateNestedOneWithoutUserInput
+  paymentAccount?: Prisma.PaymentAccountUncheckedCreateNestedOneWithoutUserInput
   hostedRooms?: Prisma.RoomUncheckedCreateNestedManyWithoutHostInput
   roomMembers?: Prisma.RoomMemberUncheckedCreateNestedManyWithoutUserInput
   sessionMembers?: Prisma.SessionMemberUncheckedCreateNestedManyWithoutUserInput
@@ -374,7 +380,6 @@ export type UserUncheckedCreateInput = {
   createdBills?: Prisma.BillUncheckedCreateNestedManyWithoutCreatedByInput
   itemShares?: Prisma.ItemShareUncheckedCreateNestedManyWithoutUserInput
   payments?: Prisma.UserPaymentUncheckedCreateNestedManyWithoutUserInput
-  paymentAccount?: Prisma.PaymentAccountUncheckedCreateNestedOneWithoutUserInput
 }
 
 export type UserUpdateInput = {
@@ -388,9 +393,11 @@ export type UserUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
+  refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
   emailVerification?: Prisma.EmailVerificationUpdateOneWithoutUserNestedInput
   passwordResets?: Prisma.PasswordResetUpdateManyWithoutUserNestedInput
   foodProfile?: Prisma.FoodProfileUpdateOneWithoutUserNestedInput
+  paymentAccount?: Prisma.PaymentAccountUpdateOneWithoutUserNestedInput
   hostedRooms?: Prisma.RoomUpdateManyWithoutHostNestedInput
   roomMembers?: Prisma.RoomMemberUpdateManyWithoutUserNestedInput
   sessionMembers?: Prisma.SessionMemberUpdateManyWithoutUserNestedInput
@@ -402,7 +409,6 @@ export type UserUpdateInput = {
   createdBills?: Prisma.BillUpdateManyWithoutCreatedByNestedInput
   itemShares?: Prisma.ItemShareUpdateManyWithoutUserNestedInput
   payments?: Prisma.UserPaymentUpdateManyWithoutUserNestedInput
-  paymentAccount?: Prisma.PaymentAccountUpdateOneWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateInput = {
@@ -416,9 +422,11 @@ export type UserUncheckedUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
+  refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
   emailVerification?: Prisma.EmailVerificationUncheckedUpdateOneWithoutUserNestedInput
   passwordResets?: Prisma.PasswordResetUncheckedUpdateManyWithoutUserNestedInput
   foodProfile?: Prisma.FoodProfileUncheckedUpdateOneWithoutUserNestedInput
+  paymentAccount?: Prisma.PaymentAccountUncheckedUpdateOneWithoutUserNestedInput
   hostedRooms?: Prisma.RoomUncheckedUpdateManyWithoutHostNestedInput
   roomMembers?: Prisma.RoomMemberUncheckedUpdateManyWithoutUserNestedInput
   sessionMembers?: Prisma.SessionMemberUncheckedUpdateManyWithoutUserNestedInput
@@ -430,7 +438,6 @@ export type UserUncheckedUpdateInput = {
   createdBills?: Prisma.BillUncheckedUpdateManyWithoutCreatedByNestedInput
   itemShares?: Prisma.ItemShareUncheckedUpdateManyWithoutUserNestedInput
   payments?: Prisma.UserPaymentUncheckedUpdateManyWithoutUserNestedInput
-  paymentAccount?: Prisma.PaymentAccountUncheckedUpdateOneWithoutUserNestedInput
 }
 
 export type UserCreateManyInput = {
@@ -535,20 +542,6 @@ export type DateTimeFieldUpdateOperationsInput = {
   set?: Date | string
 }
 
-export type UserCreateNestedOneWithoutPaymentAccountInput = {
-  create?: Prisma.XOR<Prisma.UserCreateWithoutPaymentAccountInput, Prisma.UserUncheckedCreateWithoutPaymentAccountInput>
-  connectOrCreate?: Prisma.UserCreateOrConnectWithoutPaymentAccountInput
-  connect?: Prisma.UserWhereUniqueInput
-}
-
-export type UserUpdateOneRequiredWithoutPaymentAccountNestedInput = {
-  create?: Prisma.XOR<Prisma.UserCreateWithoutPaymentAccountInput, Prisma.UserUncheckedCreateWithoutPaymentAccountInput>
-  connectOrCreate?: Prisma.UserCreateOrConnectWithoutPaymentAccountInput
-  upsert?: Prisma.UserUpsertWithoutPaymentAccountInput
-  connect?: Prisma.UserWhereUniqueInput
-  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutPaymentAccountInput, Prisma.UserUpdateWithoutPaymentAccountInput>, Prisma.UserUncheckedUpdateWithoutPaymentAccountInput>
-}
-
 export type UserCreateNestedOneWithoutAccountsInput = {
   create?: Prisma.XOR<Prisma.UserCreateWithoutAccountsInput, Prisma.UserUncheckedCreateWithoutAccountsInput>
   connectOrCreate?: Prisma.UserCreateOrConnectWithoutAccountsInput
@@ -561,6 +554,20 @@ export type UserUpdateOneRequiredWithoutAccountsNestedInput = {
   upsert?: Prisma.UserUpsertWithoutAccountsInput
   connect?: Prisma.UserWhereUniqueInput
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutAccountsInput, Prisma.UserUpdateWithoutAccountsInput>, Prisma.UserUncheckedUpdateWithoutAccountsInput>
+}
+
+export type UserCreateNestedOneWithoutRefreshTokensInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutRefreshTokensInput, Prisma.UserUncheckedCreateWithoutRefreshTokensInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutRefreshTokensInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutRefreshTokensNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutRefreshTokensInput, Prisma.UserUncheckedCreateWithoutRefreshTokensInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutRefreshTokensInput
+  upsert?: Prisma.UserUpsertWithoutRefreshTokensInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutRefreshTokensInput, Prisma.UserUpdateWithoutRefreshTokensInput>, Prisma.UserUncheckedUpdateWithoutRefreshTokensInput>
 }
 
 export type UserCreateNestedOneWithoutEmailVerificationInput = {
@@ -603,6 +610,20 @@ export type UserUpdateOneRequiredWithoutFoodProfileNestedInput = {
   upsert?: Prisma.UserUpsertWithoutFoodProfileInput
   connect?: Prisma.UserWhereUniqueInput
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutFoodProfileInput, Prisma.UserUpdateWithoutFoodProfileInput>, Prisma.UserUncheckedUpdateWithoutFoodProfileInput>
+}
+
+export type UserCreateNestedOneWithoutPaymentAccountInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutPaymentAccountInput, Prisma.UserUncheckedCreateWithoutPaymentAccountInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutPaymentAccountInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutPaymentAccountNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutPaymentAccountInput, Prisma.UserUncheckedCreateWithoutPaymentAccountInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutPaymentAccountInput
+  upsert?: Prisma.UserUpsertWithoutPaymentAccountInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutPaymentAccountInput, Prisma.UserUpdateWithoutPaymentAccountInput>, Prisma.UserUncheckedUpdateWithoutPaymentAccountInput>
 }
 
 export type UserCreateNestedOneWithoutHostedRoomsInput = {
@@ -761,6 +782,646 @@ export type UserUpdateOneRequiredWithoutPaymentsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutPaymentsInput, Prisma.UserUpdateWithoutPaymentsInput>, Prisma.UserUncheckedUpdateWithoutPaymentsInput>
 }
 
+export type UserCreateWithoutAccountsInput = {
+  id?: string
+  displayName: string
+  email: string
+  passwordHash?: string | null
+  avatarUrl?: string | null
+  emailVerified?: boolean
+  role?: $Enums.Role
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
+  emailVerification?: Prisma.EmailVerificationCreateNestedOneWithoutUserInput
+  passwordResets?: Prisma.PasswordResetCreateNestedManyWithoutUserInput
+  foodProfile?: Prisma.FoodProfileCreateNestedOneWithoutUserInput
+  paymentAccount?: Prisma.PaymentAccountCreateNestedOneWithoutUserInput
+  hostedRooms?: Prisma.RoomCreateNestedManyWithoutHostInput
+  roomMembers?: Prisma.RoomMemberCreateNestedManyWithoutUserInput
+  sessionMembers?: Prisma.SessionMemberCreateNestedManyWithoutUserInput
+  mealPreferences?: Prisma.MealPreferenceCreateNestedManyWithoutUserInput
+  votes?: Prisma.VoteCreateNestedManyWithoutUserInput
+  finalVotes?: Prisma.FinalVoteCreateNestedManyWithoutUserInput
+  finalSelections?: Prisma.FinalSelectionCreateNestedManyWithoutSelectedByInput
+  selectedRestaurants?: Prisma.RestaurantSelectionCreateNestedManyWithoutSelectedByInput
+  createdBills?: Prisma.BillCreateNestedManyWithoutCreatedByInput
+  itemShares?: Prisma.ItemShareCreateNestedManyWithoutUserInput
+  payments?: Prisma.UserPaymentCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutAccountsInput = {
+  id?: string
+  displayName: string
+  email: string
+  passwordHash?: string | null
+  avatarUrl?: string | null
+  emailVerified?: boolean
+  role?: $Enums.Role
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
+  emailVerification?: Prisma.EmailVerificationUncheckedCreateNestedOneWithoutUserInput
+  passwordResets?: Prisma.PasswordResetUncheckedCreateNestedManyWithoutUserInput
+  foodProfile?: Prisma.FoodProfileUncheckedCreateNestedOneWithoutUserInput
+  paymentAccount?: Prisma.PaymentAccountUncheckedCreateNestedOneWithoutUserInput
+  hostedRooms?: Prisma.RoomUncheckedCreateNestedManyWithoutHostInput
+  roomMembers?: Prisma.RoomMemberUncheckedCreateNestedManyWithoutUserInput
+  sessionMembers?: Prisma.SessionMemberUncheckedCreateNestedManyWithoutUserInput
+  mealPreferences?: Prisma.MealPreferenceUncheckedCreateNestedManyWithoutUserInput
+  votes?: Prisma.VoteUncheckedCreateNestedManyWithoutUserInput
+  finalVotes?: Prisma.FinalVoteUncheckedCreateNestedManyWithoutUserInput
+  finalSelections?: Prisma.FinalSelectionUncheckedCreateNestedManyWithoutSelectedByInput
+  selectedRestaurants?: Prisma.RestaurantSelectionUncheckedCreateNestedManyWithoutSelectedByInput
+  createdBills?: Prisma.BillUncheckedCreateNestedManyWithoutCreatedByInput
+  itemShares?: Prisma.ItemShareUncheckedCreateNestedManyWithoutUserInput
+  payments?: Prisma.UserPaymentUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutAccountsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutAccountsInput, Prisma.UserUncheckedCreateWithoutAccountsInput>
+}
+
+export type UserUpsertWithoutAccountsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutAccountsInput, Prisma.UserUncheckedUpdateWithoutAccountsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutAccountsInput, Prisma.UserUncheckedCreateWithoutAccountsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutAccountsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutAccountsInput, Prisma.UserUncheckedUpdateWithoutAccountsInput>
+}
+
+export type UserUpdateWithoutAccountsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  displayName?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
+  emailVerification?: Prisma.EmailVerificationUpdateOneWithoutUserNestedInput
+  passwordResets?: Prisma.PasswordResetUpdateManyWithoutUserNestedInput
+  foodProfile?: Prisma.FoodProfileUpdateOneWithoutUserNestedInput
+  paymentAccount?: Prisma.PaymentAccountUpdateOneWithoutUserNestedInput
+  hostedRooms?: Prisma.RoomUpdateManyWithoutHostNestedInput
+  roomMembers?: Prisma.RoomMemberUpdateManyWithoutUserNestedInput
+  sessionMembers?: Prisma.SessionMemberUpdateManyWithoutUserNestedInput
+  mealPreferences?: Prisma.MealPreferenceUpdateManyWithoutUserNestedInput
+  votes?: Prisma.VoteUpdateManyWithoutUserNestedInput
+  finalVotes?: Prisma.FinalVoteUpdateManyWithoutUserNestedInput
+  finalSelections?: Prisma.FinalSelectionUpdateManyWithoutSelectedByNestedInput
+  selectedRestaurants?: Prisma.RestaurantSelectionUpdateManyWithoutSelectedByNestedInput
+  createdBills?: Prisma.BillUpdateManyWithoutCreatedByNestedInput
+  itemShares?: Prisma.ItemShareUpdateManyWithoutUserNestedInput
+  payments?: Prisma.UserPaymentUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutAccountsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  displayName?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
+  emailVerification?: Prisma.EmailVerificationUncheckedUpdateOneWithoutUserNestedInput
+  passwordResets?: Prisma.PasswordResetUncheckedUpdateManyWithoutUserNestedInput
+  foodProfile?: Prisma.FoodProfileUncheckedUpdateOneWithoutUserNestedInput
+  paymentAccount?: Prisma.PaymentAccountUncheckedUpdateOneWithoutUserNestedInput
+  hostedRooms?: Prisma.RoomUncheckedUpdateManyWithoutHostNestedInput
+  roomMembers?: Prisma.RoomMemberUncheckedUpdateManyWithoutUserNestedInput
+  sessionMembers?: Prisma.SessionMemberUncheckedUpdateManyWithoutUserNestedInput
+  mealPreferences?: Prisma.MealPreferenceUncheckedUpdateManyWithoutUserNestedInput
+  votes?: Prisma.VoteUncheckedUpdateManyWithoutUserNestedInput
+  finalVotes?: Prisma.FinalVoteUncheckedUpdateManyWithoutUserNestedInput
+  finalSelections?: Prisma.FinalSelectionUncheckedUpdateManyWithoutSelectedByNestedInput
+  selectedRestaurants?: Prisma.RestaurantSelectionUncheckedUpdateManyWithoutSelectedByNestedInput
+  createdBills?: Prisma.BillUncheckedUpdateManyWithoutCreatedByNestedInput
+  itemShares?: Prisma.ItemShareUncheckedUpdateManyWithoutUserNestedInput
+  payments?: Prisma.UserPaymentUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserCreateWithoutRefreshTokensInput = {
+  id?: string
+  displayName: string
+  email: string
+  passwordHash?: string | null
+  avatarUrl?: string | null
+  emailVerified?: boolean
+  role?: $Enums.Role
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
+  emailVerification?: Prisma.EmailVerificationCreateNestedOneWithoutUserInput
+  passwordResets?: Prisma.PasswordResetCreateNestedManyWithoutUserInput
+  foodProfile?: Prisma.FoodProfileCreateNestedOneWithoutUserInput
+  paymentAccount?: Prisma.PaymentAccountCreateNestedOneWithoutUserInput
+  hostedRooms?: Prisma.RoomCreateNestedManyWithoutHostInput
+  roomMembers?: Prisma.RoomMemberCreateNestedManyWithoutUserInput
+  sessionMembers?: Prisma.SessionMemberCreateNestedManyWithoutUserInput
+  mealPreferences?: Prisma.MealPreferenceCreateNestedManyWithoutUserInput
+  votes?: Prisma.VoteCreateNestedManyWithoutUserInput
+  finalVotes?: Prisma.FinalVoteCreateNestedManyWithoutUserInput
+  finalSelections?: Prisma.FinalSelectionCreateNestedManyWithoutSelectedByInput
+  selectedRestaurants?: Prisma.RestaurantSelectionCreateNestedManyWithoutSelectedByInput
+  createdBills?: Prisma.BillCreateNestedManyWithoutCreatedByInput
+  itemShares?: Prisma.ItemShareCreateNestedManyWithoutUserInput
+  payments?: Prisma.UserPaymentCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutRefreshTokensInput = {
+  id?: string
+  displayName: string
+  email: string
+  passwordHash?: string | null
+  avatarUrl?: string | null
+  emailVerified?: boolean
+  role?: $Enums.Role
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
+  emailVerification?: Prisma.EmailVerificationUncheckedCreateNestedOneWithoutUserInput
+  passwordResets?: Prisma.PasswordResetUncheckedCreateNestedManyWithoutUserInput
+  foodProfile?: Prisma.FoodProfileUncheckedCreateNestedOneWithoutUserInput
+  paymentAccount?: Prisma.PaymentAccountUncheckedCreateNestedOneWithoutUserInput
+  hostedRooms?: Prisma.RoomUncheckedCreateNestedManyWithoutHostInput
+  roomMembers?: Prisma.RoomMemberUncheckedCreateNestedManyWithoutUserInput
+  sessionMembers?: Prisma.SessionMemberUncheckedCreateNestedManyWithoutUserInput
+  mealPreferences?: Prisma.MealPreferenceUncheckedCreateNestedManyWithoutUserInput
+  votes?: Prisma.VoteUncheckedCreateNestedManyWithoutUserInput
+  finalVotes?: Prisma.FinalVoteUncheckedCreateNestedManyWithoutUserInput
+  finalSelections?: Prisma.FinalSelectionUncheckedCreateNestedManyWithoutSelectedByInput
+  selectedRestaurants?: Prisma.RestaurantSelectionUncheckedCreateNestedManyWithoutSelectedByInput
+  createdBills?: Prisma.BillUncheckedCreateNestedManyWithoutCreatedByInput
+  itemShares?: Prisma.ItemShareUncheckedCreateNestedManyWithoutUserInput
+  payments?: Prisma.UserPaymentUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutRefreshTokensInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutRefreshTokensInput, Prisma.UserUncheckedCreateWithoutRefreshTokensInput>
+}
+
+export type UserUpsertWithoutRefreshTokensInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutRefreshTokensInput, Prisma.UserUncheckedUpdateWithoutRefreshTokensInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutRefreshTokensInput, Prisma.UserUncheckedCreateWithoutRefreshTokensInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutRefreshTokensInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutRefreshTokensInput, Prisma.UserUncheckedUpdateWithoutRefreshTokensInput>
+}
+
+export type UserUpdateWithoutRefreshTokensInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  displayName?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
+  emailVerification?: Prisma.EmailVerificationUpdateOneWithoutUserNestedInput
+  passwordResets?: Prisma.PasswordResetUpdateManyWithoutUserNestedInput
+  foodProfile?: Prisma.FoodProfileUpdateOneWithoutUserNestedInput
+  paymentAccount?: Prisma.PaymentAccountUpdateOneWithoutUserNestedInput
+  hostedRooms?: Prisma.RoomUpdateManyWithoutHostNestedInput
+  roomMembers?: Prisma.RoomMemberUpdateManyWithoutUserNestedInput
+  sessionMembers?: Prisma.SessionMemberUpdateManyWithoutUserNestedInput
+  mealPreferences?: Prisma.MealPreferenceUpdateManyWithoutUserNestedInput
+  votes?: Prisma.VoteUpdateManyWithoutUserNestedInput
+  finalVotes?: Prisma.FinalVoteUpdateManyWithoutUserNestedInput
+  finalSelections?: Prisma.FinalSelectionUpdateManyWithoutSelectedByNestedInput
+  selectedRestaurants?: Prisma.RestaurantSelectionUpdateManyWithoutSelectedByNestedInput
+  createdBills?: Prisma.BillUpdateManyWithoutCreatedByNestedInput
+  itemShares?: Prisma.ItemShareUpdateManyWithoutUserNestedInput
+  payments?: Prisma.UserPaymentUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutRefreshTokensInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  displayName?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
+  emailVerification?: Prisma.EmailVerificationUncheckedUpdateOneWithoutUserNestedInput
+  passwordResets?: Prisma.PasswordResetUncheckedUpdateManyWithoutUserNestedInput
+  foodProfile?: Prisma.FoodProfileUncheckedUpdateOneWithoutUserNestedInput
+  paymentAccount?: Prisma.PaymentAccountUncheckedUpdateOneWithoutUserNestedInput
+  hostedRooms?: Prisma.RoomUncheckedUpdateManyWithoutHostNestedInput
+  roomMembers?: Prisma.RoomMemberUncheckedUpdateManyWithoutUserNestedInput
+  sessionMembers?: Prisma.SessionMemberUncheckedUpdateManyWithoutUserNestedInput
+  mealPreferences?: Prisma.MealPreferenceUncheckedUpdateManyWithoutUserNestedInput
+  votes?: Prisma.VoteUncheckedUpdateManyWithoutUserNestedInput
+  finalVotes?: Prisma.FinalVoteUncheckedUpdateManyWithoutUserNestedInput
+  finalSelections?: Prisma.FinalSelectionUncheckedUpdateManyWithoutSelectedByNestedInput
+  selectedRestaurants?: Prisma.RestaurantSelectionUncheckedUpdateManyWithoutSelectedByNestedInput
+  createdBills?: Prisma.BillUncheckedUpdateManyWithoutCreatedByNestedInput
+  itemShares?: Prisma.ItemShareUncheckedUpdateManyWithoutUserNestedInput
+  payments?: Prisma.UserPaymentUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserCreateWithoutEmailVerificationInput = {
+  id?: string
+  displayName: string
+  email: string
+  passwordHash?: string | null
+  avatarUrl?: string | null
+  emailVerified?: boolean
+  role?: $Enums.Role
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
+  refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
+  passwordResets?: Prisma.PasswordResetCreateNestedManyWithoutUserInput
+  foodProfile?: Prisma.FoodProfileCreateNestedOneWithoutUserInput
+  paymentAccount?: Prisma.PaymentAccountCreateNestedOneWithoutUserInput
+  hostedRooms?: Prisma.RoomCreateNestedManyWithoutHostInput
+  roomMembers?: Prisma.RoomMemberCreateNestedManyWithoutUserInput
+  sessionMembers?: Prisma.SessionMemberCreateNestedManyWithoutUserInput
+  mealPreferences?: Prisma.MealPreferenceCreateNestedManyWithoutUserInput
+  votes?: Prisma.VoteCreateNestedManyWithoutUserInput
+  finalVotes?: Prisma.FinalVoteCreateNestedManyWithoutUserInput
+  finalSelections?: Prisma.FinalSelectionCreateNestedManyWithoutSelectedByInput
+  selectedRestaurants?: Prisma.RestaurantSelectionCreateNestedManyWithoutSelectedByInput
+  createdBills?: Prisma.BillCreateNestedManyWithoutCreatedByInput
+  itemShares?: Prisma.ItemShareCreateNestedManyWithoutUserInput
+  payments?: Prisma.UserPaymentCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutEmailVerificationInput = {
+  id?: string
+  displayName: string
+  email: string
+  passwordHash?: string | null
+  avatarUrl?: string | null
+  emailVerified?: boolean
+  role?: $Enums.Role
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
+  refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
+  passwordResets?: Prisma.PasswordResetUncheckedCreateNestedManyWithoutUserInput
+  foodProfile?: Prisma.FoodProfileUncheckedCreateNestedOneWithoutUserInput
+  paymentAccount?: Prisma.PaymentAccountUncheckedCreateNestedOneWithoutUserInput
+  hostedRooms?: Prisma.RoomUncheckedCreateNestedManyWithoutHostInput
+  roomMembers?: Prisma.RoomMemberUncheckedCreateNestedManyWithoutUserInput
+  sessionMembers?: Prisma.SessionMemberUncheckedCreateNestedManyWithoutUserInput
+  mealPreferences?: Prisma.MealPreferenceUncheckedCreateNestedManyWithoutUserInput
+  votes?: Prisma.VoteUncheckedCreateNestedManyWithoutUserInput
+  finalVotes?: Prisma.FinalVoteUncheckedCreateNestedManyWithoutUserInput
+  finalSelections?: Prisma.FinalSelectionUncheckedCreateNestedManyWithoutSelectedByInput
+  selectedRestaurants?: Prisma.RestaurantSelectionUncheckedCreateNestedManyWithoutSelectedByInput
+  createdBills?: Prisma.BillUncheckedCreateNestedManyWithoutCreatedByInput
+  itemShares?: Prisma.ItemShareUncheckedCreateNestedManyWithoutUserInput
+  payments?: Prisma.UserPaymentUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutEmailVerificationInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutEmailVerificationInput, Prisma.UserUncheckedCreateWithoutEmailVerificationInput>
+}
+
+export type UserUpsertWithoutEmailVerificationInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutEmailVerificationInput, Prisma.UserUncheckedUpdateWithoutEmailVerificationInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutEmailVerificationInput, Prisma.UserUncheckedCreateWithoutEmailVerificationInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutEmailVerificationInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutEmailVerificationInput, Prisma.UserUncheckedUpdateWithoutEmailVerificationInput>
+}
+
+export type UserUpdateWithoutEmailVerificationInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  displayName?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
+  refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
+  passwordResets?: Prisma.PasswordResetUpdateManyWithoutUserNestedInput
+  foodProfile?: Prisma.FoodProfileUpdateOneWithoutUserNestedInput
+  paymentAccount?: Prisma.PaymentAccountUpdateOneWithoutUserNestedInput
+  hostedRooms?: Prisma.RoomUpdateManyWithoutHostNestedInput
+  roomMembers?: Prisma.RoomMemberUpdateManyWithoutUserNestedInput
+  sessionMembers?: Prisma.SessionMemberUpdateManyWithoutUserNestedInput
+  mealPreferences?: Prisma.MealPreferenceUpdateManyWithoutUserNestedInput
+  votes?: Prisma.VoteUpdateManyWithoutUserNestedInput
+  finalVotes?: Prisma.FinalVoteUpdateManyWithoutUserNestedInput
+  finalSelections?: Prisma.FinalSelectionUpdateManyWithoutSelectedByNestedInput
+  selectedRestaurants?: Prisma.RestaurantSelectionUpdateManyWithoutSelectedByNestedInput
+  createdBills?: Prisma.BillUpdateManyWithoutCreatedByNestedInput
+  itemShares?: Prisma.ItemShareUpdateManyWithoutUserNestedInput
+  payments?: Prisma.UserPaymentUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutEmailVerificationInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  displayName?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
+  refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
+  passwordResets?: Prisma.PasswordResetUncheckedUpdateManyWithoutUserNestedInput
+  foodProfile?: Prisma.FoodProfileUncheckedUpdateOneWithoutUserNestedInput
+  paymentAccount?: Prisma.PaymentAccountUncheckedUpdateOneWithoutUserNestedInput
+  hostedRooms?: Prisma.RoomUncheckedUpdateManyWithoutHostNestedInput
+  roomMembers?: Prisma.RoomMemberUncheckedUpdateManyWithoutUserNestedInput
+  sessionMembers?: Prisma.SessionMemberUncheckedUpdateManyWithoutUserNestedInput
+  mealPreferences?: Prisma.MealPreferenceUncheckedUpdateManyWithoutUserNestedInput
+  votes?: Prisma.VoteUncheckedUpdateManyWithoutUserNestedInput
+  finalVotes?: Prisma.FinalVoteUncheckedUpdateManyWithoutUserNestedInput
+  finalSelections?: Prisma.FinalSelectionUncheckedUpdateManyWithoutSelectedByNestedInput
+  selectedRestaurants?: Prisma.RestaurantSelectionUncheckedUpdateManyWithoutSelectedByNestedInput
+  createdBills?: Prisma.BillUncheckedUpdateManyWithoutCreatedByNestedInput
+  itemShares?: Prisma.ItemShareUncheckedUpdateManyWithoutUserNestedInput
+  payments?: Prisma.UserPaymentUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserCreateWithoutPasswordResetsInput = {
+  id?: string
+  displayName: string
+  email: string
+  passwordHash?: string | null
+  avatarUrl?: string | null
+  emailVerified?: boolean
+  role?: $Enums.Role
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
+  refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
+  emailVerification?: Prisma.EmailVerificationCreateNestedOneWithoutUserInput
+  foodProfile?: Prisma.FoodProfileCreateNestedOneWithoutUserInput
+  paymentAccount?: Prisma.PaymentAccountCreateNestedOneWithoutUserInput
+  hostedRooms?: Prisma.RoomCreateNestedManyWithoutHostInput
+  roomMembers?: Prisma.RoomMemberCreateNestedManyWithoutUserInput
+  sessionMembers?: Prisma.SessionMemberCreateNestedManyWithoutUserInput
+  mealPreferences?: Prisma.MealPreferenceCreateNestedManyWithoutUserInput
+  votes?: Prisma.VoteCreateNestedManyWithoutUserInput
+  finalVotes?: Prisma.FinalVoteCreateNestedManyWithoutUserInput
+  finalSelections?: Prisma.FinalSelectionCreateNestedManyWithoutSelectedByInput
+  selectedRestaurants?: Prisma.RestaurantSelectionCreateNestedManyWithoutSelectedByInput
+  createdBills?: Prisma.BillCreateNestedManyWithoutCreatedByInput
+  itemShares?: Prisma.ItemShareCreateNestedManyWithoutUserInput
+  payments?: Prisma.UserPaymentCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutPasswordResetsInput = {
+  id?: string
+  displayName: string
+  email: string
+  passwordHash?: string | null
+  avatarUrl?: string | null
+  emailVerified?: boolean
+  role?: $Enums.Role
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
+  refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
+  emailVerification?: Prisma.EmailVerificationUncheckedCreateNestedOneWithoutUserInput
+  foodProfile?: Prisma.FoodProfileUncheckedCreateNestedOneWithoutUserInput
+  paymentAccount?: Prisma.PaymentAccountUncheckedCreateNestedOneWithoutUserInput
+  hostedRooms?: Prisma.RoomUncheckedCreateNestedManyWithoutHostInput
+  roomMembers?: Prisma.RoomMemberUncheckedCreateNestedManyWithoutUserInput
+  sessionMembers?: Prisma.SessionMemberUncheckedCreateNestedManyWithoutUserInput
+  mealPreferences?: Prisma.MealPreferenceUncheckedCreateNestedManyWithoutUserInput
+  votes?: Prisma.VoteUncheckedCreateNestedManyWithoutUserInput
+  finalVotes?: Prisma.FinalVoteUncheckedCreateNestedManyWithoutUserInput
+  finalSelections?: Prisma.FinalSelectionUncheckedCreateNestedManyWithoutSelectedByInput
+  selectedRestaurants?: Prisma.RestaurantSelectionUncheckedCreateNestedManyWithoutSelectedByInput
+  createdBills?: Prisma.BillUncheckedCreateNestedManyWithoutCreatedByInput
+  itemShares?: Prisma.ItemShareUncheckedCreateNestedManyWithoutUserInput
+  payments?: Prisma.UserPaymentUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutPasswordResetsInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutPasswordResetsInput, Prisma.UserUncheckedCreateWithoutPasswordResetsInput>
+}
+
+export type UserUpsertWithoutPasswordResetsInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutPasswordResetsInput, Prisma.UserUncheckedUpdateWithoutPasswordResetsInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutPasswordResetsInput, Prisma.UserUncheckedCreateWithoutPasswordResetsInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutPasswordResetsInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutPasswordResetsInput, Prisma.UserUncheckedUpdateWithoutPasswordResetsInput>
+}
+
+export type UserUpdateWithoutPasswordResetsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  displayName?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
+  refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
+  emailVerification?: Prisma.EmailVerificationUpdateOneWithoutUserNestedInput
+  foodProfile?: Prisma.FoodProfileUpdateOneWithoutUserNestedInput
+  paymentAccount?: Prisma.PaymentAccountUpdateOneWithoutUserNestedInput
+  hostedRooms?: Prisma.RoomUpdateManyWithoutHostNestedInput
+  roomMembers?: Prisma.RoomMemberUpdateManyWithoutUserNestedInput
+  sessionMembers?: Prisma.SessionMemberUpdateManyWithoutUserNestedInput
+  mealPreferences?: Prisma.MealPreferenceUpdateManyWithoutUserNestedInput
+  votes?: Prisma.VoteUpdateManyWithoutUserNestedInput
+  finalVotes?: Prisma.FinalVoteUpdateManyWithoutUserNestedInput
+  finalSelections?: Prisma.FinalSelectionUpdateManyWithoutSelectedByNestedInput
+  selectedRestaurants?: Prisma.RestaurantSelectionUpdateManyWithoutSelectedByNestedInput
+  createdBills?: Prisma.BillUpdateManyWithoutCreatedByNestedInput
+  itemShares?: Prisma.ItemShareUpdateManyWithoutUserNestedInput
+  payments?: Prisma.UserPaymentUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutPasswordResetsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  displayName?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
+  refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
+  emailVerification?: Prisma.EmailVerificationUncheckedUpdateOneWithoutUserNestedInput
+  foodProfile?: Prisma.FoodProfileUncheckedUpdateOneWithoutUserNestedInput
+  paymentAccount?: Prisma.PaymentAccountUncheckedUpdateOneWithoutUserNestedInput
+  hostedRooms?: Prisma.RoomUncheckedUpdateManyWithoutHostNestedInput
+  roomMembers?: Prisma.RoomMemberUncheckedUpdateManyWithoutUserNestedInput
+  sessionMembers?: Prisma.SessionMemberUncheckedUpdateManyWithoutUserNestedInput
+  mealPreferences?: Prisma.MealPreferenceUncheckedUpdateManyWithoutUserNestedInput
+  votes?: Prisma.VoteUncheckedUpdateManyWithoutUserNestedInput
+  finalVotes?: Prisma.FinalVoteUncheckedUpdateManyWithoutUserNestedInput
+  finalSelections?: Prisma.FinalSelectionUncheckedUpdateManyWithoutSelectedByNestedInput
+  selectedRestaurants?: Prisma.RestaurantSelectionUncheckedUpdateManyWithoutSelectedByNestedInput
+  createdBills?: Prisma.BillUncheckedUpdateManyWithoutCreatedByNestedInput
+  itemShares?: Prisma.ItemShareUncheckedUpdateManyWithoutUserNestedInput
+  payments?: Prisma.UserPaymentUncheckedUpdateManyWithoutUserNestedInput
+}
+
+export type UserCreateWithoutFoodProfileInput = {
+  id?: string
+  displayName: string
+  email: string
+  passwordHash?: string | null
+  avatarUrl?: string | null
+  emailVerified?: boolean
+  role?: $Enums.Role
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
+  refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
+  emailVerification?: Prisma.EmailVerificationCreateNestedOneWithoutUserInput
+  passwordResets?: Prisma.PasswordResetCreateNestedManyWithoutUserInput
+  paymentAccount?: Prisma.PaymentAccountCreateNestedOneWithoutUserInput
+  hostedRooms?: Prisma.RoomCreateNestedManyWithoutHostInput
+  roomMembers?: Prisma.RoomMemberCreateNestedManyWithoutUserInput
+  sessionMembers?: Prisma.SessionMemberCreateNestedManyWithoutUserInput
+  mealPreferences?: Prisma.MealPreferenceCreateNestedManyWithoutUserInput
+  votes?: Prisma.VoteCreateNestedManyWithoutUserInput
+  finalVotes?: Prisma.FinalVoteCreateNestedManyWithoutUserInput
+  finalSelections?: Prisma.FinalSelectionCreateNestedManyWithoutSelectedByInput
+  selectedRestaurants?: Prisma.RestaurantSelectionCreateNestedManyWithoutSelectedByInput
+  createdBills?: Prisma.BillCreateNestedManyWithoutCreatedByInput
+  itemShares?: Prisma.ItemShareCreateNestedManyWithoutUserInput
+  payments?: Prisma.UserPaymentCreateNestedManyWithoutUserInput
+}
+
+export type UserUncheckedCreateWithoutFoodProfileInput = {
+  id?: string
+  displayName: string
+  email: string
+  passwordHash?: string | null
+  avatarUrl?: string | null
+  emailVerified?: boolean
+  role?: $Enums.Role
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
+  refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
+  emailVerification?: Prisma.EmailVerificationUncheckedCreateNestedOneWithoutUserInput
+  passwordResets?: Prisma.PasswordResetUncheckedCreateNestedManyWithoutUserInput
+  paymentAccount?: Prisma.PaymentAccountUncheckedCreateNestedOneWithoutUserInput
+  hostedRooms?: Prisma.RoomUncheckedCreateNestedManyWithoutHostInput
+  roomMembers?: Prisma.RoomMemberUncheckedCreateNestedManyWithoutUserInput
+  sessionMembers?: Prisma.SessionMemberUncheckedCreateNestedManyWithoutUserInput
+  mealPreferences?: Prisma.MealPreferenceUncheckedCreateNestedManyWithoutUserInput
+  votes?: Prisma.VoteUncheckedCreateNestedManyWithoutUserInput
+  finalVotes?: Prisma.FinalVoteUncheckedCreateNestedManyWithoutUserInput
+  finalSelections?: Prisma.FinalSelectionUncheckedCreateNestedManyWithoutSelectedByInput
+  selectedRestaurants?: Prisma.RestaurantSelectionUncheckedCreateNestedManyWithoutSelectedByInput
+  createdBills?: Prisma.BillUncheckedCreateNestedManyWithoutCreatedByInput
+  itemShares?: Prisma.ItemShareUncheckedCreateNestedManyWithoutUserInput
+  payments?: Prisma.UserPaymentUncheckedCreateNestedManyWithoutUserInput
+}
+
+export type UserCreateOrConnectWithoutFoodProfileInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutFoodProfileInput, Prisma.UserUncheckedCreateWithoutFoodProfileInput>
+}
+
+export type UserUpsertWithoutFoodProfileInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutFoodProfileInput, Prisma.UserUncheckedUpdateWithoutFoodProfileInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutFoodProfileInput, Prisma.UserUncheckedCreateWithoutFoodProfileInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutFoodProfileInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutFoodProfileInput, Prisma.UserUncheckedUpdateWithoutFoodProfileInput>
+}
+
+export type UserUpdateWithoutFoodProfileInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  displayName?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
+  refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
+  emailVerification?: Prisma.EmailVerificationUpdateOneWithoutUserNestedInput
+  passwordResets?: Prisma.PasswordResetUpdateManyWithoutUserNestedInput
+  paymentAccount?: Prisma.PaymentAccountUpdateOneWithoutUserNestedInput
+  hostedRooms?: Prisma.RoomUpdateManyWithoutHostNestedInput
+  roomMembers?: Prisma.RoomMemberUpdateManyWithoutUserNestedInput
+  sessionMembers?: Prisma.SessionMemberUpdateManyWithoutUserNestedInput
+  mealPreferences?: Prisma.MealPreferenceUpdateManyWithoutUserNestedInput
+  votes?: Prisma.VoteUpdateManyWithoutUserNestedInput
+  finalVotes?: Prisma.FinalVoteUpdateManyWithoutUserNestedInput
+  finalSelections?: Prisma.FinalSelectionUpdateManyWithoutSelectedByNestedInput
+  selectedRestaurants?: Prisma.RestaurantSelectionUpdateManyWithoutSelectedByNestedInput
+  createdBills?: Prisma.BillUpdateManyWithoutCreatedByNestedInput
+  itemShares?: Prisma.ItemShareUpdateManyWithoutUserNestedInput
+  payments?: Prisma.UserPaymentUpdateManyWithoutUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutFoodProfileInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  displayName?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
+  refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
+  emailVerification?: Prisma.EmailVerificationUncheckedUpdateOneWithoutUserNestedInput
+  passwordResets?: Prisma.PasswordResetUncheckedUpdateManyWithoutUserNestedInput
+  paymentAccount?: Prisma.PaymentAccountUncheckedUpdateOneWithoutUserNestedInput
+  hostedRooms?: Prisma.RoomUncheckedUpdateManyWithoutHostNestedInput
+  roomMembers?: Prisma.RoomMemberUncheckedUpdateManyWithoutUserNestedInput
+  sessionMembers?: Prisma.SessionMemberUncheckedUpdateManyWithoutUserNestedInput
+  mealPreferences?: Prisma.MealPreferenceUncheckedUpdateManyWithoutUserNestedInput
+  votes?: Prisma.VoteUncheckedUpdateManyWithoutUserNestedInput
+  finalVotes?: Prisma.FinalVoteUncheckedUpdateManyWithoutUserNestedInput
+  finalSelections?: Prisma.FinalSelectionUncheckedUpdateManyWithoutSelectedByNestedInput
+  selectedRestaurants?: Prisma.RestaurantSelectionUncheckedUpdateManyWithoutSelectedByNestedInput
+  createdBills?: Prisma.BillUncheckedUpdateManyWithoutCreatedByNestedInput
+  itemShares?: Prisma.ItemShareUncheckedUpdateManyWithoutUserNestedInput
+  payments?: Prisma.UserPaymentUncheckedUpdateManyWithoutUserNestedInput
+}
+
 export type UserCreateWithoutPaymentAccountInput = {
   id?: string
   displayName: string
@@ -772,6 +1433,7 @@ export type UserCreateWithoutPaymentAccountInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
+  refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
   emailVerification?: Prisma.EmailVerificationCreateNestedOneWithoutUserInput
   passwordResets?: Prisma.PasswordResetCreateNestedManyWithoutUserInput
   foodProfile?: Prisma.FoodProfileCreateNestedOneWithoutUserInput
@@ -799,6 +1461,7 @@ export type UserUncheckedCreateWithoutPaymentAccountInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
+  refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
   emailVerification?: Prisma.EmailVerificationUncheckedCreateNestedOneWithoutUserInput
   passwordResets?: Prisma.PasswordResetUncheckedCreateNestedManyWithoutUserInput
   foodProfile?: Prisma.FoodProfileUncheckedCreateNestedOneWithoutUserInput
@@ -842,6 +1505,7 @@ export type UserUpdateWithoutPaymentAccountInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
+  refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
   emailVerification?: Prisma.EmailVerificationUpdateOneWithoutUserNestedInput
   passwordResets?: Prisma.PasswordResetUpdateManyWithoutUserNestedInput
   foodProfile?: Prisma.FoodProfileUpdateOneWithoutUserNestedInput
@@ -869,6 +1533,7 @@ export type UserUncheckedUpdateWithoutPaymentAccountInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
+  refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
   emailVerification?: Prisma.EmailVerificationUncheckedUpdateOneWithoutUserNestedInput
   passwordResets?: Prisma.PasswordResetUncheckedUpdateManyWithoutUserNestedInput
   foodProfile?: Prisma.FoodProfileUncheckedUpdateOneWithoutUserNestedInput
@@ -883,502 +1548,6 @@ export type UserUncheckedUpdateWithoutPaymentAccountInput = {
   createdBills?: Prisma.BillUncheckedUpdateManyWithoutCreatedByNestedInput
   itemShares?: Prisma.ItemShareUncheckedUpdateManyWithoutUserNestedInput
   payments?: Prisma.UserPaymentUncheckedUpdateManyWithoutUserNestedInput
-}
-
-export type UserCreateWithoutAccountsInput = {
-  id?: string
-  displayName: string
-  email: string
-  passwordHash?: string | null
-  avatarUrl?: string | null
-  emailVerified?: boolean
-  role?: $Enums.Role
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  emailVerification?: Prisma.EmailVerificationCreateNestedOneWithoutUserInput
-  passwordResets?: Prisma.PasswordResetCreateNestedManyWithoutUserInput
-  foodProfile?: Prisma.FoodProfileCreateNestedOneWithoutUserInput
-  hostedRooms?: Prisma.RoomCreateNestedManyWithoutHostInput
-  roomMembers?: Prisma.RoomMemberCreateNestedManyWithoutUserInput
-  sessionMembers?: Prisma.SessionMemberCreateNestedManyWithoutUserInput
-  mealPreferences?: Prisma.MealPreferenceCreateNestedManyWithoutUserInput
-  votes?: Prisma.VoteCreateNestedManyWithoutUserInput
-  finalVotes?: Prisma.FinalVoteCreateNestedManyWithoutUserInput
-  finalSelections?: Prisma.FinalSelectionCreateNestedManyWithoutSelectedByInput
-  selectedRestaurants?: Prisma.RestaurantSelectionCreateNestedManyWithoutSelectedByInput
-  createdBills?: Prisma.BillCreateNestedManyWithoutCreatedByInput
-  itemShares?: Prisma.ItemShareCreateNestedManyWithoutUserInput
-  payments?: Prisma.UserPaymentCreateNestedManyWithoutUserInput
-  paymentAccount?: Prisma.PaymentAccountCreateNestedOneWithoutUserInput
-}
-
-export type UserUncheckedCreateWithoutAccountsInput = {
-  id?: string
-  displayName: string
-  email: string
-  passwordHash?: string | null
-  avatarUrl?: string | null
-  emailVerified?: boolean
-  role?: $Enums.Role
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  emailVerification?: Prisma.EmailVerificationUncheckedCreateNestedOneWithoutUserInput
-  passwordResets?: Prisma.PasswordResetUncheckedCreateNestedManyWithoutUserInput
-  foodProfile?: Prisma.FoodProfileUncheckedCreateNestedOneWithoutUserInput
-  hostedRooms?: Prisma.RoomUncheckedCreateNestedManyWithoutHostInput
-  roomMembers?: Prisma.RoomMemberUncheckedCreateNestedManyWithoutUserInput
-  sessionMembers?: Prisma.SessionMemberUncheckedCreateNestedManyWithoutUserInput
-  mealPreferences?: Prisma.MealPreferenceUncheckedCreateNestedManyWithoutUserInput
-  votes?: Prisma.VoteUncheckedCreateNestedManyWithoutUserInput
-  finalVotes?: Prisma.FinalVoteUncheckedCreateNestedManyWithoutUserInput
-  finalSelections?: Prisma.FinalSelectionUncheckedCreateNestedManyWithoutSelectedByInput
-  selectedRestaurants?: Prisma.RestaurantSelectionUncheckedCreateNestedManyWithoutSelectedByInput
-  createdBills?: Prisma.BillUncheckedCreateNestedManyWithoutCreatedByInput
-  itemShares?: Prisma.ItemShareUncheckedCreateNestedManyWithoutUserInput
-  payments?: Prisma.UserPaymentUncheckedCreateNestedManyWithoutUserInput
-  paymentAccount?: Prisma.PaymentAccountUncheckedCreateNestedOneWithoutUserInput
-}
-
-export type UserCreateOrConnectWithoutAccountsInput = {
-  where: Prisma.UserWhereUniqueInput
-  create: Prisma.XOR<Prisma.UserCreateWithoutAccountsInput, Prisma.UserUncheckedCreateWithoutAccountsInput>
-}
-
-export type UserUpsertWithoutAccountsInput = {
-  update: Prisma.XOR<Prisma.UserUpdateWithoutAccountsInput, Prisma.UserUncheckedUpdateWithoutAccountsInput>
-  create: Prisma.XOR<Prisma.UserCreateWithoutAccountsInput, Prisma.UserUncheckedCreateWithoutAccountsInput>
-  where?: Prisma.UserWhereInput
-}
-
-export type UserUpdateToOneWithWhereWithoutAccountsInput = {
-  where?: Prisma.UserWhereInput
-  data: Prisma.XOR<Prisma.UserUpdateWithoutAccountsInput, Prisma.UserUncheckedUpdateWithoutAccountsInput>
-}
-
-export type UserUpdateWithoutAccountsInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  displayName?: Prisma.StringFieldUpdateOperationsInput | string
-  email?: Prisma.StringFieldUpdateOperationsInput | string
-  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  emailVerification?: Prisma.EmailVerificationUpdateOneWithoutUserNestedInput
-  passwordResets?: Prisma.PasswordResetUpdateManyWithoutUserNestedInput
-  foodProfile?: Prisma.FoodProfileUpdateOneWithoutUserNestedInput
-  hostedRooms?: Prisma.RoomUpdateManyWithoutHostNestedInput
-  roomMembers?: Prisma.RoomMemberUpdateManyWithoutUserNestedInput
-  sessionMembers?: Prisma.SessionMemberUpdateManyWithoutUserNestedInput
-  mealPreferences?: Prisma.MealPreferenceUpdateManyWithoutUserNestedInput
-  votes?: Prisma.VoteUpdateManyWithoutUserNestedInput
-  finalVotes?: Prisma.FinalVoteUpdateManyWithoutUserNestedInput
-  finalSelections?: Prisma.FinalSelectionUpdateManyWithoutSelectedByNestedInput
-  selectedRestaurants?: Prisma.RestaurantSelectionUpdateManyWithoutSelectedByNestedInput
-  createdBills?: Prisma.BillUpdateManyWithoutCreatedByNestedInput
-  itemShares?: Prisma.ItemShareUpdateManyWithoutUserNestedInput
-  payments?: Prisma.UserPaymentUpdateManyWithoutUserNestedInput
-  paymentAccount?: Prisma.PaymentAccountUpdateOneWithoutUserNestedInput
-}
-
-export type UserUncheckedUpdateWithoutAccountsInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  displayName?: Prisma.StringFieldUpdateOperationsInput | string
-  email?: Prisma.StringFieldUpdateOperationsInput | string
-  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  emailVerification?: Prisma.EmailVerificationUncheckedUpdateOneWithoutUserNestedInput
-  passwordResets?: Prisma.PasswordResetUncheckedUpdateManyWithoutUserNestedInput
-  foodProfile?: Prisma.FoodProfileUncheckedUpdateOneWithoutUserNestedInput
-  hostedRooms?: Prisma.RoomUncheckedUpdateManyWithoutHostNestedInput
-  roomMembers?: Prisma.RoomMemberUncheckedUpdateManyWithoutUserNestedInput
-  sessionMembers?: Prisma.SessionMemberUncheckedUpdateManyWithoutUserNestedInput
-  mealPreferences?: Prisma.MealPreferenceUncheckedUpdateManyWithoutUserNestedInput
-  votes?: Prisma.VoteUncheckedUpdateManyWithoutUserNestedInput
-  finalVotes?: Prisma.FinalVoteUncheckedUpdateManyWithoutUserNestedInput
-  finalSelections?: Prisma.FinalSelectionUncheckedUpdateManyWithoutSelectedByNestedInput
-  selectedRestaurants?: Prisma.RestaurantSelectionUncheckedUpdateManyWithoutSelectedByNestedInput
-  createdBills?: Prisma.BillUncheckedUpdateManyWithoutCreatedByNestedInput
-  itemShares?: Prisma.ItemShareUncheckedUpdateManyWithoutUserNestedInput
-  payments?: Prisma.UserPaymentUncheckedUpdateManyWithoutUserNestedInput
-  paymentAccount?: Prisma.PaymentAccountUncheckedUpdateOneWithoutUserNestedInput
-}
-
-export type UserCreateWithoutEmailVerificationInput = {
-  id?: string
-  displayName: string
-  email: string
-  passwordHash?: string | null
-  avatarUrl?: string | null
-  emailVerified?: boolean
-  role?: $Enums.Role
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
-  passwordResets?: Prisma.PasswordResetCreateNestedManyWithoutUserInput
-  foodProfile?: Prisma.FoodProfileCreateNestedOneWithoutUserInput
-  hostedRooms?: Prisma.RoomCreateNestedManyWithoutHostInput
-  roomMembers?: Prisma.RoomMemberCreateNestedManyWithoutUserInput
-  sessionMembers?: Prisma.SessionMemberCreateNestedManyWithoutUserInput
-  mealPreferences?: Prisma.MealPreferenceCreateNestedManyWithoutUserInput
-  votes?: Prisma.VoteCreateNestedManyWithoutUserInput
-  finalVotes?: Prisma.FinalVoteCreateNestedManyWithoutUserInput
-  finalSelections?: Prisma.FinalSelectionCreateNestedManyWithoutSelectedByInput
-  selectedRestaurants?: Prisma.RestaurantSelectionCreateNestedManyWithoutSelectedByInput
-  createdBills?: Prisma.BillCreateNestedManyWithoutCreatedByInput
-  itemShares?: Prisma.ItemShareCreateNestedManyWithoutUserInput
-  payments?: Prisma.UserPaymentCreateNestedManyWithoutUserInput
-  paymentAccount?: Prisma.PaymentAccountCreateNestedOneWithoutUserInput
-}
-
-export type UserUncheckedCreateWithoutEmailVerificationInput = {
-  id?: string
-  displayName: string
-  email: string
-  passwordHash?: string | null
-  avatarUrl?: string | null
-  emailVerified?: boolean
-  role?: $Enums.Role
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
-  passwordResets?: Prisma.PasswordResetUncheckedCreateNestedManyWithoutUserInput
-  foodProfile?: Prisma.FoodProfileUncheckedCreateNestedOneWithoutUserInput
-  hostedRooms?: Prisma.RoomUncheckedCreateNestedManyWithoutHostInput
-  roomMembers?: Prisma.RoomMemberUncheckedCreateNestedManyWithoutUserInput
-  sessionMembers?: Prisma.SessionMemberUncheckedCreateNestedManyWithoutUserInput
-  mealPreferences?: Prisma.MealPreferenceUncheckedCreateNestedManyWithoutUserInput
-  votes?: Prisma.VoteUncheckedCreateNestedManyWithoutUserInput
-  finalVotes?: Prisma.FinalVoteUncheckedCreateNestedManyWithoutUserInput
-  finalSelections?: Prisma.FinalSelectionUncheckedCreateNestedManyWithoutSelectedByInput
-  selectedRestaurants?: Prisma.RestaurantSelectionUncheckedCreateNestedManyWithoutSelectedByInput
-  createdBills?: Prisma.BillUncheckedCreateNestedManyWithoutCreatedByInput
-  itemShares?: Prisma.ItemShareUncheckedCreateNestedManyWithoutUserInput
-  payments?: Prisma.UserPaymentUncheckedCreateNestedManyWithoutUserInput
-  paymentAccount?: Prisma.PaymentAccountUncheckedCreateNestedOneWithoutUserInput
-}
-
-export type UserCreateOrConnectWithoutEmailVerificationInput = {
-  where: Prisma.UserWhereUniqueInput
-  create: Prisma.XOR<Prisma.UserCreateWithoutEmailVerificationInput, Prisma.UserUncheckedCreateWithoutEmailVerificationInput>
-}
-
-export type UserUpsertWithoutEmailVerificationInput = {
-  update: Prisma.XOR<Prisma.UserUpdateWithoutEmailVerificationInput, Prisma.UserUncheckedUpdateWithoutEmailVerificationInput>
-  create: Prisma.XOR<Prisma.UserCreateWithoutEmailVerificationInput, Prisma.UserUncheckedCreateWithoutEmailVerificationInput>
-  where?: Prisma.UserWhereInput
-}
-
-export type UserUpdateToOneWithWhereWithoutEmailVerificationInput = {
-  where?: Prisma.UserWhereInput
-  data: Prisma.XOR<Prisma.UserUpdateWithoutEmailVerificationInput, Prisma.UserUncheckedUpdateWithoutEmailVerificationInput>
-}
-
-export type UserUpdateWithoutEmailVerificationInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  displayName?: Prisma.StringFieldUpdateOperationsInput | string
-  email?: Prisma.StringFieldUpdateOperationsInput | string
-  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
-  passwordResets?: Prisma.PasswordResetUpdateManyWithoutUserNestedInput
-  foodProfile?: Prisma.FoodProfileUpdateOneWithoutUserNestedInput
-  hostedRooms?: Prisma.RoomUpdateManyWithoutHostNestedInput
-  roomMembers?: Prisma.RoomMemberUpdateManyWithoutUserNestedInput
-  sessionMembers?: Prisma.SessionMemberUpdateManyWithoutUserNestedInput
-  mealPreferences?: Prisma.MealPreferenceUpdateManyWithoutUserNestedInput
-  votes?: Prisma.VoteUpdateManyWithoutUserNestedInput
-  finalVotes?: Prisma.FinalVoteUpdateManyWithoutUserNestedInput
-  finalSelections?: Prisma.FinalSelectionUpdateManyWithoutSelectedByNestedInput
-  selectedRestaurants?: Prisma.RestaurantSelectionUpdateManyWithoutSelectedByNestedInput
-  createdBills?: Prisma.BillUpdateManyWithoutCreatedByNestedInput
-  itemShares?: Prisma.ItemShareUpdateManyWithoutUserNestedInput
-  payments?: Prisma.UserPaymentUpdateManyWithoutUserNestedInput
-  paymentAccount?: Prisma.PaymentAccountUpdateOneWithoutUserNestedInput
-}
-
-export type UserUncheckedUpdateWithoutEmailVerificationInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  displayName?: Prisma.StringFieldUpdateOperationsInput | string
-  email?: Prisma.StringFieldUpdateOperationsInput | string
-  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
-  passwordResets?: Prisma.PasswordResetUncheckedUpdateManyWithoutUserNestedInput
-  foodProfile?: Prisma.FoodProfileUncheckedUpdateOneWithoutUserNestedInput
-  hostedRooms?: Prisma.RoomUncheckedUpdateManyWithoutHostNestedInput
-  roomMembers?: Prisma.RoomMemberUncheckedUpdateManyWithoutUserNestedInput
-  sessionMembers?: Prisma.SessionMemberUncheckedUpdateManyWithoutUserNestedInput
-  mealPreferences?: Prisma.MealPreferenceUncheckedUpdateManyWithoutUserNestedInput
-  votes?: Prisma.VoteUncheckedUpdateManyWithoutUserNestedInput
-  finalVotes?: Prisma.FinalVoteUncheckedUpdateManyWithoutUserNestedInput
-  finalSelections?: Prisma.FinalSelectionUncheckedUpdateManyWithoutSelectedByNestedInput
-  selectedRestaurants?: Prisma.RestaurantSelectionUncheckedUpdateManyWithoutSelectedByNestedInput
-  createdBills?: Prisma.BillUncheckedUpdateManyWithoutCreatedByNestedInput
-  itemShares?: Prisma.ItemShareUncheckedUpdateManyWithoutUserNestedInput
-  payments?: Prisma.UserPaymentUncheckedUpdateManyWithoutUserNestedInput
-  paymentAccount?: Prisma.PaymentAccountUncheckedUpdateOneWithoutUserNestedInput
-}
-
-export type UserCreateWithoutPasswordResetsInput = {
-  id?: string
-  displayName: string
-  email: string
-  passwordHash?: string | null
-  avatarUrl?: string | null
-  emailVerified?: boolean
-  role?: $Enums.Role
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
-  emailVerification?: Prisma.EmailVerificationCreateNestedOneWithoutUserInput
-  foodProfile?: Prisma.FoodProfileCreateNestedOneWithoutUserInput
-  hostedRooms?: Prisma.RoomCreateNestedManyWithoutHostInput
-  roomMembers?: Prisma.RoomMemberCreateNestedManyWithoutUserInput
-  sessionMembers?: Prisma.SessionMemberCreateNestedManyWithoutUserInput
-  mealPreferences?: Prisma.MealPreferenceCreateNestedManyWithoutUserInput
-  votes?: Prisma.VoteCreateNestedManyWithoutUserInput
-  finalVotes?: Prisma.FinalVoteCreateNestedManyWithoutUserInput
-  finalSelections?: Prisma.FinalSelectionCreateNestedManyWithoutSelectedByInput
-  selectedRestaurants?: Prisma.RestaurantSelectionCreateNestedManyWithoutSelectedByInput
-  createdBills?: Prisma.BillCreateNestedManyWithoutCreatedByInput
-  itemShares?: Prisma.ItemShareCreateNestedManyWithoutUserInput
-  payments?: Prisma.UserPaymentCreateNestedManyWithoutUserInput
-  paymentAccount?: Prisma.PaymentAccountCreateNestedOneWithoutUserInput
-}
-
-export type UserUncheckedCreateWithoutPasswordResetsInput = {
-  id?: string
-  displayName: string
-  email: string
-  passwordHash?: string | null
-  avatarUrl?: string | null
-  emailVerified?: boolean
-  role?: $Enums.Role
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
-  emailVerification?: Prisma.EmailVerificationUncheckedCreateNestedOneWithoutUserInput
-  foodProfile?: Prisma.FoodProfileUncheckedCreateNestedOneWithoutUserInput
-  hostedRooms?: Prisma.RoomUncheckedCreateNestedManyWithoutHostInput
-  roomMembers?: Prisma.RoomMemberUncheckedCreateNestedManyWithoutUserInput
-  sessionMembers?: Prisma.SessionMemberUncheckedCreateNestedManyWithoutUserInput
-  mealPreferences?: Prisma.MealPreferenceUncheckedCreateNestedManyWithoutUserInput
-  votes?: Prisma.VoteUncheckedCreateNestedManyWithoutUserInput
-  finalVotes?: Prisma.FinalVoteUncheckedCreateNestedManyWithoutUserInput
-  finalSelections?: Prisma.FinalSelectionUncheckedCreateNestedManyWithoutSelectedByInput
-  selectedRestaurants?: Prisma.RestaurantSelectionUncheckedCreateNestedManyWithoutSelectedByInput
-  createdBills?: Prisma.BillUncheckedCreateNestedManyWithoutCreatedByInput
-  itemShares?: Prisma.ItemShareUncheckedCreateNestedManyWithoutUserInput
-  payments?: Prisma.UserPaymentUncheckedCreateNestedManyWithoutUserInput
-  paymentAccount?: Prisma.PaymentAccountUncheckedCreateNestedOneWithoutUserInput
-}
-
-export type UserCreateOrConnectWithoutPasswordResetsInput = {
-  where: Prisma.UserWhereUniqueInput
-  create: Prisma.XOR<Prisma.UserCreateWithoutPasswordResetsInput, Prisma.UserUncheckedCreateWithoutPasswordResetsInput>
-}
-
-export type UserUpsertWithoutPasswordResetsInput = {
-  update: Prisma.XOR<Prisma.UserUpdateWithoutPasswordResetsInput, Prisma.UserUncheckedUpdateWithoutPasswordResetsInput>
-  create: Prisma.XOR<Prisma.UserCreateWithoutPasswordResetsInput, Prisma.UserUncheckedCreateWithoutPasswordResetsInput>
-  where?: Prisma.UserWhereInput
-}
-
-export type UserUpdateToOneWithWhereWithoutPasswordResetsInput = {
-  where?: Prisma.UserWhereInput
-  data: Prisma.XOR<Prisma.UserUpdateWithoutPasswordResetsInput, Prisma.UserUncheckedUpdateWithoutPasswordResetsInput>
-}
-
-export type UserUpdateWithoutPasswordResetsInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  displayName?: Prisma.StringFieldUpdateOperationsInput | string
-  email?: Prisma.StringFieldUpdateOperationsInput | string
-  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
-  emailVerification?: Prisma.EmailVerificationUpdateOneWithoutUserNestedInput
-  foodProfile?: Prisma.FoodProfileUpdateOneWithoutUserNestedInput
-  hostedRooms?: Prisma.RoomUpdateManyWithoutHostNestedInput
-  roomMembers?: Prisma.RoomMemberUpdateManyWithoutUserNestedInput
-  sessionMembers?: Prisma.SessionMemberUpdateManyWithoutUserNestedInput
-  mealPreferences?: Prisma.MealPreferenceUpdateManyWithoutUserNestedInput
-  votes?: Prisma.VoteUpdateManyWithoutUserNestedInput
-  finalVotes?: Prisma.FinalVoteUpdateManyWithoutUserNestedInput
-  finalSelections?: Prisma.FinalSelectionUpdateManyWithoutSelectedByNestedInput
-  selectedRestaurants?: Prisma.RestaurantSelectionUpdateManyWithoutSelectedByNestedInput
-  createdBills?: Prisma.BillUpdateManyWithoutCreatedByNestedInput
-  itemShares?: Prisma.ItemShareUpdateManyWithoutUserNestedInput
-  payments?: Prisma.UserPaymentUpdateManyWithoutUserNestedInput
-  paymentAccount?: Prisma.PaymentAccountUpdateOneWithoutUserNestedInput
-}
-
-export type UserUncheckedUpdateWithoutPasswordResetsInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  displayName?: Prisma.StringFieldUpdateOperationsInput | string
-  email?: Prisma.StringFieldUpdateOperationsInput | string
-  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
-  emailVerification?: Prisma.EmailVerificationUncheckedUpdateOneWithoutUserNestedInput
-  foodProfile?: Prisma.FoodProfileUncheckedUpdateOneWithoutUserNestedInput
-  hostedRooms?: Prisma.RoomUncheckedUpdateManyWithoutHostNestedInput
-  roomMembers?: Prisma.RoomMemberUncheckedUpdateManyWithoutUserNestedInput
-  sessionMembers?: Prisma.SessionMemberUncheckedUpdateManyWithoutUserNestedInput
-  mealPreferences?: Prisma.MealPreferenceUncheckedUpdateManyWithoutUserNestedInput
-  votes?: Prisma.VoteUncheckedUpdateManyWithoutUserNestedInput
-  finalVotes?: Prisma.FinalVoteUncheckedUpdateManyWithoutUserNestedInput
-  finalSelections?: Prisma.FinalSelectionUncheckedUpdateManyWithoutSelectedByNestedInput
-  selectedRestaurants?: Prisma.RestaurantSelectionUncheckedUpdateManyWithoutSelectedByNestedInput
-  createdBills?: Prisma.BillUncheckedUpdateManyWithoutCreatedByNestedInput
-  itemShares?: Prisma.ItemShareUncheckedUpdateManyWithoutUserNestedInput
-  payments?: Prisma.UserPaymentUncheckedUpdateManyWithoutUserNestedInput
-  paymentAccount?: Prisma.PaymentAccountUncheckedUpdateOneWithoutUserNestedInput
-}
-
-export type UserCreateWithoutFoodProfileInput = {
-  id?: string
-  displayName: string
-  email: string
-  passwordHash?: string | null
-  avatarUrl?: string | null
-  emailVerified?: boolean
-  role?: $Enums.Role
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
-  emailVerification?: Prisma.EmailVerificationCreateNestedOneWithoutUserInput
-  passwordResets?: Prisma.PasswordResetCreateNestedManyWithoutUserInput
-  hostedRooms?: Prisma.RoomCreateNestedManyWithoutHostInput
-  roomMembers?: Prisma.RoomMemberCreateNestedManyWithoutUserInput
-  sessionMembers?: Prisma.SessionMemberCreateNestedManyWithoutUserInput
-  mealPreferences?: Prisma.MealPreferenceCreateNestedManyWithoutUserInput
-  votes?: Prisma.VoteCreateNestedManyWithoutUserInput
-  finalVotes?: Prisma.FinalVoteCreateNestedManyWithoutUserInput
-  finalSelections?: Prisma.FinalSelectionCreateNestedManyWithoutSelectedByInput
-  selectedRestaurants?: Prisma.RestaurantSelectionCreateNestedManyWithoutSelectedByInput
-  createdBills?: Prisma.BillCreateNestedManyWithoutCreatedByInput
-  itemShares?: Prisma.ItemShareCreateNestedManyWithoutUserInput
-  payments?: Prisma.UserPaymentCreateNestedManyWithoutUserInput
-  paymentAccount?: Prisma.PaymentAccountCreateNestedOneWithoutUserInput
-}
-
-export type UserUncheckedCreateWithoutFoodProfileInput = {
-  id?: string
-  displayName: string
-  email: string
-  passwordHash?: string | null
-  avatarUrl?: string | null
-  emailVerified?: boolean
-  role?: $Enums.Role
-  createdAt?: Date | string
-  updatedAt?: Date | string
-  accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
-  emailVerification?: Prisma.EmailVerificationUncheckedCreateNestedOneWithoutUserInput
-  passwordResets?: Prisma.PasswordResetUncheckedCreateNestedManyWithoutUserInput
-  hostedRooms?: Prisma.RoomUncheckedCreateNestedManyWithoutHostInput
-  roomMembers?: Prisma.RoomMemberUncheckedCreateNestedManyWithoutUserInput
-  sessionMembers?: Prisma.SessionMemberUncheckedCreateNestedManyWithoutUserInput
-  mealPreferences?: Prisma.MealPreferenceUncheckedCreateNestedManyWithoutUserInput
-  votes?: Prisma.VoteUncheckedCreateNestedManyWithoutUserInput
-  finalVotes?: Prisma.FinalVoteUncheckedCreateNestedManyWithoutUserInput
-  finalSelections?: Prisma.FinalSelectionUncheckedCreateNestedManyWithoutSelectedByInput
-  selectedRestaurants?: Prisma.RestaurantSelectionUncheckedCreateNestedManyWithoutSelectedByInput
-  createdBills?: Prisma.BillUncheckedCreateNestedManyWithoutCreatedByInput
-  itemShares?: Prisma.ItemShareUncheckedCreateNestedManyWithoutUserInput
-  payments?: Prisma.UserPaymentUncheckedCreateNestedManyWithoutUserInput
-  paymentAccount?: Prisma.PaymentAccountUncheckedCreateNestedOneWithoutUserInput
-}
-
-export type UserCreateOrConnectWithoutFoodProfileInput = {
-  where: Prisma.UserWhereUniqueInput
-  create: Prisma.XOR<Prisma.UserCreateWithoutFoodProfileInput, Prisma.UserUncheckedCreateWithoutFoodProfileInput>
-}
-
-export type UserUpsertWithoutFoodProfileInput = {
-  update: Prisma.XOR<Prisma.UserUpdateWithoutFoodProfileInput, Prisma.UserUncheckedUpdateWithoutFoodProfileInput>
-  create: Prisma.XOR<Prisma.UserCreateWithoutFoodProfileInput, Prisma.UserUncheckedCreateWithoutFoodProfileInput>
-  where?: Prisma.UserWhereInput
-}
-
-export type UserUpdateToOneWithWhereWithoutFoodProfileInput = {
-  where?: Prisma.UserWhereInput
-  data: Prisma.XOR<Prisma.UserUpdateWithoutFoodProfileInput, Prisma.UserUncheckedUpdateWithoutFoodProfileInput>
-}
-
-export type UserUpdateWithoutFoodProfileInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  displayName?: Prisma.StringFieldUpdateOperationsInput | string
-  email?: Prisma.StringFieldUpdateOperationsInput | string
-  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
-  emailVerification?: Prisma.EmailVerificationUpdateOneWithoutUserNestedInput
-  passwordResets?: Prisma.PasswordResetUpdateManyWithoutUserNestedInput
-  hostedRooms?: Prisma.RoomUpdateManyWithoutHostNestedInput
-  roomMembers?: Prisma.RoomMemberUpdateManyWithoutUserNestedInput
-  sessionMembers?: Prisma.SessionMemberUpdateManyWithoutUserNestedInput
-  mealPreferences?: Prisma.MealPreferenceUpdateManyWithoutUserNestedInput
-  votes?: Prisma.VoteUpdateManyWithoutUserNestedInput
-  finalVotes?: Prisma.FinalVoteUpdateManyWithoutUserNestedInput
-  finalSelections?: Prisma.FinalSelectionUpdateManyWithoutSelectedByNestedInput
-  selectedRestaurants?: Prisma.RestaurantSelectionUpdateManyWithoutSelectedByNestedInput
-  createdBills?: Prisma.BillUpdateManyWithoutCreatedByNestedInput
-  itemShares?: Prisma.ItemShareUpdateManyWithoutUserNestedInput
-  payments?: Prisma.UserPaymentUpdateManyWithoutUserNestedInput
-  paymentAccount?: Prisma.PaymentAccountUpdateOneWithoutUserNestedInput
-}
-
-export type UserUncheckedUpdateWithoutFoodProfileInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  displayName?: Prisma.StringFieldUpdateOperationsInput | string
-  email?: Prisma.StringFieldUpdateOperationsInput | string
-  passwordHash?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  avatarUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  emailVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
-  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
-  emailVerification?: Prisma.EmailVerificationUncheckedUpdateOneWithoutUserNestedInput
-  passwordResets?: Prisma.PasswordResetUncheckedUpdateManyWithoutUserNestedInput
-  hostedRooms?: Prisma.RoomUncheckedUpdateManyWithoutHostNestedInput
-  roomMembers?: Prisma.RoomMemberUncheckedUpdateManyWithoutUserNestedInput
-  sessionMembers?: Prisma.SessionMemberUncheckedUpdateManyWithoutUserNestedInput
-  mealPreferences?: Prisma.MealPreferenceUncheckedUpdateManyWithoutUserNestedInput
-  votes?: Prisma.VoteUncheckedUpdateManyWithoutUserNestedInput
-  finalVotes?: Prisma.FinalVoteUncheckedUpdateManyWithoutUserNestedInput
-  finalSelections?: Prisma.FinalSelectionUncheckedUpdateManyWithoutSelectedByNestedInput
-  selectedRestaurants?: Prisma.RestaurantSelectionUncheckedUpdateManyWithoutSelectedByNestedInput
-  createdBills?: Prisma.BillUncheckedUpdateManyWithoutCreatedByNestedInput
-  itemShares?: Prisma.ItemShareUncheckedUpdateManyWithoutUserNestedInput
-  payments?: Prisma.UserPaymentUncheckedUpdateManyWithoutUserNestedInput
-  paymentAccount?: Prisma.PaymentAccountUncheckedUpdateOneWithoutUserNestedInput
 }
 
 export type UserCreateWithoutHostedRoomsInput = {
@@ -1392,9 +1561,11 @@ export type UserCreateWithoutHostedRoomsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
+  refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
   emailVerification?: Prisma.EmailVerificationCreateNestedOneWithoutUserInput
   passwordResets?: Prisma.PasswordResetCreateNestedManyWithoutUserInput
   foodProfile?: Prisma.FoodProfileCreateNestedOneWithoutUserInput
+  paymentAccount?: Prisma.PaymentAccountCreateNestedOneWithoutUserInput
   roomMembers?: Prisma.RoomMemberCreateNestedManyWithoutUserInput
   sessionMembers?: Prisma.SessionMemberCreateNestedManyWithoutUserInput
   mealPreferences?: Prisma.MealPreferenceCreateNestedManyWithoutUserInput
@@ -1405,7 +1576,6 @@ export type UserCreateWithoutHostedRoomsInput = {
   createdBills?: Prisma.BillCreateNestedManyWithoutCreatedByInput
   itemShares?: Prisma.ItemShareCreateNestedManyWithoutUserInput
   payments?: Prisma.UserPaymentCreateNestedManyWithoutUserInput
-  paymentAccount?: Prisma.PaymentAccountCreateNestedOneWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutHostedRoomsInput = {
@@ -1419,9 +1589,11 @@ export type UserUncheckedCreateWithoutHostedRoomsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
+  refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
   emailVerification?: Prisma.EmailVerificationUncheckedCreateNestedOneWithoutUserInput
   passwordResets?: Prisma.PasswordResetUncheckedCreateNestedManyWithoutUserInput
   foodProfile?: Prisma.FoodProfileUncheckedCreateNestedOneWithoutUserInput
+  paymentAccount?: Prisma.PaymentAccountUncheckedCreateNestedOneWithoutUserInput
   roomMembers?: Prisma.RoomMemberUncheckedCreateNestedManyWithoutUserInput
   sessionMembers?: Prisma.SessionMemberUncheckedCreateNestedManyWithoutUserInput
   mealPreferences?: Prisma.MealPreferenceUncheckedCreateNestedManyWithoutUserInput
@@ -1432,7 +1604,6 @@ export type UserUncheckedCreateWithoutHostedRoomsInput = {
   createdBills?: Prisma.BillUncheckedCreateNestedManyWithoutCreatedByInput
   itemShares?: Prisma.ItemShareUncheckedCreateNestedManyWithoutUserInput
   payments?: Prisma.UserPaymentUncheckedCreateNestedManyWithoutUserInput
-  paymentAccount?: Prisma.PaymentAccountUncheckedCreateNestedOneWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutHostedRoomsInput = {
@@ -1462,9 +1633,11 @@ export type UserUpdateWithoutHostedRoomsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
+  refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
   emailVerification?: Prisma.EmailVerificationUpdateOneWithoutUserNestedInput
   passwordResets?: Prisma.PasswordResetUpdateManyWithoutUserNestedInput
   foodProfile?: Prisma.FoodProfileUpdateOneWithoutUserNestedInput
+  paymentAccount?: Prisma.PaymentAccountUpdateOneWithoutUserNestedInput
   roomMembers?: Prisma.RoomMemberUpdateManyWithoutUserNestedInput
   sessionMembers?: Prisma.SessionMemberUpdateManyWithoutUserNestedInput
   mealPreferences?: Prisma.MealPreferenceUpdateManyWithoutUserNestedInput
@@ -1475,7 +1648,6 @@ export type UserUpdateWithoutHostedRoomsInput = {
   createdBills?: Prisma.BillUpdateManyWithoutCreatedByNestedInput
   itemShares?: Prisma.ItemShareUpdateManyWithoutUserNestedInput
   payments?: Prisma.UserPaymentUpdateManyWithoutUserNestedInput
-  paymentAccount?: Prisma.PaymentAccountUpdateOneWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutHostedRoomsInput = {
@@ -1489,9 +1661,11 @@ export type UserUncheckedUpdateWithoutHostedRoomsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
+  refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
   emailVerification?: Prisma.EmailVerificationUncheckedUpdateOneWithoutUserNestedInput
   passwordResets?: Prisma.PasswordResetUncheckedUpdateManyWithoutUserNestedInput
   foodProfile?: Prisma.FoodProfileUncheckedUpdateOneWithoutUserNestedInput
+  paymentAccount?: Prisma.PaymentAccountUncheckedUpdateOneWithoutUserNestedInput
   roomMembers?: Prisma.RoomMemberUncheckedUpdateManyWithoutUserNestedInput
   sessionMembers?: Prisma.SessionMemberUncheckedUpdateManyWithoutUserNestedInput
   mealPreferences?: Prisma.MealPreferenceUncheckedUpdateManyWithoutUserNestedInput
@@ -1502,7 +1676,6 @@ export type UserUncheckedUpdateWithoutHostedRoomsInput = {
   createdBills?: Prisma.BillUncheckedUpdateManyWithoutCreatedByNestedInput
   itemShares?: Prisma.ItemShareUncheckedUpdateManyWithoutUserNestedInput
   payments?: Prisma.UserPaymentUncheckedUpdateManyWithoutUserNestedInput
-  paymentAccount?: Prisma.PaymentAccountUncheckedUpdateOneWithoutUserNestedInput
 }
 
 export type UserCreateWithoutRoomMembersInput = {
@@ -1516,9 +1689,11 @@ export type UserCreateWithoutRoomMembersInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
+  refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
   emailVerification?: Prisma.EmailVerificationCreateNestedOneWithoutUserInput
   passwordResets?: Prisma.PasswordResetCreateNestedManyWithoutUserInput
   foodProfile?: Prisma.FoodProfileCreateNestedOneWithoutUserInput
+  paymentAccount?: Prisma.PaymentAccountCreateNestedOneWithoutUserInput
   hostedRooms?: Prisma.RoomCreateNestedManyWithoutHostInput
   sessionMembers?: Prisma.SessionMemberCreateNestedManyWithoutUserInput
   mealPreferences?: Prisma.MealPreferenceCreateNestedManyWithoutUserInput
@@ -1529,7 +1704,6 @@ export type UserCreateWithoutRoomMembersInput = {
   createdBills?: Prisma.BillCreateNestedManyWithoutCreatedByInput
   itemShares?: Prisma.ItemShareCreateNestedManyWithoutUserInput
   payments?: Prisma.UserPaymentCreateNestedManyWithoutUserInput
-  paymentAccount?: Prisma.PaymentAccountCreateNestedOneWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutRoomMembersInput = {
@@ -1543,9 +1717,11 @@ export type UserUncheckedCreateWithoutRoomMembersInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
+  refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
   emailVerification?: Prisma.EmailVerificationUncheckedCreateNestedOneWithoutUserInput
   passwordResets?: Prisma.PasswordResetUncheckedCreateNestedManyWithoutUserInput
   foodProfile?: Prisma.FoodProfileUncheckedCreateNestedOneWithoutUserInput
+  paymentAccount?: Prisma.PaymentAccountUncheckedCreateNestedOneWithoutUserInput
   hostedRooms?: Prisma.RoomUncheckedCreateNestedManyWithoutHostInput
   sessionMembers?: Prisma.SessionMemberUncheckedCreateNestedManyWithoutUserInput
   mealPreferences?: Prisma.MealPreferenceUncheckedCreateNestedManyWithoutUserInput
@@ -1556,7 +1732,6 @@ export type UserUncheckedCreateWithoutRoomMembersInput = {
   createdBills?: Prisma.BillUncheckedCreateNestedManyWithoutCreatedByInput
   itemShares?: Prisma.ItemShareUncheckedCreateNestedManyWithoutUserInput
   payments?: Prisma.UserPaymentUncheckedCreateNestedManyWithoutUserInput
-  paymentAccount?: Prisma.PaymentAccountUncheckedCreateNestedOneWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutRoomMembersInput = {
@@ -1586,9 +1761,11 @@ export type UserUpdateWithoutRoomMembersInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
+  refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
   emailVerification?: Prisma.EmailVerificationUpdateOneWithoutUserNestedInput
   passwordResets?: Prisma.PasswordResetUpdateManyWithoutUserNestedInput
   foodProfile?: Prisma.FoodProfileUpdateOneWithoutUserNestedInput
+  paymentAccount?: Prisma.PaymentAccountUpdateOneWithoutUserNestedInput
   hostedRooms?: Prisma.RoomUpdateManyWithoutHostNestedInput
   sessionMembers?: Prisma.SessionMemberUpdateManyWithoutUserNestedInput
   mealPreferences?: Prisma.MealPreferenceUpdateManyWithoutUserNestedInput
@@ -1599,7 +1776,6 @@ export type UserUpdateWithoutRoomMembersInput = {
   createdBills?: Prisma.BillUpdateManyWithoutCreatedByNestedInput
   itemShares?: Prisma.ItemShareUpdateManyWithoutUserNestedInput
   payments?: Prisma.UserPaymentUpdateManyWithoutUserNestedInput
-  paymentAccount?: Prisma.PaymentAccountUpdateOneWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutRoomMembersInput = {
@@ -1613,9 +1789,11 @@ export type UserUncheckedUpdateWithoutRoomMembersInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
+  refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
   emailVerification?: Prisma.EmailVerificationUncheckedUpdateOneWithoutUserNestedInput
   passwordResets?: Prisma.PasswordResetUncheckedUpdateManyWithoutUserNestedInput
   foodProfile?: Prisma.FoodProfileUncheckedUpdateOneWithoutUserNestedInput
+  paymentAccount?: Prisma.PaymentAccountUncheckedUpdateOneWithoutUserNestedInput
   hostedRooms?: Prisma.RoomUncheckedUpdateManyWithoutHostNestedInput
   sessionMembers?: Prisma.SessionMemberUncheckedUpdateManyWithoutUserNestedInput
   mealPreferences?: Prisma.MealPreferenceUncheckedUpdateManyWithoutUserNestedInput
@@ -1626,7 +1804,6 @@ export type UserUncheckedUpdateWithoutRoomMembersInput = {
   createdBills?: Prisma.BillUncheckedUpdateManyWithoutCreatedByNestedInput
   itemShares?: Prisma.ItemShareUncheckedUpdateManyWithoutUserNestedInput
   payments?: Prisma.UserPaymentUncheckedUpdateManyWithoutUserNestedInput
-  paymentAccount?: Prisma.PaymentAccountUncheckedUpdateOneWithoutUserNestedInput
 }
 
 export type UserCreateWithoutSessionMembersInput = {
@@ -1640,9 +1817,11 @@ export type UserCreateWithoutSessionMembersInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
+  refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
   emailVerification?: Prisma.EmailVerificationCreateNestedOneWithoutUserInput
   passwordResets?: Prisma.PasswordResetCreateNestedManyWithoutUserInput
   foodProfile?: Prisma.FoodProfileCreateNestedOneWithoutUserInput
+  paymentAccount?: Prisma.PaymentAccountCreateNestedOneWithoutUserInput
   hostedRooms?: Prisma.RoomCreateNestedManyWithoutHostInput
   roomMembers?: Prisma.RoomMemberCreateNestedManyWithoutUserInput
   mealPreferences?: Prisma.MealPreferenceCreateNestedManyWithoutUserInput
@@ -1653,7 +1832,6 @@ export type UserCreateWithoutSessionMembersInput = {
   createdBills?: Prisma.BillCreateNestedManyWithoutCreatedByInput
   itemShares?: Prisma.ItemShareCreateNestedManyWithoutUserInput
   payments?: Prisma.UserPaymentCreateNestedManyWithoutUserInput
-  paymentAccount?: Prisma.PaymentAccountCreateNestedOneWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutSessionMembersInput = {
@@ -1667,9 +1845,11 @@ export type UserUncheckedCreateWithoutSessionMembersInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
+  refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
   emailVerification?: Prisma.EmailVerificationUncheckedCreateNestedOneWithoutUserInput
   passwordResets?: Prisma.PasswordResetUncheckedCreateNestedManyWithoutUserInput
   foodProfile?: Prisma.FoodProfileUncheckedCreateNestedOneWithoutUserInput
+  paymentAccount?: Prisma.PaymentAccountUncheckedCreateNestedOneWithoutUserInput
   hostedRooms?: Prisma.RoomUncheckedCreateNestedManyWithoutHostInput
   roomMembers?: Prisma.RoomMemberUncheckedCreateNestedManyWithoutUserInput
   mealPreferences?: Prisma.MealPreferenceUncheckedCreateNestedManyWithoutUserInput
@@ -1680,7 +1860,6 @@ export type UserUncheckedCreateWithoutSessionMembersInput = {
   createdBills?: Prisma.BillUncheckedCreateNestedManyWithoutCreatedByInput
   itemShares?: Prisma.ItemShareUncheckedCreateNestedManyWithoutUserInput
   payments?: Prisma.UserPaymentUncheckedCreateNestedManyWithoutUserInput
-  paymentAccount?: Prisma.PaymentAccountUncheckedCreateNestedOneWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutSessionMembersInput = {
@@ -1710,9 +1889,11 @@ export type UserUpdateWithoutSessionMembersInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
+  refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
   emailVerification?: Prisma.EmailVerificationUpdateOneWithoutUserNestedInput
   passwordResets?: Prisma.PasswordResetUpdateManyWithoutUserNestedInput
   foodProfile?: Prisma.FoodProfileUpdateOneWithoutUserNestedInput
+  paymentAccount?: Prisma.PaymentAccountUpdateOneWithoutUserNestedInput
   hostedRooms?: Prisma.RoomUpdateManyWithoutHostNestedInput
   roomMembers?: Prisma.RoomMemberUpdateManyWithoutUserNestedInput
   mealPreferences?: Prisma.MealPreferenceUpdateManyWithoutUserNestedInput
@@ -1723,7 +1904,6 @@ export type UserUpdateWithoutSessionMembersInput = {
   createdBills?: Prisma.BillUpdateManyWithoutCreatedByNestedInput
   itemShares?: Prisma.ItemShareUpdateManyWithoutUserNestedInput
   payments?: Prisma.UserPaymentUpdateManyWithoutUserNestedInput
-  paymentAccount?: Prisma.PaymentAccountUpdateOneWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutSessionMembersInput = {
@@ -1737,9 +1917,11 @@ export type UserUncheckedUpdateWithoutSessionMembersInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
+  refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
   emailVerification?: Prisma.EmailVerificationUncheckedUpdateOneWithoutUserNestedInput
   passwordResets?: Prisma.PasswordResetUncheckedUpdateManyWithoutUserNestedInput
   foodProfile?: Prisma.FoodProfileUncheckedUpdateOneWithoutUserNestedInput
+  paymentAccount?: Prisma.PaymentAccountUncheckedUpdateOneWithoutUserNestedInput
   hostedRooms?: Prisma.RoomUncheckedUpdateManyWithoutHostNestedInput
   roomMembers?: Prisma.RoomMemberUncheckedUpdateManyWithoutUserNestedInput
   mealPreferences?: Prisma.MealPreferenceUncheckedUpdateManyWithoutUserNestedInput
@@ -1750,7 +1932,6 @@ export type UserUncheckedUpdateWithoutSessionMembersInput = {
   createdBills?: Prisma.BillUncheckedUpdateManyWithoutCreatedByNestedInput
   itemShares?: Prisma.ItemShareUncheckedUpdateManyWithoutUserNestedInput
   payments?: Prisma.UserPaymentUncheckedUpdateManyWithoutUserNestedInput
-  paymentAccount?: Prisma.PaymentAccountUncheckedUpdateOneWithoutUserNestedInput
 }
 
 export type UserCreateWithoutMealPreferencesInput = {
@@ -1764,9 +1945,11 @@ export type UserCreateWithoutMealPreferencesInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
+  refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
   emailVerification?: Prisma.EmailVerificationCreateNestedOneWithoutUserInput
   passwordResets?: Prisma.PasswordResetCreateNestedManyWithoutUserInput
   foodProfile?: Prisma.FoodProfileCreateNestedOneWithoutUserInput
+  paymentAccount?: Prisma.PaymentAccountCreateNestedOneWithoutUserInput
   hostedRooms?: Prisma.RoomCreateNestedManyWithoutHostInput
   roomMembers?: Prisma.RoomMemberCreateNestedManyWithoutUserInput
   sessionMembers?: Prisma.SessionMemberCreateNestedManyWithoutUserInput
@@ -1777,7 +1960,6 @@ export type UserCreateWithoutMealPreferencesInput = {
   createdBills?: Prisma.BillCreateNestedManyWithoutCreatedByInput
   itemShares?: Prisma.ItemShareCreateNestedManyWithoutUserInput
   payments?: Prisma.UserPaymentCreateNestedManyWithoutUserInput
-  paymentAccount?: Prisma.PaymentAccountCreateNestedOneWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutMealPreferencesInput = {
@@ -1791,9 +1973,11 @@ export type UserUncheckedCreateWithoutMealPreferencesInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
+  refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
   emailVerification?: Prisma.EmailVerificationUncheckedCreateNestedOneWithoutUserInput
   passwordResets?: Prisma.PasswordResetUncheckedCreateNestedManyWithoutUserInput
   foodProfile?: Prisma.FoodProfileUncheckedCreateNestedOneWithoutUserInput
+  paymentAccount?: Prisma.PaymentAccountUncheckedCreateNestedOneWithoutUserInput
   hostedRooms?: Prisma.RoomUncheckedCreateNestedManyWithoutHostInput
   roomMembers?: Prisma.RoomMemberUncheckedCreateNestedManyWithoutUserInput
   sessionMembers?: Prisma.SessionMemberUncheckedCreateNestedManyWithoutUserInput
@@ -1804,7 +1988,6 @@ export type UserUncheckedCreateWithoutMealPreferencesInput = {
   createdBills?: Prisma.BillUncheckedCreateNestedManyWithoutCreatedByInput
   itemShares?: Prisma.ItemShareUncheckedCreateNestedManyWithoutUserInput
   payments?: Prisma.UserPaymentUncheckedCreateNestedManyWithoutUserInput
-  paymentAccount?: Prisma.PaymentAccountUncheckedCreateNestedOneWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutMealPreferencesInput = {
@@ -1834,9 +2017,11 @@ export type UserUpdateWithoutMealPreferencesInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
+  refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
   emailVerification?: Prisma.EmailVerificationUpdateOneWithoutUserNestedInput
   passwordResets?: Prisma.PasswordResetUpdateManyWithoutUserNestedInput
   foodProfile?: Prisma.FoodProfileUpdateOneWithoutUserNestedInput
+  paymentAccount?: Prisma.PaymentAccountUpdateOneWithoutUserNestedInput
   hostedRooms?: Prisma.RoomUpdateManyWithoutHostNestedInput
   roomMembers?: Prisma.RoomMemberUpdateManyWithoutUserNestedInput
   sessionMembers?: Prisma.SessionMemberUpdateManyWithoutUserNestedInput
@@ -1847,7 +2032,6 @@ export type UserUpdateWithoutMealPreferencesInput = {
   createdBills?: Prisma.BillUpdateManyWithoutCreatedByNestedInput
   itemShares?: Prisma.ItemShareUpdateManyWithoutUserNestedInput
   payments?: Prisma.UserPaymentUpdateManyWithoutUserNestedInput
-  paymentAccount?: Prisma.PaymentAccountUpdateOneWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutMealPreferencesInput = {
@@ -1861,9 +2045,11 @@ export type UserUncheckedUpdateWithoutMealPreferencesInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
+  refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
   emailVerification?: Prisma.EmailVerificationUncheckedUpdateOneWithoutUserNestedInput
   passwordResets?: Prisma.PasswordResetUncheckedUpdateManyWithoutUserNestedInput
   foodProfile?: Prisma.FoodProfileUncheckedUpdateOneWithoutUserNestedInput
+  paymentAccount?: Prisma.PaymentAccountUncheckedUpdateOneWithoutUserNestedInput
   hostedRooms?: Prisma.RoomUncheckedUpdateManyWithoutHostNestedInput
   roomMembers?: Prisma.RoomMemberUncheckedUpdateManyWithoutUserNestedInput
   sessionMembers?: Prisma.SessionMemberUncheckedUpdateManyWithoutUserNestedInput
@@ -1874,7 +2060,6 @@ export type UserUncheckedUpdateWithoutMealPreferencesInput = {
   createdBills?: Prisma.BillUncheckedUpdateManyWithoutCreatedByNestedInput
   itemShares?: Prisma.ItemShareUncheckedUpdateManyWithoutUserNestedInput
   payments?: Prisma.UserPaymentUncheckedUpdateManyWithoutUserNestedInput
-  paymentAccount?: Prisma.PaymentAccountUncheckedUpdateOneWithoutUserNestedInput
 }
 
 export type UserCreateWithoutVotesInput = {
@@ -1888,9 +2073,11 @@ export type UserCreateWithoutVotesInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
+  refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
   emailVerification?: Prisma.EmailVerificationCreateNestedOneWithoutUserInput
   passwordResets?: Prisma.PasswordResetCreateNestedManyWithoutUserInput
   foodProfile?: Prisma.FoodProfileCreateNestedOneWithoutUserInput
+  paymentAccount?: Prisma.PaymentAccountCreateNestedOneWithoutUserInput
   hostedRooms?: Prisma.RoomCreateNestedManyWithoutHostInput
   roomMembers?: Prisma.RoomMemberCreateNestedManyWithoutUserInput
   sessionMembers?: Prisma.SessionMemberCreateNestedManyWithoutUserInput
@@ -1901,7 +2088,6 @@ export type UserCreateWithoutVotesInput = {
   createdBills?: Prisma.BillCreateNestedManyWithoutCreatedByInput
   itemShares?: Prisma.ItemShareCreateNestedManyWithoutUserInput
   payments?: Prisma.UserPaymentCreateNestedManyWithoutUserInput
-  paymentAccount?: Prisma.PaymentAccountCreateNestedOneWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutVotesInput = {
@@ -1915,9 +2101,11 @@ export type UserUncheckedCreateWithoutVotesInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
+  refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
   emailVerification?: Prisma.EmailVerificationUncheckedCreateNestedOneWithoutUserInput
   passwordResets?: Prisma.PasswordResetUncheckedCreateNestedManyWithoutUserInput
   foodProfile?: Prisma.FoodProfileUncheckedCreateNestedOneWithoutUserInput
+  paymentAccount?: Prisma.PaymentAccountUncheckedCreateNestedOneWithoutUserInput
   hostedRooms?: Prisma.RoomUncheckedCreateNestedManyWithoutHostInput
   roomMembers?: Prisma.RoomMemberUncheckedCreateNestedManyWithoutUserInput
   sessionMembers?: Prisma.SessionMemberUncheckedCreateNestedManyWithoutUserInput
@@ -1928,7 +2116,6 @@ export type UserUncheckedCreateWithoutVotesInput = {
   createdBills?: Prisma.BillUncheckedCreateNestedManyWithoutCreatedByInput
   itemShares?: Prisma.ItemShareUncheckedCreateNestedManyWithoutUserInput
   payments?: Prisma.UserPaymentUncheckedCreateNestedManyWithoutUserInput
-  paymentAccount?: Prisma.PaymentAccountUncheckedCreateNestedOneWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutVotesInput = {
@@ -1958,9 +2145,11 @@ export type UserUpdateWithoutVotesInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
+  refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
   emailVerification?: Prisma.EmailVerificationUpdateOneWithoutUserNestedInput
   passwordResets?: Prisma.PasswordResetUpdateManyWithoutUserNestedInput
   foodProfile?: Prisma.FoodProfileUpdateOneWithoutUserNestedInput
+  paymentAccount?: Prisma.PaymentAccountUpdateOneWithoutUserNestedInput
   hostedRooms?: Prisma.RoomUpdateManyWithoutHostNestedInput
   roomMembers?: Prisma.RoomMemberUpdateManyWithoutUserNestedInput
   sessionMembers?: Prisma.SessionMemberUpdateManyWithoutUserNestedInput
@@ -1971,7 +2160,6 @@ export type UserUpdateWithoutVotesInput = {
   createdBills?: Prisma.BillUpdateManyWithoutCreatedByNestedInput
   itemShares?: Prisma.ItemShareUpdateManyWithoutUserNestedInput
   payments?: Prisma.UserPaymentUpdateManyWithoutUserNestedInput
-  paymentAccount?: Prisma.PaymentAccountUpdateOneWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutVotesInput = {
@@ -1985,9 +2173,11 @@ export type UserUncheckedUpdateWithoutVotesInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
+  refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
   emailVerification?: Prisma.EmailVerificationUncheckedUpdateOneWithoutUserNestedInput
   passwordResets?: Prisma.PasswordResetUncheckedUpdateManyWithoutUserNestedInput
   foodProfile?: Prisma.FoodProfileUncheckedUpdateOneWithoutUserNestedInput
+  paymentAccount?: Prisma.PaymentAccountUncheckedUpdateOneWithoutUserNestedInput
   hostedRooms?: Prisma.RoomUncheckedUpdateManyWithoutHostNestedInput
   roomMembers?: Prisma.RoomMemberUncheckedUpdateManyWithoutUserNestedInput
   sessionMembers?: Prisma.SessionMemberUncheckedUpdateManyWithoutUserNestedInput
@@ -1998,7 +2188,6 @@ export type UserUncheckedUpdateWithoutVotesInput = {
   createdBills?: Prisma.BillUncheckedUpdateManyWithoutCreatedByNestedInput
   itemShares?: Prisma.ItemShareUncheckedUpdateManyWithoutUserNestedInput
   payments?: Prisma.UserPaymentUncheckedUpdateManyWithoutUserNestedInput
-  paymentAccount?: Prisma.PaymentAccountUncheckedUpdateOneWithoutUserNestedInput
 }
 
 export type UserCreateWithoutFinalVotesInput = {
@@ -2012,9 +2201,11 @@ export type UserCreateWithoutFinalVotesInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
+  refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
   emailVerification?: Prisma.EmailVerificationCreateNestedOneWithoutUserInput
   passwordResets?: Prisma.PasswordResetCreateNestedManyWithoutUserInput
   foodProfile?: Prisma.FoodProfileCreateNestedOneWithoutUserInput
+  paymentAccount?: Prisma.PaymentAccountCreateNestedOneWithoutUserInput
   hostedRooms?: Prisma.RoomCreateNestedManyWithoutHostInput
   roomMembers?: Prisma.RoomMemberCreateNestedManyWithoutUserInput
   sessionMembers?: Prisma.SessionMemberCreateNestedManyWithoutUserInput
@@ -2025,7 +2216,6 @@ export type UserCreateWithoutFinalVotesInput = {
   createdBills?: Prisma.BillCreateNestedManyWithoutCreatedByInput
   itemShares?: Prisma.ItemShareCreateNestedManyWithoutUserInput
   payments?: Prisma.UserPaymentCreateNestedManyWithoutUserInput
-  paymentAccount?: Prisma.PaymentAccountCreateNestedOneWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutFinalVotesInput = {
@@ -2039,9 +2229,11 @@ export type UserUncheckedCreateWithoutFinalVotesInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
+  refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
   emailVerification?: Prisma.EmailVerificationUncheckedCreateNestedOneWithoutUserInput
   passwordResets?: Prisma.PasswordResetUncheckedCreateNestedManyWithoutUserInput
   foodProfile?: Prisma.FoodProfileUncheckedCreateNestedOneWithoutUserInput
+  paymentAccount?: Prisma.PaymentAccountUncheckedCreateNestedOneWithoutUserInput
   hostedRooms?: Prisma.RoomUncheckedCreateNestedManyWithoutHostInput
   roomMembers?: Prisma.RoomMemberUncheckedCreateNestedManyWithoutUserInput
   sessionMembers?: Prisma.SessionMemberUncheckedCreateNestedManyWithoutUserInput
@@ -2052,7 +2244,6 @@ export type UserUncheckedCreateWithoutFinalVotesInput = {
   createdBills?: Prisma.BillUncheckedCreateNestedManyWithoutCreatedByInput
   itemShares?: Prisma.ItemShareUncheckedCreateNestedManyWithoutUserInput
   payments?: Prisma.UserPaymentUncheckedCreateNestedManyWithoutUserInput
-  paymentAccount?: Prisma.PaymentAccountUncheckedCreateNestedOneWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutFinalVotesInput = {
@@ -2082,9 +2273,11 @@ export type UserUpdateWithoutFinalVotesInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
+  refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
   emailVerification?: Prisma.EmailVerificationUpdateOneWithoutUserNestedInput
   passwordResets?: Prisma.PasswordResetUpdateManyWithoutUserNestedInput
   foodProfile?: Prisma.FoodProfileUpdateOneWithoutUserNestedInput
+  paymentAccount?: Prisma.PaymentAccountUpdateOneWithoutUserNestedInput
   hostedRooms?: Prisma.RoomUpdateManyWithoutHostNestedInput
   roomMembers?: Prisma.RoomMemberUpdateManyWithoutUserNestedInput
   sessionMembers?: Prisma.SessionMemberUpdateManyWithoutUserNestedInput
@@ -2095,7 +2288,6 @@ export type UserUpdateWithoutFinalVotesInput = {
   createdBills?: Prisma.BillUpdateManyWithoutCreatedByNestedInput
   itemShares?: Prisma.ItemShareUpdateManyWithoutUserNestedInput
   payments?: Prisma.UserPaymentUpdateManyWithoutUserNestedInput
-  paymentAccount?: Prisma.PaymentAccountUpdateOneWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutFinalVotesInput = {
@@ -2109,9 +2301,11 @@ export type UserUncheckedUpdateWithoutFinalVotesInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
+  refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
   emailVerification?: Prisma.EmailVerificationUncheckedUpdateOneWithoutUserNestedInput
   passwordResets?: Prisma.PasswordResetUncheckedUpdateManyWithoutUserNestedInput
   foodProfile?: Prisma.FoodProfileUncheckedUpdateOneWithoutUserNestedInput
+  paymentAccount?: Prisma.PaymentAccountUncheckedUpdateOneWithoutUserNestedInput
   hostedRooms?: Prisma.RoomUncheckedUpdateManyWithoutHostNestedInput
   roomMembers?: Prisma.RoomMemberUncheckedUpdateManyWithoutUserNestedInput
   sessionMembers?: Prisma.SessionMemberUncheckedUpdateManyWithoutUserNestedInput
@@ -2122,7 +2316,6 @@ export type UserUncheckedUpdateWithoutFinalVotesInput = {
   createdBills?: Prisma.BillUncheckedUpdateManyWithoutCreatedByNestedInput
   itemShares?: Prisma.ItemShareUncheckedUpdateManyWithoutUserNestedInput
   payments?: Prisma.UserPaymentUncheckedUpdateManyWithoutUserNestedInput
-  paymentAccount?: Prisma.PaymentAccountUncheckedUpdateOneWithoutUserNestedInput
 }
 
 export type UserCreateWithoutFinalSelectionsInput = {
@@ -2136,9 +2329,11 @@ export type UserCreateWithoutFinalSelectionsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
+  refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
   emailVerification?: Prisma.EmailVerificationCreateNestedOneWithoutUserInput
   passwordResets?: Prisma.PasswordResetCreateNestedManyWithoutUserInput
   foodProfile?: Prisma.FoodProfileCreateNestedOneWithoutUserInput
+  paymentAccount?: Prisma.PaymentAccountCreateNestedOneWithoutUserInput
   hostedRooms?: Prisma.RoomCreateNestedManyWithoutHostInput
   roomMembers?: Prisma.RoomMemberCreateNestedManyWithoutUserInput
   sessionMembers?: Prisma.SessionMemberCreateNestedManyWithoutUserInput
@@ -2149,7 +2344,6 @@ export type UserCreateWithoutFinalSelectionsInput = {
   createdBills?: Prisma.BillCreateNestedManyWithoutCreatedByInput
   itemShares?: Prisma.ItemShareCreateNestedManyWithoutUserInput
   payments?: Prisma.UserPaymentCreateNestedManyWithoutUserInput
-  paymentAccount?: Prisma.PaymentAccountCreateNestedOneWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutFinalSelectionsInput = {
@@ -2163,9 +2357,11 @@ export type UserUncheckedCreateWithoutFinalSelectionsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
+  refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
   emailVerification?: Prisma.EmailVerificationUncheckedCreateNestedOneWithoutUserInput
   passwordResets?: Prisma.PasswordResetUncheckedCreateNestedManyWithoutUserInput
   foodProfile?: Prisma.FoodProfileUncheckedCreateNestedOneWithoutUserInput
+  paymentAccount?: Prisma.PaymentAccountUncheckedCreateNestedOneWithoutUserInput
   hostedRooms?: Prisma.RoomUncheckedCreateNestedManyWithoutHostInput
   roomMembers?: Prisma.RoomMemberUncheckedCreateNestedManyWithoutUserInput
   sessionMembers?: Prisma.SessionMemberUncheckedCreateNestedManyWithoutUserInput
@@ -2176,7 +2372,6 @@ export type UserUncheckedCreateWithoutFinalSelectionsInput = {
   createdBills?: Prisma.BillUncheckedCreateNestedManyWithoutCreatedByInput
   itemShares?: Prisma.ItemShareUncheckedCreateNestedManyWithoutUserInput
   payments?: Prisma.UserPaymentUncheckedCreateNestedManyWithoutUserInput
-  paymentAccount?: Prisma.PaymentAccountUncheckedCreateNestedOneWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutFinalSelectionsInput = {
@@ -2206,9 +2401,11 @@ export type UserUpdateWithoutFinalSelectionsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
+  refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
   emailVerification?: Prisma.EmailVerificationUpdateOneWithoutUserNestedInput
   passwordResets?: Prisma.PasswordResetUpdateManyWithoutUserNestedInput
   foodProfile?: Prisma.FoodProfileUpdateOneWithoutUserNestedInput
+  paymentAccount?: Prisma.PaymentAccountUpdateOneWithoutUserNestedInput
   hostedRooms?: Prisma.RoomUpdateManyWithoutHostNestedInput
   roomMembers?: Prisma.RoomMemberUpdateManyWithoutUserNestedInput
   sessionMembers?: Prisma.SessionMemberUpdateManyWithoutUserNestedInput
@@ -2219,7 +2416,6 @@ export type UserUpdateWithoutFinalSelectionsInput = {
   createdBills?: Prisma.BillUpdateManyWithoutCreatedByNestedInput
   itemShares?: Prisma.ItemShareUpdateManyWithoutUserNestedInput
   payments?: Prisma.UserPaymentUpdateManyWithoutUserNestedInput
-  paymentAccount?: Prisma.PaymentAccountUpdateOneWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutFinalSelectionsInput = {
@@ -2233,9 +2429,11 @@ export type UserUncheckedUpdateWithoutFinalSelectionsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
+  refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
   emailVerification?: Prisma.EmailVerificationUncheckedUpdateOneWithoutUserNestedInput
   passwordResets?: Prisma.PasswordResetUncheckedUpdateManyWithoutUserNestedInput
   foodProfile?: Prisma.FoodProfileUncheckedUpdateOneWithoutUserNestedInput
+  paymentAccount?: Prisma.PaymentAccountUncheckedUpdateOneWithoutUserNestedInput
   hostedRooms?: Prisma.RoomUncheckedUpdateManyWithoutHostNestedInput
   roomMembers?: Prisma.RoomMemberUncheckedUpdateManyWithoutUserNestedInput
   sessionMembers?: Prisma.SessionMemberUncheckedUpdateManyWithoutUserNestedInput
@@ -2246,7 +2444,6 @@ export type UserUncheckedUpdateWithoutFinalSelectionsInput = {
   createdBills?: Prisma.BillUncheckedUpdateManyWithoutCreatedByNestedInput
   itemShares?: Prisma.ItemShareUncheckedUpdateManyWithoutUserNestedInput
   payments?: Prisma.UserPaymentUncheckedUpdateManyWithoutUserNestedInput
-  paymentAccount?: Prisma.PaymentAccountUncheckedUpdateOneWithoutUserNestedInput
 }
 
 export type UserCreateWithoutSelectedRestaurantsInput = {
@@ -2260,9 +2457,11 @@ export type UserCreateWithoutSelectedRestaurantsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
+  refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
   emailVerification?: Prisma.EmailVerificationCreateNestedOneWithoutUserInput
   passwordResets?: Prisma.PasswordResetCreateNestedManyWithoutUserInput
   foodProfile?: Prisma.FoodProfileCreateNestedOneWithoutUserInput
+  paymentAccount?: Prisma.PaymentAccountCreateNestedOneWithoutUserInput
   hostedRooms?: Prisma.RoomCreateNestedManyWithoutHostInput
   roomMembers?: Prisma.RoomMemberCreateNestedManyWithoutUserInput
   sessionMembers?: Prisma.SessionMemberCreateNestedManyWithoutUserInput
@@ -2273,7 +2472,6 @@ export type UserCreateWithoutSelectedRestaurantsInput = {
   createdBills?: Prisma.BillCreateNestedManyWithoutCreatedByInput
   itemShares?: Prisma.ItemShareCreateNestedManyWithoutUserInput
   payments?: Prisma.UserPaymentCreateNestedManyWithoutUserInput
-  paymentAccount?: Prisma.PaymentAccountCreateNestedOneWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutSelectedRestaurantsInput = {
@@ -2287,9 +2485,11 @@ export type UserUncheckedCreateWithoutSelectedRestaurantsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
+  refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
   emailVerification?: Prisma.EmailVerificationUncheckedCreateNestedOneWithoutUserInput
   passwordResets?: Prisma.PasswordResetUncheckedCreateNestedManyWithoutUserInput
   foodProfile?: Prisma.FoodProfileUncheckedCreateNestedOneWithoutUserInput
+  paymentAccount?: Prisma.PaymentAccountUncheckedCreateNestedOneWithoutUserInput
   hostedRooms?: Prisma.RoomUncheckedCreateNestedManyWithoutHostInput
   roomMembers?: Prisma.RoomMemberUncheckedCreateNestedManyWithoutUserInput
   sessionMembers?: Prisma.SessionMemberUncheckedCreateNestedManyWithoutUserInput
@@ -2300,7 +2500,6 @@ export type UserUncheckedCreateWithoutSelectedRestaurantsInput = {
   createdBills?: Prisma.BillUncheckedCreateNestedManyWithoutCreatedByInput
   itemShares?: Prisma.ItemShareUncheckedCreateNestedManyWithoutUserInput
   payments?: Prisma.UserPaymentUncheckedCreateNestedManyWithoutUserInput
-  paymentAccount?: Prisma.PaymentAccountUncheckedCreateNestedOneWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutSelectedRestaurantsInput = {
@@ -2330,9 +2529,11 @@ export type UserUpdateWithoutSelectedRestaurantsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
+  refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
   emailVerification?: Prisma.EmailVerificationUpdateOneWithoutUserNestedInput
   passwordResets?: Prisma.PasswordResetUpdateManyWithoutUserNestedInput
   foodProfile?: Prisma.FoodProfileUpdateOneWithoutUserNestedInput
+  paymentAccount?: Prisma.PaymentAccountUpdateOneWithoutUserNestedInput
   hostedRooms?: Prisma.RoomUpdateManyWithoutHostNestedInput
   roomMembers?: Prisma.RoomMemberUpdateManyWithoutUserNestedInput
   sessionMembers?: Prisma.SessionMemberUpdateManyWithoutUserNestedInput
@@ -2343,7 +2544,6 @@ export type UserUpdateWithoutSelectedRestaurantsInput = {
   createdBills?: Prisma.BillUpdateManyWithoutCreatedByNestedInput
   itemShares?: Prisma.ItemShareUpdateManyWithoutUserNestedInput
   payments?: Prisma.UserPaymentUpdateManyWithoutUserNestedInput
-  paymentAccount?: Prisma.PaymentAccountUpdateOneWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutSelectedRestaurantsInput = {
@@ -2357,9 +2557,11 @@ export type UserUncheckedUpdateWithoutSelectedRestaurantsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
+  refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
   emailVerification?: Prisma.EmailVerificationUncheckedUpdateOneWithoutUserNestedInput
   passwordResets?: Prisma.PasswordResetUncheckedUpdateManyWithoutUserNestedInput
   foodProfile?: Prisma.FoodProfileUncheckedUpdateOneWithoutUserNestedInput
+  paymentAccount?: Prisma.PaymentAccountUncheckedUpdateOneWithoutUserNestedInput
   hostedRooms?: Prisma.RoomUncheckedUpdateManyWithoutHostNestedInput
   roomMembers?: Prisma.RoomMemberUncheckedUpdateManyWithoutUserNestedInput
   sessionMembers?: Prisma.SessionMemberUncheckedUpdateManyWithoutUserNestedInput
@@ -2370,7 +2572,6 @@ export type UserUncheckedUpdateWithoutSelectedRestaurantsInput = {
   createdBills?: Prisma.BillUncheckedUpdateManyWithoutCreatedByNestedInput
   itemShares?: Prisma.ItemShareUncheckedUpdateManyWithoutUserNestedInput
   payments?: Prisma.UserPaymentUncheckedUpdateManyWithoutUserNestedInput
-  paymentAccount?: Prisma.PaymentAccountUncheckedUpdateOneWithoutUserNestedInput
 }
 
 export type UserCreateWithoutCreatedBillsInput = {
@@ -2384,9 +2585,11 @@ export type UserCreateWithoutCreatedBillsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
+  refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
   emailVerification?: Prisma.EmailVerificationCreateNestedOneWithoutUserInput
   passwordResets?: Prisma.PasswordResetCreateNestedManyWithoutUserInput
   foodProfile?: Prisma.FoodProfileCreateNestedOneWithoutUserInput
+  paymentAccount?: Prisma.PaymentAccountCreateNestedOneWithoutUserInput
   hostedRooms?: Prisma.RoomCreateNestedManyWithoutHostInput
   roomMembers?: Prisma.RoomMemberCreateNestedManyWithoutUserInput
   sessionMembers?: Prisma.SessionMemberCreateNestedManyWithoutUserInput
@@ -2397,7 +2600,6 @@ export type UserCreateWithoutCreatedBillsInput = {
   selectedRestaurants?: Prisma.RestaurantSelectionCreateNestedManyWithoutSelectedByInput
   itemShares?: Prisma.ItemShareCreateNestedManyWithoutUserInput
   payments?: Prisma.UserPaymentCreateNestedManyWithoutUserInput
-  paymentAccount?: Prisma.PaymentAccountCreateNestedOneWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutCreatedBillsInput = {
@@ -2411,9 +2613,11 @@ export type UserUncheckedCreateWithoutCreatedBillsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
+  refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
   emailVerification?: Prisma.EmailVerificationUncheckedCreateNestedOneWithoutUserInput
   passwordResets?: Prisma.PasswordResetUncheckedCreateNestedManyWithoutUserInput
   foodProfile?: Prisma.FoodProfileUncheckedCreateNestedOneWithoutUserInput
+  paymentAccount?: Prisma.PaymentAccountUncheckedCreateNestedOneWithoutUserInput
   hostedRooms?: Prisma.RoomUncheckedCreateNestedManyWithoutHostInput
   roomMembers?: Prisma.RoomMemberUncheckedCreateNestedManyWithoutUserInput
   sessionMembers?: Prisma.SessionMemberUncheckedCreateNestedManyWithoutUserInput
@@ -2424,7 +2628,6 @@ export type UserUncheckedCreateWithoutCreatedBillsInput = {
   selectedRestaurants?: Prisma.RestaurantSelectionUncheckedCreateNestedManyWithoutSelectedByInput
   itemShares?: Prisma.ItemShareUncheckedCreateNestedManyWithoutUserInput
   payments?: Prisma.UserPaymentUncheckedCreateNestedManyWithoutUserInput
-  paymentAccount?: Prisma.PaymentAccountUncheckedCreateNestedOneWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutCreatedBillsInput = {
@@ -2454,9 +2657,11 @@ export type UserUpdateWithoutCreatedBillsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
+  refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
   emailVerification?: Prisma.EmailVerificationUpdateOneWithoutUserNestedInput
   passwordResets?: Prisma.PasswordResetUpdateManyWithoutUserNestedInput
   foodProfile?: Prisma.FoodProfileUpdateOneWithoutUserNestedInput
+  paymentAccount?: Prisma.PaymentAccountUpdateOneWithoutUserNestedInput
   hostedRooms?: Prisma.RoomUpdateManyWithoutHostNestedInput
   roomMembers?: Prisma.RoomMemberUpdateManyWithoutUserNestedInput
   sessionMembers?: Prisma.SessionMemberUpdateManyWithoutUserNestedInput
@@ -2467,7 +2672,6 @@ export type UserUpdateWithoutCreatedBillsInput = {
   selectedRestaurants?: Prisma.RestaurantSelectionUpdateManyWithoutSelectedByNestedInput
   itemShares?: Prisma.ItemShareUpdateManyWithoutUserNestedInput
   payments?: Prisma.UserPaymentUpdateManyWithoutUserNestedInput
-  paymentAccount?: Prisma.PaymentAccountUpdateOneWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutCreatedBillsInput = {
@@ -2481,9 +2685,11 @@ export type UserUncheckedUpdateWithoutCreatedBillsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
+  refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
   emailVerification?: Prisma.EmailVerificationUncheckedUpdateOneWithoutUserNestedInput
   passwordResets?: Prisma.PasswordResetUncheckedUpdateManyWithoutUserNestedInput
   foodProfile?: Prisma.FoodProfileUncheckedUpdateOneWithoutUserNestedInput
+  paymentAccount?: Prisma.PaymentAccountUncheckedUpdateOneWithoutUserNestedInput
   hostedRooms?: Prisma.RoomUncheckedUpdateManyWithoutHostNestedInput
   roomMembers?: Prisma.RoomMemberUncheckedUpdateManyWithoutUserNestedInput
   sessionMembers?: Prisma.SessionMemberUncheckedUpdateManyWithoutUserNestedInput
@@ -2494,7 +2700,6 @@ export type UserUncheckedUpdateWithoutCreatedBillsInput = {
   selectedRestaurants?: Prisma.RestaurantSelectionUncheckedUpdateManyWithoutSelectedByNestedInput
   itemShares?: Prisma.ItemShareUncheckedUpdateManyWithoutUserNestedInput
   payments?: Prisma.UserPaymentUncheckedUpdateManyWithoutUserNestedInput
-  paymentAccount?: Prisma.PaymentAccountUncheckedUpdateOneWithoutUserNestedInput
 }
 
 export type UserCreateWithoutItemSharesInput = {
@@ -2508,9 +2713,11 @@ export type UserCreateWithoutItemSharesInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
+  refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
   emailVerification?: Prisma.EmailVerificationCreateNestedOneWithoutUserInput
   passwordResets?: Prisma.PasswordResetCreateNestedManyWithoutUserInput
   foodProfile?: Prisma.FoodProfileCreateNestedOneWithoutUserInput
+  paymentAccount?: Prisma.PaymentAccountCreateNestedOneWithoutUserInput
   hostedRooms?: Prisma.RoomCreateNestedManyWithoutHostInput
   roomMembers?: Prisma.RoomMemberCreateNestedManyWithoutUserInput
   sessionMembers?: Prisma.SessionMemberCreateNestedManyWithoutUserInput
@@ -2521,7 +2728,6 @@ export type UserCreateWithoutItemSharesInput = {
   selectedRestaurants?: Prisma.RestaurantSelectionCreateNestedManyWithoutSelectedByInput
   createdBills?: Prisma.BillCreateNestedManyWithoutCreatedByInput
   payments?: Prisma.UserPaymentCreateNestedManyWithoutUserInput
-  paymentAccount?: Prisma.PaymentAccountCreateNestedOneWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutItemSharesInput = {
@@ -2535,9 +2741,11 @@ export type UserUncheckedCreateWithoutItemSharesInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
+  refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
   emailVerification?: Prisma.EmailVerificationUncheckedCreateNestedOneWithoutUserInput
   passwordResets?: Prisma.PasswordResetUncheckedCreateNestedManyWithoutUserInput
   foodProfile?: Prisma.FoodProfileUncheckedCreateNestedOneWithoutUserInput
+  paymentAccount?: Prisma.PaymentAccountUncheckedCreateNestedOneWithoutUserInput
   hostedRooms?: Prisma.RoomUncheckedCreateNestedManyWithoutHostInput
   roomMembers?: Prisma.RoomMemberUncheckedCreateNestedManyWithoutUserInput
   sessionMembers?: Prisma.SessionMemberUncheckedCreateNestedManyWithoutUserInput
@@ -2548,7 +2756,6 @@ export type UserUncheckedCreateWithoutItemSharesInput = {
   selectedRestaurants?: Prisma.RestaurantSelectionUncheckedCreateNestedManyWithoutSelectedByInput
   createdBills?: Prisma.BillUncheckedCreateNestedManyWithoutCreatedByInput
   payments?: Prisma.UserPaymentUncheckedCreateNestedManyWithoutUserInput
-  paymentAccount?: Prisma.PaymentAccountUncheckedCreateNestedOneWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutItemSharesInput = {
@@ -2578,9 +2785,11 @@ export type UserUpdateWithoutItemSharesInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
+  refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
   emailVerification?: Prisma.EmailVerificationUpdateOneWithoutUserNestedInput
   passwordResets?: Prisma.PasswordResetUpdateManyWithoutUserNestedInput
   foodProfile?: Prisma.FoodProfileUpdateOneWithoutUserNestedInput
+  paymentAccount?: Prisma.PaymentAccountUpdateOneWithoutUserNestedInput
   hostedRooms?: Prisma.RoomUpdateManyWithoutHostNestedInput
   roomMembers?: Prisma.RoomMemberUpdateManyWithoutUserNestedInput
   sessionMembers?: Prisma.SessionMemberUpdateManyWithoutUserNestedInput
@@ -2591,7 +2800,6 @@ export type UserUpdateWithoutItemSharesInput = {
   selectedRestaurants?: Prisma.RestaurantSelectionUpdateManyWithoutSelectedByNestedInput
   createdBills?: Prisma.BillUpdateManyWithoutCreatedByNestedInput
   payments?: Prisma.UserPaymentUpdateManyWithoutUserNestedInput
-  paymentAccount?: Prisma.PaymentAccountUpdateOneWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutItemSharesInput = {
@@ -2605,9 +2813,11 @@ export type UserUncheckedUpdateWithoutItemSharesInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
+  refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
   emailVerification?: Prisma.EmailVerificationUncheckedUpdateOneWithoutUserNestedInput
   passwordResets?: Prisma.PasswordResetUncheckedUpdateManyWithoutUserNestedInput
   foodProfile?: Prisma.FoodProfileUncheckedUpdateOneWithoutUserNestedInput
+  paymentAccount?: Prisma.PaymentAccountUncheckedUpdateOneWithoutUserNestedInput
   hostedRooms?: Prisma.RoomUncheckedUpdateManyWithoutHostNestedInput
   roomMembers?: Prisma.RoomMemberUncheckedUpdateManyWithoutUserNestedInput
   sessionMembers?: Prisma.SessionMemberUncheckedUpdateManyWithoutUserNestedInput
@@ -2618,7 +2828,6 @@ export type UserUncheckedUpdateWithoutItemSharesInput = {
   selectedRestaurants?: Prisma.RestaurantSelectionUncheckedUpdateManyWithoutSelectedByNestedInput
   createdBills?: Prisma.BillUncheckedUpdateManyWithoutCreatedByNestedInput
   payments?: Prisma.UserPaymentUncheckedUpdateManyWithoutUserNestedInput
-  paymentAccount?: Prisma.PaymentAccountUncheckedUpdateOneWithoutUserNestedInput
 }
 
 export type UserCreateWithoutPaymentsInput = {
@@ -2632,9 +2841,11 @@ export type UserCreateWithoutPaymentsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   accounts?: Prisma.AccountCreateNestedManyWithoutUserInput
+  refreshTokens?: Prisma.RefreshTokenCreateNestedManyWithoutUserInput
   emailVerification?: Prisma.EmailVerificationCreateNestedOneWithoutUserInput
   passwordResets?: Prisma.PasswordResetCreateNestedManyWithoutUserInput
   foodProfile?: Prisma.FoodProfileCreateNestedOneWithoutUserInput
+  paymentAccount?: Prisma.PaymentAccountCreateNestedOneWithoutUserInput
   hostedRooms?: Prisma.RoomCreateNestedManyWithoutHostInput
   roomMembers?: Prisma.RoomMemberCreateNestedManyWithoutUserInput
   sessionMembers?: Prisma.SessionMemberCreateNestedManyWithoutUserInput
@@ -2645,7 +2856,6 @@ export type UserCreateWithoutPaymentsInput = {
   selectedRestaurants?: Prisma.RestaurantSelectionCreateNestedManyWithoutSelectedByInput
   createdBills?: Prisma.BillCreateNestedManyWithoutCreatedByInput
   itemShares?: Prisma.ItemShareCreateNestedManyWithoutUserInput
-  paymentAccount?: Prisma.PaymentAccountCreateNestedOneWithoutUserInput
 }
 
 export type UserUncheckedCreateWithoutPaymentsInput = {
@@ -2659,9 +2869,11 @@ export type UserUncheckedCreateWithoutPaymentsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   accounts?: Prisma.AccountUncheckedCreateNestedManyWithoutUserInput
+  refreshTokens?: Prisma.RefreshTokenUncheckedCreateNestedManyWithoutUserInput
   emailVerification?: Prisma.EmailVerificationUncheckedCreateNestedOneWithoutUserInput
   passwordResets?: Prisma.PasswordResetUncheckedCreateNestedManyWithoutUserInput
   foodProfile?: Prisma.FoodProfileUncheckedCreateNestedOneWithoutUserInput
+  paymentAccount?: Prisma.PaymentAccountUncheckedCreateNestedOneWithoutUserInput
   hostedRooms?: Prisma.RoomUncheckedCreateNestedManyWithoutHostInput
   roomMembers?: Prisma.RoomMemberUncheckedCreateNestedManyWithoutUserInput
   sessionMembers?: Prisma.SessionMemberUncheckedCreateNestedManyWithoutUserInput
@@ -2672,7 +2884,6 @@ export type UserUncheckedCreateWithoutPaymentsInput = {
   selectedRestaurants?: Prisma.RestaurantSelectionUncheckedCreateNestedManyWithoutSelectedByInput
   createdBills?: Prisma.BillUncheckedCreateNestedManyWithoutCreatedByInput
   itemShares?: Prisma.ItemShareUncheckedCreateNestedManyWithoutUserInput
-  paymentAccount?: Prisma.PaymentAccountUncheckedCreateNestedOneWithoutUserInput
 }
 
 export type UserCreateOrConnectWithoutPaymentsInput = {
@@ -2702,9 +2913,11 @@ export type UserUpdateWithoutPaymentsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   accounts?: Prisma.AccountUpdateManyWithoutUserNestedInput
+  refreshTokens?: Prisma.RefreshTokenUpdateManyWithoutUserNestedInput
   emailVerification?: Prisma.EmailVerificationUpdateOneWithoutUserNestedInput
   passwordResets?: Prisma.PasswordResetUpdateManyWithoutUserNestedInput
   foodProfile?: Prisma.FoodProfileUpdateOneWithoutUserNestedInput
+  paymentAccount?: Prisma.PaymentAccountUpdateOneWithoutUserNestedInput
   hostedRooms?: Prisma.RoomUpdateManyWithoutHostNestedInput
   roomMembers?: Prisma.RoomMemberUpdateManyWithoutUserNestedInput
   sessionMembers?: Prisma.SessionMemberUpdateManyWithoutUserNestedInput
@@ -2715,7 +2928,6 @@ export type UserUpdateWithoutPaymentsInput = {
   selectedRestaurants?: Prisma.RestaurantSelectionUpdateManyWithoutSelectedByNestedInput
   createdBills?: Prisma.BillUpdateManyWithoutCreatedByNestedInput
   itemShares?: Prisma.ItemShareUpdateManyWithoutUserNestedInput
-  paymentAccount?: Prisma.PaymentAccountUpdateOneWithoutUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutPaymentsInput = {
@@ -2729,9 +2941,11 @@ export type UserUncheckedUpdateWithoutPaymentsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   accounts?: Prisma.AccountUncheckedUpdateManyWithoutUserNestedInput
+  refreshTokens?: Prisma.RefreshTokenUncheckedUpdateManyWithoutUserNestedInput
   emailVerification?: Prisma.EmailVerificationUncheckedUpdateOneWithoutUserNestedInput
   passwordResets?: Prisma.PasswordResetUncheckedUpdateManyWithoutUserNestedInput
   foodProfile?: Prisma.FoodProfileUncheckedUpdateOneWithoutUserNestedInput
+  paymentAccount?: Prisma.PaymentAccountUncheckedUpdateOneWithoutUserNestedInput
   hostedRooms?: Prisma.RoomUncheckedUpdateManyWithoutHostNestedInput
   roomMembers?: Prisma.RoomMemberUncheckedUpdateManyWithoutUserNestedInput
   sessionMembers?: Prisma.SessionMemberUncheckedUpdateManyWithoutUserNestedInput
@@ -2742,7 +2956,6 @@ export type UserUncheckedUpdateWithoutPaymentsInput = {
   selectedRestaurants?: Prisma.RestaurantSelectionUncheckedUpdateManyWithoutSelectedByNestedInput
   createdBills?: Prisma.BillUncheckedUpdateManyWithoutCreatedByNestedInput
   itemShares?: Prisma.ItemShareUncheckedUpdateManyWithoutUserNestedInput
-  paymentAccount?: Prisma.PaymentAccountUncheckedUpdateOneWithoutUserNestedInput
 }
 
 
@@ -2752,6 +2965,7 @@ export type UserUncheckedUpdateWithoutPaymentsInput = {
 
 export type UserCountOutputType = {
   accounts: number
+  refreshTokens: number
   passwordResets: number
   hostedRooms: number
   roomMembers: number
@@ -2768,6 +2982,7 @@ export type UserCountOutputType = {
 
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   accounts?: boolean | UserCountOutputTypeCountAccountsArgs
+  refreshTokens?: boolean | UserCountOutputTypeCountRefreshTokensArgs
   passwordResets?: boolean | UserCountOutputTypeCountPasswordResetsArgs
   hostedRooms?: boolean | UserCountOutputTypeCountHostedRoomsArgs
   roomMembers?: boolean | UserCountOutputTypeCountRoomMembersArgs
@@ -2797,6 +3012,13 @@ export type UserCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensi
  */
 export type UserCountOutputTypeCountAccountsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.AccountWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountRefreshTokensArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.RefreshTokenWhereInput
 }
 
 /**
@@ -2895,9 +3117,11 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   createdAt?: boolean
   updatedAt?: boolean
   accounts?: boolean | Prisma.User$accountsArgs<ExtArgs>
+  refreshTokens?: boolean | Prisma.User$refreshTokensArgs<ExtArgs>
   emailVerification?: boolean | Prisma.User$emailVerificationArgs<ExtArgs>
   passwordResets?: boolean | Prisma.User$passwordResetsArgs<ExtArgs>
   foodProfile?: boolean | Prisma.User$foodProfileArgs<ExtArgs>
+  paymentAccount?: boolean | Prisma.User$paymentAccountArgs<ExtArgs>
   hostedRooms?: boolean | Prisma.User$hostedRoomsArgs<ExtArgs>
   roomMembers?: boolean | Prisma.User$roomMembersArgs<ExtArgs>
   sessionMembers?: boolean | Prisma.User$sessionMembersArgs<ExtArgs>
@@ -2909,7 +3133,6 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   createdBills?: boolean | Prisma.User$createdBillsArgs<ExtArgs>
   itemShares?: boolean | Prisma.User$itemSharesArgs<ExtArgs>
   payments?: boolean | Prisma.User$paymentsArgs<ExtArgs>
-  paymentAccount?: boolean | Prisma.User$paymentAccountArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
@@ -2952,9 +3175,11 @@ export type UserSelectScalar = {
 export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "displayName" | "email" | "passwordHash" | "avatarUrl" | "emailVerified" | "role" | "createdAt" | "updatedAt", ExtArgs["result"]["user"]>
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   accounts?: boolean | Prisma.User$accountsArgs<ExtArgs>
+  refreshTokens?: boolean | Prisma.User$refreshTokensArgs<ExtArgs>
   emailVerification?: boolean | Prisma.User$emailVerificationArgs<ExtArgs>
   passwordResets?: boolean | Prisma.User$passwordResetsArgs<ExtArgs>
   foodProfile?: boolean | Prisma.User$foodProfileArgs<ExtArgs>
+  paymentAccount?: boolean | Prisma.User$paymentAccountArgs<ExtArgs>
   hostedRooms?: boolean | Prisma.User$hostedRoomsArgs<ExtArgs>
   roomMembers?: boolean | Prisma.User$roomMembersArgs<ExtArgs>
   sessionMembers?: boolean | Prisma.User$sessionMembersArgs<ExtArgs>
@@ -2966,7 +3191,6 @@ export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   createdBills?: boolean | Prisma.User$createdBillsArgs<ExtArgs>
   itemShares?: boolean | Prisma.User$itemSharesArgs<ExtArgs>
   payments?: boolean | Prisma.User$paymentsArgs<ExtArgs>
-  paymentAccount?: boolean | Prisma.User$paymentAccountArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type UserIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -2976,9 +3200,11 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   name: "User"
   objects: {
     accounts: Prisma.$AccountPayload<ExtArgs>[]
+    refreshTokens: Prisma.$RefreshTokenPayload<ExtArgs>[]
     emailVerification: Prisma.$EmailVerificationPayload<ExtArgs> | null
     passwordResets: Prisma.$PasswordResetPayload<ExtArgs>[]
     foodProfile: Prisma.$FoodProfilePayload<ExtArgs> | null
+    paymentAccount: Prisma.$PaymentAccountPayload<ExtArgs> | null
     hostedRooms: Prisma.$RoomPayload<ExtArgs>[]
     roomMembers: Prisma.$RoomMemberPayload<ExtArgs>[]
     sessionMembers: Prisma.$SessionMemberPayload<ExtArgs>[]
@@ -2990,7 +3216,6 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     createdBills: Prisma.$BillPayload<ExtArgs>[]
     itemShares: Prisma.$ItemSharePayload<ExtArgs>[]
     payments: Prisma.$UserPaymentPayload<ExtArgs>[]
-    paymentAccount: Prisma.$PaymentAccountPayload<ExtArgs> | null
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -3397,9 +3622,11 @@ readonly fields: UserFieldRefs;
 export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   accounts<T extends Prisma.User$accountsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$accountsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AccountPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  refreshTokens<T extends Prisma.User$refreshTokensArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$refreshTokensArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$RefreshTokenPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   emailVerification<T extends Prisma.User$emailVerificationArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$emailVerificationArgs<ExtArgs>>): Prisma.Prisma__EmailVerificationClient<runtime.Types.Result.GetResult<Prisma.$EmailVerificationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   passwordResets<T extends Prisma.User$passwordResetsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$passwordResetsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PasswordResetPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   foodProfile<T extends Prisma.User$foodProfileArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$foodProfileArgs<ExtArgs>>): Prisma.Prisma__FoodProfileClient<runtime.Types.Result.GetResult<Prisma.$FoodProfilePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  paymentAccount<T extends Prisma.User$paymentAccountArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$paymentAccountArgs<ExtArgs>>): Prisma.Prisma__PaymentAccountClient<runtime.Types.Result.GetResult<Prisma.$PaymentAccountPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   hostedRooms<T extends Prisma.User$hostedRoomsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$hostedRoomsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$RoomPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   roomMembers<T extends Prisma.User$roomMembersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$roomMembersArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$RoomMemberPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   sessionMembers<T extends Prisma.User$sessionMembersArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$sessionMembersArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$SessionMemberPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -3411,7 +3638,6 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   createdBills<T extends Prisma.User$createdBillsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$createdBillsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$BillPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   itemShares<T extends Prisma.User$itemSharesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$itemSharesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ItemSharePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   payments<T extends Prisma.User$paymentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$paymentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$UserPaymentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-  paymentAccount<T extends Prisma.User$paymentAccountArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$paymentAccountArgs<ExtArgs>>): Prisma.Prisma__PaymentAccountClient<runtime.Types.Result.GetResult<Prisma.$PaymentAccountPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -3867,6 +4093,30 @@ export type User$accountsArgs<ExtArgs extends runtime.Types.Extensions.InternalA
 }
 
 /**
+ * User.refreshTokens
+ */
+export type User$refreshTokensArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the RefreshToken
+   */
+  select?: Prisma.RefreshTokenSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the RefreshToken
+   */
+  omit?: Prisma.RefreshTokenOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.RefreshTokenInclude<ExtArgs> | null
+  where?: Prisma.RefreshTokenWhereInput
+  orderBy?: Prisma.RefreshTokenOrderByWithRelationInput | Prisma.RefreshTokenOrderByWithRelationInput[]
+  cursor?: Prisma.RefreshTokenWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.RefreshTokenScalarFieldEnum | Prisma.RefreshTokenScalarFieldEnum[]
+}
+
+/**
  * User.emailVerification
  */
 export type User$emailVerificationArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -3926,6 +4176,25 @@ export type User$foodProfileArgs<ExtArgs extends runtime.Types.Extensions.Intern
    */
   include?: Prisma.FoodProfileInclude<ExtArgs> | null
   where?: Prisma.FoodProfileWhereInput
+}
+
+/**
+ * User.paymentAccount
+ */
+export type User$paymentAccountArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the PaymentAccount
+   */
+  select?: Prisma.PaymentAccountSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the PaymentAccount
+   */
+  omit?: Prisma.PaymentAccountOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.PaymentAccountInclude<ExtArgs> | null
+  where?: Prisma.PaymentAccountWhereInput
 }
 
 /**
@@ -4190,25 +4459,6 @@ export type User$paymentsArgs<ExtArgs extends runtime.Types.Extensions.InternalA
   take?: number
   skip?: number
   distinct?: Prisma.UserPaymentScalarFieldEnum | Prisma.UserPaymentScalarFieldEnum[]
-}
-
-/**
- * User.paymentAccount
- */
-export type User$paymentAccountArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the PaymentAccount
-   */
-  select?: Prisma.PaymentAccountSelect<ExtArgs> | null
-  /**
-   * Omit specific fields from the PaymentAccount
-   */
-  omit?: Prisma.PaymentAccountOmit<ExtArgs> | null
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.PaymentAccountInclude<ExtArgs> | null
-  where?: Prisma.PaymentAccountWhereInput
 }
 
 /**

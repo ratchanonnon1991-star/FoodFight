@@ -47,11 +47,11 @@ export function JoinRoomForm() {
   };
 
   return (
-    <main className="min-h-dvh bg-background text-text-primary">
-      <div className="mx-auto w-full max-w-md px-4 pb-32 pt-3 sm:px-6 sm:pt-5">
+    <main className="min-h-dvh overflow-x-clip bg-background text-text-primary">
+      <div className="mx-auto w-full max-w-md px-4 pb-32 pt-3 sm:px-6 sm:pt-5 md:max-w-xl lg:max-w-2xl">
         <RoomPageHeader title="Join Room" subtitle="Enter the room code to continue" backHref={ROUTES.AUTHENTICATED_HOME} />
 
-        <Card variant="outline" className="rounded-2xl p-5 sm:p-6">
+        <Card variant="outline" className="rounded-2xl p-5 sm:p-6 md:p-8">
           <div className="mb-6 flex flex-col items-center text-center">
             <div className="mb-4 flex size-16 items-center justify-center rounded-full bg-surface-subtle text-text-primary">
               <KeyRound className="size-7" aria-hidden="true" />

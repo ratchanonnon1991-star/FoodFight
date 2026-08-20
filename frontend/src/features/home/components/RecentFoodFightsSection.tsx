@@ -36,16 +36,24 @@ export function RecentFoodFightsSection({
         </button>
       </div>
 
-      {/* Grouped Surface Card with subtle row dividers */}
-      <div className="rounded-2xl border border-border/80 bg-surface shadow-xs divide-y divide-border/60 overflow-hidden">
-        {items.map((item) => (
-          <RecentFoodFightItem
-            key={item.id}
-            item={item}
-            onClick={() => onItemClick?.(item)}
-          />
-        ))}
-      </div>
+      {items.length > 0 ? (
+        <div className="rounded-2xl border border-border/80 bg-surface shadow-xs divide-y divide-border/60 overflow-hidden">
+          {items.map((item) => (
+            <RecentFoodFightItem
+              key={item.id}
+              item={item}
+              onClick={() => onItemClick?.(item)}
+            />
+          ))}
+        </div>
+      ) : (
+        <div className="rounded-2xl border border-dashed border-border bg-surface p-5 text-center shadow-xs">
+          <p className="text-sm font-semibold text-text-primary">No recent FoodFights</p>
+          <p className="mt-1 text-xs leading-relaxed text-text-secondary">
+            Completed group meals will appear here.
+          </p>
+        </div>
+      )}
     </section>
   );
 }

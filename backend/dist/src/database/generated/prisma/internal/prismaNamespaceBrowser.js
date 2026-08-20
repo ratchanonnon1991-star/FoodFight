@@ -33,7 +33,7 @@ var __importStar = (this && this.__importStar) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.JsonNullValueFilter = exports.NullsOrder = exports.QueryMode = exports.NullableJsonNullValueInput = exports.SortOrder = exports.UserPaymentScalarFieldEnum = exports.ItemShareScalarFieldEnum = exports.ReceiptItemScalarFieldEnum = exports.ReceiptScalarFieldEnum = exports.BillScalarFieldEnum = exports.RestaurantSelectionScalarFieldEnum = exports.RestaurantRecommendationScalarFieldEnum = exports.FinalSelectionScalarFieldEnum = exports.FinalVoteScalarFieldEnum = exports.VoteScalarFieldEnum = exports.RecommendationItemScalarFieldEnum = exports.RecommendationRoundScalarFieldEnum = exports.MealPreferenceScalarFieldEnum = exports.SessionMemberScalarFieldEnum = exports.FoodFightSessionScalarFieldEnum = exports.RoomMemberScalarFieldEnum = exports.RoomScalarFieldEnum = exports.FoodProfileScalarFieldEnum = exports.PasswordResetScalarFieldEnum = exports.EmailVerificationScalarFieldEnum = exports.AccountScalarFieldEnum = exports.PaymentAccountScalarFieldEnum = exports.UserScalarFieldEnum = exports.TransactionIsolationLevel = exports.ModelName = exports.AnyNull = exports.JsonNull = exports.DbNull = exports.NullTypes = exports.Decimal = void 0;
+exports.JsonNullValueFilter = exports.NullsOrder = exports.QueryMode = exports.NullableJsonNullValueInput = exports.SortOrder = exports.UserPaymentScalarFieldEnum = exports.ItemShareScalarFieldEnum = exports.ReceiptItemScalarFieldEnum = exports.ReceiptScalarFieldEnum = exports.BillScalarFieldEnum = exports.RestaurantSelectionScalarFieldEnum = exports.RestaurantRecommendationScalarFieldEnum = exports.FinalSelectionScalarFieldEnum = exports.FinalVoteScalarFieldEnum = exports.VoteScalarFieldEnum = exports.RecommendationItemScalarFieldEnum = exports.RecommendationRoundScalarFieldEnum = exports.MealPreferenceScalarFieldEnum = exports.SessionMemberScalarFieldEnum = exports.FoodFightSessionScalarFieldEnum = exports.RoomMemberScalarFieldEnum = exports.RoomScalarFieldEnum = exports.PaymentAccountScalarFieldEnum = exports.FoodProfileScalarFieldEnum = exports.PasswordResetScalarFieldEnum = exports.EmailVerificationScalarFieldEnum = exports.RefreshTokenScalarFieldEnum = exports.AccountScalarFieldEnum = exports.UserScalarFieldEnum = exports.TransactionIsolationLevel = exports.ModelName = exports.AnyNull = exports.JsonNull = exports.DbNull = exports.NullTypes = exports.Decimal = void 0;
 const runtime = __importStar(require("@prisma/client/runtime/index-browser"));
 exports.Decimal = runtime.Decimal;
 exports.NullTypes = {
@@ -46,11 +46,12 @@ exports.JsonNull = runtime.JsonNull;
 exports.AnyNull = runtime.AnyNull;
 exports.ModelName = {
     User: 'User',
-    PaymentAccount: 'PaymentAccount',
     Account: 'Account',
+    RefreshToken: 'RefreshToken',
     EmailVerification: 'EmailVerification',
     PasswordReset: 'PasswordReset',
     FoodProfile: 'FoodProfile',
+    PaymentAccount: 'PaymentAccount',
     Room: 'Room',
     RoomMember: 'RoomMember',
     FoodFightSession: 'FoodFightSession',
@@ -86,16 +87,6 @@ exports.UserScalarFieldEnum = {
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
 };
-exports.PaymentAccountScalarFieldEnum = {
-    id: 'id',
-    userId: 'userId',
-    type: 'type',
-    accountName: 'accountName',
-    promptPayId: 'promptPayId',
-    qrImageUrl: 'qrImageUrl',
-    createdAt: 'createdAt',
-    updatedAt: 'updatedAt'
-};
 exports.AccountScalarFieldEnum = {
     id: 'id',
     userId: 'userId',
@@ -103,6 +94,14 @@ exports.AccountScalarFieldEnum = {
     providerAccountId: 'providerAccountId',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
+};
+exports.RefreshTokenScalarFieldEnum = {
+    id: 'id',
+    userId: 'userId',
+    tokenHash: 'tokenHash',
+    expiresAt: 'expiresAt',
+    revokedAt: 'revokedAt',
+    createdAt: 'createdAt'
 };
 exports.EmailVerificationScalarFieldEnum = {
     id: 'id',
@@ -131,6 +130,16 @@ exports.FoodProfileScalarFieldEnum = {
     restrictions: 'restrictions',
     otherRestrictions: 'otherRestrictions',
     additionalNotes: 'additionalNotes',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+};
+exports.PaymentAccountScalarFieldEnum = {
+    id: 'id',
+    userId: 'userId',
+    paymentType: 'paymentType',
+    accountName: 'accountName',
+    promptPayNumber: 'promptPayNumber',
+    qrCodeUrl: 'qrCodeUrl',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
 };

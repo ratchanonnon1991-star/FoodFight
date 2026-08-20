@@ -5,8 +5,10 @@
 
 import * as React from "react";
 import { Check, Copy, Download, Link as LinkIcon, Share2, X } from "lucide-react";
+import { motion } from "motion/react";
 import { Button } from "@/components/ui/Button";
 import { IconButton } from "@/components/ui/IconButton";
+import { transitionExit, transitionSpringSoft, transitionEnter } from "@/lib/motion";
 import type { RoomLobby } from "../types/room-types";
 
 interface InviteFriendsSheetProps {
@@ -16,7 +18,26 @@ interface InviteFriendsSheetProps {
 
 export function InviteFriendsSheet({ room, onClose }: InviteFriendsSheetProps) {
   const [copied, setCopied] = React.useState<"code" | "link" | null>(null);
+  const [isClosing, setIsClosing] = React.useState(false);
+  const closeTimeoutRef = React.useRef<number | null>(null);
   const inviteLink = room.inviteLink;
+
+  const requestClose = React.useCallback(() => {
+    if (isClosing) {
+      return;
+    }
+
+    setIsClosing(true);
+    closeTimeoutRef.current = window.setTimeout(onClose, 220);
+  }, [isClosing, onClose]);
+
+  React.useEffect(() => {
+    return () => {
+      if (closeTimeoutRef.current !== null) {
+        window.clearTimeout(closeTimeoutRef.current);
+      }
+    };
+  }, []);
 
   if (!inviteLink) {
     return null;
@@ -65,25 +86,35 @@ export function InviteFriendsSheet({ room, onClose }: InviteFriendsSheetProps) {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/35" role="presentation" onMouseDown={onClose}>
-      <section
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: isClosing ? 0 : 1 }}
+      transition={isClosing ? transitionExit : transitionEnter}
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/35 p-4 sm:p-6"
+      role="presentation"
+      onMouseDown={requestClose}
+    >
+      <motion.section
         role="dialog"
         aria-modal="true"
         aria-labelledby="invite-friends-title"
-        className="w-full max-w-md rounded-t-3xl bg-surface px-5 pb-8 pt-4 shadow-2xl"
+        initial={{ opacity: 0, scale: 0.96, y: 10 }}
+        animate={isClosing ? { opacity: 0, scale: 0.96, y: 10 } : { opacity: 1, scale: 1, y: 0 }}
+        transition={isClosing ? transitionExit : transitionSpringSoft}
+        className="max-h-[90dvh] w-full max-w-2xl overflow-x-hidden overflow-y-auto rounded-3xl bg-surface px-5 pb-8 pt-4 shadow-2xl sm:px-6"
         onMouseDown={(event) => event.stopPropagation()}
       >
         <div className="mx-auto mb-4 h-1.5 w-12 rounded-full bg-border" aria-hidden="true" />
         <div className="flex items-start justify-between gap-3">
-          <div>
-            <h2 id="invite-friends-title" className="text-xl font-semibold text-text-primary">Invite Friends</h2>
+          <div className="min-w-0">
+            <h2 id="invite-friends-title" className="break-words text-xl font-semibold text-text-primary">Invite Friends</h2>
             <p className="mt-1 text-sm text-text-secondary">Share the QR code, link or room code</p>
           </div>
-          <IconButton aria-label="Close invite friends" icon={<X className="size-5" aria-hidden="true" />} onClick={onClose} className="text-text-primary" />
+          <IconButton aria-label="Close invite friends" icon={<X className="size-5" aria-hidden="true" />} onClick={requestClose} className="text-text-primary" />
         </div>
 
-        <div className="mt-6 grid gap-5 sm:grid-cols-[180px_1fr]">
-          <div className="flex flex-col items-center gap-3">
+        <div className="mt-6 grid min-w-0 gap-5 sm:grid-cols-[minmax(0,196px)_minmax(0,1fr)]">
+          <div className="flex min-w-0 flex-col items-center gap-3">
             <div className="rounded-2xl border border-border bg-white p-3">
               <img src={qrUrl} alt="QR code for the room invite link" width={160} height={160} className="size-40" />
             </div>
@@ -98,7 +129,7 @@ export function InviteFriendsSheet({ room, onClose }: InviteFriendsSheetProps) {
             </div>
           </div>
 
-          <div className="space-y-3">
+          <div className="min-w-0 space-y-3">
             <ShareValue label="Room Code" value={room.roomCode} copied={copied === "code"} onCopy={() => copyValue("code", room.roomCode)} />
             <ShareValue label="Invite Link" value={inviteLink} copied={copied === "link"} onCopy={() => copyValue("link", inviteLink)} />
             <Button type="button" variant="outline" fullWidth onClick={shareInvite} leftIcon={<LinkIcon className="size-4" aria-hidden="true" />}>
@@ -106,8 +137,8 @@ export function InviteFriendsSheet({ room, onClose }: InviteFriendsSheetProps) {
             </Button>
           </div>
         </div>
-      </section>
-    </div>
+      </motion.section>
+    </motion.div>
   );
 }
 
@@ -123,10 +154,10 @@ function ShareValue({
   onCopy: () => void;
 }) {
   return (
-    <div>
+    <div className="min-w-0">
       <p className="mb-1.5 text-xs font-medium text-text-secondary">{label}</p>
-      <div className="flex min-h-12 items-center gap-2 rounded-xl border border-border bg-surface px-3">
-        <span className="min-w-0 flex-1 truncate text-sm text-text-primary">{value}</span>
+      <div className="flex min-h-12 min-w-0 w-full items-center gap-2 rounded-xl border border-border bg-surface px-3">
+        <span className="min-w-0 max-w-full flex-1 truncate text-sm text-text-primary">{value}</span>
         <button type="button" onClick={onCopy} aria-label={`Copy ${label}`} className="inline-flex size-9 shrink-0 items-center justify-center rounded-lg text-text-primary transition-colors hover:bg-surface-subtle focus-visible:outline-2 focus-visible:outline-brand-secondary">
           {copied ? <Check className="size-4 text-status-success-icon" aria-hidden="true" /> : <Copy className="size-4" aria-hidden="true" />}
         </button>
