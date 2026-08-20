@@ -4,21 +4,13 @@
 /* eslint-disable @next/next/no-img-element */
 
 import * as React from "react";
+import Link from "next/link";
 import { ChevronRight, Clock, Users, UtensilsCrossed } from "lucide-react";
+import { ROUTES } from "@/config/routes";
 import type {
   CurrentFoodFightMember,
   CurrentFoodFightSession,
 } from "../types/home-types";
-import Link from "next/link";
-import {
-  ChevronRight,
-  Clock,
-  User,
-  Users,
-  UtensilsCrossed,
-} from "lucide-react";
-import { ROUTES } from "@/config/routes";
-import type { CurrentFoodFightSession } from "../types/home-types";
 
 export interface CurrentFoodFightCardProps {
   session: CurrentFoodFightSession | null;
@@ -29,8 +21,10 @@ export function CurrentFoodFightCard({
   session,
   onContinue,
 }: CurrentFoodFightCardProps) {
-  const visibleMembers = session.members.slice(0, 4);
-  const remainingMemberCount = session.members.length - visibleMembers.length;
+  const visibleMembers = session?.members.slice(0, 4) ?? [];
+  const remainingMemberCount = session
+    ? session.members.length - visibleMembers.length
+    : 0;
 
   return (
     <section

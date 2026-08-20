@@ -64,9 +64,6 @@ export function HomeHeader({
   }, [isMenuOpen]);
 
   const initial = user.name.trim().charAt(0).toUpperCase() || "?";
-  const shouldShowImage = Boolean(
-    user.avatarUrl && failedImageUrl !== user.avatarUrl,
-  );
 
   return (
     <header className="flex items-start justify-between gap-3 pt-2">

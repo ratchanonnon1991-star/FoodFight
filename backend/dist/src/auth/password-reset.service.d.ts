@@ -8,9 +8,9 @@ export declare class PasswordResetService {
         createdAt: Date;
         updatedAt: Date;
         userId: string;
+        tokenHash: string;
         expiresAt: Date;
         resendAvailableAt: Date;
-        tokenHash: string;
         used: boolean;
     } | null, null, import("@prisma/client/runtime/client").DefaultArgs, {
         omit: Prisma.GlobalOmitConfig | undefined;
@@ -20,9 +20,9 @@ export declare class PasswordResetService {
         createdAt: Date;
         updatedAt: Date;
         userId: string;
+        tokenHash: string;
         expiresAt: Date;
         resendAvailableAt: Date;
-        tokenHash: string;
         used: boolean;
     }, never, import("@prisma/client/runtime/client").DefaultArgs, {
         omit: Prisma.GlobalOmitConfig | undefined;
@@ -32,9 +32,9 @@ export declare class PasswordResetService {
         createdAt: Date;
         updatedAt: Date;
         userId: string;
+        tokenHash: string;
         expiresAt: Date;
         resendAvailableAt: Date;
-        tokenHash: string;
         used: boolean;
     }, never, import("@prisma/client/runtime/client").DefaultArgs, {
         omit: Prisma.GlobalOmitConfig | undefined;

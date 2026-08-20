@@ -381,46 +381,6 @@ let JoinRoomService = class JoinRoomService {
         this.roomRealtimeService.publish(roomId);
         return this.getRoom(roomId, currentUserId);
     }
-    async getCurrentRoom(userId) {
-        const room = await this.prisma.room.findFirst({
-            where: {
-                status: {
-                    in: [client_1.RoomStatus.LOBBY, client_1.RoomStatus.IN_PROGRESS],
-                },
-                OR: [
-                    { hostId: userId },
-                    {
-                        members: {
-                            some: {
-                                userId,
-                                leftAt: null,
-                            },
-                        },
-                    },
-                ],
-            },
-            orderBy: [{ updatedAt: 'desc' }, { scheduledAt: 'asc' }],
-            select: this.currentRoomSelect,
-        });
-        if (!room) {
-            return null;
-        }
-        return {
-            id: room.id,
-            name: room.name,
-            status: room.status,
-            statusDescription: room.session?.status === 'COLLECTING_PREFERENCES'
-                ? 'Waiting for preferences'
-                : room.session?.status === 'VOTING' || room.status === client_1.RoomStatus.IN_PROGRESS
-                    ? 'FoodFight in progress'
-                    : 'Waiting for the room to start',
-            memberCount: room.members.length + 1,
-            members: [
-                room.host.displayName,
-                ...room.members.map((member) => member.user.displayName),
-            ].slice(0, 8),
-        };
-    }
     lobbyRoomSelect = {
         id: true,
         hostId: true,
@@ -443,22 +403,6 @@ let JoinRoomService = class JoinRoomService {
                 joinedAt: true,
                 user: { select: { displayName: true, avatarUrl: true } },
             },
-        },
-    };
-    currentRoomSelect = {
-        id: true,
-        name: true,
-        status: true,
-        host: { select: { displayName: true } },
-        members: {
-            where: { leftAt: null },
-            orderBy: { joinedAt: 'asc' },
-            select: {
-                user: { select: { displayName: true } },
-            },
-        },
-        session: {
-            select: { status: true },
         },
     };
     toLobbyResponse(room, isHost, userId) {

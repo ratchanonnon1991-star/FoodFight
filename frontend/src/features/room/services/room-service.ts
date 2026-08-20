@@ -2,7 +2,6 @@ import type {
   CreateRoomInput,
   LocationSearchSuggestion,
   RoomCreated,
-  CurrentRoom,
   RoomLobby,
   RoomPreview,
   UpdateRoomInput,

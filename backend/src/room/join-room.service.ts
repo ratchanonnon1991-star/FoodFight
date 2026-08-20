@@ -494,50 +494,6 @@ export class JoinRoomService {
     return this.getRoom(roomId, currentUserId);
   }
 
-  async getCurrentRoom(userId: string) {
-    const room = await this.prisma.room.findFirst({
-      where: {
-        status: {
-          in: [RoomStatus.LOBBY, RoomStatus.IN_PROGRESS],
-        },
-        OR: [
-          { hostId: userId },
-          {
-            members: {
-              some: {
-                userId,
-                leftAt: null,
-              },
-            },
-          },
-        ],
-      },
-      orderBy: [{ updatedAt: 'desc' }, { scheduledAt: 'asc' }],
-      select: this.currentRoomSelect,
-    });
-
-    if (!room) {
-      return null;
-    }
-
-    return {
-      id: room.id,
-      name: room.name,
-      status: room.status,
-      statusDescription:
-        room.session?.status === 'COLLECTING_PREFERENCES'
-          ? 'Waiting for preferences'
-          : room.session?.status === 'VOTING' || room.status === RoomStatus.IN_PROGRESS
-            ? 'FoodFight in progress'
-            : 'Waiting for the room to start',
-      memberCount: room.members.length + 1,
-      members: [
-        room.host.displayName,
-        ...room.members.map((member) => member.user.displayName),
-      ].slice(0, 8),
-    };
-  }
-
   private readonly lobbyRoomSelect = {
     id: true,
     hostId: true,
@@ -560,23 +516,6 @@ export class JoinRoomService {
         joinedAt: true,
         user: { select: { displayName: true, avatarUrl: true } },
       },
-    },
-  } as const;
-
-  private readonly currentRoomSelect = {
-    id: true,
-    name: true,
-    status: true,
-    host: { select: { displayName: true } },
-    members: {
-      where: { leftAt: null },
-      orderBy: { joinedAt: 'asc' as const },
-      select: {
-        user: { select: { displayName: true } },
-      },
-    },
-    session: {
-      select: { status: true },
     },
   } as const;
 

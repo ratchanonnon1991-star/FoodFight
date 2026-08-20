@@ -13,7 +13,6 @@ import type {
   AuthenticatedUserDisplay,
   CurrentFoodFightSession,
 } from "@/features/home/types/home-types";
-import { DEMO_RECENT_FOODFIGHTS, DEMO_TIP } from "../constants/home-demo-data";
 import { apiFetch, getStoredAccessToken } from "@/config/api-client";
 import { HOME_TIP } from "../constants/home-static-data";
 import { HomeHeader } from "./HomeHeader";
@@ -21,15 +20,11 @@ import { HomeActionCard } from "./HomeActionCard";
 import { CurrentFoodFightCard } from "./CurrentFoodFightCard";
 import { RecentFoodFightsSection } from "./RecentFoodFightsSection";
 import { HomeTipCard } from "./HomeTipCard";
-import type {
-  AuthenticatedUserDisplay,
-  CurrentFoodFightSession,
-  RecentFoodFightItemData,
-} from "@/features/home/types/home-types";
-import { API_BASE_URL } from "@/config/api";
+import type { RecentFoodFightItemData } from "@/features/home/types/home-types";
+
 import { getMyHistory } from "@/features/history/services/history-service";
 import type { HistoryItem } from "@/features/history/types/history-types";
-import { roomService } from "@/features/room/services/room-service";
+
 import { formatRoomDate } from "@/features/room/utils/room-format";
 
 function mapHistoryToRecentItem(item: HistoryItem): RecentFoodFightItemData {
@@ -70,8 +65,6 @@ export function AuthenticatedHome({
   const router = useRouter();
   const [user, setUser] = React.useState<AuthenticatedUserDisplay | null>(null);
   const [currentSession, setCurrentSession] =
-    React.useState<CurrentFoodFightSession | null>(null);
-  const [currentFoodFight, setCurrentFoodFight] =
     React.useState<CurrentFoodFightSession | null>(null);
   const [recentFoodFights, setRecentFoodFights] = React.useState<
     readonly RecentFoodFightItemData[]
@@ -186,36 +179,15 @@ export function AuthenticatedHome({
     }
 
     const loadHomeData = async () => {
-      const [currentRoomResult, historyResult] = await Promise.allSettled([
-        roomService.getCurrentRoom(),
-        getMyHistory(),
-      ]);
+      const historyResult = await Promise.allSettled([getMyHistory()]);
 
       if (!isMounted) {
         return;
       }
 
-      if (currentRoomResult.status === "fulfilled") {
-        const currentRoom = currentRoomResult.value;
-        setCurrentFoodFight(
-          currentRoom
-            ? {
-                id: currentRoom.id,
-                title: currentRoom.name,
-                status:
-                  currentRoom.status === "LOBBY" ? "Lobby" : "In progress",
-                memberCount: currentRoom.memberCount,
-                statusDescription: currentRoom.statusDescription,
-                members: currentRoom.members,
-                continueHref: ROUTES.ROOM.LOBBY(currentRoom.id),
-              }
-            : null,
-        );
-      }
-
-      if (historyResult.status === "fulfilled") {
+      if (historyResult[0]?.status === "fulfilled") {
         setRecentFoodFights(
-          historyResult.value.slice(0, 3).map(mapHistoryToRecentItem),
+          historyResult[0].value.slice(0, 3).map(mapHistoryToRecentItem),
         );
       }
     };
@@ -272,24 +244,9 @@ export function AuthenticatedHome({
         </div>
 
         {/* 3. Current FoodFight Section */}
-        {currentSession ? (
-          <CurrentFoodFightCard
-            session={currentSession}
-            onContinue={continueCurrentRoom}
-          />
-        ) : null}
         <CurrentFoodFightCard
-          session={currentFoodFight}
-          onContinue={
-            onContinueCurrent ??
-            (currentFoodFight
-              ? () =>
-                  router.push(
-                    currentFoodFight.continueHref ??
-                      ROUTES.ROOM.LOBBY(currentFoodFight.id),
-                  )
-              : undefined)
-          }
+          session={currentSession}
+          onContinue={continueCurrentRoom}
         />
 
         {/* 4. Recent FoodFights Section */}
