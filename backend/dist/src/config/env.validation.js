@@ -11,6 +11,7 @@ const envSchema = zod_1.default.object({
     DATABASE_URL: zod_1.default.string().min(1),
     JWT_SECRET: zod_1.default.string().min(1),
     JWT_EXPIRES_IN: zod_1.default.string().min(1),
+    REFRESH_TOKEN_EXPIRES_DAYS: zod_1.default.coerce.number().int().min(1).default(30),
     GOOGLE_CLIENT_ID: zod_1.default.string().min(1),
     LINE_CHANNEL_ID: zod_1.default.string().min(1),
     LINE_CHANNEL_SECRET: zod_1.default.string().min(1),

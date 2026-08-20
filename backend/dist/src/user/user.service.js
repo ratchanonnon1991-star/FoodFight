@@ -89,8 +89,16 @@ let UserService = class UserService {
             createdAt: user.createdAt,
         };
     }
-    async updateMe(userId, displayName) {
-        const user = await this.updateDisplayName(userId, displayName);
+    async updateMe(userId, displayName, avatarUrl) {
+        const user = await this.prisma.user.update({
+            where: { id: userId },
+            data: {
+                displayName,
+                ...(avatarUrl !== undefined
+                    ? { avatarUrl: avatarUrl?.trim() || null }
+                    : {}),
+            },
+        });
         return {
             id: user.id,
             displayName: user.displayName,

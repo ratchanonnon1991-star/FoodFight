@@ -116,8 +116,20 @@ export class UserService {
     };
   }
 
-  async updateMe(userId: string, displayName: string) {
-    const user = await this.updateDisplayName(userId, displayName);
+  async updateMe(
+    userId: string,
+    displayName: string,
+    avatarUrl?: string | null,
+  ) {
+    const user = await this.prisma.user.update({
+      where: { id: userId },
+      data: {
+        displayName,
+        ...(avatarUrl !== undefined
+          ? { avatarUrl: avatarUrl?.trim() || null }
+          : {}),
+      },
+    });
 
     return {
       id: user.id,

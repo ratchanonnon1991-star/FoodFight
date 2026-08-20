@@ -4,6 +4,7 @@ import * as React from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ROUTES } from "@/config/routes";
+import { apiFetch, getStoredAccessToken } from "@/config/api-client";
 import { PageContainer } from "@/components/layout/PageContainer";
 import { Button, buttonVariants } from "@/components/ui/Button";
 import { cn } from "@/lib/utils/cn";
@@ -28,7 +29,7 @@ export function PublicHeader({ className }: PublicHeaderProps) {
 
   React.useEffect(() => {
     let isMounted = true;
-    const accessToken = window.localStorage.getItem("accessToken");
+    const accessToken = getStoredAccessToken();
 
     if (!accessToken) {
       setIsCheckingSession(false);
@@ -37,11 +38,11 @@ export function PublicHeader({ className }: PublicHeaderProps) {
       };
     }
 
-    fetch(`${API_URL}/auth/me`, {
+    apiFetch(`${API_URL}/auth/me`, {
       headers: {
         Authorization: `Bearer ${accessToken}`,
       },
-    })
+    }, accessToken)
       .then(async (response) => {
         if (!response.ok) {
           throw new Error("Session is no longer valid");
@@ -73,19 +74,18 @@ export function PublicHeader({ className }: PublicHeaderProps) {
   }, []);
 
   const handleLogout = async () => {
-    const accessToken = window.localStorage.getItem("accessToken");
+    const accessToken = getStoredAccessToken();
 
     setIsLoggingOut(true);
 
     try {
-      if (accessToken) {
-        await fetch(`${API_URL}/auth/logout`, {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        });
-      }
+      await fetch(`${API_URL}/auth/logout`, {
+        method: "POST",
+        credentials: "include",
+        headers: accessToken
+          ? { Authorization: `Bearer ${accessToken}` }
+          : undefined,
+      });
     } finally {
       window.localStorage.removeItem("accessToken");
       setUser(null);

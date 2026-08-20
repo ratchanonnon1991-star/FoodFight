@@ -14,6 +14,7 @@ const class_validator_1 = require("class-validator");
 const trim_decorator_1 = require("../../common/decorators/trim.decorator");
 class UpdateUserDto {
     displayName;
+    avatarUrl;
 }
 exports.UpdateUserDto = UpdateUserDto;
 __decorate([
@@ -22,4 +23,11 @@ __decorate([
     (0, trim_decorator_1.Trim)(),
     __metadata("design:type", String)
 ], UpdateUserDto.prototype, "displayName", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.MaxLength)(7_000_000),
+    (0, trim_decorator_1.Trim)(),
+    __metadata("design:type", Object)
+], UpdateUserDto.prototype, "avatarUrl", void 0);
 //# sourceMappingURL=update-user.dto.js.map

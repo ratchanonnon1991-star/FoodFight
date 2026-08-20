@@ -27,7 +27,7 @@ let UserController = class UserController {
         return this.userService.getPublicProfile(id);
     }
     updateMe(currentUser, dto) {
-        return this.userService.updateMe(currentUser.sub, dto.displayName);
+        return this.userService.updateMe(currentUser.sub, dto.displayName, dto.avatarUrl);
     }
     async changePassword(currentUser, dto) {
         await this.userService.updatePassword(currentUser.sub, dto.password);
