@@ -27,6 +27,7 @@ vi.mock("../services/bill-service", () => ({
 const baseBill: BillDetail = {
   id: "bill-1",
   status: "DRAFT",
+  closedAt: null,
   summaryCalculated: false,
   isCreator: true,
   createdBy: { id: "u1", displayName: "Alice", avatarUrl: null },

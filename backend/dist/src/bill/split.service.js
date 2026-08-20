@@ -29,6 +29,7 @@ let SplitService = class SplitService {
         const bill = await this.billAccess.loadOrThrow(billId);
         this.billAccess.assertCreator(bill, userId);
         if (bill.status === client_1.BillStatus.COMPLETED ||
+            bill.status === client_1.BillStatus.CLOSED ||
             bill.status === client_1.BillStatus.CANCELLED) {
             throw new common_1.ConflictException('This bill is already finalized');
         }
@@ -69,6 +70,7 @@ let SplitService = class SplitService {
         const bill = await this.billAccess.loadOrThrow(billId);
         this.billAccess.assertCreator(bill, userId);
         if (bill.status === client_1.BillStatus.COMPLETED ||
+            bill.status === client_1.BillStatus.CLOSED ||
             bill.status === client_1.BillStatus.CANCELLED) {
             throw new common_1.ConflictException('This bill is already finalized');
         }
@@ -186,7 +188,9 @@ let SplitService = class SplitService {
         return this.billDetail.getDetail(userId, billId);
     }
     assertReadyToCalculate(status, itemCount) {
-        if (status === client_1.BillStatus.COMPLETED || status === client_1.BillStatus.CANCELLED) {
+        if (status === client_1.BillStatus.COMPLETED ||
+            status === client_1.BillStatus.CLOSED ||
+            status === client_1.BillStatus.CANCELLED) {
             throw new common_1.ConflictException('This bill is already finalized');
         }
         if (itemCount === 0) {

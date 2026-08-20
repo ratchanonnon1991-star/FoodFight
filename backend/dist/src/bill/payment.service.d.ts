@@ -20,6 +20,7 @@ export declare class PaymentService {
     uploadSlip(userId: string, billId: string, targetUserId: string, file: Express.Multer.File): Promise<{
         id: string;
         status: BillStatus;
+        closedAt: Date | null;
         summaryCalculated: boolean;
         isCreator: boolean;
         createdBy: {
@@ -87,6 +88,75 @@ export declare class PaymentService {
     setStatus(userId: string, billId: string, targetUserId: string, dto: SetPaymentStatusDto): Promise<{
         id: string;
         status: BillStatus;
+        closedAt: Date | null;
+        summaryCalculated: boolean;
+        isCreator: boolean;
+        createdBy: {
+            id: string;
+            displayName: string;
+            avatarUrl: string | null;
+        };
+        meal: {
+            name: string;
+            restaurantName: string | null;
+        };
+        members: {
+            userId: string;
+            displayName: string;
+            avatarUrl: string | null;
+            role: import("../database/generated/prisma/enums").SessionMemberRole;
+        }[];
+        receipt: {
+            id: string;
+            imageUrl: string;
+            ocrStatus: import("../database/generated/prisma/enums").OcrStatus;
+            uploadedAt: Date;
+        } | null;
+        items: {
+            id: string;
+            name: string;
+            imageUrl: string | null;
+            quantity: number;
+            unitPrice: number;
+            totalPrice: number;
+            assignedUserIds: string[];
+            shares: {
+                userId: string;
+                displayName: string;
+                avatarUrl: string | null;
+                amount: number;
+            }[];
+        }[];
+        subtotal: number;
+        serviceCharge: number;
+        tax: number;
+        discount: number;
+        totalAmount: number;
+        paymentAccount: {
+            accountName: string;
+            promptPayId: string;
+            qrImageUrl: string | null;
+        } | null;
+        payments: {
+            userId: string;
+            displayName: string;
+            avatarUrl: string | null;
+            amount: number;
+            status: PaymentStatus;
+            paidAt: Date | null;
+            slipImageUrl: string | null;
+        }[];
+        progress: {
+            paidCount: number;
+            totalCount: number;
+            collected: number;
+            remaining: number;
+        };
+    }>;
+    closeBill(userId: string, billId: string): Promise<{
+        id: string;
+        status: BillStatus;
+        closedAt: Date | null;
         summaryCalculated: boolean;
         isCreator: boolean;
         createdBy: {

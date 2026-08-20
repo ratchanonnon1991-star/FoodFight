@@ -26,6 +26,7 @@ export function ReceiptStepScreen({ billId }: ReceiptStepScreenProps) {
   const router = useRouter();
   const { bill, isLoading, error, setBill } = useBill(billId);
   const [actionError, setActionError] = React.useState<string | null>(null);
+  const [scanWarning, setScanWarning] = React.useState<string | null>(null);
   const [isUploading, setIsUploading] = React.useState(false);
   const fileInputRef = React.useRef<HTMLInputElement>(null);
 
@@ -37,11 +38,18 @@ export function ReceiptStepScreen({ billId }: ReceiptStepScreenProps) {
     }
 
     setActionError(null);
+    setScanWarning(null);
     setIsUploading(true);
     try {
       const compressed = await compressImage(file);
       const updated = await billService.uploadReceipt(billId, compressed);
       setBill(updated);
+
+      if (updated.receipt?.ocrStatus === "FAILED") {
+        setScanWarning(
+          "Automatic scan failed, so the item list below was left unchanged. Please check it against the receipt photo and edit items manually.",
+        );
+      }
     } catch (err) {
       setActionError(
         err instanceof ApiError ? err.message : "Unable to upload receipt.",
@@ -117,6 +125,12 @@ export function ReceiptStepScreen({ billId }: ReceiptStepScreenProps) {
           {actionError && (
             <Alert variant="error" onClose={() => setActionError(null)}>
               <AlertDescription>{actionError}</AlertDescription>
+            </Alert>
+          )}
+
+          {scanWarning && (
+            <Alert variant="warning" onClose={() => setScanWarning(null)}>
+              <AlertDescription>{scanWarning}</AlertDescription>
             </Alert>
           )}
 

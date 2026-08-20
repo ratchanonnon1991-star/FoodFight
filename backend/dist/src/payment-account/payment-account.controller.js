@@ -22,8 +22,9 @@ let PaymentAccountController = class PaymentAccountController {
     constructor(paymentAccountService) {
         this.paymentAccountService = paymentAccountService;
     }
-    getMe(currentUser) {
-        return this.paymentAccountService.findByUserId(currentUser.sub);
+    async getMe(currentUser, res) {
+        const account = await this.paymentAccountService.findByUserId(currentUser.sub);
+        res.status(200).json(account);
     }
     upsertMe(currentUser, dto) {
         return this.paymentAccountService.upsert(currentUser.sub, dto);
@@ -33,9 +34,10 @@ exports.PaymentAccountController = PaymentAccountController;
 __decorate([
     (0, common_1.Get)('me'),
     __param(0, (0, current_user_decorator_1.CurrentUser)()),
+    __param(1, (0, common_1.Res)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
-    __metadata("design:returntype", void 0)
+    __metadata("design:paramtypes", [Object, Object]),
+    __metadata("design:returntype", Promise)
 ], PaymentAccountController.prototype, "getMe", null);
 __decorate([
     (0, common_1.Put)('me'),

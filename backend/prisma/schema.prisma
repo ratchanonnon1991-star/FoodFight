@@ -84,6 +84,7 @@ enum BillStatus {
   DRAFT
   SPLITTING
   COMPLETED
+  CLOSED
   CANCELLED
 }
 
@@ -787,6 +788,10 @@ model Bill {
 
 
   totalAmount Decimal? @db.Decimal(10, 2)
+
+
+
+  closedAt DateTime?
 
 
 

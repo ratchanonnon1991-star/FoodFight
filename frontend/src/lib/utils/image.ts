@@ -1,7 +1,10 @@
-const MAX_DIMENSION_DEFAULT = 1600;
-const MAX_DIMENSION_LOW_RAM = 1200;
-const JPEG_QUALITY_DEFAULT = 0.8;
-const JPEG_QUALITY_LOW_RAM = 0.65;
+// Receipts often carry small, dense (sometimes handwritten) Thai text, so this
+// stays well above a "looks fine on screen" resolution - OCR needs the extra
+// detail even though it costs more upload time.
+const MAX_DIMENSION_DEFAULT = 2400;
+const MAX_DIMENSION_LOW_RAM = 1800;
+const JPEG_QUALITY_DEFAULT = 0.92;
+const JPEG_QUALITY_LOW_RAM = 0.8;
 const LOW_RAM_THRESHOLD_GB = 4;
 
 /**

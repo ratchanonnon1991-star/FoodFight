@@ -55,7 +55,11 @@ export class CreateBillService {
     });
 
     return rooms
-      .filter((room) => room.session?.bill?.status !== BillStatus.COMPLETED)
+      .filter(
+        (room) =>
+          room.session?.bill?.status !== BillStatus.COMPLETED &&
+          room.session?.bill?.status !== BillStatus.CLOSED,
+      )
       .map((room) => ({
         roomId: room.id,
         name: room.name,

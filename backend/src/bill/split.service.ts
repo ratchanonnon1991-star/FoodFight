@@ -38,6 +38,7 @@ export class SplitService {
 
     if (
       bill.status === BillStatus.COMPLETED ||
+      bill.status === BillStatus.CLOSED ||
       bill.status === BillStatus.CANCELLED
     ) {
       throw new ConflictException('This bill is already finalized');
@@ -94,6 +95,7 @@ export class SplitService {
 
     if (
       bill.status === BillStatus.COMPLETED ||
+      bill.status === BillStatus.CLOSED ||
       bill.status === BillStatus.CANCELLED
     ) {
       throw new ConflictException('This bill is already finalized');
@@ -277,7 +279,11 @@ export class SplitService {
   }
 
   private assertReadyToCalculate(status: BillStatus, itemCount: number) {
-    if (status === BillStatus.COMPLETED || status === BillStatus.CANCELLED) {
+    if (
+      status === BillStatus.COMPLETED ||
+      status === BillStatus.CLOSED ||
+      status === BillStatus.CANCELLED
+    ) {
       throw new ConflictException('This bill is already finalized');
     }
 

@@ -1,4 +1,9 @@
-export type BillStatus = "DRAFT" | "SPLITTING" | "COMPLETED" | "CANCELLED";
+export type BillStatus =
+  | "DRAFT"
+  | "SPLITTING"
+  | "COMPLETED"
+  | "CLOSED"
+  | "CANCELLED";
 export type PaymentStatus = "UNPAID" | "PAID";
 export type OcrStatus = "NOT_USED" | "PROCESSING" | "COMPLETED" | "FAILED";
 
@@ -62,6 +67,7 @@ export interface BillPaymentAccountSummary {
 export interface BillDetail {
   id: string;
   status: BillStatus;
+  closedAt: string | null;
   summaryCalculated: boolean;
   isCreator: boolean;
   createdBy: { id: string; displayName: string; avatarUrl: string | null };

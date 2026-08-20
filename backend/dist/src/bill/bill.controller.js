@@ -87,6 +87,9 @@ let BillController = class BillController {
     setPaymentStatus(currentUser, billId, targetUserId, dto) {
         return this.paymentService.setStatus(currentUser.sub, billId, targetUserId, dto);
     }
+    closeBill(currentUser, billId) {
+        return this.paymentService.closeBill(currentUser.sub, billId);
+    }
 };
 exports.BillController = BillController;
 __decorate([
@@ -224,6 +227,14 @@ __decorate([
     __metadata("design:paramtypes", [Object, String, String, set_payment_status_dto_1.SetPaymentStatusDto]),
     __metadata("design:returntype", void 0)
 ], BillController.prototype, "setPaymentStatus", null);
+__decorate([
+    (0, common_1.Post)(':billId/close'),
+    __param(0, (0, current_user_decorator_1.CurrentUser)()),
+    __param(1, (0, common_1.Param)('billId')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, String]),
+    __metadata("design:returntype", void 0)
+], BillController.prototype, "closeBill", null);
 exports.BillController = BillController = __decorate([
     (0, common_1.Controller)('bills'),
     __metadata("design:paramtypes", [create_bill_service_1.CreateBillService,

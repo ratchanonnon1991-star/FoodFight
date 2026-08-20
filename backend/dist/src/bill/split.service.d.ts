@@ -13,6 +13,7 @@ export declare class SplitService {
     assignItem(userId: string, billId: string, itemId: string, dto: AssignItemDto): Promise<{
         id: string;
         status: BillStatus;
+        closedAt: Date | null;
         summaryCalculated: boolean;
         isCreator: boolean;
         createdBy: {
@@ -80,6 +81,7 @@ export declare class SplitService {
     splitEvenly(userId: string, billId: string, dto: SplitEvenlyDto): Promise<{
         id: string;
         status: BillStatus;
+        closedAt: Date | null;
         summaryCalculated: boolean;
         isCreator: boolean;
         createdBy: {
@@ -147,6 +149,7 @@ export declare class SplitService {
     calculateSummary(userId: string, billId: string, dto: CalculateSummaryDto): Promise<{
         id: string;
         status: BillStatus;
+        closedAt: Date | null;
         summaryCalculated: boolean;
         isCreator: boolean;
         createdBy: {
@@ -214,6 +217,7 @@ export declare class SplitService {
     confirmBill(userId: string, billId: string): Promise<{
         id: string;
         status: BillStatus;
+        closedAt: Date | null;
         summaryCalculated: boolean;
         isCreator: boolean;
         createdBy: {

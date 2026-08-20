@@ -15,6 +15,7 @@ export declare class ReceiptService {
     uploadReceipt(userId: string, billId: string, file: Express.Multer.File): Promise<{
         id: string;
         status: BillStatus;
+        closedAt: Date | null;
         summaryCalculated: boolean;
         isCreator: boolean;
         createdBy: {
@@ -82,6 +83,7 @@ export declare class ReceiptService {
     addItem(userId: string, billId: string, dto: UpsertReceiptItemDto): Promise<{
         id: string;
         status: BillStatus;
+        closedAt: Date | null;
         summaryCalculated: boolean;
         isCreator: boolean;
         createdBy: {
@@ -149,6 +151,7 @@ export declare class ReceiptService {
     updateItem(userId: string, billId: string, itemId: string, dto: UpsertReceiptItemDto): Promise<{
         id: string;
         status: BillStatus;
+        closedAt: Date | null;
         summaryCalculated: boolean;
         isCreator: boolean;
         createdBy: {
@@ -216,6 +219,7 @@ export declare class ReceiptService {
     deleteItem(userId: string, billId: string, itemId: string): Promise<{
         id: string;
         status: BillStatus;
+        closedAt: Date | null;
         summaryCalculated: boolean;
         isCreator: boolean;
         createdBy: {

@@ -37,14 +37,23 @@ export async function apiFetch<T>(
       : null;
   const isFormData = init.body instanceof FormData;
 
-  const response = await fetch(`${API_URL}${path}`, {
-    ...init,
-    headers: {
-      ...(isFormData ? {} : { "Content-Type": "application/json" }),
-      ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
-      ...init.headers,
-    },
-  });
+  let response: Response;
+
+  try {
+    response = await fetch(`${API_URL}${path}`, {
+      ...init,
+      headers: {
+        ...(isFormData ? {} : { "Content-Type": "application/json" }),
+        ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
+        ...init.headers,
+      },
+    });
+  } catch (err) {
+    throw new ApiError(
+      err instanceof Error ? err.message : "Network request failed.",
+      0,
+    );
+  }
 
   if (!response.ok) {
     const message = await readErrorMessage(

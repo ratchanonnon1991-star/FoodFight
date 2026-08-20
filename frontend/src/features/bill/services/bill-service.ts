@@ -88,4 +88,7 @@ export const billService = {
       method: "PATCH",
       body: JSON.stringify({ status }),
     }),
+
+  closeBill: (billId: string) =>
+    apiFetch<BillDetail>(`/bills/${billId}/close`, { method: "POST" }),
 };

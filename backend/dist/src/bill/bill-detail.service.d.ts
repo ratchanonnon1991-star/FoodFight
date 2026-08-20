@@ -6,6 +6,7 @@ export declare class BillDetailService {
     getDetail(userId: string, billId: string): Promise<{
         id: string;
         status: import("../database/generated/prisma/enums").BillStatus;
+        closedAt: Date | null;
         summaryCalculated: boolean;
         isCreator: boolean;
         createdBy: {
@@ -73,6 +74,7 @@ export declare class BillDetailService {
     toResponse(bill: BillWithRelations, userId: string): {
         id: string;
         status: import("../database/generated/prisma/enums").BillStatus;
+        closedAt: Date | null;
         summaryCalculated: boolean;
         isCreator: boolean;
         createdBy: {

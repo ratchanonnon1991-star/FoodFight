@@ -2243,6 +2243,7 @@ export declare const BillScalarFieldEnum: {
     readonly tax: "tax";
     readonly discount: "discount";
     readonly totalAmount: "totalAmount";
+    readonly closedAt: "closedAt";
     readonly createdAt: "createdAt";
     readonly updatedAt: "updatedAt";
 };

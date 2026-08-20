@@ -22,6 +22,7 @@ export declare class CreateBillService {
     createBill(userId: string, dto: CreateBillDto): Promise<{
         id: string;
         status: BillStatus;
+        closedAt: Date | null;
         summaryCalculated: boolean;
         isCreator: boolean;
         createdBy: {
@@ -89,6 +90,7 @@ export declare class CreateBillService {
     getBySession(userId: string, sessionId: string): Promise<{
         id: string;
         status: BillStatus;
+        closedAt: Date | null;
         summaryCalculated: boolean;
         isCreator: boolean;
         createdBy: {

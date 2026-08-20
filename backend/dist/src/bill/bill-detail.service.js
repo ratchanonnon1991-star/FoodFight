@@ -37,6 +37,7 @@ let BillDetailService = class BillDetailService {
         return {
             id: bill.id,
             status: bill.status,
+            closedAt: bill.closedAt,
             summaryCalculated: bill.totalAmount != null,
             isCreator: bill.createdById === userId,
             createdBy: {

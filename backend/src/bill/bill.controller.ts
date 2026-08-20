@@ -184,4 +184,12 @@ export class BillController {
       dto,
     );
   }
+
+  @Post(':billId/close')
+  closeBill(
+    @CurrentUser() currentUser: AccessTokenPayload,
+    @Param('billId') billId: string,
+  ) {
+    return this.paymentService.closeBill(currentUser.sub, billId);
+  }
 }

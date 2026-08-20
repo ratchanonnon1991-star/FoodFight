@@ -15,6 +15,7 @@ import { Spinner } from "@/components/ui/Spinner";
 import { ApiError } from "@/lib/api/client";
 import { BillPageHeader } from "./BillPageHeader";
 import { billService } from "../services/bill-service";
+import { paymentAccountService } from "../services/payment-account-service";
 import type { AvailableRoom } from "../types/bill-types";
 
 export function SelectMealScreen() {
@@ -22,6 +23,7 @@ export function SelectMealScreen() {
   const [rooms, setRooms] = React.useState<AvailableRoom[] | null>(null);
   const [error, setError] = React.useState<string | null>(null);
   const [creatingRoomId, setCreatingRoomId] = React.useState<string | null>(null);
+  const [hasPaymentAccount, setHasPaymentAccount] = React.useState(false);
 
   const handleSelect = async (room: AvailableRoom) => {
     setError(null);
@@ -60,6 +62,25 @@ export function SelectMealScreen() {
             err instanceof ApiError ? err.message : "Unable to load meals.",
           );
         }
+      });
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  React.useEffect(() => {
+    let isMounted = true;
+
+    paymentAccountService
+      .getMine()
+      .then((account) => {
+        if (isMounted) {
+          setHasPaymentAccount(!!account);
+        }
+      })
+      .catch(() => {
+        // Non-critical - the setup prompt just stays visible if this fails.
       });
 
     return () => {
@@ -164,15 +185,17 @@ export function SelectMealScreen() {
           </div>
         )}
 
-        <p className="text-center text-xs text-text-muted">
-          Managing your PromptPay receiving account?{" "}
-          <Link
-            href={ROUTES.BILL_PAYMENT_ACCOUNT}
-            className="font-medium text-brand-primary hover:underline"
-          >
-            Set up payment account
-          </Link>
-        </p>
+        {!hasPaymentAccount && (
+          <p className="text-center text-xs text-text-muted">
+            Managing your PromptPay receiving account?{" "}
+            <Link
+              href={ROUTES.BILL_PAYMENT_ACCOUNT}
+              className="font-medium text-brand-primary hover:underline"
+            >
+              Set up payment account
+            </Link>
+          </p>
+        )}
         </PageContainer>
       </main>
     </div>

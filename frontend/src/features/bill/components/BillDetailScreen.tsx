@@ -10,8 +10,11 @@ import { buttonVariants } from "@/components/ui/Button";
 import { Alert, AlertDescription } from "@/components/ui/Alert";
 import { cn } from "@/lib/utils/cn";
 import { Spinner } from "@/components/ui/Spinner";
+import { Button } from "@/components/ui/Button";
+import { ApiError } from "@/lib/api/client";
 import { useBill } from "../hooks/use-bill";
 import { useCurrentUser } from "../hooks/use-current-user";
+import { billService } from "../services/bill-service";
 import { BillPageHeader } from "./BillPageHeader";
 import { PaymentRow } from "./PaymentRow";
 
@@ -22,6 +25,21 @@ export interface BillDetailScreenProps {
 export function BillDetailScreen({ billId }: BillDetailScreenProps) {
   const { bill, isLoading, error, setBill } = useBill(billId);
   const { user } = useCurrentUser();
+  const [isClosing, setIsClosing] = React.useState(false);
+  const [closeError, setCloseError] = React.useState<string | null>(null);
+
+  const handleCloseBill = async () => {
+    setCloseError(null);
+    setIsClosing(true);
+    try {
+      const updated = await billService.closeBill(billId);
+      setBill(updated);
+    } catch (err) {
+      setCloseError(err instanceof ApiError ? err.message : "Unable to close the bill.");
+    } finally {
+      setIsClosing(false);
+    }
+  };
 
   if (isLoading && !bill) {
     return (
@@ -43,7 +61,7 @@ export function BillDetailScreen({ billId }: BillDetailScreenProps) {
     );
   }
 
-  if (bill.status !== "COMPLETED") {
+  if (bill.status !== "COMPLETED" && bill.status !== "CLOSED") {
     const resumeHref =
       bill.items.length === 0
         ? `/bills/${billId}/receipt`
@@ -76,6 +94,42 @@ export function BillDetailScreen({ billId }: BillDetailScreenProps) {
 
       <main className="flex-1 py-6 pb-24">
         <PageContainer maxWidth="auth" paddingY="none" className="space-y-6">
+          {bill.status === "CLOSED" && (
+            <Alert variant="info">
+              <AlertDescription className="space-y-2">
+                <p>
+                  This bill was closed
+                  {bill.closedAt
+                    ? ` on ${new Date(bill.closedAt).toLocaleDateString()}`
+                    : ""}
+                  . No further changes can be made.
+                </p>
+                <Link
+                  href={ROUTES.AUTHENTICATED_HOME}
+                  className={cn(buttonVariants({ size: "sm" }))}
+                >
+                  Back to Home
+                </Link>
+              </AlertDescription>
+            </Alert>
+          )}
+
+          {bill.isCreator &&
+            bill.status === "COMPLETED" &&
+            bill.progress.remaining === 0 && (
+              <Alert variant="success">
+                <AlertDescription className="space-y-2">
+                  <p>Everyone has paid in full. You can close this bill now.</p>
+                  {closeError && (
+                    <p className="text-status-danger-text">{closeError}</p>
+                  )}
+                  <Button size="sm" loading={isClosing} onClick={handleCloseBill}>
+                    Close Bill
+                  </Button>
+                </AlertDescription>
+              </Alert>
+            )}
+
           <Card variant="default" padding="md" className="space-y-3">
             <div className="flex items-center justify-between">
               <p className="text-sm text-text-secondary">Total</p>
@@ -127,6 +181,7 @@ export function BillDetailScreen({ billId }: BillDetailScreenProps) {
                   payment={payment}
                   isCreator={bill.isCreator}
                   isSelf={user?.sub === payment.userId}
+                  locked={bill.status === "CLOSED"}
                   onChange={setBill}
                 />
               ))}

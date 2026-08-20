@@ -73,6 +73,7 @@ export declare const BillStatus: {
     readonly DRAFT: "DRAFT";
     readonly SPLITTING: "SPLITTING";
     readonly COMPLETED: "COMPLETED";
+    readonly CLOSED: "CLOSED";
     readonly CANCELLED: "CANCELLED";
 };
 export type BillStatus = (typeof BillStatus)[keyof typeof BillStatus];

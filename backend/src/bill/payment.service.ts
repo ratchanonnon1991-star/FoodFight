@@ -1,5 +1,6 @@
 import {
   BadRequestException,
+  ConflictException,
   ForbiddenException,
   Injectable,
   NotFoundException,
@@ -66,6 +67,10 @@ export class PaymentService {
     const bill = await this.billAccess.loadOrThrow(billId);
     this.billAccess.assertParticipant(bill, userId);
 
+    if (bill.status === BillStatus.CLOSED) {
+      throw new ConflictException('This bill is already closed');
+    }
+
     const payment = bill.payments.find((p) => p.userId === targetUserId);
     if (!payment) {
       throw new NotFoundException('No payment found for this member');
@@ -91,6 +96,10 @@ export class PaymentService {
     const bill = await this.billAccess.loadOrThrow(billId);
     this.billAccess.assertCreator(bill, userId);
 
+    if (bill.status === BillStatus.CLOSED) {
+      throw new ConflictException('This bill is already closed');
+    }
+
     const payment = bill.payments.find((p) => p.userId === targetUserId);
     if (!payment) {
       throw new NotFoundException('No payment found for this member');
@@ -102,6 +111,31 @@ export class PaymentService {
         status: dto.status,
         paidAt: dto.status === PaymentStatus.PAID ? new Date() : null,
       },
+    });
+
+    return this.billDetail.getDetail(userId, billId);
+  }
+
+  async closeBill(userId: string, billId: string) {
+    const bill = await this.billAccess.loadOrThrow(billId);
+    this.billAccess.assertCreator(bill, userId);
+
+    if (bill.status === BillStatus.CLOSED) {
+      throw new ConflictException('This bill is already closed');
+    }
+
+    if (bill.status !== BillStatus.COMPLETED) {
+      throw new ConflictException('Confirm the bill before closing it');
+    }
+
+    const { remaining } = this.billDetail.toResponse(bill, userId).progress;
+    if (remaining > 0) {
+      throw new ConflictException('Not everyone has paid yet');
+    }
+
+    await this.prisma.bill.update({
+      where: { id: billId },
+      data: { status: BillStatus.CLOSED, closedAt: new Date() },
     });
 
     return this.billDetail.getDetail(userId, billId);

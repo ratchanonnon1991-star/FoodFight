@@ -54,7 +54,8 @@ let CreateBillService = class CreateBillService {
             orderBy: { scheduledAt: 'desc' },
         });
         return rooms
-            .filter((room) => room.session?.bill?.status !== client_1.BillStatus.COMPLETED)
+            .filter((room) => room.session?.bill?.status !== client_1.BillStatus.COMPLETED &&
+            room.session?.bill?.status !== client_1.BillStatus.CLOSED)
             .map((room) => ({
             roomId: room.id,
             name: room.name,

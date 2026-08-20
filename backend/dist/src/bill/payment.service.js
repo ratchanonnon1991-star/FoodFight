@@ -56,6 +56,9 @@ let PaymentService = class PaymentService {
         }
         const bill = await this.billAccess.loadOrThrow(billId);
         this.billAccess.assertParticipant(bill, userId);
+        if (bill.status === client_1.BillStatus.CLOSED) {
+            throw new common_1.ConflictException('This bill is already closed');
+        }
         const payment = bill.payments.find((p) => p.userId === targetUserId);
         if (!payment) {
             throw new common_1.NotFoundException('No payment found for this member');
@@ -71,6 +74,9 @@ let PaymentService = class PaymentService {
     async setStatus(userId, billId, targetUserId, dto) {
         const bill = await this.billAccess.loadOrThrow(billId);
         this.billAccess.assertCreator(bill, userId);
+        if (bill.status === client_1.BillStatus.CLOSED) {
+            throw new common_1.ConflictException('This bill is already closed');
+        }
         const payment = bill.payments.find((p) => p.userId === targetUserId);
         if (!payment) {
             throw new common_1.NotFoundException('No payment found for this member');
@@ -81,6 +87,25 @@ let PaymentService = class PaymentService {
                 status: dto.status,
                 paidAt: dto.status === client_1.PaymentStatus.PAID ? new Date() : null,
             },
+        });
+        return this.billDetail.getDetail(userId, billId);
+    }
+    async closeBill(userId, billId) {
+        const bill = await this.billAccess.loadOrThrow(billId);
+        this.billAccess.assertCreator(bill, userId);
+        if (bill.status === client_1.BillStatus.CLOSED) {
+            throw new common_1.ConflictException('This bill is already closed');
+        }
+        if (bill.status !== client_1.BillStatus.COMPLETED) {
+            throw new common_1.ConflictException('Confirm the bill before closing it');
+        }
+        const { remaining } = this.billDetail.toResponse(bill, userId).progress;
+        if (remaining > 0) {
+            throw new common_1.ConflictException('Not everyone has paid yet');
+        }
+        await this.prisma.bill.update({
+            where: { id: billId },
+            data: { status: client_1.BillStatus.CLOSED, closedAt: new Date() },
         });
         return this.billDetail.getDetail(userId, billId);
     }

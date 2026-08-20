@@ -167,7 +167,11 @@ export class ReceiptService {
   }
 
   private assertEditable(status: BillStatus) {
-    if (status === BillStatus.COMPLETED || status === BillStatus.CANCELLED) {
+    if (
+      status === BillStatus.COMPLETED ||
+      status === BillStatus.CLOSED ||
+      status === BillStatus.CANCELLED
+    ) {
       throw new ConflictException('This bill is already finalized');
     }
   }

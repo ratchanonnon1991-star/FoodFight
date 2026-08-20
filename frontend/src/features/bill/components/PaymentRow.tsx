@@ -15,6 +15,7 @@ export interface PaymentRowProps {
   payment: BillPayment;
   isCreator: boolean;
   isSelf: boolean;
+  locked?: boolean;
   onChange: (updated: BillDetail) => void;
 }
 
@@ -23,6 +24,7 @@ export function PaymentRow({
   payment,
   isCreator,
   isSelf,
+  locked = false,
   onChange,
 }: PaymentRowProps) {
   const [showQr, setShowQr] = React.useState(false);
@@ -112,7 +114,7 @@ export function PaymentRow({
             {payment.status === "PAID" ? "Paid" : "Unpaid"}
           </Badge>
 
-          {isCreator && (
+          {isCreator && !locked && (
             <Button
               size="sm"
               variant="outline"
@@ -125,7 +127,7 @@ export function PaymentRow({
         </div>
       </div>
 
-      {isSelf && payment.status === "UNPAID" && (
+      {!locked && isSelf && payment.status === "UNPAID" && (
         <div className="flex items-center gap-2">
           <Button
             size="sm"
