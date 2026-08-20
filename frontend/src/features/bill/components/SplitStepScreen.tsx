@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { useRouter } from "next/navigation";
-import { CheckCircle2 } from "lucide-react";
+import { CheckCircle2, Users } from "lucide-react";
 import { PageContainer } from "@/components/layout/PageContainer";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
@@ -23,6 +23,22 @@ export function SplitStepScreen({ billId }: SplitStepScreenProps) {
   const { bill, isLoading, error, setBill } = useBill(billId);
   const [actionError, setActionError] = React.useState<string | null>(null);
   const [savingItemId, setSavingItemId] = React.useState<string | null>(null);
+  const [isSplittingEvenly, setIsSplittingEvenly] = React.useState(false);
+
+  const handleSplitEvenly = async () => {
+    setActionError(null);
+    setIsSplittingEvenly(true);
+    try {
+      const updated = await billService.splitEvenly(billId);
+      setBill(updated);
+    } catch (err) {
+      setActionError(
+        err instanceof ApiError ? err.message : "Unable to split the bill evenly.",
+      );
+    } finally {
+      setIsSplittingEvenly(false);
+    }
+  };
 
   const saveAssignment = async (itemId: string, nextUserIds: string[]) => {
     setActionError(null);
@@ -121,6 +137,18 @@ export function SplitStepScreen({ billId }: SplitStepScreenProps) {
             Tap each member to mark who shared an item. Items are split
             evenly among everyone selected.
           </p>
+
+          {bill.isCreator && (
+            <Button
+              variant="outline"
+              fullWidth
+              leftIcon={<Users className="size-4" />}
+              loading={isSplittingEvenly}
+              onClick={handleSplitEvenly}
+            >
+              Split Everything Equally
+            </Button>
+          )}
 
           <Card variant="default" padding="md">
             <div className="divide-y divide-border">

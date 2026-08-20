@@ -56,6 +56,12 @@ export const billService = {
       body: JSON.stringify({ userIds }),
     }),
 
+  splitEvenly: (billId: string, userIds?: string[]) =>
+    apiFetch<BillDetail>(`/bills/${billId}/split-evenly`, {
+      method: "POST",
+      body: JSON.stringify({ userIds }),
+    }),
+
   calculateSummary: (billId: string, input: CalculateSummaryInput) =>
     apiFetch<BillDetail>(`/bills/${billId}/summary`, {
       method: "POST",
