@@ -8,9 +8,11 @@ export type PrismaClient<LogOpts extends Prisma.LogLevel = never, OmitOpts exten
 export { Prisma };
 export type User = Prisma.UserModel;
 export type Account = Prisma.AccountModel;
+export type RefreshToken = Prisma.RefreshTokenModel;
 export type EmailVerification = Prisma.EmailVerificationModel;
 export type PasswordReset = Prisma.PasswordResetModel;
 export type FoodProfile = Prisma.FoodProfileModel;
+export type PaymentAccount = Prisma.PaymentAccountModel;
 export type Room = Prisma.RoomModel;
 export type RoomMember = Prisma.RoomMemberModel;
 export type FoodFightSession = Prisma.FoodFightSessionModel;

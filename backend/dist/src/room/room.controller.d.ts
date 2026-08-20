@@ -53,6 +53,14 @@ export declare class RoomController {
         searchRadiusKm: number;
         scheduledAt: Date;
     }>;
+    getCurrentRoom(currentUser: AccessTokenPayload): Promise<{
+        id: string;
+        name: string;
+        status: import("../database/generated/prisma/enums").RoomStatus;
+        statusDescription: string;
+        memberCount: number;
+        members: string[];
+    } | null>;
     getRoom(roomId: string, currentUser: AccessTokenPayload): Promise<{
         inviteToken?: string | undefined;
         inviteLink?: string | undefined;

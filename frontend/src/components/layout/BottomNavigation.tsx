@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { Clock, Home, Receipt, User } from "lucide-react";
 import { ROUTES } from "@/config/routes";
 import { cn } from "@/lib/utils/cn";
@@ -18,6 +19,16 @@ export function BottomNavigation({
   activeTab = "home",
   className,
 }: BottomNavigationProps) {
+  const pathname = usePathname();
+  const resolvedActiveTab =
+    pathname === ROUTES.PROFILE
+      ? "profile"
+      : pathname === ROUTES.HISTORY
+        ? "history"
+        : pathname === ROUTES.BILLS
+          ? "bills"
+          : activeTab;
+
   const tabs = [
     {
       id: "home" as const,
@@ -31,7 +42,7 @@ export function BottomNavigation({
       label: "History",
       icon: Clock,
       href: ROUTES.HISTORY,
-      isAvailable: false,
+      isAvailable: true,
     },
     {
       id: "bills" as const,
@@ -45,7 +56,7 @@ export function BottomNavigation({
       label: "Profile",
       icon: User,
       href: ROUTES.PROFILE,
-      isAvailable: false,
+      isAvailable: true,
     },
   ];
 
@@ -60,7 +71,7 @@ export function BottomNavigation({
       <PageContainer maxWidth="auth" paddingY="none">
         <ul className="flex items-center justify-around gap-1.5" role="list">
           {tabs.map((tab) => {
-            const isActive = tab.id === activeTab;
+            const isActive = tab.id === resolvedActiveTab;
             const Icon = tab.icon;
 
             return (

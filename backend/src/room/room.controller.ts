@@ -35,6 +35,11 @@ export class RoomController {
     return this.roomPreviewService.findRoomByInviteToken(inviteToken);
   }
 
+  @Get('me/current')
+  getCurrentRoom(@CurrentUser() currentUser: AccessTokenPayload) {
+    return this.joinRoomService.getCurrentRoom(currentUser.sub);
+  }
+
   @Get(':roomId')
   getRoom(
     @Param('roomId') roomId: string,

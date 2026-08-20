@@ -4,6 +4,7 @@
 
 export interface AuthenticatedUserDisplay {
   name: string;
+  email?: string;
   avatarUrl?: string;
 }
 

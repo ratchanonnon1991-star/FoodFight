@@ -43,6 +43,15 @@ export interface RoomLobby extends RoomBase {
   members: RoomMember[];
 }
 
+export interface CurrentRoom {
+  id: string;
+  name: string;
+  status: Extract<RoomStatus, "LOBBY" | "IN_PROGRESS">;
+  statusDescription: string;
+  memberCount: number;
+  members: string[];
+}
+
 export interface CreateRoomInput {
   name: string;
   maxMembers: number;

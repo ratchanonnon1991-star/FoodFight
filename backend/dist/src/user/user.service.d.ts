@@ -43,7 +43,7 @@ export declare class UserService {
         role: import("../database/generated/prisma/enums").Role;
         createdAt: Date;
     }>;
-    updateMe(userId: string, displayName: string): Promise<{
+    updateMe(userId: string, displayName: string, avatarUrl?: string | null): Promise<{
         id: string;
         displayName: string;
         email: string;

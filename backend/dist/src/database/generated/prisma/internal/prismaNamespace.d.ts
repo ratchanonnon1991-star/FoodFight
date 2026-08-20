@@ -162,9 +162,11 @@ type FieldRefInputType<Model, FieldType> = Model extends never ? never : FieldRe
 export declare const ModelName: {
     readonly User: "User";
     readonly Account: "Account";
+    readonly RefreshToken: "RefreshToken";
     readonly EmailVerification: "EmailVerification";
     readonly PasswordReset: "PasswordReset";
     readonly FoodProfile: "FoodProfile";
+    readonly PaymentAccount: "PaymentAccount";
     readonly Room: "Room";
     readonly RoomMember: "RoomMember";
     readonly FoodFightSession: "FoodFightSession";
@@ -194,7 +196,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         omit: GlobalOmitOptions;
     };
     meta: {
-        modelProps: "user" | "account" | "emailVerification" | "passwordReset" | "foodProfile" | "room" | "roomMember" | "foodFightSession" | "sessionMember" | "mealPreference" | "recommendationRound" | "recommendationItem" | "vote" | "finalVote" | "finalSelection" | "restaurantRecommendation" | "restaurantSelection" | "bill" | "receipt" | "receiptItem" | "itemShare" | "userPayment";
+        modelProps: "user" | "account" | "refreshToken" | "emailVerification" | "passwordReset" | "foodProfile" | "paymentAccount" | "room" | "roomMember" | "foodFightSession" | "sessionMember" | "mealPreference" | "recommendationRound" | "recommendationItem" | "vote" | "finalVote" | "finalSelection" | "restaurantRecommendation" | "restaurantSelection" | "bill" | "receipt" | "receiptItem" | "itemShare" | "userPayment";
         txIsolationLevel: TransactionIsolationLevel;
     };
     model: {
@@ -343,6 +345,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
                 count: {
                     args: Prisma.AccountCountArgs<ExtArgs>;
                     result: runtime.Types.Utils.Optional<Prisma.AccountCountAggregateOutputType> | number;
+                };
+            };
+        };
+        RefreshToken: {
+            payload: Prisma.$RefreshTokenPayload<ExtArgs>;
+            fields: Prisma.RefreshTokenFieldRefs;
+            operations: {
+                findUnique: {
+                    args: Prisma.RefreshTokenFindUniqueArgs<ExtArgs>;
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$RefreshTokenPayload> | null;
+                };
+                findUniqueOrThrow: {
+                    args: Prisma.RefreshTokenFindUniqueOrThrowArgs<ExtArgs>;
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$RefreshTokenPayload>;
+                };
+                findFirst: {
+                    args: Prisma.RefreshTokenFindFirstArgs<ExtArgs>;
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$RefreshTokenPayload> | null;
+                };
+                findFirstOrThrow: {
+                    args: Prisma.RefreshTokenFindFirstOrThrowArgs<ExtArgs>;
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$RefreshTokenPayload>;
+                };
+                findMany: {
+                    args: Prisma.RefreshTokenFindManyArgs<ExtArgs>;
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$RefreshTokenPayload>[];
+                };
+                create: {
+                    args: Prisma.RefreshTokenCreateArgs<ExtArgs>;
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$RefreshTokenPayload>;
+                };
+                createMany: {
+                    args: Prisma.RefreshTokenCreateManyArgs<ExtArgs>;
+                    result: BatchPayload;
+                };
+                createManyAndReturn: {
+                    args: Prisma.RefreshTokenCreateManyAndReturnArgs<ExtArgs>;
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$RefreshTokenPayload>[];
+                };
+                delete: {
+                    args: Prisma.RefreshTokenDeleteArgs<ExtArgs>;
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$RefreshTokenPayload>;
+                };
+                update: {
+                    args: Prisma.RefreshTokenUpdateArgs<ExtArgs>;
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$RefreshTokenPayload>;
+                };
+                deleteMany: {
+                    args: Prisma.RefreshTokenDeleteManyArgs<ExtArgs>;
+                    result: BatchPayload;
+                };
+                updateMany: {
+                    args: Prisma.RefreshTokenUpdateManyArgs<ExtArgs>;
+                    result: BatchPayload;
+                };
+                updateManyAndReturn: {
+                    args: Prisma.RefreshTokenUpdateManyAndReturnArgs<ExtArgs>;
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$RefreshTokenPayload>[];
+                };
+                upsert: {
+                    args: Prisma.RefreshTokenUpsertArgs<ExtArgs>;
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$RefreshTokenPayload>;
+                };
+                aggregate: {
+                    args: Prisma.RefreshTokenAggregateArgs<ExtArgs>;
+                    result: runtime.Types.Utils.Optional<Prisma.AggregateRefreshToken>;
+                };
+                groupBy: {
+                    args: Prisma.RefreshTokenGroupByArgs<ExtArgs>;
+                    result: runtime.Types.Utils.Optional<Prisma.RefreshTokenGroupByOutputType>[];
+                };
+                count: {
+                    args: Prisma.RefreshTokenCountArgs<ExtArgs>;
+                    result: runtime.Types.Utils.Optional<Prisma.RefreshTokenCountAggregateOutputType> | number;
                 };
             };
         };
@@ -565,6 +641,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
                 count: {
                     args: Prisma.FoodProfileCountArgs<ExtArgs>;
                     result: runtime.Types.Utils.Optional<Prisma.FoodProfileCountAggregateOutputType> | number;
+                };
+            };
+        };
+        PaymentAccount: {
+            payload: Prisma.$PaymentAccountPayload<ExtArgs>;
+            fields: Prisma.PaymentAccountFieldRefs;
+            operations: {
+                findUnique: {
+                    args: Prisma.PaymentAccountFindUniqueArgs<ExtArgs>;
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$PaymentAccountPayload> | null;
+                };
+                findUniqueOrThrow: {
+                    args: Prisma.PaymentAccountFindUniqueOrThrowArgs<ExtArgs>;
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$PaymentAccountPayload>;
+                };
+                findFirst: {
+                    args: Prisma.PaymentAccountFindFirstArgs<ExtArgs>;
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$PaymentAccountPayload> | null;
+                };
+                findFirstOrThrow: {
+                    args: Prisma.PaymentAccountFindFirstOrThrowArgs<ExtArgs>;
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$PaymentAccountPayload>;
+                };
+                findMany: {
+                    args: Prisma.PaymentAccountFindManyArgs<ExtArgs>;
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$PaymentAccountPayload>[];
+                };
+                create: {
+                    args: Prisma.PaymentAccountCreateArgs<ExtArgs>;
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$PaymentAccountPayload>;
+                };
+                createMany: {
+                    args: Prisma.PaymentAccountCreateManyArgs<ExtArgs>;
+                    result: BatchPayload;
+                };
+                createManyAndReturn: {
+                    args: Prisma.PaymentAccountCreateManyAndReturnArgs<ExtArgs>;
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$PaymentAccountPayload>[];
+                };
+                delete: {
+                    args: Prisma.PaymentAccountDeleteArgs<ExtArgs>;
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$PaymentAccountPayload>;
+                };
+                update: {
+                    args: Prisma.PaymentAccountUpdateArgs<ExtArgs>;
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$PaymentAccountPayload>;
+                };
+                deleteMany: {
+                    args: Prisma.PaymentAccountDeleteManyArgs<ExtArgs>;
+                    result: BatchPayload;
+                };
+                updateMany: {
+                    args: Prisma.PaymentAccountUpdateManyArgs<ExtArgs>;
+                    result: BatchPayload;
+                };
+                updateManyAndReturn: {
+                    args: Prisma.PaymentAccountUpdateManyAndReturnArgs<ExtArgs>;
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$PaymentAccountPayload>[];
+                };
+                upsert: {
+                    args: Prisma.PaymentAccountUpsertArgs<ExtArgs>;
+                    result: runtime.Types.Utils.PayloadToResult<Prisma.$PaymentAccountPayload>;
+                };
+                aggregate: {
+                    args: Prisma.PaymentAccountAggregateArgs<ExtArgs>;
+                    result: runtime.Types.Utils.Optional<Prisma.AggregatePaymentAccount>;
+                };
+                groupBy: {
+                    args: Prisma.PaymentAccountGroupByArgs<ExtArgs>;
+                    result: runtime.Types.Utils.Optional<Prisma.PaymentAccountGroupByOutputType>[];
+                };
+                count: {
+                    args: Prisma.PaymentAccountCountArgs<ExtArgs>;
+                    result: runtime.Types.Utils.Optional<Prisma.PaymentAccountCountAggregateOutputType> | number;
                 };
             };
         };
@@ -1878,6 +2028,15 @@ export declare const AccountScalarFieldEnum: {
     readonly updatedAt: "updatedAt";
 };
 export type AccountScalarFieldEnum = (typeof AccountScalarFieldEnum)[keyof typeof AccountScalarFieldEnum];
+export declare const RefreshTokenScalarFieldEnum: {
+    readonly id: "id";
+    readonly userId: "userId";
+    readonly tokenHash: "tokenHash";
+    readonly expiresAt: "expiresAt";
+    readonly revokedAt: "revokedAt";
+    readonly createdAt: "createdAt";
+};
+export type RefreshTokenScalarFieldEnum = (typeof RefreshTokenScalarFieldEnum)[keyof typeof RefreshTokenScalarFieldEnum];
 export declare const EmailVerificationScalarFieldEnum: {
     readonly id: "id";
     readonly userId: "userId";
@@ -1911,6 +2070,17 @@ export declare const FoodProfileScalarFieldEnum: {
     readonly updatedAt: "updatedAt";
 };
 export type FoodProfileScalarFieldEnum = (typeof FoodProfileScalarFieldEnum)[keyof typeof FoodProfileScalarFieldEnum];
+export declare const PaymentAccountScalarFieldEnum: {
+    readonly id: "id";
+    readonly userId: "userId";
+    readonly paymentType: "paymentType";
+    readonly accountName: "accountName";
+    readonly promptPayNumber: "promptPayNumber";
+    readonly qrCodeUrl: "qrCodeUrl";
+    readonly createdAt: "createdAt";
+    readonly updatedAt: "updatedAt";
+};
+export type PaymentAccountScalarFieldEnum = (typeof PaymentAccountScalarFieldEnum)[keyof typeof PaymentAccountScalarFieldEnum];
 export declare const RoomScalarFieldEnum: {
     readonly id: "id";
     readonly hostId: "hostId";
@@ -2215,9 +2385,11 @@ export type PrismaClientOptions = PrismaClientOptionsWithAccelerateUrl | PrismaC
 export type GlobalOmitConfig = {
     user?: Prisma.UserOmit;
     account?: Prisma.AccountOmit;
+    refreshToken?: Prisma.RefreshTokenOmit;
     emailVerification?: Prisma.EmailVerificationOmit;
     passwordReset?: Prisma.PasswordResetOmit;
     foodProfile?: Prisma.FoodProfileOmit;
+    paymentAccount?: Prisma.PaymentAccountOmit;
     room?: Prisma.RoomOmit;
     roomMember?: Prisma.RoomMemberOmit;
     foodFightSession?: Prisma.FoodFightSessionOmit;

@@ -65,7 +65,16 @@ export declare class JoinRoomService {
         status: RoomStatus;
         roomCode: string;
     }>;
+    getCurrentRoom(userId: string): Promise<{
+        id: string;
+        name: string;
+        status: RoomStatus;
+        statusDescription: string;
+        memberCount: number;
+        members: string[];
+    } | null>;
     private readonly lobbyRoomSelect;
+    private readonly currentRoomSelect;
     private toLobbyResponse;
     private buildInviteLink;
     private isPrismaError;

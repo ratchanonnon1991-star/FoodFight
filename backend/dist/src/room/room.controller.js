@@ -38,6 +38,9 @@ let RoomController = class RoomController {
     findRoomByInviteToken(inviteToken) {
         return this.roomPreviewService.findRoomByInviteToken(inviteToken);
     }
+    getCurrentRoom(currentUser) {
+        return this.joinRoomService.getCurrentRoom(currentUser.sub);
+    }
     getRoom(roomId, currentUser) {
         return this.joinRoomService.getRoom(roomId, currentUser.sub);
     }
@@ -70,6 +73,13 @@ __decorate([
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", void 0)
 ], RoomController.prototype, "findRoomByInviteToken", null);
+__decorate([
+    (0, common_1.Get)('me/current'),
+    __param(0, (0, current_user_decorator_1.CurrentUser)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", void 0)
+], RoomController.prototype, "getCurrentRoom", null);
 __decorate([
     (0, common_1.Get)(':roomId'),
     __param(0, (0, common_1.Param)('roomId')),

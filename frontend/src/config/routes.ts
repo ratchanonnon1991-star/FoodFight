@@ -31,5 +31,6 @@ export const ROUTES = {
   HISTORY: "/history",
   BILLS: "/bills",
   PROFILE: "/profile",
+  PAYMENT_ACCOUNT: "/payment-account",
   DESIGN_SYSTEM: "/design-system",
 } as const;

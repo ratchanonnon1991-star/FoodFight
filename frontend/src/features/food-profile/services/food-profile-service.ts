@@ -1,4 +1,5 @@
 import { API_BASE_URL } from "@/config/api";
+import { apiFetch } from "@/config/api-client";
 import { resolveAuthMode, setMockFoodProfileComplete } from "@/features/auth/services/auth-runtime";
 import type { FoodProfileDraft } from "../types/food-profile-types";
 
@@ -92,10 +93,10 @@ export async function getMyFoodProfile(
       headers["Authorization"] = `Bearer ${token}`;
     }
 
-    const response = await fetch(`${API_BASE_URL}/food-profile/me`, {
+    const response = await apiFetch(`${API_BASE_URL}/food-profile/me`, {
       method: "GET",
       headers,
-    });
+    }, token);
 
     if (response.status === 200) {
       const data = (await response.json()) as FoodProfileResponse;
@@ -159,11 +160,11 @@ export async function saveMyFoodProfile(
       headers["Authorization"] = `Bearer ${token}`;
     }
 
-    const response = await fetch(`${API_BASE_URL}/food-profile/me`, {
+    const response = await apiFetch(`${API_BASE_URL}/food-profile/me`, {
       method: "PUT",
       headers,
       body: JSON.stringify(input),
-    });
+    }, token);
 
     if (response.ok) {
       const data = (await response.json()) as FoodProfileResponse;

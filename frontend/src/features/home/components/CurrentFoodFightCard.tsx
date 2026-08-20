@@ -1,11 +1,13 @@
 "use client";
 
 import * as React from "react";
+import Link from "next/link";
 import { ChevronRight, Clock, User, Users, UtensilsCrossed } from "lucide-react";
+import { ROUTES } from "@/config/routes";
 import type { CurrentFoodFightSession } from "../types/home-types";
 
 export interface CurrentFoodFightCardProps {
-  session: CurrentFoodFightSession;
+  session: CurrentFoodFightSession | null;
   onContinue?: () => void;
 }
 
@@ -26,8 +28,9 @@ export function CurrentFoodFightCard({
         </h2>
       </div>
 
-      {/* Main Card with increased visual weight */}
-      <div className="p-5 sm:p-6 rounded-2xl border border-border/80 bg-surface shadow-xs space-y-4 sm:space-y-5">
+      {session ? (
+        /* Main Card with increased visual weight */
+        <div className="p-5 sm:p-6 rounded-2xl border border-border/80 bg-surface shadow-xs space-y-4 sm:space-y-5">
         {/* Top Info Section */}
         <div className="flex items-center gap-4">
           {/* Room Avatar Placeholder */}
@@ -73,9 +76,11 @@ export function CurrentFoodFightCard({
                 <User className="size-4" />
               </div>
             ))}
-            <div className="size-8 rounded-full bg-surface-subtle border-2 border-surface flex items-center justify-center text-xs font-bold text-text-secondary shadow-2xs">
-              +1
-            </div>
+            {session.members.length > 4 ? (
+              <div className="size-8 rounded-full bg-surface-subtle border-2 border-surface flex items-center justify-center text-xs font-bold text-text-secondary shadow-2xs">
+                +{session.members.length - 4}
+              </div>
+            ) : null}
           </div>
 
           {/* Continue Button */}
@@ -88,7 +93,24 @@ export function CurrentFoodFightCard({
             <ChevronRight className="size-4" />
           </button>
         </div>
-      </div>
+        </div>
+      ) : (
+        <div className="rounded-2xl border border-dashed border-border bg-surface p-6 text-center shadow-xs">
+          <div className="mx-auto flex size-12 items-center justify-center rounded-2xl bg-surface-subtle text-brand-primary">
+            <UtensilsCrossed className="size-6" />
+          </div>
+          <h3 className="mt-3 text-base font-bold text-text-primary">No active FoodFight</h3>
+          <p className="mx-auto mt-1.5 max-w-xs text-sm leading-relaxed text-text-secondary">
+            Start a new room or join friends to begin deciding on your next meal.
+          </p>
+          <Link
+            href={ROUTES.ROOM.CREATE}
+            className="mt-4 inline-flex h-10 items-center rounded-xl bg-brand-primary px-4 text-sm font-semibold text-white hover:bg-brand-primary-hover"
+          >
+            Start a FoodFight
+          </Link>
+        </div>
+      )}
     </section>
   );
 }
