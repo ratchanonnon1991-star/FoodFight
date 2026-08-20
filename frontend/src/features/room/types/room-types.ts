@@ -38,26 +38,30 @@ export type RoomPreview = RoomBase;
 
 export interface RoomLobby extends RoomBase {
   roomCode: string;
+  isHost: boolean;
+  currentMember: {
+    id: string;
+    isReady: boolean;
+  } | null;
   inviteToken?: string;
   inviteLink?: string;
   members: RoomMember[];
 }
 
-export interface CurrentRoom {
-  id: string;
-  name: string;
-  status: Extract<RoomStatus, "LOBBY" | "IN_PROGRESS">;
-  statusDescription: string;
-  memberCount: number;
-  members: string[];
+export interface LocationSearchSuggestion {
+  locationName: string;
+  latitude: number;
+  longitude: number;
 }
 
 export interface CreateRoomInput {
   name: string;
   maxMembers: number;
   locationName: string;
-  latitude?: number;
-  longitude?: number;
+  latitude?: number | null;
+  longitude?: number | null;
   searchRadiusKm: 1 | 3 | 5 | 10;
   scheduledAt: string;
 }
+
+export type UpdateRoomInput = Partial<CreateRoomInput>;

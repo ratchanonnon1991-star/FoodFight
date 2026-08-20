@@ -6,6 +6,14 @@ import { LogIn, LogOut, UserPlus } from "lucide-react";
 import { PageContainer } from "@/components/layout/PageContainer";
 import { Button } from "@/components/ui/Button";
 import { ROUTES } from "@/config/routes";
+import { API_BASE_URL } from "@/config/api";
+import { roomService } from "@/features/room/services/room-service";
+import type { RoomLobby } from "@/features/room/types/room-types";
+import type {
+  AuthenticatedUserDisplay,
+  CurrentFoodFightSession,
+} from "@/features/home/types/home-types";
+import { DEMO_RECENT_FOODFIGHTS, DEMO_TIP } from "../constants/home-demo-data";
 import { apiFetch, getStoredAccessToken } from "@/config/api-client";
 import { HOME_TIP } from "../constants/home-static-data";
 import { HomeHeader } from "./HomeHeader";
@@ -38,7 +46,8 @@ function mapHistoryToRecentItem(item: HistoryItem): RecentFoodFightItemData {
     memberCount: item.memberCount,
     iconType: normalizedMenuName.includes("pizza")
       ? "pizza"
-      : normalizedMenuName.includes("drink") || normalizedMenuName.includes("tea")
+      : normalizedMenuName.includes("drink") ||
+          normalizedMenuName.includes("tea")
         ? "drink"
         : "soup",
     href: ROUTES.HISTORY,
@@ -60,6 +69,8 @@ export function AuthenticatedHome({
 }: AuthenticatedHomeProps) {
   const router = useRouter();
   const [user, setUser] = React.useState<AuthenticatedUserDisplay | null>(null);
+  const [currentSession, setCurrentSession] =
+    React.useState<CurrentFoodFightSession | null>(null);
   const [currentFoodFight, setCurrentFoodFight] =
     React.useState<CurrentFoodFightSession | null>(null);
   const [recentFoodFights, setRecentFoodFights] = React.useState<
@@ -100,11 +111,33 @@ export function AuthenticatedHome({
       };
     }
 
-    apiFetch(`${API_BASE_URL}/auth/me`, {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
+    const loadCurrentRoom = async () => {
+      try {
+        const currentRoom = await roomService.getCurrentRoom();
+
+        if (isMounted) {
+          setCurrentSession(
+            currentRoom ? toCurrentFoodFightSession(currentRoom) : null,
+          );
+        }
+      } catch {
+        if (isMounted) {
+          setCurrentSession(null);
+        }
+      }
+    };
+
+    void loadCurrentRoom();
+
+    apiFetch(
+      `${API_BASE_URL}/auth/me`,
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
       },
-    }, accessToken)
+      accessToken,
+    )
       .then(async (response) => {
         if (!response.ok) {
           throw new Error("Session is no longer valid");
@@ -169,7 +202,8 @@ export function AuthenticatedHome({
             ? {
                 id: currentRoom.id,
                 title: currentRoom.name,
-                status: currentRoom.status === "LOBBY" ? "Lobby" : "In progress",
+                status:
+                  currentRoom.status === "LOBBY" ? "Lobby" : "In progress",
                 memberCount: currentRoom.memberCount,
                 statusDescription: currentRoom.statusDescription,
                 members: currentRoom.members,
@@ -180,7 +214,9 @@ export function AuthenticatedHome({
       }
 
       if (historyResult.status === "fulfilled") {
-        setRecentFoodFights(historyResult.value.slice(0, 3).map(mapHistoryToRecentItem));
+        setRecentFoodFights(
+          historyResult.value.slice(0, 3).map(mapHistoryToRecentItem),
+        );
       }
     };
 
@@ -190,6 +226,17 @@ export function AuthenticatedHome({
       isMounted = false;
     };
   }, []);
+
+  const continueCurrentRoom = () => {
+    if (onContinueCurrent) {
+      onContinueCurrent();
+      return;
+    }
+
+    if (currentSession?.continueHref) {
+      router.push(currentSession.continueHref);
+    }
+  };
 
   return (
     <main className="min-h-dvh bg-background text-text-primary">
@@ -225,12 +272,22 @@ export function AuthenticatedHome({
         </div>
 
         {/* 3. Current FoodFight Section */}
+        {currentSession ? (
+          <CurrentFoodFightCard
+            session={currentSession}
+            onContinue={continueCurrentRoom}
+          />
+        ) : null}
         <CurrentFoodFightCard
           session={currentFoodFight}
           onContinue={
             onContinueCurrent ??
             (currentFoodFight
-              ? () => router.push(currentFoodFight.continueHref ?? ROUTES.ROOM.LOBBY(currentFoodFight.id))
+              ? () =>
+                  router.push(
+                    currentFoodFight.continueHref ??
+                      ROUTES.ROOM.LOBBY(currentFoodFight.id),
+                  )
               : undefined)
           }
         />
@@ -260,4 +317,31 @@ export function AuthenticatedHome({
       </PageContainer>
     </main>
   );
+}
+
+function toCurrentFoodFightSession(room: RoomLobby): CurrentFoodFightSession {
+  const isLobby = room.status === "LOBBY";
+
+  return {
+    id: room.id,
+    title: room.name,
+    status: isLobby ? "Lobby" : "In progress",
+    memberCount: room.memberCount,
+    statusDescription: isLobby
+      ? "Waiting for preferences"
+      : "FoodFight in progress",
+    members: [
+      {
+        id: `host-${room.id}`,
+        name: room.host.displayName,
+        avatarUrl: room.host.avatarUrl,
+      },
+      ...room.members.map((member) => ({
+        id: member.id,
+        name: member.displayName,
+        avatarUrl: member.avatarUrl,
+      })),
+    ],
+    continueHref: ROUTES.ROOM.LOBBY(room.id),
+  };
 }

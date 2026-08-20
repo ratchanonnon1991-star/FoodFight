@@ -1,9 +1,18 @@
 "use client";
 
+/* Profile images are supplied by external OAuth providers. */
+/* eslint-disable @next/next/no-img-element */
+
 import * as React from "react";
 import Link from "next/link";
 import { Bell } from "lucide-react";
-import { ChevronDown, CreditCard, LogOut, Pencil, Utensils } from "lucide-react";
+import {
+  ChevronDown,
+  CreditCard,
+  LogOut,
+  Pencil,
+  Utensils,
+} from "lucide-react";
 import { ROUTES } from "@/config/routes";
 import type { AuthenticatedUserDisplay } from "../types/home-types";
 
@@ -55,6 +64,9 @@ export function HomeHeader({
   }, [isMenuOpen]);
 
   const initial = user.name.trim().charAt(0).toUpperCase() || "?";
+  const shouldShowImage = Boolean(
+    user.avatarUrl && failedImageUrl !== user.avatarUrl,
+  );
 
   return (
     <header className="flex items-start justify-between gap-3 pt-2">
@@ -124,9 +136,13 @@ export function HomeHeader({
               className="absolute right-0 z-50 mt-2 w-64 overflow-hidden rounded-2xl border border-border bg-surface shadow-lg"
             >
               <div className="border-b border-border-subtle px-4 py-3">
-                <p className="truncate text-sm font-bold text-text-primary">{user.name}</p>
+                <p className="truncate text-sm font-bold text-text-primary">
+                  {user.name}
+                </p>
                 {user.email ? (
-                  <p className="truncate text-xs text-text-secondary">{user.email}</p>
+                  <p className="truncate text-xs text-text-secondary">
+                    {user.email}
+                  </p>
                 ) : null}
               </div>
 

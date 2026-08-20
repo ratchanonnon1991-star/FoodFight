@@ -8,13 +8,19 @@ export interface AuthenticatedUserDisplay {
   avatarUrl?: string;
 }
 
+export interface CurrentFoodFightMember {
+  id: string;
+  name: string;
+  avatarUrl?: string | null;
+}
+
 export interface CurrentFoodFightSession {
   id: string;
   title: string;
   status: string;
   memberCount: number;
   statusDescription: string;
-  members: string[];
+  members: CurrentFoodFightMember[];
   continueHref?: string;
 }
 
