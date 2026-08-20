@@ -22,6 +22,7 @@ const envSchema = zod_1.default.object({
     MAIL_PASSWORD: zod_1.default.string().min(1),
     MAIL_FROM: zod_1.default.string().min(1),
     FRONTEND_URL: zod_1.default.string().url().default('http://localhost:3000'),
+    GOOGLE_AI_API_KEY: zod_1.default.string().min(1).optional(),
 });
 function validate(config) {
     const parsed = envSchema.safeParse(config);

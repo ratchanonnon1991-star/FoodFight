@@ -33,6 +33,7 @@ export type BillMinAggregateOutputType = {
     tax: runtime.Decimal | null;
     discount: runtime.Decimal | null;
     totalAmount: runtime.Decimal | null;
+    closedAt: Date | null;
     createdAt: Date | null;
     updatedAt: Date | null;
 };
@@ -46,6 +47,7 @@ export type BillMaxAggregateOutputType = {
     tax: runtime.Decimal | null;
     discount: runtime.Decimal | null;
     totalAmount: runtime.Decimal | null;
+    closedAt: Date | null;
     createdAt: Date | null;
     updatedAt: Date | null;
 };
@@ -59,6 +61,7 @@ export type BillCountAggregateOutputType = {
     tax: number;
     discount: number;
     totalAmount: number;
+    closedAt: number;
     createdAt: number;
     updatedAt: number;
     _all: number;
@@ -87,6 +90,7 @@ export type BillMinAggregateInputType = {
     tax?: true;
     discount?: true;
     totalAmount?: true;
+    closedAt?: true;
     createdAt?: true;
     updatedAt?: true;
 };
@@ -100,6 +104,7 @@ export type BillMaxAggregateInputType = {
     tax?: true;
     discount?: true;
     totalAmount?: true;
+    closedAt?: true;
     createdAt?: true;
     updatedAt?: true;
 };
@@ -113,6 +118,7 @@ export type BillCountAggregateInputType = {
     tax?: true;
     discount?: true;
     totalAmount?: true;
+    closedAt?: true;
     createdAt?: true;
     updatedAt?: true;
     _all?: true;
@@ -155,6 +161,7 @@ export type BillGroupByOutputType = {
     tax: runtime.Decimal | null;
     discount: runtime.Decimal | null;
     totalAmount: runtime.Decimal | null;
+    closedAt: Date | null;
     createdAt: Date;
     updatedAt: Date;
     _count: BillCountAggregateOutputType | null;
@@ -179,6 +186,7 @@ export type BillWhereInput = {
     tax?: Prisma.DecimalNullableFilter<"Bill"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null;
     discount?: Prisma.DecimalNullableFilter<"Bill"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null;
     totalAmount?: Prisma.DecimalNullableFilter<"Bill"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null;
+    closedAt?: Prisma.DateTimeNullableFilter<"Bill"> | Date | string | null;
     createdAt?: Prisma.DateTimeFilter<"Bill"> | Date | string;
     updatedAt?: Prisma.DateTimeFilter<"Bill"> | Date | string;
     session?: Prisma.XOR<Prisma.FoodFightSessionScalarRelationFilter, Prisma.FoodFightSessionWhereInput>;
@@ -197,6 +205,7 @@ export type BillOrderByWithRelationInput = {
     tax?: Prisma.SortOrderInput | Prisma.SortOrder;
     discount?: Prisma.SortOrderInput | Prisma.SortOrder;
     totalAmount?: Prisma.SortOrderInput | Prisma.SortOrder;
+    closedAt?: Prisma.SortOrderInput | Prisma.SortOrder;
     createdAt?: Prisma.SortOrder;
     updatedAt?: Prisma.SortOrder;
     session?: Prisma.FoodFightSessionOrderByWithRelationInput;
@@ -218,6 +227,7 @@ export type BillWhereUniqueInput = Prisma.AtLeast<{
     tax?: Prisma.DecimalNullableFilter<"Bill"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null;
     discount?: Prisma.DecimalNullableFilter<"Bill"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null;
     totalAmount?: Prisma.DecimalNullableFilter<"Bill"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null;
+    closedAt?: Prisma.DateTimeNullableFilter<"Bill"> | Date | string | null;
     createdAt?: Prisma.DateTimeFilter<"Bill"> | Date | string;
     updatedAt?: Prisma.DateTimeFilter<"Bill"> | Date | string;
     session?: Prisma.XOR<Prisma.FoodFightSessionScalarRelationFilter, Prisma.FoodFightSessionWhereInput>;
@@ -236,6 +246,7 @@ export type BillOrderByWithAggregationInput = {
     tax?: Prisma.SortOrderInput | Prisma.SortOrder;
     discount?: Prisma.SortOrderInput | Prisma.SortOrder;
     totalAmount?: Prisma.SortOrderInput | Prisma.SortOrder;
+    closedAt?: Prisma.SortOrderInput | Prisma.SortOrder;
     createdAt?: Prisma.SortOrder;
     updatedAt?: Prisma.SortOrder;
     _count?: Prisma.BillCountOrderByAggregateInput;
@@ -257,6 +268,7 @@ export type BillScalarWhereWithAggregatesInput = {
     tax?: Prisma.DecimalNullableWithAggregatesFilter<"Bill"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null;
     discount?: Prisma.DecimalNullableWithAggregatesFilter<"Bill"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null;
     totalAmount?: Prisma.DecimalNullableWithAggregatesFilter<"Bill"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null;
+    closedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Bill"> | Date | string | null;
     createdAt?: Prisma.DateTimeWithAggregatesFilter<"Bill"> | Date | string;
     updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Bill"> | Date | string;
 };
@@ -268,6 +280,7 @@ export type BillCreateInput = {
     tax?: runtime.Decimal | runtime.DecimalJsLike | number | string | null;
     discount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null;
     totalAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null;
+    closedAt?: Date | string | null;
     createdAt?: Date | string;
     updatedAt?: Date | string;
     session: Prisma.FoodFightSessionCreateNestedOneWithoutBillInput;
@@ -286,6 +299,7 @@ export type BillUncheckedCreateInput = {
     tax?: runtime.Decimal | runtime.DecimalJsLike | number | string | null;
     discount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null;
     totalAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null;
+    closedAt?: Date | string | null;
     createdAt?: Date | string;
     updatedAt?: Date | string;
     receipt?: Prisma.ReceiptUncheckedCreateNestedOneWithoutBillInput;
@@ -300,6 +314,7 @@ export type BillUpdateInput = {
     tax?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null;
     discount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null;
     totalAmount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null;
+    closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
     createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     session?: Prisma.FoodFightSessionUpdateOneRequiredWithoutBillNestedInput;
@@ -318,6 +333,7 @@ export type BillUncheckedUpdateInput = {
     tax?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null;
     discount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null;
     totalAmount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null;
+    closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
     createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     receipt?: Prisma.ReceiptUncheckedUpdateOneWithoutBillNestedInput;
@@ -334,6 +350,7 @@ export type BillCreateManyInput = {
     tax?: runtime.Decimal | runtime.DecimalJsLike | number | string | null;
     discount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null;
     totalAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null;
+    closedAt?: Date | string | null;
     createdAt?: Date | string;
     updatedAt?: Date | string;
 };
@@ -345,6 +362,7 @@ export type BillUpdateManyMutationInput = {
     tax?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null;
     discount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null;
     totalAmount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null;
+    closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
     createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
 };
@@ -358,6 +376,7 @@ export type BillUncheckedUpdateManyInput = {
     tax?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null;
     discount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null;
     totalAmount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null;
+    closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
     createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
 };
@@ -383,6 +402,7 @@ export type BillCountOrderByAggregateInput = {
     tax?: Prisma.SortOrder;
     discount?: Prisma.SortOrder;
     totalAmount?: Prisma.SortOrder;
+    closedAt?: Prisma.SortOrder;
     createdAt?: Prisma.SortOrder;
     updatedAt?: Prisma.SortOrder;
 };
@@ -403,6 +423,7 @@ export type BillMaxOrderByAggregateInput = {
     tax?: Prisma.SortOrder;
     discount?: Prisma.SortOrder;
     totalAmount?: Prisma.SortOrder;
+    closedAt?: Prisma.SortOrder;
     createdAt?: Prisma.SortOrder;
     updatedAt?: Prisma.SortOrder;
 };
@@ -416,6 +437,7 @@ export type BillMinOrderByAggregateInput = {
     tax?: Prisma.SortOrder;
     discount?: Prisma.SortOrder;
     totalAmount?: Prisma.SortOrder;
+    closedAt?: Prisma.SortOrder;
     createdAt?: Prisma.SortOrder;
     updatedAt?: Prisma.SortOrder;
 };
@@ -550,6 +572,7 @@ export type BillCreateWithoutCreatedByInput = {
     tax?: runtime.Decimal | runtime.DecimalJsLike | number | string | null;
     discount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null;
     totalAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null;
+    closedAt?: Date | string | null;
     createdAt?: Date | string;
     updatedAt?: Date | string;
     session: Prisma.FoodFightSessionCreateNestedOneWithoutBillInput;
@@ -566,6 +589,7 @@ export type BillUncheckedCreateWithoutCreatedByInput = {
     tax?: runtime.Decimal | runtime.DecimalJsLike | number | string | null;
     discount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null;
     totalAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null;
+    closedAt?: Date | string | null;
     createdAt?: Date | string;
     updatedAt?: Date | string;
     receipt?: Prisma.ReceiptUncheckedCreateNestedOneWithoutBillInput;
@@ -606,6 +630,7 @@ export type BillScalarWhereInput = {
     tax?: Prisma.DecimalNullableFilter<"Bill"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null;
     discount?: Prisma.DecimalNullableFilter<"Bill"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null;
     totalAmount?: Prisma.DecimalNullableFilter<"Bill"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null;
+    closedAt?: Prisma.DateTimeNullableFilter<"Bill"> | Date | string | null;
     createdAt?: Prisma.DateTimeFilter<"Bill"> | Date | string;
     updatedAt?: Prisma.DateTimeFilter<"Bill"> | Date | string;
 };
@@ -617,6 +642,7 @@ export type BillCreateWithoutSessionInput = {
     tax?: runtime.Decimal | runtime.DecimalJsLike | number | string | null;
     discount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null;
     totalAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null;
+    closedAt?: Date | string | null;
     createdAt?: Date | string;
     updatedAt?: Date | string;
     createdBy: Prisma.UserCreateNestedOneWithoutCreatedBillsInput;
@@ -633,6 +659,7 @@ export type BillUncheckedCreateWithoutSessionInput = {
     tax?: runtime.Decimal | runtime.DecimalJsLike | number | string | null;
     discount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null;
     totalAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null;
+    closedAt?: Date | string | null;
     createdAt?: Date | string;
     updatedAt?: Date | string;
     receipt?: Prisma.ReceiptUncheckedCreateNestedOneWithoutBillInput;
@@ -660,6 +687,7 @@ export type BillUpdateWithoutSessionInput = {
     tax?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null;
     discount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null;
     totalAmount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null;
+    closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
     createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     createdBy?: Prisma.UserUpdateOneRequiredWithoutCreatedBillsNestedInput;
@@ -676,6 +704,7 @@ export type BillUncheckedUpdateWithoutSessionInput = {
     tax?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null;
     discount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null;
     totalAmount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null;
+    closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
     createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     receipt?: Prisma.ReceiptUncheckedUpdateOneWithoutBillNestedInput;
@@ -690,6 +719,7 @@ export type BillCreateWithoutReceiptInput = {
     tax?: runtime.Decimal | runtime.DecimalJsLike | number | string | null;
     discount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null;
     totalAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null;
+    closedAt?: Date | string | null;
     createdAt?: Date | string;
     updatedAt?: Date | string;
     session: Prisma.FoodFightSessionCreateNestedOneWithoutBillInput;
@@ -707,6 +737,7 @@ export type BillUncheckedCreateWithoutReceiptInput = {
     tax?: runtime.Decimal | runtime.DecimalJsLike | number | string | null;
     discount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null;
     totalAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null;
+    closedAt?: Date | string | null;
     createdAt?: Date | string;
     updatedAt?: Date | string;
     items?: Prisma.ReceiptItemUncheckedCreateNestedManyWithoutBillInput;
@@ -733,6 +764,7 @@ export type BillUpdateWithoutReceiptInput = {
     tax?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null;
     discount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null;
     totalAmount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null;
+    closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
     createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     session?: Prisma.FoodFightSessionUpdateOneRequiredWithoutBillNestedInput;
@@ -750,6 +782,7 @@ export type BillUncheckedUpdateWithoutReceiptInput = {
     tax?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null;
     discount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null;
     totalAmount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null;
+    closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
     createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     items?: Prisma.ReceiptItemUncheckedUpdateManyWithoutBillNestedInput;
@@ -763,6 +796,7 @@ export type BillCreateWithoutItemsInput = {
     tax?: runtime.Decimal | runtime.DecimalJsLike | number | string | null;
     discount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null;
     totalAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null;
+    closedAt?: Date | string | null;
     createdAt?: Date | string;
     updatedAt?: Date | string;
     session: Prisma.FoodFightSessionCreateNestedOneWithoutBillInput;
@@ -780,6 +814,7 @@ export type BillUncheckedCreateWithoutItemsInput = {
     tax?: runtime.Decimal | runtime.DecimalJsLike | number | string | null;
     discount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null;
     totalAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null;
+    closedAt?: Date | string | null;
     createdAt?: Date | string;
     updatedAt?: Date | string;
     receipt?: Prisma.ReceiptUncheckedCreateNestedOneWithoutBillInput;
@@ -806,6 +841,7 @@ export type BillUpdateWithoutItemsInput = {
     tax?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null;
     discount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null;
     totalAmount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null;
+    closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
     createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     session?: Prisma.FoodFightSessionUpdateOneRequiredWithoutBillNestedInput;
@@ -823,6 +859,7 @@ export type BillUncheckedUpdateWithoutItemsInput = {
     tax?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null;
     discount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null;
     totalAmount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null;
+    closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
     createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     receipt?: Prisma.ReceiptUncheckedUpdateOneWithoutBillNestedInput;
@@ -836,6 +873,7 @@ export type BillCreateWithoutPaymentsInput = {
     tax?: runtime.Decimal | runtime.DecimalJsLike | number | string | null;
     discount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null;
     totalAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null;
+    closedAt?: Date | string | null;
     createdAt?: Date | string;
     updatedAt?: Date | string;
     session: Prisma.FoodFightSessionCreateNestedOneWithoutBillInput;
@@ -853,6 +891,7 @@ export type BillUncheckedCreateWithoutPaymentsInput = {
     tax?: runtime.Decimal | runtime.DecimalJsLike | number | string | null;
     discount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null;
     totalAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null;
+    closedAt?: Date | string | null;
     createdAt?: Date | string;
     updatedAt?: Date | string;
     receipt?: Prisma.ReceiptUncheckedCreateNestedOneWithoutBillInput;
@@ -879,6 +918,7 @@ export type BillUpdateWithoutPaymentsInput = {
     tax?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null;
     discount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null;
     totalAmount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null;
+    closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
     createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     session?: Prisma.FoodFightSessionUpdateOneRequiredWithoutBillNestedInput;
@@ -896,6 +936,7 @@ export type BillUncheckedUpdateWithoutPaymentsInput = {
     tax?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null;
     discount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null;
     totalAmount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null;
+    closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
     createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     receipt?: Prisma.ReceiptUncheckedUpdateOneWithoutBillNestedInput;
@@ -910,6 +951,7 @@ export type BillCreateManyCreatedByInput = {
     tax?: runtime.Decimal | runtime.DecimalJsLike | number | string | null;
     discount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null;
     totalAmount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null;
+    closedAt?: Date | string | null;
     createdAt?: Date | string;
     updatedAt?: Date | string;
 };
@@ -921,6 +963,7 @@ export type BillUpdateWithoutCreatedByInput = {
     tax?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null;
     discount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null;
     totalAmount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null;
+    closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
     createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     session?: Prisma.FoodFightSessionUpdateOneRequiredWithoutBillNestedInput;
@@ -937,6 +980,7 @@ export type BillUncheckedUpdateWithoutCreatedByInput = {
     tax?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null;
     discount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null;
     totalAmount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null;
+    closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
     createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     receipt?: Prisma.ReceiptUncheckedUpdateOneWithoutBillNestedInput;
@@ -952,6 +996,7 @@ export type BillUncheckedUpdateManyWithoutCreatedByInput = {
     tax?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null;
     discount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null;
     totalAmount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null;
+    closedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null;
     createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
     updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string;
 };
@@ -982,6 +1027,7 @@ export type BillSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
     tax?: boolean;
     discount?: boolean;
     totalAmount?: boolean;
+    closedAt?: boolean;
     createdAt?: boolean;
     updatedAt?: boolean;
     session?: boolean | Prisma.FoodFightSessionDefaultArgs<ExtArgs>;
@@ -1001,6 +1047,7 @@ export type BillSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
     tax?: boolean;
     discount?: boolean;
     totalAmount?: boolean;
+    closedAt?: boolean;
     createdAt?: boolean;
     updatedAt?: boolean;
     session?: boolean | Prisma.FoodFightSessionDefaultArgs<ExtArgs>;
@@ -1016,6 +1063,7 @@ export type BillSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
     tax?: boolean;
     discount?: boolean;
     totalAmount?: boolean;
+    closedAt?: boolean;
     createdAt?: boolean;
     updatedAt?: boolean;
     session?: boolean | Prisma.FoodFightSessionDefaultArgs<ExtArgs>;
@@ -1031,10 +1079,11 @@ export type BillSelectScalar = {
     tax?: boolean;
     discount?: boolean;
     totalAmount?: boolean;
+    closedAt?: boolean;
     createdAt?: boolean;
     updatedAt?: boolean;
 };
-export type BillOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "sessionId" | "createdById" | "status" | "subtotal" | "serviceCharge" | "tax" | "discount" | "totalAmount" | "createdAt" | "updatedAt", ExtArgs["result"]["bill"]>;
+export type BillOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "sessionId" | "createdById" | "status" | "subtotal" | "serviceCharge" | "tax" | "discount" | "totalAmount" | "closedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["bill"]>;
 export type BillInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
     session?: boolean | Prisma.FoodFightSessionDefaultArgs<ExtArgs>;
     createdBy?: boolean | Prisma.UserDefaultArgs<ExtArgs>;
@@ -1070,6 +1119,7 @@ export type $BillPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
         tax: runtime.Decimal | null;
         discount: runtime.Decimal | null;
         totalAmount: runtime.Decimal | null;
+        closedAt: Date | null;
         createdAt: Date;
         updatedAt: Date;
     }, ExtArgs["result"]["bill"]>;
@@ -1143,6 +1193,7 @@ export interface BillFieldRefs {
     readonly tax: Prisma.FieldRef<"Bill", 'Decimal'>;
     readonly discount: Prisma.FieldRef<"Bill", 'Decimal'>;
     readonly totalAmount: Prisma.FieldRef<"Bill", 'Decimal'>;
+    readonly closedAt: Prisma.FieldRef<"Bill", 'DateTime'>;
     readonly createdAt: Prisma.FieldRef<"Bill", 'DateTime'>;
     readonly updatedAt: Prisma.FieldRef<"Bill", 'DateTime'>;
 }

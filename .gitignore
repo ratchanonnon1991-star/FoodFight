@@ -4,6 +4,9 @@ node_modules
 
 /generated/prisma
 
+# uploaded files (receipts, slips, qr codes)
+/backend/uploads
+
 # compiled output
 /dist
 /build

@@ -132,7 +132,7 @@ export function PaymentAccountPageContent() {
     setIsSaving(true);
 
     try {
-      const savedAccount = await saveMyPaymentAccount(token, {
+      await saveMyPaymentAccount(token, {
         paymentType,
         accountName: nextAccountName,
         promptPayNumber: nextPromptPayNumber,
@@ -140,6 +140,7 @@ export function PaymentAccountPageContent() {
       });
 
       setSuccessMessage("Payment account saved successfully.");
+      router.push(ROUTES.AUTHENTICATED_HOME);
     } catch (error: unknown) {
       setErrorMessage(
         error instanceof Error ? error.message : "Unable to save payment account.",

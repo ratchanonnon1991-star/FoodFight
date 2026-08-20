@@ -2548,6 +2548,7 @@ export const BillScalarFieldEnum = {
   tax: 'tax',
   discount: 'discount',
   totalAmount: 'totalAmount',
+  closedAt: 'closedAt',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -2573,6 +2574,7 @@ export const ReceiptItemScalarFieldEnum = {
   id: 'id',
   billId: 'billId',
   name: 'name',
+  imageUrl: 'imageUrl',
   quantity: 'quantity',
   unitPrice: 'unitPrice',
   totalPrice: 'totalPrice',
@@ -2600,6 +2602,7 @@ export const UserPaymentScalarFieldEnum = {
   userId: 'userId',
   amount: 'amount',
   status: 'status',
+  slipImageUrl: 'slipImageUrl',
   paidAt: 'paidAt',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'

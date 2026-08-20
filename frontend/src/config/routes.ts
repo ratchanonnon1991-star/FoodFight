@@ -30,7 +30,16 @@ export const ROUTES = {
   ROOM_INVITE: (inviteToken: string) => `/join/${encodeURIComponent(inviteToken)}`,
   HISTORY: "/history",
   BILLS: "/bills",
+  BILL_PAYMENT_ACCOUNT: "/bills/payment-account",
   PROFILE: "/profile",
   PAYMENT_ACCOUNT: "/payment-account",
   DESIGN_SYSTEM: "/design-system",
 } as const;
+
+/** Bill routes that need a billId can't be plain string constants. */
+export const billRoutes = {
+  receipt: (billId: string) => `/bills/${billId}/receipt`,
+  split: (billId: string) => `/bills/${billId}/split`,
+  summary: (billId: string) => `/bills/${billId}/summary`,
+  detail: (billId: string) => `/bills/${billId}`,
+};
