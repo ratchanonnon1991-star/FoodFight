@@ -65,6 +65,52 @@ let SplitService = class SplitService {
         });
         return this.billDetail.getDetail(userId, billId);
     }
+    async splitEvenly(userId, billId, dto) {
+        const bill = await this.billAccess.loadOrThrow(billId);
+        this.billAccess.assertCreator(bill, userId);
+        if (bill.status === client_1.BillStatus.COMPLETED ||
+            bill.status === client_1.BillStatus.CANCELLED) {
+            throw new common_1.ConflictException('This bill is already finalized');
+        }
+        if (bill.items.length === 0) {
+            throw new common_1.BadRequestException('Add at least one item before splitting the bill');
+        }
+        const memberIds = new Set(bill.session.members.map((member) => member.userId));
+        const participantIds = dto.userIds?.length
+            ? Array.from(new Set(dto.userIds))
+            : Array.from(memberIds);
+        if (participantIds.length === 0) {
+            throw new common_1.BadRequestException('Select at least one person to split the bill with');
+        }
+        for (const participantId of participantIds) {
+            if (!memberIds.has(participantId)) {
+                throw new common_1.BadRequestException('Cannot split the bill with someone outside this meal');
+            }
+        }
+        const shareRows = bill.items.flatMap((item) => {
+            const totalCents = (0, money_util_1.toCents)(Number(item.totalPrice));
+            const shareCents = (0, money_util_1.splitEvenlyCents)(totalCents, participantIds.length);
+            return participantIds.map((participantId, index) => ({
+                receiptItemId: item.id,
+                userId: participantId,
+                amount: (0, money_util_1.fromCents)(shareCents[index]),
+            }));
+        });
+        const itemIds = bill.items.map((item) => item.id);
+        await this.prisma.$transaction(async (tx) => {
+            await tx.itemShare.deleteMany({
+                where: { receiptItemId: { in: itemIds } },
+            });
+            await tx.itemShare.createMany({ data: shareRows });
+            if (bill.status === client_1.BillStatus.DRAFT) {
+                await tx.bill.update({
+                    where: { id: billId },
+                    data: { status: client_1.BillStatus.SPLITTING },
+                });
+            }
+        });
+        return this.billDetail.getDetail(userId, billId);
+    }
     async calculateSummary(userId, billId, dto) {
         const bill = await this.billAccess.loadOrThrow(billId);
         this.billAccess.assertCreator(bill, userId);
@@ -77,7 +123,11 @@ let SplitService = class SplitService {
         const tax = dto.tax ?? 0;
         const discount = dto.discount ?? 0;
         const subtotal = bill.items.reduce((sum, item) => sum + Number(item.totalPrice), 0);
-        const totalAmount = subtotal + serviceCharge + tax - discount;
+        const beforeDiscount = subtotal + serviceCharge + tax;
+        if (discount > beforeDiscount) {
+            throw new common_1.BadRequestException('Discount cannot exceed the bill total before discount');
+        }
+        const totalAmount = beforeDiscount - discount;
         await this.prisma.bill.update({
             where: { id: billId },
             data: {

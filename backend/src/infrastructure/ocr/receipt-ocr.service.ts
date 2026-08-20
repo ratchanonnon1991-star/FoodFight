@@ -18,7 +18,7 @@ export type ReceiptOcrResult =
   | { ok: false; reason: string };
 
 const GEMINI_MODEL = 'gemini-3.6-flash';
-const REQUEST_TIMEOUT_MS = 25_000;
+const REQUEST_TIMEOUT_MS = 60_000;
 
 const EXTRACTION_PROMPT = `You are reading a photo of a restaurant receipt. It may be in Thai or English and may be handwritten or printed.
 

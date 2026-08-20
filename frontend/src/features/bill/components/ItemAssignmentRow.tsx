@@ -11,6 +11,7 @@ export interface ItemAssignmentRowProps {
   members: BillMember[];
   disabled: boolean;
   onToggle: (userId: string) => void;
+  onToggleAll: () => void;
 }
 
 export function ItemAssignmentRow({
@@ -18,8 +19,11 @@ export function ItemAssignmentRow({
   members,
   disabled,
   onToggle,
+  onToggleAll,
 }: ItemAssignmentRowProps) {
   const assignedIds = new Set(item.assignedUserIds);
+  const allSelected =
+    members.length > 0 && members.every((member) => assignedIds.has(member.userId));
 
   return (
     <div className="py-3 space-y-2">
@@ -38,6 +42,21 @@ export function ItemAssignmentRow({
       </div>
 
       <div className="flex flex-wrap gap-2">
+        <button
+          type="button"
+          disabled={disabled}
+          onClick={onToggleAll}
+          aria-pressed={allSelected}
+          className={cn(
+            "flex h-8 items-center rounded-full border px-3 text-xs font-medium transition-colors disabled:cursor-not-allowed",
+            allSelected
+              ? "border-brand-primary bg-brand-primary text-white"
+              : "border-border text-text-secondary",
+            !disabled && "cursor-pointer active:scale-95",
+          )}
+        >
+          All
+        </button>
         {members.map((member) => {
           const isAssigned = assignedIds.has(member.userId);
 

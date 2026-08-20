@@ -24,20 +24,7 @@ export function SplitStepScreen({ billId }: SplitStepScreenProps) {
   const [actionError, setActionError] = React.useState<string | null>(null);
   const [savingItemId, setSavingItemId] = React.useState<string | null>(null);
 
-  const handleToggle = async (itemId: string, userId: string) => {
-    if (!bill) {
-      return;
-    }
-
-    const item = bill.items.find((existing) => existing.id === itemId);
-    if (!item) {
-      return;
-    }
-
-    const nextUserIds = item.assignedUserIds.includes(userId)
-      ? item.assignedUserIds.filter((id) => id !== userId)
-      : [...item.assignedUserIds, userId];
-
+  const saveAssignment = async (itemId: string, nextUserIds: string[]) => {
     setActionError(null);
     setSavingItemId(itemId);
     try {
@@ -50,6 +37,35 @@ export function SplitStepScreen({ billId }: SplitStepScreenProps) {
     } finally {
       setSavingItemId(null);
     }
+  };
+
+  const handleToggle = (itemId: string, userId: string) => {
+    const item = bill?.items.find((existing) => existing.id === itemId);
+    if (!item) {
+      return;
+    }
+
+    const nextUserIds = item.assignedUserIds.includes(userId)
+      ? item.assignedUserIds.filter((id) => id !== userId)
+      : [...item.assignedUserIds, userId];
+
+    void saveAssignment(itemId, nextUserIds);
+  };
+
+  const handleToggleAll = (itemId: string) => {
+    const item = bill?.items.find((existing) => existing.id === itemId);
+    if (!bill || !item) {
+      return;
+    }
+
+    const allSelected = bill.members.every((member) =>
+      item.assignedUserIds.includes(member.userId),
+    );
+    const nextUserIds = allSelected
+      ? []
+      : bill.members.map((member) => member.userId);
+
+    void saveAssignment(itemId, nextUserIds);
   };
 
   if (isLoading && !bill) {
@@ -115,6 +131,7 @@ export function SplitStepScreen({ billId }: SplitStepScreenProps) {
                     members={bill.members}
                     disabled={!bill.isCreator || savingItemId === item.id}
                     onToggle={(userId) => handleToggle(item.id, userId)}
+                    onToggleAll={() => handleToggleAll(item.id)}
                   />
                   {savingItemId === item.id && (
                     <div className="absolute right-0 top-3">

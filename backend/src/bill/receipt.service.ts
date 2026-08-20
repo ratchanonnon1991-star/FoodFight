@@ -37,10 +37,7 @@ export class ReceiptService {
     const imageUrl = await this.storage.save(file, 'receipts');
     await this.storage.delete(bill.receipt?.imageUrl);
 
-    // Only auto-fill items on the first scan - never clobber items the
-    // creator already added or edited by hand on a rescan.
-    const shouldRunOcr = bill.items.length === 0 && this.ocr.isConfigured();
-    const ocrResult = shouldRunOcr
+    const ocrResult = this.ocr.isConfigured()
       ? await this.ocr.extractItems(file.buffer, file.mimetype)
       : null;
 
@@ -66,6 +63,8 @@ export class ReceiptService {
       });
 
       if (ocrResult?.ok && ocrResult.items.length > 0) {
+        // Rescanning replaces the item list with the fresh OCR read.
+        await tx.receiptItem.deleteMany({ where: { billId } });
         await tx.receiptItem.createMany({
           data: ocrResult.items.map((item) => ({
             billId,

@@ -14,7 +14,7 @@ exports.ReceiptOcrService = void 0;
 const common_1 = require("@nestjs/common");
 const config_1 = require("@nestjs/config");
 const GEMINI_MODEL = 'gemini-3.6-flash';
-const REQUEST_TIMEOUT_MS = 25_000;
+const REQUEST_TIMEOUT_MS = 60_000;
 const EXTRACTION_PROMPT = `You are reading a photo of a restaurant receipt. It may be in Thai or English and may be handwritten or printed.
 
 Extract every purchased food/drink line item. For each item return:

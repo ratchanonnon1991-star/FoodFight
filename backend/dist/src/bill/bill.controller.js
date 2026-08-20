@@ -23,6 +23,7 @@ const assign_item_dto_1 = require("./dto/assign-item.dto");
 const calculate_summary_dto_1 = require("./dto/calculate-summary.dto");
 const create_bill_dto_1 = require("./dto/create-bill.dto");
 const set_payment_status_dto_1 = require("./dto/set-payment-status.dto");
+const split_evenly_dto_1 = require("./dto/split-evenly.dto");
 const upsert_receipt_item_dto_1 = require("./dto/upsert-receipt-item.dto");
 const payment_service_1 = require("./payment.service");
 const receipt_service_1 = require("./receipt.service");
@@ -67,6 +68,9 @@ let BillController = class BillController {
     }
     assignItem(currentUser, billId, itemId, dto) {
         return this.splitService.assignItem(currentUser.sub, billId, itemId, dto);
+    }
+    splitEvenly(currentUser, billId, dto) {
+        return this.splitService.splitEvenly(currentUser.sub, billId, dto);
     }
     calculateSummary(currentUser, billId, dto) {
         return this.splitService.calculateSummary(currentUser.sub, billId, dto);
@@ -164,6 +168,15 @@ __decorate([
     __metadata("design:paramtypes", [Object, String, String, assign_item_dto_1.AssignItemDto]),
     __metadata("design:returntype", void 0)
 ], BillController.prototype, "assignItem", null);
+__decorate([
+    (0, common_1.Post)(':billId/split-evenly'),
+    __param(0, (0, current_user_decorator_1.CurrentUser)()),
+    __param(1, (0, common_1.Param)('billId')),
+    __param(2, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, String, split_evenly_dto_1.SplitEvenlyDto]),
+    __metadata("design:returntype", void 0)
+], BillController.prototype, "splitEvenly", null);
 __decorate([
     (0, common_1.Post)(':billId/summary'),
     __param(0, (0, current_user_decorator_1.CurrentUser)()),

@@ -23,6 +23,27 @@ export function SelectMealScreen() {
   const [error, setError] = React.useState<string | null>(null);
   const [creatingRoomId, setCreatingRoomId] = React.useState<string | null>(null);
 
+  const handleSelect = async (room: AvailableRoom) => {
+    setError(null);
+
+    if (room.billId) {
+      router.push(billRoutes.receipt(room.billId));
+      return;
+    }
+
+    setCreatingRoomId(room.roomId);
+    try {
+      const bill = await billService.createBill(room.roomId);
+      router.push(billRoutes.receipt(bill.id));
+    } catch (err) {
+      setError(
+        err instanceof ApiError ? err.message : "Unable to start a bill for this meal.",
+      );
+    } finally {
+      setCreatingRoomId(null);
+    }
+  };
+
   React.useEffect(() => {
     let isMounted = true;
 
@@ -45,33 +66,6 @@ export function SelectMealScreen() {
       isMounted = false;
     };
   }, []);
-
-  const handleSelect = async (room: AvailableRoom) => {
-    setError(null);
-
-    if (room.billId) {
-      const destination =
-        room.billStatus === "DRAFT"
-          ? billRoutes.receipt(room.billId)
-          : room.billStatus === "SPLITTING"
-            ? billRoutes.split(room.billId)
-            : billRoutes.detail(room.billId);
-      router.push(destination);
-      return;
-    }
-
-    setCreatingRoomId(room.roomId);
-    try {
-      const bill = await billService.createBill(room.roomId);
-      router.push(billRoutes.receipt(bill.id));
-    } catch (err) {
-      setError(
-        err instanceof ApiError ? err.message : "Unable to start a bill for this meal.",
-      );
-    } finally {
-      setCreatingRoomId(null);
-    }
-  };
 
   return (
     <div className="min-h-dvh flex flex-col bg-background text-text-primary">

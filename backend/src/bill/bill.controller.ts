@@ -20,6 +20,7 @@ import { AssignItemDto } from './dto/assign-item.dto';
 import { CalculateSummaryDto } from './dto/calculate-summary.dto';
 import { CreateBillDto } from './dto/create-bill.dto';
 import { SetPaymentStatusDto } from './dto/set-payment-status.dto';
+import { SplitEvenlyDto } from './dto/split-evenly.dto';
 import { UpsertReceiptItemDto } from './dto/upsert-receipt-item.dto';
 import { PaymentService } from './payment.service';
 import { ReceiptService } from './receipt.service';
@@ -112,6 +113,15 @@ export class BillController {
     @Body() dto: AssignItemDto,
   ) {
     return this.splitService.assignItem(currentUser.sub, billId, itemId, dto);
+  }
+
+  @Post(':billId/split-evenly')
+  splitEvenly(
+    @CurrentUser() currentUser: AccessTokenPayload,
+    @Param('billId') billId: string,
+    @Body() dto: SplitEvenlyDto,
+  ) {
+    return this.splitService.splitEvenly(currentUser.sub, billId, dto);
   }
 
   @Post(':billId/summary')

@@ -18,6 +18,8 @@ const user_module_1 = require("./user/user.module");
 const database_module_1 = require("./database/database.module");
 const room_module_1 = require("./room/room.module");
 const food_profile_module_1 = require("./food-profile/food-profile.module");
+const bill_module_1 = require("./bill/bill.module");
+const payment_account_module_1 = require("./payment-account/payment-account.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -34,6 +36,8 @@ exports.AppModule = AppModule = __decorate([
             user_module_1.UserModule,
             room_module_1.RoomModule,
             food_profile_module_1.FoodProfileModule,
+            bill_module_1.BillModule,
+            payment_account_module_1.PaymentAccountModule,
         ],
         providers: [
             {

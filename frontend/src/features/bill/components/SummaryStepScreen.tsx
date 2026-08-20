@@ -7,8 +7,6 @@ import { ROUTES, billRoutes } from "@/config/routes";
 import { PageContainer } from "@/components/layout/PageContainer";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
-import { Input } from "@/components/ui/Input";
-import { Label } from "@/components/ui/Label";
 import { Avatar } from "@/components/ui/Avatar";
 import { Alert, AlertDescription } from "@/components/ui/Alert";
 import { Spinner } from "@/components/ui/Spinner";
@@ -53,39 +51,28 @@ function memberBreakdown(bill: BillDetail) {
 export function SummaryStepScreen({ billId }: SummaryStepScreenProps) {
   const router = useRouter();
   const { bill, isLoading, error, setBill } = useBill(billId);
-  const [serviceCharge, setServiceCharge] = React.useState("0");
-  const [tax, setTax] = React.useState("0");
-  const [discount, setDiscount] = React.useState("0");
   const [actionError, setActionError] = React.useState<string | null>(null);
-  const [isCalculating, setIsCalculating] = React.useState(false);
   const [isConfirming, setIsConfirming] = React.useState(false);
+  const hasCalculatedRef = React.useRef(false);
 
   React.useEffect(() => {
-    if (bill) {
-      setServiceCharge(String(bill.serviceCharge));
-      setTax(String(bill.tax));
-      setDiscount(String(bill.discount));
+    if (!bill || bill.summaryCalculated || hasCalculatedRef.current) {
+      return;
     }
-  }, [bill]);
-
-  const handleCalculate = async () => {
-    setActionError(null);
-    setIsCalculating(true);
-    try {
-      const updated = await billService.calculateSummary(billId, {
-        serviceCharge: Number(serviceCharge) || 0,
-        tax: Number(tax) || 0,
-        discount: Number(discount) || 0,
+    hasCalculatedRef.current = true;
+    billService
+      .calculateSummary(billId, {
+        serviceCharge: bill.serviceCharge,
+        tax: bill.tax,
+        discount: bill.discount,
+      })
+      .then(setBill)
+      .catch((err) => {
+        setActionError(
+          err instanceof ApiError ? err.message : "Unable to calculate the bill.",
+        );
       });
-      setBill(updated);
-    } catch (err) {
-      setActionError(
-        err instanceof ApiError ? err.message : "Unable to calculate the bill.",
-      );
-    } finally {
-      setIsCalculating(false);
-    }
-  };
+  }, [bill, billId, setBill]);
 
   const handleConfirm = async () => {
     setActionError(null);
@@ -139,54 +126,6 @@ export function SummaryStepScreen({ billId }: SummaryStepScreenProps) {
             <Alert variant="error" onClose={() => setActionError(null)}>
               <AlertDescription>{actionError}</AlertDescription>
             </Alert>
-          )}
-
-          {bill.isCreator && (
-            <Card variant="default" padding="md" className="space-y-3">
-              <p className="text-sm font-semibold text-text-primary">
-                Additional charges
-              </p>
-              <div className="grid grid-cols-3 gap-2">
-                <div className="space-y-1">
-                  <Label size="sm">Service charge</Label>
-                  <Input
-                    type="number"
-                    min={0}
-                    step="0.01"
-                    value={serviceCharge}
-                    onChange={(e) => setServiceCharge(e.target.value)}
-                  />
-                </div>
-                <div className="space-y-1">
-                  <Label size="sm">Tax</Label>
-                  <Input
-                    type="number"
-                    min={0}
-                    step="0.01"
-                    value={tax}
-                    onChange={(e) => setTax(e.target.value)}
-                  />
-                </div>
-                <div className="space-y-1">
-                  <Label size="sm">Discount</Label>
-                  <Input
-                    type="number"
-                    min={0}
-                    step="0.01"
-                    value={discount}
-                    onChange={(e) => setDiscount(e.target.value)}
-                  />
-                </div>
-              </div>
-              <Button
-                variant="outline"
-                fullWidth
-                loading={isCalculating}
-                onClick={handleCalculate}
-              >
-                Calculate
-              </Button>
-            </Card>
           )}
 
           <Card variant="default" padding="md" className="space-y-3">

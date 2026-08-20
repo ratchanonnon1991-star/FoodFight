@@ -36,8 +36,7 @@ let ReceiptService = class ReceiptService {
         this.assertEditable(bill.status);
         const imageUrl = await this.storage.save(file, 'receipts');
         await this.storage.delete(bill.receipt?.imageUrl);
-        const shouldRunOcr = bill.items.length === 0 && this.ocr.isConfigured();
-        const ocrResult = shouldRunOcr
+        const ocrResult = this.ocr.isConfigured()
             ? await this.ocr.extractItems(file.buffer, file.mimetype)
             : null;
         const ocrStatus = ocrResult
@@ -60,6 +59,7 @@ let ReceiptService = class ReceiptService {
                 create: { billId, imageUrl, ocrStatus, parsedData },
             });
             if (ocrResult?.ok && ocrResult.items.length > 0) {
+                await tx.receiptItem.deleteMany({ where: { billId } });
                 await tx.receiptItem.createMany({
                     data: ocrResult.items.map((item) => ({
                         billId,

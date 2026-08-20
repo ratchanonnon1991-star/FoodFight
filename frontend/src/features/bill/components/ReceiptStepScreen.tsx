@@ -9,7 +9,9 @@ import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { Alert, AlertDescription } from "@/components/ui/Alert";
 import { Spinner } from "@/components/ui/Spinner";
+import { Skeleton } from "@/components/ui/Skeleton";
 import { ApiError, resolveMediaUrl } from "@/lib/api/client";
+import { compressImage } from "@/lib/utils/image";
 import { BillPageHeader } from "./BillPageHeader";
 import { ReceiptItemRow } from "./ReceiptItemRow";
 import { AddReceiptItemForm } from "./AddReceiptItemForm";
@@ -37,7 +39,8 @@ export function ReceiptStepScreen({ billId }: ReceiptStepScreenProps) {
     setActionError(null);
     setIsUploading(true);
     try {
-      const updated = await billService.uploadReceipt(billId, file);
+      const compressed = await compressImage(file);
+      const updated = await billService.uploadReceipt(billId, compressed);
       setBill(updated);
     } catch (err) {
       setActionError(
@@ -158,39 +161,62 @@ export function ReceiptStepScreen({ billId }: ReceiptStepScreenProps) {
           </Card>
 
           <Card variant="default" padding="md">
-            <div className="flex items-center justify-between mb-1">
-              <p className="text-sm font-semibold text-text-primary">
-                Items ({bill.items.length})
-              </p>
-              <p className="text-sm font-semibold text-text-primary">
-                ฿{bill.subtotal.toFixed(2)}
-              </p>
-            </div>
-            <p className="text-xs text-text-secondary mb-2">
-              Review the items below. Food photos aren&apos;t wired up yet -
-              that comes later.
-            </p>
-
-            <div className="divide-y divide-border">
-              {bill.items.map((item) => (
-                <ReceiptItemRow
-                  key={item.id}
-                  item={item}
-                  editable={bill.isCreator}
-                  onSave={(input) => handleUpdateItem(item.id, input)}
-                  onDelete={() => handleDeleteItem(item.id)}
-                />
-              ))}
+            <div className="flex items-center justify-between mb-3">
+              {isUploading ? (
+                <Skeleton className="h-4 w-20" />
+              ) : (
+                <p className="text-sm font-semibold text-text-primary">
+                  Items ({bill.items.length})
+                </p>
+              )}
+              {isUploading ? (
+                <Skeleton className="h-4 w-14" />
+              ) : (
+                <p className="text-sm font-semibold text-text-primary">
+                  ฿{bill.subtotal.toFixed(2)}
+                </p>
+              )}
             </div>
 
-            {bill.isCreator && <AddReceiptItemForm onAdd={handleAddItem} />}
+            {isUploading ? (
+              <div className="divide-y divide-border">
+                {Array.from({ length: 3 }).map((_, index) => (
+                  <div
+                    key={index}
+                    className="flex items-center justify-between gap-3 py-2"
+                  >
+                    <div className="min-w-0 flex-1 space-y-2">
+                      <Skeleton className="h-4 w-3/5" />
+                      <Skeleton className="h-3 w-2/5" />
+                    </div>
+                    <Skeleton className="h-4 w-12 shrink-0" />
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="divide-y divide-border">
+                {bill.items.map((item) => (
+                  <ReceiptItemRow
+                    key={item.id}
+                    item={item}
+                    editable={bill.isCreator}
+                    onSave={(input) => handleUpdateItem(item.id, input)}
+                    onDelete={() => handleDeleteItem(item.id)}
+                  />
+                ))}
+              </div>
+            )}
+
+            {!isUploading && bill.isCreator && (
+              <AddReceiptItemForm onAdd={handleAddItem} />
+            )}
           </Card>
 
           {bill.isCreator && (
             <Button
               fullWidth
               size="lg"
-              disabled={bill.items.length === 0}
+              disabled={isUploading || bill.items.length === 0}
               onClick={() => router.push(`/bills/${billId}/split`)}
             >
               Continue to Split
