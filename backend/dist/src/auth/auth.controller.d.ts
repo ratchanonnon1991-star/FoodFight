@@ -1,3 +1,4 @@
+import type { Request, Response } from 'express';
 import type { AccessTokenPayload } from '../infrastructure/jwt/types/jwt-payload';
 import { AuthService } from './auth.service';
 import { ChangeVerificationEmailDto } from './dto/change-verification-email.dto';
@@ -38,21 +39,24 @@ export declare class AuthController {
         resendAvailableAt: Date;
         message: string;
     }>;
-    login(dto: LoginDto): Promise<{
+    login(dto: LoginDto, response: Response): Promise<{
         accessToken: string;
         foodProfileComplete: boolean;
     }>;
-    loginWithGoogle(dto: GoogleLoginDto): Promise<{
+    loginWithGoogle(dto: GoogleLoginDto, response: Response): Promise<{
         accessToken: string;
         foodProfileComplete: boolean;
     }>;
-    loginWithLine(dto: LineLoginDto): Promise<{
+    loginWithLine(dto: LineLoginDto, response: Response): Promise<{
         accessToken: string;
         foodProfileComplete: boolean;
     }>;
-    loginWithLineCode(dto: LineCodeDto): Promise<{
+    loginWithLineCode(dto: LineCodeDto, response: Response): Promise<{
         accessToken: string;
         foodProfileComplete: boolean;
+    }>;
+    refresh(request: Request, response: Response): Promise<{
+        accessToken: string;
     }>;
     forgotPassword(dto: ForgotPasswordDto): Promise<{
         message: string;
@@ -60,7 +64,9 @@ export declare class AuthController {
     resetPassword(dto: ResetPasswordDto): Promise<{
         message: string;
     }>;
-    logout(): void;
+    logout(request: Request, response: Response): Promise<{
+        message: string;
+    }>;
     getMe(user: AccessTokenPayload): Promise<{
         sub: string;
         email: string;
@@ -68,4 +74,9 @@ export declare class AuthController {
         displayName: string;
         avatarUrl: string | null;
     }>;
+    private withRefreshCookie;
+    private setRefreshCookie;
+    private clearRefreshCookie;
+    private readRefreshCookie;
+    private getRefreshTokenMaxAgeSeconds;
 }

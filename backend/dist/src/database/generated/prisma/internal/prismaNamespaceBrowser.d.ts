@@ -13,9 +13,11 @@ export declare const AnyNull: import("@prisma/client/runtime/client").AnyNullCla
 export declare const ModelName: {
     readonly User: "User";
     readonly Account: "Account";
+    readonly RefreshToken: "RefreshToken";
     readonly EmailVerification: "EmailVerification";
     readonly PasswordReset: "PasswordReset";
     readonly FoodProfile: "FoodProfile";
+    readonly PaymentAccount: "PaymentAccount";
     readonly Room: "Room";
     readonly RoomMember: "RoomMember";
     readonly FoodFightSession: "FoodFightSession";
@@ -63,6 +65,15 @@ export declare const AccountScalarFieldEnum: {
     readonly updatedAt: "updatedAt";
 };
 export type AccountScalarFieldEnum = (typeof AccountScalarFieldEnum)[keyof typeof AccountScalarFieldEnum];
+export declare const RefreshTokenScalarFieldEnum: {
+    readonly id: "id";
+    readonly userId: "userId";
+    readonly tokenHash: "tokenHash";
+    readonly expiresAt: "expiresAt";
+    readonly revokedAt: "revokedAt";
+    readonly createdAt: "createdAt";
+};
+export type RefreshTokenScalarFieldEnum = (typeof RefreshTokenScalarFieldEnum)[keyof typeof RefreshTokenScalarFieldEnum];
 export declare const EmailVerificationScalarFieldEnum: {
     readonly id: "id";
     readonly userId: "userId";
@@ -96,6 +107,17 @@ export declare const FoodProfileScalarFieldEnum: {
     readonly updatedAt: "updatedAt";
 };
 export type FoodProfileScalarFieldEnum = (typeof FoodProfileScalarFieldEnum)[keyof typeof FoodProfileScalarFieldEnum];
+export declare const PaymentAccountScalarFieldEnum: {
+    readonly id: "id";
+    readonly userId: "userId";
+    readonly paymentType: "paymentType";
+    readonly accountName: "accountName";
+    readonly promptPayNumber: "promptPayNumber";
+    readonly qrCodeUrl: "qrCodeUrl";
+    readonly createdAt: "createdAt";
+    readonly updatedAt: "updatedAt";
+};
+export type PaymentAccountScalarFieldEnum = (typeof PaymentAccountScalarFieldEnum)[keyof typeof PaymentAccountScalarFieldEnum];
 export declare const RoomScalarFieldEnum: {
     readonly id: "id";
     readonly hostId: "hostId";

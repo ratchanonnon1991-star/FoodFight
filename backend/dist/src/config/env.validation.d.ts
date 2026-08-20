@@ -4,6 +4,7 @@ declare const envSchema: z.ZodObject<{
     DATABASE_URL: z.ZodString;
     JWT_SECRET: z.ZodString;
     JWT_EXPIRES_IN: z.ZodString;
+    REFRESH_TOKEN_EXPIRES_DAYS: z.ZodDefault<z.ZodCoercedNumber<unknown>>;
     GOOGLE_CLIENT_ID: z.ZodString;
     LINE_CHANNEL_ID: z.ZodString;
     LINE_CHANNEL_SECRET: z.ZodString;
@@ -20,6 +21,7 @@ export declare function validate(config: Record<string, any>): {
     DATABASE_URL: string;
     JWT_SECRET: string;
     JWT_EXPIRES_IN: string;
+    REFRESH_TOKEN_EXPIRES_DAYS: number;
     GOOGLE_CLIENT_ID: string;
     LINE_CHANNEL_ID: string;
     LINE_CHANNEL_SECRET: string;

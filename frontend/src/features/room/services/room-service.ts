@@ -6,6 +6,7 @@ import type {
   RoomPreview,
   UpdateRoomInput,
 } from "../types/room-types";
+import { apiFetch } from "@/config/api-client";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8888";
 
@@ -46,20 +47,12 @@ async function request<T>(
   const headers = new Headers(init.headers);
   headers.set("Content-Type", "application/json");
 
-  if (authenticated) {
-    const accessToken = window.localStorage.getItem("accessToken");
-
-    if (!accessToken) {
-      throw new RoomApiError("Please log in to continue.", 401);
-    }
-
-    headers.set("Authorization", `Bearer ${accessToken}`);
-  }
-
   let response: Response;
 
   try {
-    response = await fetch(`${API_URL}${path}`, { ...init, headers });
+    response = authenticated
+      ? await apiFetch(`${API_URL}${path}`, { ...init, headers })
+      : await fetch(`${API_URL}${path}`, { ...init, headers });
   } catch {
     throw new RoomApiError("Unable to connect to the server.", 0);
   }

@@ -11,6 +11,8 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AuthService = void 0;
 const common_1 = require("@nestjs/common");
+const config_1 = require("@nestjs/config");
+const node_crypto_1 = require("node:crypto");
 const client_1 = require("../database/generated/prisma/client");
 const prisma_service_1 = require("../database/prisma.service");
 const bcrypt_service_1 = require("../infrastructure/hash/bcrypt.service");
@@ -22,6 +24,7 @@ const user_service_1 = require("../user/user.service");
 const password_reset_service_1 = require("./password-reset.service");
 let AuthService = class AuthService {
     prisma;
+    configService;
     userService;
     bcryptService;
     jwtService;
@@ -29,8 +32,9 @@ let AuthService = class AuthService {
     lineAuthService;
     mailService;
     passwordResetService;
-    constructor(prisma, userService, bcryptService, jwtService, googleAuthService, lineAuthService, mailService, passwordResetService) {
+    constructor(prisma, configService, userService, bcryptService, jwtService, googleAuthService, lineAuthService, mailService, passwordResetService) {
         this.prisma = prisma;
+        this.configService = configService;
         this.userService = userService;
         this.bcryptService = bcryptService;
         this.jwtService = jwtService;
@@ -293,7 +297,7 @@ let AuthService = class AuthService {
                 });
             }
         }
-        if (profile.avatarUrl && profile.avatarUrl !== user.avatarUrl) {
+        if (profile.avatarUrl && !user.avatarUrl) {
             user = await this.userService.updateAvatarUrl(user.id, profile.avatarUrl);
         }
         const accessToken = await this.jwtService.sign({
@@ -304,13 +308,75 @@ let AuthService = class AuthService {
         return this.createAuthResponse(user.id, accessToken);
     }
     async createAuthResponse(userId, accessToken) {
+        const refreshToken = await this.createRefreshToken(userId);
         const foodProfile = await this.prisma.foodProfile.findUnique({
             where: { userId },
             select: { id: true },
         });
         return {
             accessToken,
+            refreshToken,
             foodProfileComplete: Boolean(foodProfile),
+        };
+    }
+    async refresh(refreshToken) {
+        const normalizedToken = refreshToken.trim();
+        if (!normalizedToken) {
+            throw new common_1.UnauthorizedException('Refresh token is missing');
+        }
+        const tokenHash = this.hashRefreshToken(normalizedToken);
+        const storedToken = await this.prisma.refreshToken.findUnique({
+            where: { tokenHash },
+            select: {
+                id: true,
+                userId: true,
+                expiresAt: true,
+                revokedAt: true,
+                user: {
+                    select: {
+                        id: true,
+                        email: true,
+                        role: true,
+                    },
+                },
+            },
+        });
+        if (!storedToken ||
+            storedToken.revokedAt ||
+            storedToken.expiresAt.getTime() <= Date.now()) {
+            throw new common_1.UnauthorizedException('Invalid or expired refresh token');
+        }
+        const nextRefreshToken = this.generateRefreshToken();
+        const nextRefreshTokenHash = this.hashRefreshToken(nextRefreshToken);
+        const now = new Date();
+        const expiresAt = this.getRefreshTokenExpiry();
+        await this.prisma.$transaction(async (tx) => {
+            const revoked = await tx.refreshToken.updateMany({
+                where: {
+                    id: storedToken.id,
+                    revokedAt: null,
+                },
+                data: { revokedAt: now },
+            });
+            if (revoked.count !== 1) {
+                throw new common_1.UnauthorizedException('Refresh token has already been used');
+            }
+            await tx.refreshToken.create({
+                data: {
+                    userId: storedToken.userId,
+                    tokenHash: nextRefreshTokenHash,
+                    expiresAt,
+                },
+            });
+        });
+        const accessToken = await this.jwtService.sign({
+            sub: storedToken.user.id,
+            email: storedToken.user.email,
+            role: storedToken.user.role,
+        });
+        return {
+            accessToken,
+            refreshToken: nextRefreshToken,
         };
     }
     async forgotPassword(dto) {
@@ -352,7 +418,40 @@ let AuthService = class AuthService {
             message: 'Password has been reset successfully',
         };
     }
-    logout() { }
+    async logout(refreshToken) {
+        const normalizedToken = refreshToken?.trim();
+        if (!normalizedToken) {
+            return;
+        }
+        await this.prisma.refreshToken.updateMany({
+            where: {
+                tokenHash: this.hashRefreshToken(normalizedToken),
+                revokedAt: null,
+            },
+            data: { revokedAt: new Date() },
+        });
+    }
+    async createRefreshToken(userId) {
+        const refreshToken = this.generateRefreshToken();
+        await this.prisma.refreshToken.create({
+            data: {
+                userId,
+                tokenHash: this.hashRefreshToken(refreshToken),
+                expiresAt: this.getRefreshTokenExpiry(),
+            },
+        });
+        return refreshToken;
+    }
+    generateRefreshToken() {
+        return (0, node_crypto_1.randomBytes)(48).toString('base64url');
+    }
+    hashRefreshToken(token) {
+        return (0, node_crypto_1.createHash)('sha256').update(token).digest('hex');
+    }
+    getRefreshTokenExpiry() {
+        const days = this.configService.get('REFRESH_TOKEN_EXPIRES_DAYS') ?? 30;
+        return new Date(Date.now() + days * 24 * 60 * 60 * 1000);
+    }
     generateOtp() {
         return Math.floor(100000 + Math.random() * 900000).toString();
     }
@@ -361,6 +460,7 @@ exports.AuthService = AuthService;
 exports.AuthService = AuthService = __decorate([
     (0, common_1.Injectable)(),
     __metadata("design:paramtypes", [prisma_service_1.PrismaService,
+        config_1.ConfigService,
         user_service_1.UserService,
         bcrypt_service_1.BcryptService,
         jwt_service_1.JwtService,

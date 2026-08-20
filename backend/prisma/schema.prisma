@@ -112,10 +112,12 @@ model User {
   updatedAt DateTime @updatedAt
 
   accounts          Account[]
+  refreshTokens     RefreshToken[]
   emailVerification EmailVerification?
   passwordResets    PasswordReset[]
 
   foodProfile FoodProfile?
+  paymentAccount PaymentAccount?
 
   hostedRooms Room[]       @relation("RoomHost")
   roomMembers RoomMember[]
@@ -152,6 +154,21 @@ model Account {
 
   @@index([userId])
   @@map("accounts")
+}
+
+model RefreshToken {
+  id        String    @id @default(uuid())
+  userId    String
+  tokenHash String    @unique
+  expiresAt DateTime
+  revokedAt DateTime?
+  createdAt DateTime  @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([expiresAt])
+  @@map("refresh_tokens")
 }
 
 model EmailVerification {
@@ -204,6 +221,22 @@ model FoodProfile {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("food_profiles")
+}
+
+model PaymentAccount {
+  id              String   @id @default(uuid())
+  userId          String   @unique
+  paymentType     String   @default("PROMPTPAY")
+  accountName     String
+  promptPayNumber String
+  qrCodeUrl       String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("payment_accounts")
 }
 
 model Room {

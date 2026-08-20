@@ -53,9 +53,11 @@ export const AnyNull = runtime.AnyNull
 export const ModelName = {
   User: 'User',
   Account: 'Account',
+  RefreshToken: 'RefreshToken',
   EmailVerification: 'EmailVerification',
   PasswordReset: 'PasswordReset',
   FoodProfile: 'FoodProfile',
+  PaymentAccount: 'PaymentAccount',
   Room: 'Room',
   RoomMember: 'RoomMember',
   FoodFightSession: 'FoodFightSession',
@@ -118,6 +120,18 @@ export const AccountScalarFieldEnum = {
 export type AccountScalarFieldEnum = (typeof AccountScalarFieldEnum)[keyof typeof AccountScalarFieldEnum]
 
 
+export const RefreshTokenScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  tokenHash: 'tokenHash',
+  expiresAt: 'expiresAt',
+  revokedAt: 'revokedAt',
+  createdAt: 'createdAt'
+} as const
+
+export type RefreshTokenScalarFieldEnum = (typeof RefreshTokenScalarFieldEnum)[keyof typeof RefreshTokenScalarFieldEnum]
+
+
 export const EmailVerificationScalarFieldEnum = {
   id: 'id',
   userId: 'userId',
@@ -158,6 +172,20 @@ export const FoodProfileScalarFieldEnum = {
 } as const
 
 export type FoodProfileScalarFieldEnum = (typeof FoodProfileScalarFieldEnum)[keyof typeof FoodProfileScalarFieldEnum]
+
+
+export const PaymentAccountScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  paymentType: 'paymentType',
+  accountName: 'accountName',
+  promptPayNumber: 'promptPayNumber',
+  qrCodeUrl: 'qrCodeUrl',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type PaymentAccountScalarFieldEnum = (typeof PaymentAccountScalarFieldEnum)[keyof typeof PaymentAccountScalarFieldEnum]
 
 
 export const RoomScalarFieldEnum = {
