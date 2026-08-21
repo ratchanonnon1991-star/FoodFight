@@ -7,12 +7,18 @@ import { AdminAnalyticsController } from './controllers/admin-analytics.controll
 import { AdminAnalyticsService } from './services/admin-analytics.service';
 import { RuleBasedAnalyticsIntelligenceProvider } from './services/admin-analytics-intelligence.service';
 import { AdminAnalyticsTrendsService } from './services/admin-analytics-trends.service';
+import { AdminRoomsController } from './controllers/admin-rooms.controller';
+import { AdminRoomsService } from './services/admin-rooms.service';
+import { AdminBillsController } from './controllers/admin-bills.controller';
+import { AdminBillsService } from './services/admin-bills.service';
 
 @Module({
   controllers: [
     AdminDashboardController,
     AdminUsersController,
     AdminAnalyticsController,
+    AdminRoomsController,
+    AdminBillsController,
   ],
   providers: [
     AdminDashboardService,
@@ -20,6 +26,8 @@ import { AdminAnalyticsTrendsService } from './services/admin-analytics-trends.s
     AdminAnalyticsTrendsService,
     AdminAnalyticsService,
     RuleBasedAnalyticsIntelligenceProvider,
+    AdminRoomsService,
+    AdminBillsService,
   ],
   exports: [AdminDashboardService, AdminUsersService, AdminAnalyticsService],
 })

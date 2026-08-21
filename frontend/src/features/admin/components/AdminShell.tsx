@@ -10,6 +10,7 @@ import {
   LogOut,
   ArrowLeft,
   Shield,
+  ReceiptText,
 } from "lucide-react";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
@@ -33,6 +34,10 @@ export function AdminShell({ children }: AdminShellProps) {
     pathname?.startsWith(ROUTES.ADMIN_ANALYTICS + "/");
   const isUsers =
     pathname === ROUTES.ADMIN_USERS || pathname?.startsWith("/admin/users");
+  const isRooms =
+    pathname === ROUTES.ADMIN_ROOMS || pathname?.startsWith("/admin/rooms");
+  const isBills =
+    pathname === ROUTES.ADMIN_BILLS || pathname?.startsWith("/admin/bills");
 
   const handleLogout = () => {
     window.localStorage.removeItem("accessToken");
@@ -126,20 +131,28 @@ export function AdminShell({ children }: AdminShellProps) {
               <BarChart3 className="size-4" />
               <span>Analytics</span>
             </Link>
-            <div
-              className="inline-flex items-center gap-2 rounded-md px-3 py-1.5 text-xs font-medium text-text-secondary opacity-60 cursor-not-allowed select-none"
-              title="Coming in next phase"
+            <Link
+              href={ROUTES.ADMIN_ROOMS}
+              className={`inline-flex items-center gap-2 rounded-md px-3 py-1.5 text-xs transition-colors ${
+                isRooms
+                  ? "bg-surface font-semibold text-brand-primary shadow-xs border border-border"
+                  : "font-medium text-text-secondary hover:text-text-primary hover:bg-surface-subtle"
+              }`}
             >
               <DoorOpen className="size-4" />
               <span>Rooms</span>
-              <Badge
-                variant="neutral"
-                size="sm"
-                className="ml-1 text-[10px] py-0 px-1.5"
-              >
-                Soon
-              </Badge>
-            </div>
+            </Link>
+            <Link
+              href={ROUTES.ADMIN_BILLS}
+              className={`inline-flex items-center gap-2 rounded-md px-3 py-1.5 text-xs transition-colors ${
+                isBills
+                  ? "bg-surface font-semibold text-brand-primary shadow-xs border border-border"
+                  : "font-medium text-text-secondary hover:text-text-primary hover:bg-surface-subtle"
+              }`}
+            >
+              <ReceiptText className="size-4" />
+              <span>Bills &amp; Payments</span>
+            </Link>
           </div>
         </div>
       </header>

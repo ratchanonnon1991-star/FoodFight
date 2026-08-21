@@ -6,11 +6,17 @@
 
 export const ROUTES = {
   ADMIN_ANALYTICS: "/admin/analytics",
+  ADMIN_ROOMS: "/admin/rooms",
+  ADMIN_BILLS: "/admin/bills",
   HOME: "/",
   ADMIN: "/admin",
   ADMIN_USERS: "/admin/users",
   ADMIN_USER_DETAIL: (userId: string) =>
     `/admin/users/${encodeURIComponent(userId)}`,
+  ADMIN_ROOM_DETAIL: (roomId: string) =>
+    `/admin/rooms/${encodeURIComponent(roomId)}`,
+  ADMIN_BILL_DETAIL: (billId: string) =>
+    `/admin/bills/${encodeURIComponent(billId)}`,
   AUTH: {
     REGISTER: "/register",
     VERIFY_EMAIL: "/verify-email",
