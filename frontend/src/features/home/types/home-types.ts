@@ -6,6 +6,7 @@ export interface AuthenticatedUserDisplay {
   name: string;
   email?: string;
   avatarUrl?: string;
+  role?: "USER" | "ADMIN";
 }
 
 export interface CurrentFoodFightMember {

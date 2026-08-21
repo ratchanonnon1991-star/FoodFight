@@ -140,6 +140,7 @@ export function AuthenticatedHome({
           displayName?: string;
           email?: string;
           avatarUrl?: string | null;
+          role?: "USER" | "ADMIN";
         };
       })
       .then((currentUser) => {
@@ -153,6 +154,7 @@ export function AuthenticatedHome({
           name: currentUser.displayName?.trim() || fallbackName,
           email: currentUser.email,
           avatarUrl: currentUser.avatarUrl ?? undefined,
+          role: currentUser.role,
         });
       })
       .catch(() => {

@@ -11,6 +11,7 @@ import {
   CreditCard,
   LogOut,
   Pencil,
+  ShieldCheck,
   Utensils,
 } from "lucide-react";
 import { ROUTES } from "@/config/routes";
@@ -171,6 +172,23 @@ export function HomeHeader({
                   <CreditCard className="size-4 text-text-secondary" />
                   Payment account
                 </Link>
+                {user.role === "ADMIN" ? (
+                  <>
+                    <Link
+                      href={ROUTES.ADMIN}
+                      role="menuitem"
+                      onClick={() => setIsMenuOpen(false)}
+                      className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-text-primary hover:bg-surface-subtle"
+                    >
+                      <ShieldCheck className="size-4 text-brand-primary" />
+                      Admin Console
+                    </Link>
+                    <div
+                      role="separator"
+                      className="my-1 border-t border-border-subtle"
+                    />
+                  </>
+                ) : null}
                 <button
                   type="button"
                   role="menuitem"
