@@ -41,8 +41,6 @@ export function AuthFlowProvider({ children }: { children: React.ReactNode }) {
   const [isFoodProfileCompleted, setIsFoodProfileCompletedState] =
     React.useState(false);
 
-  const [isHydrated, setIsHydrated] = React.useState(false);
-
   // Restore auth flow after refresh
   React.useEffect(() => {
     try {
@@ -59,8 +57,6 @@ export function AuthFlowProvider({ children }: { children: React.ReactNode }) {
       }
     } catch {
       sessionStorage.removeItem(AUTH_FLOW_STORAGE_KEY);
-    } finally {
-      setIsHydrated(true);
     }
   }, []);
 
@@ -144,12 +140,6 @@ export function AuthFlowProvider({ children }: { children: React.ReactNode }) {
       clearFlowState,
     ],
   );
-
-  // Prevent verification fallback from flashing
-  // before sessionStorage has been restored.
-  if (!isHydrated) {
-    return null;
-  }
 
   return (
     <AuthFlowContext.Provider value={value}>

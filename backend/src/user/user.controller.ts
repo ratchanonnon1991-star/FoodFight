@@ -27,7 +27,11 @@ export class UserController {
     @CurrentUser() currentUser: AccessTokenPayload,
     @Body() dto: UpdateUserDto,
   ) {
-    return this.userService.updateMe(currentUser.sub, dto.displayName);
+    return this.userService.updateMe(
+      currentUser.sub,
+      dto.displayName,
+      dto.avatarUrl,
+    );
   }
 
   @HttpCode(HttpStatus.OK)

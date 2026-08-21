@@ -10,6 +10,9 @@ import { DatabaseModule } from './database/database.module';
 import { RoomModule } from './room/room.module';
 import { FoodProfileModule } from './food-profile/food-profile.module';
 import { AdminModule } from './admin/admin.module';
+import { PaymentAccountModule } from './payment-account/payment-account.module';
+import { HistoryModule } from './history/history.module';
+import { BillModule } from './bill/bill.module';
 
 @Module({
   imports: [
@@ -24,6 +27,9 @@ import { AdminModule } from './admin/admin.module';
     RoomModule,
     FoodProfileModule,
     AdminModule,
+    PaymentAccountModule,
+    HistoryModule,
+    BillModule,
   ],
   providers: [
     {

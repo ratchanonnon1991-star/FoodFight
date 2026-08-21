@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { Clock, Home, Receipt, User } from "lucide-react";
 import { ROUTES } from "@/config/routes";
 import { cn } from "@/lib/utils/cn";
@@ -14,10 +15,33 @@ export interface BottomNavigationProps {
   className?: string;
 }
 
+function detectActiveTab(pathname: string): NavTab {
+  if (pathname.startsWith(ROUTES.BILLS)) {
+    return "bills";
+  }
+  if (pathname.startsWith(ROUTES.HISTORY)) {
+    return "history";
+  }
+  if (pathname.startsWith(ROUTES.PROFILE)) {
+    return "profile";
+  }
+  return "home";
+}
+
 export function BottomNavigation({
-  activeTab = "home",
+  activeTab,
   className,
 }: BottomNavigationProps) {
+  const pathname = usePathname();
+  const resolvedActiveTab =
+    pathname === ROUTES.PROFILE
+      ? "profile"
+      : pathname === ROUTES.HISTORY
+        ? "history"
+        : pathname === ROUTES.BILLS
+          ? "bills"
+          : activeTab;
+
   const tabs = [
     {
       id: "home" as const,
@@ -31,21 +55,21 @@ export function BottomNavigation({
       label: "History",
       icon: Clock,
       href: ROUTES.HISTORY,
-      isAvailable: false,
+      isAvailable: true,
     },
     {
       id: "bills" as const,
       label: "Bills",
       icon: Receipt,
       href: ROUTES.BILLS,
-      isAvailable: false,
+      isAvailable: true,
     },
     {
       id: "profile" as const,
       label: "Profile",
       icon: User,
       href: ROUTES.PROFILE,
-      isAvailable: false,
+      isAvailable: true,
     },
   ];
 
@@ -54,13 +78,13 @@ export function BottomNavigation({
       aria-label="Main Navigation"
       className={cn(
         "fixed bottom-0 left-0 right-0 z-30 border-t border-border/80 bg-surface/95 backdrop-blur-md py-2.5 shadow-lg",
-        className
+        className,
       )}
     >
       <PageContainer maxWidth="auth" paddingY="none">
         <ul className="flex items-center justify-around gap-1.5" role="list">
           {tabs.map((tab) => {
-            const isActive = tab.id === activeTab;
+            const isActive = tab.id === resolvedActiveTab;
             const Icon = tab.icon;
 
             return (
@@ -74,11 +98,18 @@ export function BottomNavigation({
                       "focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-brand-secondary",
                       isActive
                         ? "bg-surface-subtle text-brand-primary font-bold shadow-2xs"
-                        : "text-text-secondary hover:text-text-primary hover:bg-surface-subtle/50"
+                        : "text-text-secondary hover:text-text-primary hover:bg-surface-subtle/50",
                     )}
                   >
-                    <Icon className={cn("size-5", isActive ? "stroke-[2.5]" : "stroke-[1.8]")} />
-                    <span className="text-2xs sm:text-xs leading-none">{tab.label}</span>
+                    <Icon
+                      className={cn(
+                        "size-5",
+                        isActive ? "stroke-[2.5]" : "stroke-[1.8]",
+                      )}
+                    />
+                    <span className="text-2xs sm:text-xs leading-none">
+                      {tab.label}
+                    </span>
                   </Link>
                 ) : (
                   <button
@@ -88,7 +119,9 @@ export function BottomNavigation({
                     className="w-full flex flex-col items-center justify-center gap-1 py-1.5 px-3 rounded-2xl text-text-disabled cursor-not-allowed select-none opacity-60"
                   >
                     <Icon className="size-5 stroke-[1.8]" />
-                    <span className="text-2xs sm:text-xs leading-none">{tab.label}</span>
+                    <span className="text-2xs sm:text-xs leading-none">
+                      {tab.label}
+                    </span>
                   </button>
                 )}
               </li>

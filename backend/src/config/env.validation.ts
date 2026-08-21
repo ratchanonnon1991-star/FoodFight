@@ -10,6 +10,8 @@ const envSchema = z.object({
 
   JWT_EXPIRES_IN: z.string().min(1),
 
+  REFRESH_TOKEN_EXPIRES_DAYS: z.coerce.number().int().min(1).default(30),
+
   GOOGLE_CLIENT_ID: z.string().min(1),
 
   LINE_CHANNEL_ID: z.string().min(1),
@@ -29,6 +31,8 @@ const envSchema = z.object({
   MAIL_FROM: z.string().min(1),
 
   FRONTEND_URL: z.string().url().default('http://localhost:3000'),
+
+  GOOGLE_AI_API_KEY: z.string().min(1).optional(),
 });
 
 export function validate(config: Record<string, any>) {

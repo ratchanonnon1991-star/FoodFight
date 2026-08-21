@@ -4,7 +4,14 @@
 
 export interface AuthenticatedUserDisplay {
   name: string;
+  email?: string;
   avatarUrl?: string;
+}
+
+export interface CurrentFoodFightMember {
+  id: string;
+  name: string;
+  avatarUrl?: string | null;
 }
 
 export interface CurrentFoodFightSession {
@@ -13,7 +20,7 @@ export interface CurrentFoodFightSession {
   status: string;
   memberCount: number;
   statusDescription: string;
-  members: string[];
+  members: CurrentFoodFightMember[];
   continueHref?: string;
 }
 

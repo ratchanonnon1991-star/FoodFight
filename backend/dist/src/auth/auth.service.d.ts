@@ -1,3 +1,4 @@
+import { ConfigService } from '@nestjs/config';
 import { PrismaService } from '../database/prisma.service';
 import { BcryptService } from '../infrastructure/hash/bcrypt.service';
 import { GoogleAuthService } from '../infrastructure/google/google-auth.service';
@@ -16,8 +17,14 @@ import { ResendVerificationDto } from './dto/resend-verification.dto';
 import { ResetPasswordDto } from './dto/reset-password.dto';
 import { VerifyEmailDto } from './dto/verify-email.dto';
 import { PasswordResetService } from './password-reset.service';
+export type AuthSessionResponse = {
+    accessToken: string;
+    refreshToken: string;
+    foodProfileComplete: boolean;
+};
 export declare class AuthService {
     private readonly prisma;
+    private readonly configService;
     private readonly userService;
     private readonly bcryptService;
     private readonly jwtService;
@@ -25,7 +32,7 @@ export declare class AuthService {
     private readonly lineAuthService;
     private readonly mailService;
     private readonly passwordResetService;
-    constructor(prisma: PrismaService, userService: UserService, bcryptService: BcryptService, jwtService: JwtService, googleAuthService: GoogleAuthService, lineAuthService: LineAuthService, mailService: MailService, passwordResetService: PasswordResetService);
+    constructor(prisma: PrismaService, configService: ConfigService, userService: UserService, bcryptService: BcryptService, jwtService: JwtService, googleAuthService: GoogleAuthService, lineAuthService: LineAuthService, mailService: MailService, passwordResetService: PasswordResetService);
     register(dto: RegisterDto): Promise<{
         id: string;
         email: string;
@@ -53,6 +60,7 @@ export declare class AuthService {
     }>;
     login(dto: LoginDto): Promise<{
         accessToken: string;
+        refreshToken: string;
         foodProfileComplete: boolean;
     }>;
     getCurrentUser(userId: string): Promise<{
@@ -64,24 +72,35 @@ export declare class AuthService {
     }>;
     loginWithGoogle(dto: GoogleLoginDto): Promise<{
         accessToken: string;
+        refreshToken: string;
         foodProfileComplete: boolean;
     }>;
     loginWithLine(dto: LineLoginDto): Promise<{
         accessToken: string;
+        refreshToken: string;
         foodProfileComplete: boolean;
     }>;
     loginWithLineCode(dto: LineCodeDto): Promise<{
         accessToken: string;
+        refreshToken: string;
         foodProfileComplete: boolean;
     }>;
     private loginWithOAuth;
     private createAuthResponse;
+    refresh(refreshToken: string): Promise<{
+        accessToken: string;
+        refreshToken: string;
+    }>;
     forgotPassword(dto: ForgotPasswordDto): Promise<{
         message: string;
     }>;
     resetPassword(dto: ResetPasswordDto): Promise<{
         message: string;
     }>;
-    logout(): void;
+    logout(refreshToken?: string): Promise<void>;
+    private createRefreshToken;
+    private generateRefreshToken;
+    private hashRefreshToken;
+    private getRefreshTokenExpiry;
     private generateOtp;
 }

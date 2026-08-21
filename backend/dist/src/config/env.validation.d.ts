@@ -4,6 +4,7 @@ declare const envSchema: z.ZodObject<{
     DATABASE_URL: z.ZodString;
     JWT_SECRET: z.ZodString;
     JWT_EXPIRES_IN: z.ZodString;
+    REFRESH_TOKEN_EXPIRES_DAYS: z.ZodDefault<z.ZodCoercedNumber<unknown>>;
     GOOGLE_CLIENT_ID: z.ZodString;
     LINE_CHANNEL_ID: z.ZodString;
     LINE_CHANNEL_SECRET: z.ZodString;
@@ -14,12 +15,14 @@ declare const envSchema: z.ZodObject<{
     MAIL_PASSWORD: z.ZodString;
     MAIL_FROM: z.ZodString;
     FRONTEND_URL: z.ZodDefault<z.ZodString>;
+    GOOGLE_AI_API_KEY: z.ZodOptional<z.ZodString>;
 }, z.core.$strip>;
 export declare function validate(config: Record<string, any>): {
     PORT: number;
     DATABASE_URL: string;
     JWT_SECRET: string;
     JWT_EXPIRES_IN: string;
+    REFRESH_TOKEN_EXPIRES_DAYS: number;
     GOOGLE_CLIENT_ID: string;
     LINE_CHANNEL_ID: string;
     LINE_CHANNEL_SECRET: string;
@@ -30,6 +33,7 @@ export declare function validate(config: Record<string, any>): {
     MAIL_PASSWORD: string;
     MAIL_FROM: string;
     FRONTEND_URL: string;
+    GOOGLE_AI_API_KEY?: string | undefined;
 };
 export type EnvVariable = z.infer<typeof envSchema>;
 export {};

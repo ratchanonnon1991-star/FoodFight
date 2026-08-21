@@ -60,8 +60,9 @@ export default function LineCallbackPage() {
       sessionStorage.setItem(LINE_PROCESSED_CODE_KEY, code);
 
       try {
-        const response = await fetch(`${API_URL}/auth/line/code`, {
-          method: "POST",
+      const response = await fetch(`${API_URL}/auth/line/code`, {
+        method: "POST",
+        credentials: "include",
           headers: {
             "Content-Type": "application/json",
           },

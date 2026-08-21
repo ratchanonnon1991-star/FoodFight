@@ -117,6 +117,7 @@ export const BillStatus = {
   DRAFT: 'DRAFT',
   SPLITTING: 'SPLITTING',
   COMPLETED: 'COMPLETED',
+  CLOSED: 'CLOSED',
   CANCELLED: 'CANCELLED'
 } as const
 

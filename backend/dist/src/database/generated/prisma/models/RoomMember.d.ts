@@ -319,9 +319,6 @@ export type RoomMemberUncheckedUpdateManyWithoutRoomNestedInput = {
     updateMany?: Prisma.RoomMemberUpdateManyWithWhereWithoutRoomInput | Prisma.RoomMemberUpdateManyWithWhereWithoutRoomInput[];
     deleteMany?: Prisma.RoomMemberScalarWhereInput | Prisma.RoomMemberScalarWhereInput[];
 };
-export type NullableDateTimeFieldUpdateOperationsInput = {
-    set?: Date | string | null;
-};
 export type RoomMemberCreateWithoutUserInput = {
     id?: string;
     isReady?: boolean;

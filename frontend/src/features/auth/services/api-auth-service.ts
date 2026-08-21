@@ -60,6 +60,7 @@ async function login(input: LoginInput): Promise<AuthResult<LoginResultData>> {
   try {
     const response = await fetch(`${API_URL}/auth/login`, {
       method: "POST",
+      credentials: "include",
       headers: {
         "Content-Type": "application/json",
       },
@@ -500,6 +501,7 @@ async function beginGoogleAuth(
   try {
     const response = await fetch(`${API_URL}/auth/google`, {
       method: "POST",
+      credentials: "include",
       headers: {
         "Content-Type": "application/json",
       },
@@ -554,6 +556,7 @@ async function beginLineAuth(
   try {
     const response = await fetch(`${API_URL}/auth/line`, {
       method: "POST",
+      credentials: "include",
       headers: {
         "Content-Type": "application/json",
       },
