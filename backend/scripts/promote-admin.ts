@@ -1,4 +1,4 @@
-import { Role } from '../src/database/generated/prisma/enums.js';
+import { Role } from '../src/database/generated/prisma/enums';
 
 export type PromotionStatus =
   | 'PROMOTED'
@@ -156,7 +156,9 @@ export async function runCli(args: string[]): Promise<number> {
   }
 
   const { PrismaPg } = await import('@prisma/adapter-pg');
-  const { PrismaClient } = await import('../src/database/generated/prisma/client.js');
+  const { register } = require('ts-node');
+  register({ transpileOnly: true, experimentalResolver: true });
+  const { PrismaClient } = require('../src/database/generated/prisma/client.js');
   const prisma = new PrismaClient({
     adapter: new PrismaPg({ connectionString: process.env.DATABASE_URL }),
   });
