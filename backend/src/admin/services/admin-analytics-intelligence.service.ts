@@ -133,6 +133,7 @@ export class RuleBasedAnalyticsIntelligenceProvider implements AnalyticsIntellig
 
     if (
       total === 0 ||
+      metrics.payments.paymentCompletionRate === null ||
       metrics.payments.paymentCompletionRate >=
         PAYMENT_COMPLETION_THRESHOLD_PERCENT
     ) {

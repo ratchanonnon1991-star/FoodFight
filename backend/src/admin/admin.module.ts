@@ -6,6 +6,7 @@ import { AdminUsersService } from './services/admin-users.service';
 import { AdminAnalyticsController } from './controllers/admin-analytics.controller';
 import { AdminAnalyticsService } from './services/admin-analytics.service';
 import { RuleBasedAnalyticsIntelligenceProvider } from './services/admin-analytics-intelligence.service';
+import { AdminAnalyticsTrendsService } from './services/admin-analytics-trends.service';
 
 @Module({
   controllers: [
@@ -16,6 +17,7 @@ import { RuleBasedAnalyticsIntelligenceProvider } from './services/admin-analyti
   providers: [
     AdminDashboardService,
     AdminUsersService,
+    AdminAnalyticsTrendsService,
     AdminAnalyticsService,
     RuleBasedAnalyticsIntelligenceProvider,
   ],

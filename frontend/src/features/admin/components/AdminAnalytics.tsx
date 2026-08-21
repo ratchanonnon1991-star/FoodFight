@@ -14,6 +14,7 @@ import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { Spinner } from "@/components/ui/Spinner";
 import { StatCard } from "./StatCard";
+import { AdminTrendChart } from "./AdminTrendChart";
 import { fetchAdminAnalytics } from "../services/api-admin-service";
 import type {
   AdminAnalyticsRange,
@@ -48,6 +49,17 @@ function formatPercent(value: number) {
   return value.toFixed(1) + "%";
 }
 
+function formatTrendPeriod(value: string, range: AdminAnalyticsRange) {
+  return new Date(value).toLocaleDateString(undefined, {
+    timeZone: "UTC",
+    month: "short",
+    ...(range === "all" ? { year: "numeric" } : { day: "numeric" }),
+  });
+}
+
+function formatTrendMoney(value: number) {
+  return formatMoney(value, "THB");
+}
 function formatUtc(value: string) {
   return (
     new Date(value).toLocaleString(undefined, {
@@ -260,9 +272,17 @@ export function AdminAnalytics() {
           />
           <StatCard
             label="Payment Completion"
-            value={formatPercent(analytics.payments.paymentCompletionRate)}
+            value={
+              analytics.payments.paymentCompletionRate === null
+                ? "N/A"
+                : formatPercent(analytics.payments.paymentCompletionRate)
+            }
             icon={<CreditCard className="size-5" />}
-            description="Peer-to-peer payments marked paid"
+            description={
+              analytics.payments.paymentCompletionRate === null
+                ? "No payment data"
+                : "Peer-to-peer payments marked paid"
+            }
           />
         </div>
       </section>
@@ -326,6 +346,74 @@ export function AdminAnalytics() {
             icon={<CreditCard className="size-5" />}
             description={
               analytics.payments.paymentCount + " payment records in period"
+            }
+          />
+        </div>
+      </section>
+
+      <section aria-labelledby="admin-analytics-trends" className="space-y-3">
+        <div>
+          <h2
+            id="admin-analytics-trends"
+            className="text-xs font-semibold uppercase tracking-wider text-text-secondary"
+          >
+            Historical Trends
+          </h2>
+          <p className="mt-1 text-sm text-text-secondary">
+            Aggregate UTC buckets for the selected period. Payment buckets
+            without records remain unavailable rather than becoming 0%.
+          </p>
+        </div>
+        <div className="grid gap-4 lg:grid-cols-2">
+          <AdminTrendChart
+            title="User Growth"
+            description="New registered users per UTC bucket."
+            data={analytics.trends.users.map((point) => ({
+              period: point.period,
+              value: point.newUsers,
+            }))}
+            valueFormatter={formatNumber}
+            periodFormatter={(period) =>
+              formatTrendPeriod(period, analytics.period.range)
+            }
+          />
+          <AdminTrendChart
+            title="Rooms Created"
+            description="Rooms created per UTC bucket."
+            data={analytics.trends.rooms.map((point) => ({
+              period: point.period,
+              value: point.roomsCreated,
+            }))}
+            variant="bar"
+            valueFormatter={formatNumber}
+            periodFormatter={(period) =>
+              formatTrendPeriod(period, analytics.period.range)
+            }
+          />
+          <AdminTrendChart
+            title="Bill Volume"
+            description="Reported meal bill value per bucket; not platform revenue."
+            data={analytics.trends.bills.map((point) => ({
+              period: point.period,
+              value: point.reportedBillValue,
+            }))}
+            variant="bar"
+            valueFormatter={formatTrendMoney}
+            periodFormatter={(period) =>
+              formatTrendPeriod(period, analytics.period.range)
+            }
+          />
+          <AdminTrendChart
+            title="Payment Completion"
+            description="Peer-to-peer payments marked paid per UTC bucket."
+            data={analytics.trends.payments.map((point) => ({
+              period: point.period,
+              value: point.completionRate,
+            }))}
+            emptyLabel="No payment data for this period."
+            valueFormatter={formatPercent}
+            periodFormatter={(period) =>
+              formatTrendPeriod(period, analytics.period.range)
             }
           />
         </div>

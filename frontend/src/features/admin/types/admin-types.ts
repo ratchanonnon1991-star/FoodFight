@@ -45,7 +45,7 @@ export interface AdminAnalyticsPayments {
   paymentCount: number;
   paidPaymentCount: number;
   unpaidPaymentCount: number;
-  paymentCompletionRate: number;
+  paymentCompletionRate: number | null;
 }
 
 export type AdminAnalyticsInsightSeverity = "INFO" | "POSITIVE" | "WARNING";
@@ -70,12 +70,43 @@ export interface AdminAnalyticsInsight {
   suggestedAction?: string;
 }
 
+export interface AdminAnalyticsUserTrendPoint {
+  period: string;
+  newUsers: number;
+}
+
+export interface AdminAnalyticsRoomTrendPoint {
+  period: string;
+  roomsCreated: number;
+}
+
+export interface AdminAnalyticsBillTrendPoint {
+  period: string;
+  billsCreated: number;
+  reportedBillValue: number;
+}
+
+export interface AdminAnalyticsPaymentTrendPoint {
+  period: string;
+  paymentCount: number;
+  paidPaymentCount: number;
+  completionRate: number | null;
+}
+
+export interface AdminAnalyticsTrends {
+  users: AdminAnalyticsUserTrendPoint[];
+  rooms: AdminAnalyticsRoomTrendPoint[];
+  bills: AdminAnalyticsBillTrendPoint[];
+  payments: AdminAnalyticsPaymentTrendPoint[];
+}
+
 export interface AdminAnalyticsResponse {
   period: AdminAnalyticsPeriod;
   users: AdminAnalyticsUsers;
   rooms: AdminAnalyticsRooms;
   bills: AdminAnalyticsBills;
   payments: AdminAnalyticsPayments;
+  trends: AdminAnalyticsTrends;
   insights: AdminAnalyticsInsight[];
 }
 

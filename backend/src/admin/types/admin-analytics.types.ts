@@ -44,7 +44,7 @@ export interface AdminAnalyticsPayments {
   paymentCount: number;
   paidPaymentCount: number;
   unpaidPaymentCount: number;
-  paymentCompletionRate: number;
+  paymentCompletionRate: number | null;
 }
 
 export interface AdminAnalyticsInsightEvidence {
@@ -73,6 +73,37 @@ export interface AdminAnalyticsMetrics {
   payments: AdminAnalyticsPayments;
 }
 
+export interface AdminAnalyticsUserTrendPoint {
+  period: string;
+  newUsers: number;
+}
+
+export interface AdminAnalyticsRoomTrendPoint {
+  period: string;
+  roomsCreated: number;
+}
+
+export interface AdminAnalyticsBillTrendPoint {
+  period: string;
+  billsCreated: number;
+  reportedBillValue: number;
+}
+
+export interface AdminAnalyticsPaymentTrendPoint {
+  period: string;
+  paymentCount: number;
+  paidPaymentCount: number;
+  completionRate: number | null;
+}
+
+export interface AdminAnalyticsTrends {
+  users: AdminAnalyticsUserTrendPoint[];
+  rooms: AdminAnalyticsRoomTrendPoint[];
+  bills: AdminAnalyticsBillTrendPoint[];
+  payments: AdminAnalyticsPaymentTrendPoint[];
+}
+
 export interface AdminAnalyticsResponse extends AdminAnalyticsMetrics {
+  trends: AdminAnalyticsTrends;
   insights: AdminAnalyticsInsight[];
 }

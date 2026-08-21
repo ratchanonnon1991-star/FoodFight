@@ -13,6 +13,7 @@ import {
   AdminAnalyticsResponse,
 } from '../types/admin-analytics.types';
 import { RuleBasedAnalyticsIntelligenceProvider } from './admin-analytics-intelligence.service';
+import { AdminAnalyticsTrendsService } from './admin-analytics-trends.service';
 
 const DAY_IN_MILLISECONDS = 24 * 60 * 60 * 1000;
 
@@ -24,6 +25,17 @@ function roundTo(value: number, decimals = 1): number {
 function calculateRate(numerator: number, denominator: number): number {
   if (denominator === 0) {
     return 0;
+  }
+
+  return roundTo((numerator / denominator) * 100);
+}
+
+function calculateCompletionRate(
+  numerator: number,
+  denominator: number,
+): number | null {
+  if (denominator === 0) {
+    return null;
   }
 
   return roundTo((numerator / denominator) * 100);
@@ -88,6 +100,7 @@ export class AdminAnalyticsService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly intelligence: RuleBasedAnalyticsIntelligenceProvider,
+    private readonly trendsService: AdminAnalyticsTrendsService,
   ) {}
 
   async getAnalytics(
@@ -120,6 +133,7 @@ export class AdminAnalyticsService {
       paymentCount,
       paidPaymentCount,
       unpaidPaymentCount,
+      trends,
     ] = await Promise.all([
       this.prisma.user.count(),
       this.prisma.user.count({ where: { createdAt: currentCreatedAt } }),
@@ -171,6 +185,7 @@ export class AdminAnalyticsService {
           status: PaymentStatus.UNPAID,
         },
       }),
+      this.trendsService.getTrends(window),
     ]);
 
     const billVolume = Number(billAggregate._sum.totalAmount ?? 0);
@@ -208,12 +223,16 @@ export class AdminAnalyticsService {
         paymentCount,
         paidPaymentCount,
         unpaidPaymentCount,
-        paymentCompletionRate: calculateRate(paidPaymentCount, paymentCount),
+        paymentCompletionRate: calculateCompletionRate(
+          paidPaymentCount,
+          paymentCount,
+        ),
       },
     };
 
     return {
       ...metrics,
+      trends,
       insights: await Promise.resolve(this.intelligence.analyze(metrics)),
     };
   }
