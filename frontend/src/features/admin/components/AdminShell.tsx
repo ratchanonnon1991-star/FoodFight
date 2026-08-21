@@ -3,11 +3,20 @@
 import * as React from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { LayoutDashboard, Users, DoorOpen, LogOut, ArrowLeft, Shield } from "lucide-react";
+import {
+  LayoutDashboard,
+  Users,
+  DoorOpen,
+  LogOut,
+  ArrowLeft,
+  Shield,
+} from "lucide-react";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { ROUTES } from "@/config/routes";
 import { useAdminUser } from "../guards/AdminRouteGuard";
+
+import { BarChart3 } from "lucide-react";
 
 export interface AdminShellProps {
   children: React.ReactNode;
@@ -19,7 +28,11 @@ export function AdminShell({ children }: AdminShellProps) {
   const adminUser = useAdminUser();
 
   const isDashboard = pathname === ROUTES.ADMIN;
-  const isUsers = pathname === ROUTES.ADMIN_USERS || pathname?.startsWith("/admin/users");
+  const isAnalytics =
+    pathname === ROUTES.ADMIN_ANALYTICS ||
+    pathname?.startsWith(ROUTES.ADMIN_ANALYTICS + "/");
+  const isUsers =
+    pathname === ROUTES.ADMIN_USERS || pathname?.startsWith("/admin/users");
 
   const handleLogout = () => {
     window.localStorage.removeItem("accessToken");
@@ -102,13 +115,28 @@ export function AdminShell({ children }: AdminShellProps) {
               <Users className="size-4" />
               <span>Users</span>
             </Link>
+            <Link
+              href={ROUTES.ADMIN_ANALYTICS}
+              className={
+                isAnalytics
+                  ? "inline-flex items-center gap-2 rounded-md px-3 py-1.5 text-xs transition-colors bg-surface font-semibold text-brand-primary shadow-xs border border-border"
+                  : "inline-flex items-center gap-2 rounded-md px-3 py-1.5 text-xs transition-colors font-medium text-text-secondary hover:text-text-primary hover:bg-surface-subtle"
+              }
+            >
+              <BarChart3 className="size-4" />
+              <span>Analytics</span>
+            </Link>
             <div
               className="inline-flex items-center gap-2 rounded-md px-3 py-1.5 text-xs font-medium text-text-secondary opacity-60 cursor-not-allowed select-none"
               title="Coming in next phase"
             >
               <DoorOpen className="size-4" />
               <span>Rooms</span>
-              <Badge variant="neutral" size="sm" className="ml-1 text-[10px] py-0 px-1.5">
+              <Badge
+                variant="neutral"
+                size="sm"
+                className="ml-1 text-[10px] py-0 px-1.5"
+              >
                 Soon
               </Badge>
             </div>

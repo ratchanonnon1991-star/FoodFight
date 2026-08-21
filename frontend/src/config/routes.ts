@@ -5,6 +5,7 @@
  */
 
 export const ROUTES = {
+  ADMIN_ANALYTICS: "/admin/analytics",
   HOME: "/",
   ADMIN: "/admin",
   ADMIN_USERS: "/admin/users",
@@ -31,7 +32,8 @@ export const ROUTES = {
     PREVIEW: "/room/preview",
     LOBBY: (roomId: string) => `/room/${encodeURIComponent(roomId)}`,
   },
-  ROOM_INVITE: (inviteToken: string) => `/join/${encodeURIComponent(inviteToken)}`,
+  ROOM_INVITE: (inviteToken: string) =>
+    `/join/${encodeURIComponent(inviteToken)}`,
   HISTORY: "/history",
   BILLS: "/bills",
   BILL_PAYMENT_ACCOUNT: "/bills/payment-account",

@@ -1,5 +1,7 @@
 import { API_BASE_URL } from "@/config/api";
 import type {
+  AdminAnalyticsRange,
+  AdminAnalyticsResponse,
   AdminDashboardMetrics,
   AdminUserDetail,
   AdminUsersQuery,
@@ -7,7 +9,7 @@ import type {
 } from "../types/admin-types";
 
 export async function fetchAdminDashboard(
-  token: string
+  token: string,
 ): Promise<AdminDashboardMetrics> {
   const response = await fetch(`${API_BASE_URL}/admin/dashboard`, {
     headers: {
@@ -22,9 +24,30 @@ export async function fetchAdminDashboard(
   return (await response.json()) as AdminDashboardMetrics;
 }
 
+export async function fetchAdminAnalytics(
+  range: AdminAnalyticsRange,
+  token: string,
+): Promise<AdminAnalyticsResponse> {
+  const params = new URLSearchParams({ range });
+  const response = await fetch(
+    API_BASE_URL + "/admin/analytics?" + params.toString(),
+    {
+      headers: {
+        Authorization: "Bearer " + token,
+      },
+    },
+  );
+
+  if (!response.ok) {
+    throw new Error("Failed to fetch admin analytics.");
+  }
+
+  return (await response.json()) as AdminAnalyticsResponse;
+}
+
 export async function fetchAdminUsers(
   query: AdminUsersQuery,
-  token: string
+  token: string,
 ): Promise<AdminUsersResponse> {
   const params = new URLSearchParams();
 
@@ -62,7 +85,7 @@ export async function fetchAdminUsers(
 
 export async function fetchAdminUserById(
   userId: string,
-  token: string
+  token: string,
 ): Promise<AdminUserDetail> {
   const response = await fetch(
     `${API_BASE_URL}/admin/users/${encodeURIComponent(userId)}`,
@@ -70,7 +93,7 @@ export async function fetchAdminUserById(
       headers: {
         Authorization: `Bearer ${token}`,
       },
-    }
+    },
   );
 
   if (response.status === 404) {
