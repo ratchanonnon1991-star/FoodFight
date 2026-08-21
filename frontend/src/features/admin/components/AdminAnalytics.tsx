@@ -282,18 +282,18 @@ export function AdminAnalytics() {
             description="All registered accounts"
           />
           <StatCard
-            label="Active Rooms"
+            label="Current Active Rooms"
             value={analytics.rooms.activeRooms}
             icon={<DoorOpen className="size-5" />}
             description="Lobby or in-progress rooms now"
           />
           <StatCard
-            label="Cancelled Rooms"
+            label="Currently Cancelled Rooms"
             value={analytics.rooms.cancelledRooms}
             icon={<DoorOpen className="size-5" />}
             description={
               formatPercent(analytics.rooms.cancellationRate) +
-              " of rooms created in this period"
+              " of rooms created in this period are currently cancelled"
             }
           />
           <StatCard
