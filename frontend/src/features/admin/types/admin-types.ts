@@ -38,14 +38,6 @@ export interface AdminUsersQuery {
   role?: AdminUserRole;
 }
 
-export interface AdminUserFoodProfile {
-  allergies: string[];
-  otherAllergies: string | null;
-  restrictions: string[];
-  otherRestrictions: string | null;
-  additionalNotes: string | null;
-}
-
 export interface AdminUserActivity {
   hostedRoomsCount: number;
   joinedRoomsCount: number;
@@ -60,6 +52,5 @@ export interface AdminUserDetail {
   avatarUrl: string | null;
   createdAt: string;
   providers: string[];
-  foodProfile: AdminUserFoodProfile | null;
   activity: AdminUserActivity;
 }

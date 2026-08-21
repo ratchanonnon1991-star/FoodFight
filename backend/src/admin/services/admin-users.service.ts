@@ -24,14 +24,6 @@ export interface AdminUsersPaginatedResponse {
   };
 }
 
-export interface AdminUserFoodProfile {
-  allergies: string[];
-  otherAllergies: string | null;
-  restrictions: string[];
-  otherRestrictions: string | null;
-  additionalNotes: string | null;
-}
-
 export interface AdminUserActivity {
   hostedRoomsCount: number;
   joinedRoomsCount: number;
@@ -46,7 +38,6 @@ export interface AdminUserDetailResponse {
   avatarUrl: string | null;
   createdAt: Date;
   providers: string[];
-  foodProfile: AdminUserFoodProfile | null;
   activity: AdminUserActivity;
 }
 
@@ -119,15 +110,6 @@ export class AdminUsersService {
         role: true,
         avatarUrl: true,
         createdAt: true,
-        foodProfile: {
-          select: {
-            allergies: true,
-            otherAllergies: true,
-            restrictions: true,
-            otherRestrictions: true,
-            additionalNotes: true,
-          },
-        },
         accounts: {
           select: {
             provider: true,
@@ -155,15 +137,6 @@ export class AdminUsersService {
       avatarUrl: user.avatarUrl,
       createdAt: user.createdAt,
       providers: user.accounts.map((acc) => acc.provider),
-      foodProfile: user.foodProfile
-        ? {
-            allergies: user.foodProfile.allergies,
-            otherAllergies: user.foodProfile.otherAllergies,
-            restrictions: user.foodProfile.restrictions,
-            otherRestrictions: user.foodProfile.otherRestrictions,
-            additionalNotes: user.foodProfile.additionalNotes,
-          }
-        : null,
       activity: {
         hostedRoomsCount: user._count.hostedRooms,
         joinedRoomsCount: user._count.roomMembers,
