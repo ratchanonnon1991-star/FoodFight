@@ -6,6 +6,7 @@ import {
   Param,
   Patch,
   Post,
+  Put,
   Query,
   Sse,
 } from '@nestjs/common';
@@ -14,6 +15,10 @@ import type { MessageEvent } from '@nestjs/common';
 import { CurrentUser } from '../common/decorators/current-user.decorator';
 import { Public } from '../common/decorators/public.decorator';
 import type { AccessTokenPayload } from '../infrastructure/jwt/types/jwt-payload';
+import { FoodFightService } from '../food-fight/food-fight.service';
+import { UpsertMealPreferenceDto } from '../food-fight/dto/upsert-meal-preference.dto';
+import { SubmitFinalVoteDto } from '../food-fight/dto/submit-final-vote.dto';
+import { SubmitVotesDto } from '../food-fight/dto/submit-votes.dto';
 import { CreateRoomService } from './create-room.service';
 import { CreateRoomDto } from './dto/create-room.dto';
 import { JoinRoomService } from './join-room.service';
@@ -32,6 +37,7 @@ export class RoomController {
     private readonly locationSearchService: LocationSearchService,
     private readonly roomPreviewService: RoomPreviewService,
     private readonly roomRealtimeService: RoomRealtimeService,
+    private readonly foodFightService: FoodFightService,
   ) {}
 
   @Post()
@@ -122,6 +128,14 @@ export class RoomController {
     return this.joinRoomService.getRoom(roomId, currentUser.sub);
   }
 
+  @Get(':roomId/food-fight/state')
+  getFoodFightState(
+    @Param('roomId') roomId: string,
+    @CurrentUser() currentUser: AccessTokenPayload,
+  ) {
+    return this.foodFightService.getFlowState(roomId, currentUser.sub);
+  }
+
   @Post(':roomId/join')
   joinRoom(
     @Param('roomId') roomId: string,
@@ -145,6 +159,77 @@ export class RoomController {
     @CurrentUser() currentUser: AccessTokenPayload,
   ) {
     return this.joinRoomService.startRoom(roomId, currentUser.sub);
+  }
+
+  @Put(':roomId/preferences')
+  upsertMealPreference(
+    @Param('roomId') roomId: string,
+    @Body() dto: UpsertMealPreferenceDto,
+    @CurrentUser() currentUser: AccessTokenPayload,
+  ) {
+    return this.foodFightService.upsertMealPreference(
+      roomId,
+      currentUser.sub,
+      dto,
+    );
+  }
+
+  @Post(':roomId/recommendations/start')
+  startRecommendation(
+    @Param('roomId') roomId: string,
+    @CurrentUser() currentUser: AccessTokenPayload,
+  ) {
+    return this.foodFightService.startRecommendation(roomId, currentUser.sub);
+  }
+
+  @Post(':roomId/recommendations/reroll')
+  rerollRecommendation(
+    @Param('roomId') roomId: string,
+    @CurrentUser() currentUser: AccessTokenPayload,
+  ) {
+    return this.foodFightService.rerollRecommendation(roomId, currentUser.sub);
+  }
+
+  @Post(':roomId/restaurants/start')
+  startRestaurantRecommendations(
+    @Param('roomId') roomId: string,
+    @CurrentUser() currentUser: AccessTokenPayload,
+  ) {
+    return this.foodFightService.startRestaurantRecommendations(
+      roomId,
+      currentUser.sub,
+    );
+  }
+
+  @Put(':roomId/votes')
+  submitVotes(
+    @Param('roomId') roomId: string,
+    @Body() dto: SubmitVotesDto,
+    @CurrentUser() currentUser: AccessTokenPayload,
+  ) {
+    return this.foodFightService.submitVotes(roomId, currentUser.sub, dto);
+  }
+
+  @Put(':roomId/final-votes')
+  submitFinalVote(
+    @Param('roomId') roomId: string,
+    @Body() dto: SubmitFinalVoteDto,
+    @CurrentUser() currentUser: AccessTokenPayload,
+  ) {
+    return this.foodFightService.submitFinalVote(roomId, currentUser.sub, dto);
+  }
+
+  @Put(':roomId/final-votes/host-tie-break')
+  submitHostTieBreak(
+    @Param('roomId') roomId: string,
+    @Body() dto: SubmitFinalVoteDto,
+    @CurrentUser() currentUser: AccessTokenPayload,
+  ) {
+    return this.foodFightService.submitHostTieBreak(
+      roomId,
+      currentUser.sub,
+      dto,
+    );
   }
 
   @Delete(':roomId/leave')

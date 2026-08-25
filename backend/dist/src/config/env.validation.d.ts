@@ -15,6 +15,7 @@ declare const envSchema: z.ZodObject<{
     MAIL_PASSWORD: z.ZodString;
     MAIL_FROM: z.ZodString;
     FRONTEND_URL: z.ZodDefault<z.ZodString>;
+    AI_SERVICE_URL: z.ZodDefault<z.ZodString>;
 }, z.core.$strip>;
 export declare function validate(config: Record<string, any>): {
     PORT: number;
@@ -32,6 +33,7 @@ export declare function validate(config: Record<string, any>): {
     MAIL_PASSWORD: string;
     MAIL_FROM: string;
     FRONTEND_URL: string;
+    AI_SERVICE_URL: string;
 };
 export type EnvVariable = z.infer<typeof envSchema>;
 export {};

@@ -11,6 +11,7 @@ import { RoomModule } from './room/room.module';
 import { FoodProfileModule } from './food-profile/food-profile.module';
 import { PaymentAccountModule } from './payment-account/payment-account.module';
 import { HistoryModule } from './history/history.module';
+import { RecommendationAiModule } from './recommendation-ai/recommendation-ai.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { HistoryModule } from './history/history.module';
     FoodProfileModule,
     PaymentAccountModule,
     HistoryModule,
+    RecommendationAiModule,
   ],
   providers: [
     {

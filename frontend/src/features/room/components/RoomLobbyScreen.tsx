@@ -177,6 +177,12 @@ export function RoomLobbyScreen({ roomId }: { roomId: string }) {
   }, [isRoomLoaded, roomId]);
 
   React.useEffect(() => {
+    if (room?.status === 'IN_PROGRESS') {
+      router.replace(ROUTES.ROOM.PREFERENCES(room.id));
+    }
+  }, [room?.id, room?.status, router]);
+
+  React.useEffect(() => {
     if (!isKickedModalOpen) {
       return;
     }
@@ -252,6 +258,7 @@ export function RoomLobbyScreen({ roomId }: { roomId: string }) {
 
     try {
       setRoom(await roomService.startRoom(room.id));
+      router.push(ROUTES.ROOM.PREFERENCES(room.id));
     } catch (requestError) {
       setError(
         requestError instanceof RoomApiError

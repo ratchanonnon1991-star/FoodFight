@@ -31,6 +31,8 @@ const envSchema = z.object({
   MAIL_FROM: z.string().min(1),
 
   FRONTEND_URL: z.string().url().default('http://localhost:3000'),
+
+  AI_SERVICE_URL: z.string().url().default('http://127.0.0.1:8001'),
 });
 
 export function validate(config: Record<string, any>) {

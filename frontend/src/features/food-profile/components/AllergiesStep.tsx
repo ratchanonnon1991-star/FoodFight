@@ -167,7 +167,7 @@ export function AllergiesStep({
         <SelectableOptionCard
           id="no-allergies-option"
           label="I don't have any food allergies"
-          description="None of the above apply to me"
+          description="Anything is fine — no allergy restrictions"
           selected={draft.hasNoAllergies}
           onClick={() => setHasNoAllergies(!draft.hasNoAllergies)}
           icon={<ShieldCheck className="size-5 text-brand-primary" />}

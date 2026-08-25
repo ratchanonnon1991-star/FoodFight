@@ -26,6 +26,16 @@ export const ROUTES = {
     JOIN: "/room/join",
     PREVIEW: "/room/preview",
     LOBBY: (roomId: string) => `/room/${encodeURIComponent(roomId)}`,
+    PREFERENCES: (roomId: string) =>
+      `/room/${encodeURIComponent(roomId)}/preferences`,
+    RECOMMENDATIONS: (roomId: string) =>
+      `/room/${encodeURIComponent(roomId)}/recommendations`,
+    RESTAURANTS: (roomId: string, conceptId?: string) => {
+      const basePath = `/room/${encodeURIComponent(roomId)}/restaurants`;
+      return conceptId
+        ? `${basePath}?conceptId=${encodeURIComponent(conceptId)}`
+        : basePath;
+    },
   },
   ROOM_INVITE: (inviteToken: string) => `/join/${encodeURIComponent(inviteToken)}`,
   HISTORY: "/history",
