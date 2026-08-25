@@ -2243,6 +2243,7 @@ export declare const BillScalarFieldEnum: {
     readonly tax: "tax";
     readonly discount: "discount";
     readonly totalAmount: "totalAmount";
+    readonly closedAt: "closedAt";
     readonly createdAt: "createdAt";
     readonly updatedAt: "updatedAt";
 };
@@ -2262,6 +2263,7 @@ export declare const ReceiptItemScalarFieldEnum: {
     readonly id: "id";
     readonly billId: "billId";
     readonly name: "name";
+    readonly imageUrl: "imageUrl";
     readonly quantity: "quantity";
     readonly unitPrice: "unitPrice";
     readonly totalPrice: "totalPrice";
@@ -2283,6 +2285,7 @@ export declare const UserPaymentScalarFieldEnum: {
     readonly userId: "userId";
     readonly amount: "amount";
     readonly status: "status";
+    readonly slipImageUrl: "slipImageUrl";
     readonly paidAt: "paidAt";
     readonly createdAt: "createdAt";
     readonly updatedAt: "updatedAt";

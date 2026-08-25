@@ -308,6 +308,7 @@ exports.BillScalarFieldEnum = {
     tax: 'tax',
     discount: 'discount',
     totalAmount: 'totalAmount',
+    closedAt: 'closedAt',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
 };
@@ -325,6 +326,7 @@ exports.ReceiptItemScalarFieldEnum = {
     id: 'id',
     billId: 'billId',
     name: 'name',
+    imageUrl: 'imageUrl',
     quantity: 'quantity',
     unitPrice: 'unitPrice',
     totalPrice: 'totalPrice',
@@ -344,6 +346,7 @@ exports.UserPaymentScalarFieldEnum = {
     userId: 'userId',
     amount: 'amount',
     status: 'status',
+    slipImageUrl: 'slipImageUrl',
     paidAt: 'paidAt',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'

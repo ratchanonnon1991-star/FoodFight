@@ -65,6 +65,7 @@ exports.BillStatus = {
     DRAFT: 'DRAFT',
     SPLITTING: 'SPLITTING',
     COMPLETED: 'COMPLETED',
+    CLOSED: 'CLOSED',
     CANCELLED: 'CANCELLED'
 };
 exports.PaymentStatus = {

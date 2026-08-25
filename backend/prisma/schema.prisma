@@ -84,6 +84,7 @@ enum BillStatus {
   DRAFT
   SPLITTING
   COMPLETED
+  CLOSED
   CANCELLED
 }
 
@@ -790,6 +791,10 @@ model Bill {
 
 
 
+  closedAt DateTime?
+
+
+
   createdAt DateTime @default(now())
 
   updatedAt DateTime @updatedAt
@@ -883,6 +888,8 @@ model ReceiptItem {
 
 
   name String
+
+  imageUrl String?
 
 
 
@@ -983,6 +990,8 @@ model UserPayment {
 
 
   status PaymentStatus @default(UNPAID)
+
+  slipImageUrl String?
 
 
 
