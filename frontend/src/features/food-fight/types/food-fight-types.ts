@@ -14,9 +14,22 @@ export interface MealPreferenceDraft {
   additionalNuances: string;
 }
 
-export type FoodFightFlowState = "WAITING_FOR_PREFERENCES" | "READY_TO_RECOMMEND" | "RECOMMENDING" | "VOTING" | "WAITING_FOR_VOTES" | "FINAL_VOTE_REQUIRED" | "REROLL_REQUIRED" | "RECOMMENDING_RESTAURANTS" | "RESTAURANTS_READY" | "FINALIZED";
+export type FoodFightFlowState =
+  | "WAITING_FOR_PREFERENCES"
+  | "READY_TO_RECOMMEND"
+  | "RECOMMENDING"
+  | "VOTING"
+  | "WAITING_FOR_VOTES"
+  | "FINAL_VOTE_REQUIRED"
+  | "REROLL_REQUIRED"
+  | "RECOMMENDING_RESTAURANTS"
+  | "RESTAURANTS_READY"
+  | "FINALIZED";
 
-export type RestaurantFlowState = "FINALIZED_MENU" | "RECOMMENDING_RESTAURANTS" | "RESTAURANTS_READY";
+export type RestaurantFlowState =
+  | "FINALIZED_MENU"
+  | "RECOMMENDING_RESTAURANTS"
+  | "RESTAURANTS_READY";
 
 export interface RecommendationMetadata {
   conceptId?: string;
@@ -49,7 +62,10 @@ export interface RecommendationItem {
 }
 
 export type VoteAction = "OK" | "PASS";
-export interface VoteSubmission { recommendationItemId: string; vote: VoteAction; }
+export interface VoteSubmission {
+  recommendationItemId: string;
+  vote: VoteAction;
+}
 
 export type FinalVoteType = "TIE_BREAK" | "FOUR_MENU_FINAL";
 
@@ -103,7 +119,12 @@ export interface FoodFightState {
     votes: VoteSubmission[];
     hasSubmittedFinalVote: boolean;
   };
-  currentRound: { id: string; roundNumber: number; status: string; items: RecommendationItem[] } | null;
+  currentRound: {
+    id: string;
+    roundNumber: number;
+    status: string;
+    items: RecommendationItem[];
+  } | null;
   finalVoteType: FinalVoteType | null;
   finalVoteCandidates: RecommendationItem[];
   finalSelection: FinalSelection | null;

@@ -1,9 +1,16 @@
 import { API_BASE_URL } from "@/config/api";
 import { apiFetch, getStoredAccessToken } from "@/config/api-client";
-import type { FoodFightState, MealPreferenceDraft, VoteSubmission } from "@/features/food-fight/types/food-fight-types";
+import type {
+  FoodFightState,
+  MealPreferenceDraft,
+  VoteSubmission,
+} from "@/features/food-fight/types/food-fight-types";
 
 export class FoodFightApiError extends Error {
-  constructor(message: string, public readonly status: number) {
+  constructor(
+    message: string,
+    public readonly status: number,
+  ) {
     super(message);
     this.name = "FoodFightApiError";
   }
@@ -31,8 +38,12 @@ async function request<T>(path: string, init: RequestInit = {}): Promise<T> {
     throw new FoodFightApiError("ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์ได้", 0);
   }
   if (!response.ok) {
-    const body = (await response.json().catch(() => null)) as ApiErrorBody | null;
-    const message = Array.isArray(body?.message) ? body.message.join(", ") : body?.message ?? "ไม่สามารถดำเนินการกับ FoodFight ได้";
+    const body = (await response
+      .json()
+      .catch(() => null)) as ApiErrorBody | null;
+    const message = Array.isArray(body?.message)
+      ? body.message.join(", ")
+      : (body?.message ?? "ไม่สามารถดำเนินการกับ FoodFight ได้");
     throw new FoodFightApiError(message, response.status);
   }
   return (await response.json()) as T;
@@ -54,18 +65,34 @@ function preferencePayload(payload: MealPreferenceDraft) {
 }
 
 export function getFoodFightState(roomId: string) {
-  return request<FoodFightState>(`/rooms/${encodeURIComponent(roomId)}/food-fight/state`);
+  return request<FoodFightState>(
+    `/rooms/${encodeURIComponent(roomId)}/food-fight/state`,
+  );
 }
 
-export function submitMealPreference(roomId: string, payload: MealPreferenceDraft) {
-  return request<{ message: string }>(`/rooms/${encodeURIComponent(roomId)}/preferences`, {
-    method: "PUT",
-    body: JSON.stringify(preferencePayload(payload)),
-  });
+export function submitMealPreference(
+  roomId: string,
+  payload: MealPreferenceDraft,
+) {
+  return request<{ message: string }>(
+    `/rooms/${encodeURIComponent(roomId)}/preferences`,
+    {
+      method: "PUT",
+      body: JSON.stringify(preferencePayload(payload)),
+    },
+  );
 }
 
 export function startRecommendation(roomId: string) {
-  return request<{ state: "VOTING"; sessionId: string; roundId: string; roundNumber: number; recommendations: unknown[] }>(`/rooms/${encodeURIComponent(roomId)}/recommendations/start`, { method: "POST" });
+  return request<{
+    state: "VOTING";
+    sessionId: string;
+    roundId: string;
+    roundNumber: number;
+    recommendations: unknown[];
+  }>(`/rooms/${encodeURIComponent(roomId)}/recommendations/start`, {
+    method: "POST",
+  });
 }
 
 export function submitVotes(roomId: string, votes: VoteSubmission[]) {
@@ -76,27 +103,56 @@ export function submitVotes(roomId: string, votes: VoteSubmission[]) {
 }
 
 export function submitFinalVote(roomId: string, recommendationItemId: string) {
-  return request<FoodFightState>(`/rooms/${encodeURIComponent(roomId)}/final-votes`, {
-    method: "PUT",
-    body: JSON.stringify({ recommendationItemId }),
-  });
+  return request<FoodFightState>(
+    `/rooms/${encodeURIComponent(roomId)}/final-votes`,
+    {
+      method: "PUT",
+      body: JSON.stringify({ recommendationItemId }),
+    },
+  );
 }
 
-export function submitHostTieBreak(roomId: string, recommendationItemId: string) {
-  return request<FoodFightState>(`/rooms/${encodeURIComponent(roomId)}/final-votes/host-tie-break`, {
-    method: "PUT",
-    body: JSON.stringify({ recommendationItemId }),
-  });
+export function submitHostTieBreak(
+  roomId: string,
+  recommendationItemId: string,
+) {
+  return request<FoodFightState>(
+    `/rooms/${encodeURIComponent(roomId)}/final-votes/host-tie-break`,
+    {
+      method: "PUT",
+      body: JSON.stringify({ recommendationItemId }),
+    },
+  );
 }
 
 export function rerollRecommendation(roomId: string) {
-  return request<{ state: "VOTING"; sessionId: string; roundId: string; roundNumber: number; recommendations: unknown[] }>(`/rooms/${encodeURIComponent(roomId)}/recommendations/reroll`, { method: "POST" });
-}
-
-export function startRestaurantRecommendations(roomId: string) {
-  return request<FoodFightState>(`/rooms/${encodeURIComponent(roomId)}/restaurants/start`, {
+  return request<{
+    state: "VOTING";
+    sessionId: string;
+    roundId: string;
+    roundNumber: number;
+    recommendations: unknown[];
+  }>(`/rooms/${encodeURIComponent(roomId)}/recommendations/reroll`, {
     method: "POST",
   });
 }
 
-export const foodFightService = { getFoodFightState, submitMealPreference, startRecommendation, submitVotes, submitFinalVote, submitHostTieBreak, rerollRecommendation, startRestaurantRecommendations };
+export function startRestaurantRecommendations(roomId: string) {
+  return request<FoodFightState>(
+    `/rooms/${encodeURIComponent(roomId)}/restaurants/start`,
+    {
+      method: "POST",
+    },
+  );
+}
+
+export const foodFightService = {
+  getFoodFightState,
+  submitMealPreference,
+  startRecommendation,
+  submitVotes,
+  submitFinalVote,
+  submitHostTieBreak,
+  rerollRecommendation,
+  startRestaurantRecommendations,
+};
