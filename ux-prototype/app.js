@@ -22,7 +22,7 @@
     if (!appRoot) return;
 
     document.body.classList.toggle('ux-lab-active', hash === '#/ux-lab');
-    const prototypeProductRoutes = [...(P.WAVE1?.routes || []), ...(P.WAVE2?.routes || [])];
+    const prototypeProductRoutes = [...(P.WAVE1?.routes || []), ...(P.WAVE2?.routes || []), ...(P.WAVE3?.routes || [])];
     document.body.classList.toggle('wave1-active', prototypeProductRoutes.includes(hash));
 
     // Reset window scroll on navigation
@@ -57,9 +57,23 @@
       case '#/winner':
       case '#/restaurant':
       case '#/restaurant/detail':
-      case '#/bills':
         screenHtml = P.renderWave2Route(hash);
         bindFn = P.bindWave2Events;
+        break;
+
+      // Wave 03 local bill, split, payment, completion, and history prototype
+      case '#/bills':
+      case '#/bills/receipt':
+      case '#/bills/items':
+      case '#/bills/split':
+      case '#/bills/detail':
+      case '#/payment':
+      case '#/payment/status':
+      case '#/bill-complete':
+      case '#/history':
+      case '#/history/detail':
+        screenHtml = P.renderWave3Route(hash);
+        bindFn = P.bindWave3Events;
         break;
 
       // Developer UX Lab (isolated reference surface)
@@ -182,10 +196,6 @@
         break;
 
       // V6 History, Profile & Settings (4 Screens)
-      case '#/history':
-        screenHtml = P.renderHistory();
-        bindFn = P.bindHistoryEvents;
-        break;
       case '#/bill-history':
         screenHtml = P.renderBillHistory();
         bindFn = P.bindBillHistoryEvents;

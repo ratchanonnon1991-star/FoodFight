@@ -63,7 +63,7 @@
     const links = [
       ['home', '#/home', 'home'],
       ['history', '#/history', 'clock'],
-      ['bills', '#/bill', 'receipt'],
+      ['bills', '#/bills', 'receipt'],
       ['profile', '#/profile', 'user']
     ];
     return `<nav class="ff-desktop-nav" aria-label="FoodFighter navigation">${links.map(([id, href, iconName]) => `<a href="${href}" class="${active === id ? 'is-active' : ''}" ${active === id ? 'aria-current="page"' : ''}>${C.icon(iconName, 16)}<span>${t(id)}</span></a>`).join('')}</nav>`;
@@ -73,7 +73,7 @@
     const links = [
       ['home', '#/home', 'home'],
       ['history', '#/history', 'clock'],
-      ['bills', '#/bill', 'receipt'],
+      ['bills', '#/bills', 'receipt'],
       ['profile', '#/profile', 'user']
     ];
     return `<nav class="ff-mobile-bottom-nav" aria-label="Mobile FoodFighter navigation">${links.map(([id, href, iconName]) => `<a href="${href}" class="${active === id ? 'is-active' : ''}" ${active === id ? 'aria-current="page"' : ''}>${C.icon(iconName, 17)}<span>${t(id)}</span></a>`).join('')}</nav>`;
@@ -202,7 +202,13 @@
   function renderHome() {
     const s = state();
     const user = s.user;
-    const recent = W.recentFoodFights;
+    const recent = s.history?.length
+      ? s.history.slice(-3).reverse().map((item) => ({
+        name: item.mealName,
+        meta: `${item.members?.length || item.memberCount || 0} ${rawText('members')} · ${item.billStatus || rawText('completed')}`,
+        tone: item.tone || 'petal'
+      }))
+      : W.recentFoodFights;
     const content = `<section class="ff-home-hero"><div class="ff-home-copy"><span class="ff-eyebrow">${t('homeGreeting', { name: user.name })}</span><h1>${t('homeHeadline')}</h1><p>${t('homeBody')}</p><div class="ff-home-actions"><a href="#/room/create" class="ff-action-card ff-action-card-petal"><span class="ff-action-icon">${C.icon('plus', 21)}</span><span><strong>${t('createRoom')}</strong><small>${t('createRoomBody')}</small></span>${C.icon('arrowRight', 18)}</a><a href="#/room/join" class="ff-action-card ff-action-card-apricot"><span class="ff-action-icon">${C.icon('users', 21)}</span><span><strong>${t('joinRoom')}</strong><small>${t('joinRoomBody')}</small></span>${C.icon('arrowRight', 18)}</a></div></div><div class="ff-home-visual">${C.media('home', 'placeholder', { overlay: true })}<div class="ff-carousel-indicator"><i class="is-active"></i><i></i><i></i><span>01 / 03</span></div></div></section><section class="ff-home-current"><div class="ff-section-heading"><div><span class="ff-eyebrow">THE TABLE RIGHT NOW</span><h2>${t('currentFoodFight')}</h2></div>${s.currentRoom ? `<a href="#/room/lobby" class="ff-text-button">${t('openLobby')} ${C.icon('arrowRight', 14)}</a>` : ''}</div>${renderHomeCurrentRoom(s.currentRoom)}</section><section class="ff-home-recent"><div class="ff-section-heading"><div><span class="ff-eyebrow">A LITTLE HISTORY</span><h2>${t('recentFoodFights')}</h2></div><a href="#/history" class="ff-text-button">${t('viewAll')} ${C.icon('arrowRight', 14)}</a></div><div class="ff-recent-grid">${recent.map((item) => `<a href="#/history" class="ff-recent-card ff-recent-card-${item.tone}">${C.media('recent', 'placeholder', { className: 'ff-recent-media' })}<div class="ff-recent-copy"><strong>${C.esc(item.name)}</strong><span>${C.esc(item.meta)}</span></div></a>`).join('')}</div></section><div class="ff-home-footer-note">${C.icon('sparkles', 15)} ${t('profileReady')} · ${t('localOnly')}</div>`;
     return productPage(content, 'home', 'ff-home-page');
   }

@@ -414,7 +414,8 @@
     lobby: { label: 'ROOM / LOBBY', purpose: 'room identity', ratio: '4:3', size: '1200 × 900', tone: 'custard' },
     meal: { label: 'MEAL PICK', purpose: 'food decision', ratio: '4:3', size: '960 × 720', tone: 'petal' },
     restaurant: { label: 'RESTAURANT', purpose: 'selection context', ratio: '4:3', size: '1200 × 900', tone: 'apricot' },
-    avatar: { label: 'AVATAR', purpose: 'member identity', ratio: '1:1', size: '320 × 320', tone: 'mauve' }
+    avatar: { label: 'AVATAR', purpose: 'member identity', ratio: '1:1', size: '320 × 320', tone: 'mauve' },
+    receipt: { label: 'RECEIPT', purpose: 'bill context', ratio: '3:4', size: '900 × 1200', tone: 'quiet' }
   };
 
   const recentFoodFights = [
@@ -608,6 +609,21 @@
       roundResult: null,
       winner: null,
       restaurantSelection: null,
+      bill: null,
+      payments: [],
+      billFlow: {
+        receiptStep: 'entry',
+        splitStep: 'setup',
+        selectedItems: [],
+        selectedMembers: [],
+        itemAssignments: {},
+        completion: 'open',
+        historySelection: null,
+        validationError: '',
+        splitConfirmed: false,
+        historyRecorded: false
+      },
+      history: [],
       ui: {
         language: 'th',
         motion: 'on',
@@ -623,7 +639,10 @@
         returnRoute: '#/home',
         formErrors: {},
         wave2State: 'normal',
-        restaurantState: 'normal'
+        restaurantState: 'normal',
+        billScenario: 'normal',
+        receiptState: 'empty',
+        historyScenario: 'normal'
       }
     };
   }
@@ -868,7 +887,7 @@
   const routes = [
     '#/landing', '#/login', '#/register', '#/verify-email', '#/forgot-password', '#/reset-password',
     '#/food-profile', '#/home', '#/room/create', '#/room/join', '#/room/preview', '#/room/lobby',
-    '#/meal-preference', '#/recommendation-loading', '#/food-picks', '#/vote', '#/winner', '#/restaurant', '#/restaurant/detail', '#/bills'
+    '#/meal-preference', '#/recommendation-loading', '#/food-picks', '#/vote', '#/winner', '#/restaurant', '#/restaurant/detail'
   ];
 
   P.WAVE1 = {
