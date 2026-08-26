@@ -17,11 +17,12 @@
      1. Main Route Switch Dispatcher (All 38 Registered Screens Live)
      ========================================================================== */
   function renderCurrentRoute() {
-    const hash = window.location.hash || '#/ux-lab';
+    const hash = window.location.hash || '#/landing';
     const appRoot = document.getElementById('app-root');
     if (!appRoot) return;
 
     document.body.classList.toggle('ux-lab-active', hash === '#/ux-lab');
+    document.body.classList.toggle('wave1-active', Boolean(P.WAVE1?.routes?.includes(hash)));
 
     // Reset window scroll on navigation
     window.scrollTo({ top: 0, behavior: 'instant' });
@@ -30,28 +31,28 @@
     let bindFn = null;
 
     switch (hash) {
+      // Wave 01 clickable product prototype (local-only)
+      case '#/landing':
+      case '#/login':
+      case '#/register':
+      case '#/verify-email':
+      case '#/forgot-password':
+      case '#/reset-password':
+      case '#/food-profile':
+      case '#/home':
+      case '#/room/create':
+      case '#/room/join':
+      case '#/room/preview':
+      case '#/room/lobby':
+      case '#/meal-preference':
+        screenHtml = P.renderWave1Route(hash);
+        bindFn = P.bindWave1Events;
+        break;
+
       // Developer UX Lab (isolated reference surface)
       case '#/ux-lab':
         screenHtml = P.renderUXLab();
         bindFn = P.bindUXLabEvents;
-        break;
-
-      // V1 Auth (4 Screens)
-      case '#/login':
-        screenHtml = P.renderLogin();
-        bindFn = P.bindLoginEvents;
-        break;
-      case '#/register':
-        screenHtml = P.renderRegister();
-        bindFn = P.bindRegisterEvents;
-        break;
-      case '#/verify-email':
-        screenHtml = P.renderVerifyEmail();
-        bindFn = P.bindVerifyEmailEvents;
-        break;
-      case '#/forgot-password':
-        screenHtml = P.renderForgotPassword();
-        bindFn = P.bindForgotPasswordEvents;
         break;
 
       // V1 Food Profile Onboarding (3 Screens)
@@ -68,24 +69,10 @@
         bindFn = P.bindFoodProfileDetailsEvents;
         break;
 
-      // V1 Home (1 Screen)
-      case '#/home':
-        screenHtml = P.renderHome();
-        bindFn = P.bindHomeEvents;
-        break;
-
       // V2 Room Journey (8 Screens)
-      case '#/room/create':
-        screenHtml = P.renderRoomCreate();
-        bindFn = P.bindRoomCreateEvents;
-        break;
       case '#/room/lobby-host':
         screenHtml = P.renderRoomLobbyHost();
         bindFn = P.bindRoomLobbyHostEvents;
-        break;
-      case '#/room/join':
-        screenHtml = P.renderRoomJoinHub();
-        bindFn = P.bindRoomJoinHubEvents;
         break;
       case '#/room/scan-qr':
         screenHtml = P.renderRoomScanQR();
@@ -98,10 +85,6 @@
       case '#/room/invite':
         screenHtml = P.renderRoomInviteScreen();
         bindFn = P.bindRoomInviteScreenEvents;
-        break;
-      case '#/room/preview':
-        screenHtml = P.renderRoomPreview();
-        bindFn = P.bindRoomPreviewEvents;
         break;
       case '#/room/lobby-member':
         screenHtml = P.renderRoomLobbyMember();
@@ -227,9 +210,9 @@
     window.addEventListener('hashchange', renderCurrentRoute);
     P.initPrototypeNavigator();
 
-    // Default route to the isolated UX Lab if blank hash
+    // Default route to the product prototype if blank hash
     if (!window.location.hash) {
-      window.location.hash = '#/ux-lab';
+      window.location.hash = '#/landing';
     } else {
       renderCurrentRoute();
     }

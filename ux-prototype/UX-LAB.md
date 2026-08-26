@@ -1,7 +1,9 @@
 # FoodFighter UX Lab
 
-The default prototype route is `#/ux-lab`. It is a standalone, local-only
-reference surface for FoodFighter visual and interaction decisions.
+The internal reference route is `#/ux-lab`. The default prototype route is
+`#/landing`, which opens the local FoodFighter product simulation. UX Lab is
+available from the prototype utility menu and remains a standalone, local-only
+reference surface for visual and interaction decisions.
 
 ## Controls
 
@@ -27,3 +29,7 @@ Candidate screen recipes are explicitly marked `DESIGN CANDIDATE` or
 - `js/ux-lab-components.js` - small local render helpers
 - `js/ux-lab.js` - route view, interactions, and local state
 - `styles/ux-lab.css` - scoped visual language and responsive rules
+- `js/prototype-wave1-state.js` - local onboarding and room-flow state
+- `js/prototype-wave1-components.js` - product prototype render helpers
+- `js/screens-wave1.js` - clickable Wave 01 product screens
+- `styles/prototype-wave1.css` - isolated Wave 01 product shell styles
