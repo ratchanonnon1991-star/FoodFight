@@ -2,9 +2,8 @@
 
 import * as React from "react";
 import { useRouter } from "next/navigation";
-import { LogIn, LogOut, UserPlus } from "lucide-react";
+import { LogIn, UserPlus } from "lucide-react";
 import { PageContainer } from "@/components/layout/PageContainer";
-import { Button } from "@/components/ui/Button";
 import { ROUTES } from "@/config/routes";
 import { API_BASE_URL } from "@/config/api";
 import { roomService } from "@/features/room/services/room-service";
@@ -26,6 +25,9 @@ import { getMyHistory } from "@/features/history/services/history-service";
 import type { HistoryItem } from "@/features/history/types/history-types";
 
 import { formatRoomDate } from "@/features/room/utils/room-format";
+import { RoomDetailsModal } from "@/features/room/components/RoomDetailsModal";
+import { PendingBillsSection } from "@/features/bill/components/PendingBillsSection";
+import { usePendingBills } from "@/features/bill/hooks/use-pending-bills";
 
 function mapHistoryToRecentItem(item: HistoryItem): RecentFoodFightItemData {
   const menuName = item.finalMenu?.name;
@@ -35,6 +37,7 @@ function mapHistoryToRecentItem(item: HistoryItem): RecentFoodFightItemData {
 
   return {
     id: item.id,
+    roomId: item.room.id,
     title: item.room.name,
     subtitle: subtitle || item.room.locationName,
     date: formatRoomDate(item.completedAt),
@@ -45,7 +48,6 @@ function mapHistoryToRecentItem(item: HistoryItem): RecentFoodFightItemData {
           normalizedMenuName.includes("tea")
         ? "drink"
         : "soup",
-    href: ROUTES.HISTORY,
   };
 }
 
@@ -69,7 +71,24 @@ export function AuthenticatedHome({
   const [recentFoodFights, setRecentFoodFights] = React.useState<
     readonly RecentFoodFightItemData[]
   >([]);
+  const [isUserLoading, setIsUserLoading] = React.useState(true);
+  const [isCurrentSessionLoading, setIsCurrentSessionLoading] =
+    React.useState(true);
+  const [isRecentFoodFightsLoading, setIsRecentFoodFightsLoading] =
+    React.useState(true);
   const [isLoggingOut, setIsLoggingOut] = React.useState(false);
+  const [selectedRecentRoom, setSelectedRecentRoom] =
+    React.useState<RoomLobby | null>(null);
+  const [isRecentRoomLoading, setIsRecentRoomLoading] = React.useState(false);
+  const [recentRoomError, setRecentRoomError] = React.useState<string | null>(
+    null,
+  );
+  const {
+    bills: pendingBills,
+    isLoading: isPendingBillsLoading,
+    error: pendingBillsError,
+    refresh: refreshPendingBills,
+  } = usePendingBills();
 
   const handleLogout = React.useCallback(async () => {
     if (isLoggingOut) {
@@ -117,6 +136,10 @@ export function AuthenticatedHome({
         if (isMounted) {
           setCurrentSession(null);
         }
+      } finally {
+        if (isMounted) {
+          setIsCurrentSessionLoading(false);
+        }
       }
     };
 
@@ -161,6 +184,11 @@ export function AuthenticatedHome({
         if (isMounted) {
           router.replace(ROUTES.AUTH.LOGIN);
         }
+      })
+      .finally(() => {
+        if (isMounted) {
+          setIsUserLoading(false);
+        }
       });
 
     return () => {
@@ -179,16 +207,22 @@ export function AuthenticatedHome({
     }
 
     const loadHomeData = async () => {
-      const historyResult = await Promise.allSettled([getMyHistory()]);
+      try {
+        const historyResult = await Promise.allSettled([getMyHistory()]);
 
-      if (!isMounted) {
-        return;
-      }
+        if (!isMounted) {
+          return;
+        }
 
-      if (historyResult[0]?.status === "fulfilled") {
-        setRecentFoodFights(
-          historyResult[0].value.slice(0, 3).map(mapHistoryToRecentItem),
-        );
+        if (historyResult[0]?.status === "fulfilled") {
+          setRecentFoodFights(
+            historyResult[0].value.slice(0, 3).map(mapHistoryToRecentItem),
+          );
+        }
+      } finally {
+        if (isMounted) {
+          setIsRecentFoodFightsLoading(false);
+        }
       }
     };
 
@@ -210,68 +244,148 @@ export function AuthenticatedHome({
     }
   };
 
+  const openRecentRoomDetails = async (item: RecentFoodFightItemData) => {
+    setRecentRoomError(null);
+    setIsRecentRoomLoading(true);
+
+    try {
+      setSelectedRecentRoom(await roomService.getRoom(item.roomId));
+    } catch {
+      setRecentRoomError("Unable to load room details.");
+    } finally {
+      setIsRecentRoomLoading(false);
+    }
+  };
+
+  const closeRecentRoomDetails = () => {
+    setSelectedRecentRoom(null);
+    setRecentRoomError(null);
+    setIsRecentRoomLoading(false);
+  };
+
   return (
-    <main className="min-h-dvh bg-background text-text-primary">
+    <main className="min-h-dvh bg-background text-text-primary lg:min-h-[calc(100dvh-4rem)]">
       <PageContainer
-        maxWidth="auth"
+        maxWidth="wide"
         paddingY="none"
-        className="space-y-5 sm:space-y-6 pt-3 sm:pt-4 pb-32"
+        spacing="comfortable"
+        className="pt-3 pb-24 sm:pt-4 lg:pb-10"
       >
         {/* 1. Header with greeting and avatar/notification */}
         <HomeHeader
           user={user ?? { name: "FoodFighter" }}
+          isLoading={isUserLoading}
           onLogout={handleLogout}
         />
 
-        {/* 2. Primary Action Cards (Create Room & Join Room) */}
-        <div className="grid grid-cols-2 gap-3 sm:gap-3.5">
-          <HomeActionCard
-            id="create-room-card"
-            title="CREATE ROOM"
-            description="Start a new FoodFight"
-            icon={<UserPlus className="size-6 text-text-primary stroke-[2]" />}
-            href={ROUTES.ROOM.CREATE}
-            onClick={onCreateRoom}
-          />
-          <HomeActionCard
-            id="join-room-card"
-            title="JOIN ROOM"
-            description="Enter code or scan QR"
-            icon={<LogIn className="size-6 text-text-primary stroke-[2]" />}
-            href={ROUTES.ROOM.JOIN}
-            onClick={onJoinRoom}
-          />
-        </div>
-
-        {/* 3. Current FoodFight Section */}
-        <CurrentFoodFightCard
-          session={currentSession}
-          onContinue={continueCurrentRoom}
-        />
-
-        {/* 4. Recent FoodFights Section */}
-        <RecentFoodFightsSection
-          items={recentFoodFights}
-          onViewAll={onViewAllRecent ?? (() => router.push(ROUTES.HISTORY))}
-        />
-
-        {/* 5. Helpful Tip Card */}
-        <HomeTipCard tip={HOME_TIP} />
-
-        {/* 6. Quick logout action */}
-        <Button
-          type="button"
-          variant="outline"
-          fullWidth
-          loading={isLoggingOut}
-          loadingText="Logging out..."
-          leftIcon={<LogOut className="size-4" />}
-          onClick={() => void handleLogout()}
-          className="border-status-danger-text/30 text-status-danger-text hover:border-status-danger-text/50 hover:bg-status-danger-bg"
+        <div
+          data-testid="home-dashboard-grid"
+          className="grid items-start gap-5 md:grid-cols-12 md:gap-6 lg:gap-8 xl:gap-10"
         >
-          Log out
-        </Button>
+          <div className="space-y-5 md:col-span-7 lg:col-span-8 sm:space-y-6">
+            {/* 2. Primary Action Cards (Create Room & Join Room) */}
+            <div className="grid grid-cols-2 gap-3 sm:gap-3.5">
+              <HomeActionCard
+                id="create-room-card"
+                title="CREATE ROOM"
+                description="Start a new FoodFight"
+                icon={<UserPlus className="size-6 text-text-primary stroke-[2]" />}
+                href={ROUTES.ROOM.CREATE}
+                onClick={onCreateRoom}
+              />
+              <HomeActionCard
+                id="join-room-card"
+                title="JOIN ROOM"
+                description="Enter code or scan QR"
+                icon={<LogIn className="size-6 text-text-primary stroke-[2]" />}
+                href={ROUTES.ROOM.JOIN}
+                onClick={onJoinRoom}
+              />
+            </div>
+
+            {/* 3. Unfinished Bills Section */}
+            <PendingBillsSection
+              bills={pendingBills}
+              isLoading={isPendingBillsLoading}
+              error={pendingBillsError}
+              onRetry={() => void refreshPendingBills()}
+              variant="home"
+            />
+
+            {/* 4. Current FoodFight Section */}
+            <CurrentFoodFightCard
+              session={currentSession}
+              isLoading={isCurrentSessionLoading}
+              onContinue={continueCurrentRoom}
+            />
+          </div>
+
+          <div className="space-y-5 md:col-span-5 md:space-y-6 lg:col-span-4">
+            {/* 5. Recent FoodFights Section */}
+            <RecentFoodFightsSection
+              items={recentFoodFights}
+              isLoading={isRecentFoodFightsLoading}
+              onViewAll={onViewAllRecent ?? (() => router.push(ROUTES.HISTORY))}
+              onItemClick={(item) => void openRecentRoomDetails(item)}
+            />
+
+            {/* 6. Helpful Tip Card */}
+            <HomeTipCard tip={HOME_TIP} />
+          </div>
+        </div>
       </PageContainer>
+      {isRecentRoomLoading ? (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/40 px-4 py-6 backdrop-blur-[2px]"
+          role="status"
+          aria-label="Loading room details"
+        >
+          <div className="w-full max-w-sm rounded-2xl border border-border bg-surface p-5 text-center shadow-2xl">
+            <p className="text-sm text-text-secondary">Loading room details...</p>
+          </div>
+        </div>
+      ) : null}
+      {selectedRecentRoom ? (
+        <RoomDetailsModal
+          room={selectedRecentRoom}
+          isHost={false}
+          isSaving={false}
+          error={null}
+          onClose={closeRecentRoomDetails}
+          onSave={async () => undefined}
+          onRequestClose={() => undefined}
+        />
+      ) : null}
+      {recentRoomError ? (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/40 px-4 py-6 backdrop-blur-[2px]"
+          role="alertdialog"
+          aria-modal="true"
+          aria-label="Room details unavailable"
+          onMouseDown={(event) => {
+            if (event.target === event.currentTarget) {
+              closeRecentRoomDetails();
+            }
+          }}
+        >
+          <div className="w-full max-w-sm rounded-2xl border border-border bg-surface p-5 shadow-2xl">
+            <div className="flex items-start justify-between gap-4">
+              <h2 className="text-lg font-semibold text-text-primary">
+                Room details
+              </h2>
+              <button
+                type="button"
+                aria-label="Close"
+                className="text-xl leading-none text-text-secondary"
+                onClick={closeRecentRoomDetails}
+              >
+                ×
+              </button>
+            </div>
+            <p className="mt-4 text-sm text-status-danger-text">{recentRoomError}</p>
+          </div>
+        </div>
+      ) : null}
     </main>
   );
 }

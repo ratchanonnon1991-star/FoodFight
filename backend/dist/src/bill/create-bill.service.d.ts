@@ -1,4 +1,4 @@
-import { BillStatus, SessionMemberRole } from '../database/generated/prisma/client';
+import { BillStatus, RoomStatus, SessionMemberRole } from '../database/generated/prisma/client';
 import { PrismaService } from '../database/prisma.service';
 import { BillDetailService } from './bill-detail.service';
 import { CreateBillDto } from './dto/create-bill.dto';
@@ -34,6 +34,7 @@ export declare class CreateBillService {
             name: string;
             restaurantName: string | null;
         };
+        roomStatus: RoomStatus;
         members: {
             userId: string;
             displayName: string;
@@ -102,6 +103,7 @@ export declare class CreateBillService {
             name: string;
             restaurantName: string | null;
         };
+        roomStatus: RoomStatus;
         members: {
             userId: string;
             displayName: string;

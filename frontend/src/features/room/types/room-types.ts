@@ -48,10 +48,20 @@ export interface RoomLobby extends RoomBase {
   members: RoomMember[];
 }
 
+export type LocationProviderId = "osm-photon" | "google-maps";
+
+export type LocationSelectionSource = "search" | "map" | "current";
+
 export interface LocationSearchSuggestion {
   locationName: string;
   latitude: number;
   longitude: number;
+  provider?: LocationProviderId;
+  providerPlaceId?: string | null;
+}
+
+export interface LocationSelection extends LocationSearchSuggestion {
+  source: LocationSelectionSource;
 }
 
 export interface CreateRoomInput {

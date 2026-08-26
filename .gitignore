@@ -51,3 +51,8 @@ pids
 .agents/
 .claude/
 .windsurf/
+
+# Local UI examples and generated presentation reports
+/ui-ux-examples/
+/FOODFIGHT_SYSTEM_REPORT.html
+/room-function-summary.html

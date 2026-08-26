@@ -32,7 +32,12 @@ export function PublicHeader({ className }: PublicHeaderProps) {
     const accessToken = getStoredAccessToken();
 
     if (!accessToken) {
-      setIsCheckingSession(false);
+      void Promise.resolve().then(() => {
+        if (isMounted) {
+          setIsCheckingSession(false);
+        }
+      });
+
       return () => {
         isMounted = false;
       };

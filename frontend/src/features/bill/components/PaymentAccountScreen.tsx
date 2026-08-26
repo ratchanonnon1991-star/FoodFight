@@ -41,6 +41,7 @@ export function PaymentAccountScreen() {
   const [promptPayNumber, setPromptPayNumber] = React.useState("");
   const [qrCodeUrl, setQrCodeUrl] = React.useState("");
   const [error, setError] = React.useState<string | null>(null);
+  const [isLoading, setIsLoading] = React.useState(true);
   const [isSaving, setIsSaving] = React.useState(false);
   const qrInputRef = React.useRef<HTMLInputElement>(null);
 
@@ -48,27 +49,25 @@ export function PaymentAccountScreen() {
     try {
       const data = await paymentAccountService.getMine();
       setAccount(data);
-      if (!data) {
+      if (data) {
+        setAccountName(data.accountName);
+        setPromptPayNumber(data.promptPayNumber);
+        setQrCodeUrl(data.qrCodeUrl ?? "");
+      } else {
         setIsEditing(true);
       }
     } catch (err) {
       setError(
         err instanceof ApiError ? err.message : "Unable to load payment account.",
       );
+    } finally {
+      setIsLoading(false);
     }
   }, []);
 
   React.useEffect(() => {
-    void load();
+    void Promise.resolve().then(load);
   }, [load]);
-
-  React.useEffect(() => {
-    if (account) {
-      setAccountName(account.accountName);
-      setPromptPayNumber(account.promptPayNumber);
-      setQrCodeUrl(account.qrCodeUrl ?? "");
-    }
-  }, [account]);
 
   const handleQrChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -132,7 +131,7 @@ export function PaymentAccountScreen() {
             </Alert>
           )}
 
-          {account === undefined ? (
+          {isLoading ? (
             <div className="flex justify-center py-12">
               <Spinner size="lg" />
             </div>

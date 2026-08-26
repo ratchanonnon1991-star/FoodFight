@@ -1,5 +1,10 @@
 import { apiFetch } from "@/lib/api/client";
-import type { AvailableRoom, BillDetail, PaymentQr } from "../types/bill-types";
+import type {
+  AvailableRoom,
+  BillDetail,
+  PendingBill,
+  PaymentQr,
+} from "../types/bill-types";
 
 export interface ReceiptItemInput {
   name: string;
@@ -15,6 +20,8 @@ export interface CalculateSummaryInput {
 
 export const billService = {
   listAvailableRooms: () => apiFetch<AvailableRoom[]>("/bills/rooms/available"),
+
+  listPendingBills: () => apiFetch<PendingBill[]>("/bills/pending"),
 
   createBill: (roomId: string) =>
     apiFetch<BillDetail>("/bills", {

@@ -402,6 +402,7 @@ export function MealPreferenceForm({ roomId }: { roomId: string }) {
           title={getFoodFightTitle(state)}
           subtitle="สถานะมื้ออาหารสำหรับห้องนี้"
           backHref={ROUTES.ROOM.LOBBY(roomId)}
+          showBackButton={false}
         />
         {error ? (
           <Alert variant="error" className="mb-4">
@@ -689,6 +690,7 @@ function VoteSubmissionScreen({
           title={getFoodFightTitle(state)}
           subtitle="สถานะมื้ออาหารสำหรับห้องนี้"
           backHref={ROUTES.ROOM.LOBBY(roomId)}
+          showBackButton={false}
         />
         <VotingScreen
           state={state}

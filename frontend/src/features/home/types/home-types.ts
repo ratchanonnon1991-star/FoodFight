@@ -28,12 +28,12 @@ export type RecentFoodFightIconType = "soup" | "pizza" | "drink";
 
 export interface RecentFoodFightItemData {
   id: string;
+  roomId: string;
   title: string;
   subtitle: string;
   date: string;
   memberCount: number;
   iconType: RecentFoodFightIconType;
-  href?: string;
 }
 
 export interface HomeTipData {

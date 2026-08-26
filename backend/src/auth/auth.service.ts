@@ -436,10 +436,16 @@ export class AuthService {
       }
     }
 
-    // Keep a profile picture selected in FoodFighter. Social providers may
-    // return a different picture on every login, so only use their picture
-    // when the account does not have one saved yet.
-    if (profile.avatarUrl && !user.avatarUrl) {
+    // Keep user-uploaded data URLs selected in FoodFighter. For provider
+    // avatars, sync the latest picture so stale/placeholder URLs are removed
+    // when the user signs in with Google or LINE again.
+    const hasUserUploadedAvatar = user.avatarUrl?.startsWith('data:image/');
+
+    if (
+      profile.avatarUrl &&
+      !hasUserUploadedAvatar &&
+      profile.avatarUrl !== user.avatarUrl
+    ) {
       user = await this.userService.updateAvatarUrl(user.id, profile.avatarUrl);
     }
 

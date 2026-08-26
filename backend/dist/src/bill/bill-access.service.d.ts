@@ -6,6 +6,7 @@ export declare const billInclude: {
             room: {
                 select: {
                     name: true;
+                    status: true;
                 };
             };
             restaurantSelection: {

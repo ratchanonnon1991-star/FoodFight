@@ -15,7 +15,7 @@ import { Input } from "@/components/ui/Input";
 import { FormField, FormLabel, FormError } from "@/components/ui/form-field";
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/Alert";
 import { cn } from "@/lib/utils/cn";
-import { AuthSessionFallback } from "./AuthSessionFallback";
+import { AuthSessionFallback, AuthSessionLoading } from "./AuthSessionFallback";
 
 function maskEmail(email: string): string {
   const parts = email.split("@");
@@ -27,7 +27,12 @@ function maskEmail(email: string): string {
 
 export function ChangeEmailForm() {
   const router = useRouter();
-  const { challenge, setChallenge, setVerificationCompleted } = useAuthFlow();
+  const {
+    challenge,
+    isHydrating,
+    setChallenge,
+    setVerificationCompleted,
+  } = useAuthFlow();
   const [generalError, setGeneralError] = React.useState<string | null>(null);
 
   const {
@@ -77,6 +82,10 @@ export function ChangeEmailForm() {
       setGeneralError("An unexpected error occurred while changing email. Please try again.");
     }
   };
+
+  if (isHydrating) {
+    return <AuthSessionLoading />;
+  }
 
   if (!challenge) {
     return (

@@ -5,6 +5,7 @@ import { LocalStorageModule } from '../infrastructure/storage/local-storage.modu
 import { BillAccessService } from './bill-access.service';
 import { BillController } from './bill.controller';
 import { BillDetailService } from './bill-detail.service';
+import { BillListService } from './bill-list.service';
 import { CreateBillService } from './create-bill.service';
 import { PaymentService } from './payment.service';
 import { ReceiptService } from './receipt.service';
@@ -16,6 +17,7 @@ import { SplitService } from './split.service';
   providers: [
     BillAccessService,
     BillDetailService,
+    BillListService,
     CreateBillService,
     ReceiptService,
     SplitService,
