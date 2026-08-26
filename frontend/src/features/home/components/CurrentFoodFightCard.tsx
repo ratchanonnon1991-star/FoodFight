@@ -7,6 +7,7 @@ import * as React from "react";
 import Link from "next/link";
 import { ChevronRight, Clock, Users, UtensilsCrossed } from "lucide-react";
 import { ROUTES } from "@/config/routes";
+import { MediaPlaceholder } from "@/components/ui/MediaPlaceholder";
 import type {
   CurrentFoodFightMember,
   CurrentFoodFightSession,
@@ -48,9 +49,12 @@ export function CurrentFoodFightCard({
           {/* Top Info Section */}
           <div className="flex items-center gap-4">
             {/* Room Avatar Placeholder */}
-            <div className="size-16 sm:size-18 shrink-0 rounded-full bg-surface-subtle border border-border/70 flex items-center justify-center text-text-secondary shadow-2xs">
-              <Users className="size-8 sm:size-9 stroke-[1.8]" />
-            </div>
+            <MediaPlaceholder
+              label="Room image placeholder"
+              className="size-16 shrink-0 rounded-full border border-border/70 text-text-secondary shadow-2xs sm:size-[4.5rem]"
+            >
+              <Users className="size-8 sm:size-9 stroke-[1.8]" aria-hidden="true" />
+            </MediaPlaceholder>
 
             {/* Room Details */}
             <div className="space-y-1.5 min-w-0 flex-1">

@@ -14,6 +14,8 @@ import {
   Utensils,
 } from "lucide-react";
 import { ROUTES } from "@/config/routes";
+import { pageTypography } from "@/components/layout/PageContainer";
+import { cn } from "@/lib/utils/cn";
 import type { AuthenticatedUserDisplay } from "../types/home-types";
 
 export interface HomeHeaderProps {
@@ -67,7 +69,12 @@ export function HomeHeader({
     <header className="flex items-start justify-between gap-3 pt-2">
       {/* Greeting Text */}
       <div className="space-y-0.5 min-w-0">
-        <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-text-primary truncate">
+        <h1
+          className={cn(
+            pageTypography.title,
+            "truncate font-extrabold text-text-primary",
+          )}
+        >
           Hi, {user.name} 👋
         </h1>
         <p className="text-xs sm:text-sm text-text-secondary">
@@ -76,7 +83,7 @@ export function HomeHeader({
       </div>
 
       {/* Header Actions */}
-      <div className="flex items-center gap-2 shrink-0 pt-0.5">
+      <div className="flex shrink-0 items-center gap-2 pt-0.5 lg:fixed lg:right-10 lg:top-3 lg:z-40 2xl:right-[calc((100vw-1440px)/2+2.5rem)]">
         {/* Notification Bell */}
         <button
           type="button"
