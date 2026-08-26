@@ -22,7 +22,8 @@
     if (!appRoot) return;
 
     document.body.classList.toggle('ux-lab-active', hash === '#/ux-lab');
-    document.body.classList.toggle('wave1-active', Boolean(P.WAVE1?.routes?.includes(hash)));
+    const prototypeProductRoutes = [...(P.WAVE1?.routes || []), ...(P.WAVE2?.routes || [])];
+    document.body.classList.toggle('wave1-active', prototypeProductRoutes.includes(hash));
 
     // Reset window scroll on navigation
     window.scrollTo({ top: 0, behavior: 'instant' });
@@ -44,9 +45,21 @@
       case '#/room/join':
       case '#/room/preview':
       case '#/room/lobby':
-      case '#/meal-preference':
         screenHtml = P.renderWave1Route(hash);
         bindFn = P.bindWave1Events;
+        break;
+
+      // Wave 02 local gameplay prototype (no runtime/API dependency)
+      case '#/meal-preference':
+      case '#/recommendation-loading':
+      case '#/food-picks':
+      case '#/vote':
+      case '#/winner':
+      case '#/restaurant':
+      case '#/restaurant/detail':
+      case '#/bills':
+        screenHtml = P.renderWave2Route(hash);
+        bindFn = P.bindWave2Events;
         break;
 
       // Developer UX Lab (isolated reference surface)

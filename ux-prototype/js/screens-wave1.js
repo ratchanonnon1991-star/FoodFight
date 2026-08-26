@@ -89,9 +89,10 @@
     return ui.notice ? `<div class="ff-page-notice-wrap">${C.notice(ui.notice, ui.noticeType)}</div>` : '';
   }
 
-  function productPage(content, active, className) {
+  function productPage(content, active, className, options) {
+    const opts = options || {};
     const ui = state().ui;
-    return `<main class="ff-wave1-root ff-product-page ${className || ''} ${ui.motion === 'reduced' ? 'ff-reduced-motion' : ''}">${renderProductHeader(active)}${renderPageNotice()}<div class="ff-product-content">${content}</div>${renderMobileNav(active)}${renderUtilityMenu()}${renderWave1Overlay()}</main>`;
+    return `<main class="ff-wave1-root ff-product-page ${className || ''} ${ui.motion === 'reduced' ? 'ff-reduced-motion' : ''}">${renderProductHeader(active)}${renderPageNotice()}<div class="ff-product-content">${content}</div>${opts.hideMobileNav ? '' : renderMobileNav(active)}${renderUtilityMenu()}${opts.includeOverlay === false ? '' : renderWave1Overlay()}</main>`;
   }
 
   function authPage(content, options) {
@@ -257,12 +258,6 @@
     return productPage(content, 'home', 'ff-lobby-page');
   }
 
-  function renderWave2Boundary() {
-    const s = state();
-    const content = `<div class="ff-boundary-layout"><section class="ff-boundary-card"><span class="ff-candidate-ribbon">${t('prototypeOnly')}</span><div class="ff-boundary-icon">${C.icon('sparkles', 28)}</div><span class="ff-eyebrow">${t('nextWave')}</span><h1>${t('mealPreference')}</h1><p>${t('nextWaveBody')}</p><div class="ff-boundary-actions"><a href="#/room/lobby" class="ff-btn ff-btn-brand ff-btn-lg">${t('back')} ${C.icon('arrowLeft', 17)}</a><a href="#/ux-lab" class="ff-btn ff-btn-ghost ff-btn-lg">${t('openUxLab')}</a></div></section><aside class="ff-boundary-visual">${C.media('home', 'placeholder', { overlay: true })}<span>WAVE 02 · FOOD DECISION</span></aside></div>`;
-    return productPage(content, 'home', 'ff-boundary-page');
-  }
-
   function renderWave1Overlay() {
     const s = state();
     const overlay = s.ui.overlay;
@@ -424,7 +419,7 @@
     if (scope === 'room') s.roomDraft[key] = target.type === 'number' ? Number(nextValue) : nextValue;
   }
 
-  function changePasswordVisibility(target, confirm) {
+  function changePasswordVisibility(target) {
     const wrap = target.closest('.ff-control-wrap');
     const input = wrap?.querySelector('input');
     if (!input) return;
@@ -503,7 +498,7 @@
       return;
     }
     if (action === 'toggle-password' || action === 'toggle-confirm-password') {
-      changePasswordVisibility(target, action === 'toggle-confirm-password');
+      changePasswordVisibility(target);
       return;
     }
     if (action === 'fill-demo-otp') {
@@ -703,10 +698,18 @@
       case '#/room/join': return renderJoinRoom();
       case '#/room/preview': return renderRoomPreview();
       case '#/room/lobby': return renderLobby();
-      case '#/meal-preference': return renderWave2Boundary();
       default: return renderLanding();
     }
   }
+
+  P.WAVE1_SHELL = {
+    productPage,
+    renderProductHeader,
+    renderMobileNav,
+    renderPageNotice,
+    renderUtilityMenu,
+    renderWave1Overlay
+  };
 
   P.renderWave1Route = renderWave1Route;
   P.bindWave1Events = bindWave1Events;

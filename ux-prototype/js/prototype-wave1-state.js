@@ -412,6 +412,8 @@
     create: { label: 'CREATE ROOM CONTEXT', purpose: 'social setup', ratio: '4:3', size: '1200 × 900', tone: 'apricot' },
     join: { label: 'JOIN ROOM SOCIAL', purpose: 'invite context', ratio: '4:3', size: '1200 × 900', tone: 'petal' },
     lobby: { label: 'ROOM / LOBBY', purpose: 'room identity', ratio: '4:3', size: '1200 × 900', tone: 'custard' },
+    meal: { label: 'MEAL PICK', purpose: 'food decision', ratio: '4:3', size: '960 × 720', tone: 'petal' },
+    restaurant: { label: 'RESTAURANT', purpose: 'selection context', ratio: '4:3', size: '1200 × 900', tone: 'apricot' },
     avatar: { label: 'AVATAR', purpose: 'member identity', ratio: '1:1', size: '320 × 320', tone: 'mauve' }
   };
 
@@ -427,6 +429,100 @@
     { id: 'lina', name: 'Lina', initials: 'L', role: 'Member', ready: true, tone: 'custard' },
     { id: 'james', name: 'James', initials: 'J', role: 'Member', ready: false, tone: 'mauve' },
     { id: 'nana', name: 'Nana', initials: 'N', role: 'Member', ready: true, tone: 'petal' }
+  ];
+
+  const mealPreferenceOptions = {
+    cuisine: [
+      { id: 'thai', label: 'Thai', thai: 'อาหารไทย', tone: 'petal' },
+      { id: 'japanese', label: 'Japanese', thai: 'อาหารญี่ปุ่น', tone: 'apricot' },
+      { id: 'korean', label: 'Korean', thai: 'อาหารเกาหลี', tone: 'custard' },
+      { id: 'italian', label: 'Italian', thai: 'อาหารอิตาเลียน', tone: 'mauve' }
+    ],
+    ingredients: [
+      { id: 'rice', label: 'Rice', thai: 'ข้าว', tone: 'custard' },
+      { id: 'noodles', label: 'Noodles', thai: 'เส้น', tone: 'petal' },
+      { id: 'seafood', label: 'Seafood', thai: 'อาหารทะเล', tone: 'apricot' },
+      { id: 'tofu', label: 'Tofu', thai: 'เต้าหู้', tone: 'mauve' }
+    ],
+    cookingType: [
+      { id: 'spicy', label: 'Spicy', thai: 'เผ็ด', tone: 'petal' },
+      { id: 'soup', label: 'Soup', thai: 'ซุป / น้ำ', tone: 'custard' },
+      { id: 'grill', label: 'Grill', thai: 'ย่าง', tone: 'apricot' },
+      { id: 'stir-fry', label: 'Stir-fry', thai: 'ผัด', tone: 'mauve' }
+    ]
+  };
+
+  const recommendations = [
+    {
+      id: 'tom-yum',
+      name: 'Tom Yum',
+      thai: 'ต้มยำ',
+      tone: 'petal',
+      cuisine: 'Thai',
+      tags: ['Spicy', 'Soup'],
+      context: 'A bright, warm bowl for the whole table',
+      budget: 'Prototype context · $$'
+    },
+    {
+      id: 'korean-bbq',
+      name: 'Korean BBQ',
+      thai: 'ปิ้งย่างเกาหลี',
+      tone: 'apricot',
+      cuisine: 'Korean',
+      tags: ['Grill', 'Sharing'],
+      context: 'A social grill with plenty to pass around',
+      budget: 'Prototype context · $$$'
+    },
+    {
+      id: 'yaki-noodles',
+      name: 'Yakisoba',
+      thai: 'ยากิโซบะ',
+      tone: 'custard',
+      cuisine: 'Japanese',
+      tags: ['Noodles', 'Stir-fry'],
+      context: 'A comforting noodle plate with easy sharing',
+      budget: 'Prototype context · $$'
+    },
+    {
+      id: 'basil-rice',
+      name: 'Basil Rice',
+      thai: 'ข้าวกะเพรา',
+      tone: 'mauve',
+      cuisine: 'Thai',
+      tags: ['Rice', 'Spicy'],
+      context: 'A familiar rice bowl for a quick group decision',
+      budget: 'Prototype context · $'
+    }
+  ];
+
+  const restaurants = [
+    {
+      id: 'warm-table',
+      name: 'The Warm Table',
+      category: 'Thai table · local prototype',
+      distance: 'Local context only',
+      price: '$$',
+      location: 'Siam Square · prototype',
+      tone: 'petal'
+    },
+    {
+      id: 'shared-flame',
+      name: 'Shared Flame',
+      category: 'Grill & sharing · local prototype',
+      distance: 'Local context only',
+      price: '$$$',
+      location: 'Thonglor · prototype',
+      tone: 'apricot'
+    },
+    {
+      id: 'noodle-room',
+      name: 'Noodle Room',
+      category: 'Noodles · local prototype',
+      distance: 'Local context only',
+      price: '$',
+      location: 'Ari · prototype',
+      tone: 'custard'
+    }
   ];
 
   function buildRoom(role, draft) {
@@ -493,6 +589,25 @@
       currentRoom: null,
       roomMembers: [],
       readiness: { user: false, allReady: false },
+      mealPreference: {
+        cuisine: [],
+        ingredients: [],
+        cookingType: [],
+        submitted: false
+      },
+      recommendationProgress: {
+        stage: 0,
+        message: '',
+        started: false,
+        complete: false
+      },
+      recommendationRound: 1,
+      recommendations: deepClone(recommendations),
+      voteSelections: { 1: [], 2: [] },
+      passedOptions: { 1: [], 2: [] },
+      roundResult: null,
+      winner: null,
+      restaurantSelection: null,
       ui: {
         language: 'th',
         motion: 'on',
@@ -506,13 +621,16 @@
         scenario: 'new-user',
         lobbyScenario: 'host-waiting',
         returnRoute: '#/home',
-        formErrors: {}
+        formErrors: {},
+        wave2State: 'normal',
+        restaurantState: 'normal'
       }
     };
   }
 
   let state = initialState();
   let loadingToken = 0;
+  let gameplayTimerToken = 0;
 
   function refresh() {
     if (typeof P.renderCurrentRoute === 'function') P.renderCurrentRoute();
@@ -557,6 +675,65 @@
       state.ui.loadingAction = '';
       complete();
     }, delay || 520);
+  }
+
+  function startRecommendationLoading(shouldRefresh) {
+    gameplayTimerToken += 1;
+    const currentToken = gameplayTimerToken;
+    state.ui.loadingAction = 'recommendation';
+    state.ui.formErrors = {};
+    state.recommendationProgress = {
+      stage: 0,
+      message: '',
+      started: true,
+      complete: false
+    };
+    if (shouldRefresh !== false) refresh();
+
+    const stages = [
+      'Understanding your group',
+      'Balancing preferences',
+      'Preparing your picks'
+    ];
+    [220, 560, 900].forEach((delay, index) => {
+      window.setTimeout(() => {
+        if (currentToken !== gameplayTimerToken) return;
+        state.recommendationProgress.stage = index + 1;
+        state.recommendationProgress.message = stages[index];
+        refresh();
+      }, delay);
+    });
+    window.setTimeout(() => {
+      if (currentToken !== gameplayTimerToken) return;
+      state.ui.loadingAction = '';
+      state.recommendationProgress.stage = stages.length;
+      state.recommendationProgress.message = stages[stages.length - 1];
+      state.recommendationProgress.complete = true;
+      navigate('#/food-picks', '#/meal-preference');
+    }, 1180);
+  }
+
+  function cancelRecommendationLoading() {
+    gameplayTimerToken += 1;
+    state.ui.loadingAction = '';
+    state.recommendationProgress = {
+      stage: 0,
+      message: '',
+      started: false,
+      complete: false
+    };
+  }
+
+  function skipRecommendationLoading() {
+    gameplayTimerToken += 1;
+    state.ui.loadingAction = '';
+    state.recommendationProgress = {
+      stage: 3,
+      message: 'Preparing your picks',
+      started: true,
+      complete: true
+    };
+    navigate('#/food-picks', '#/meal-preference');
   }
 
   function navigate(route, returnRoute) {
@@ -657,6 +834,7 @@
 
   function resetDemo() {
     loadingToken += 1;
+    gameplayTimerToken += 1;
     state = initialState();
     setNotice(t('resetSuccessToast'), 'success');
     navigate('#/landing');
@@ -689,7 +867,8 @@
 
   const routes = [
     '#/landing', '#/login', '#/register', '#/verify-email', '#/forgot-password', '#/reset-password',
-    '#/food-profile', '#/home', '#/room/create', '#/room/join', '#/room/preview', '#/room/lobby', '#/meal-preference'
+    '#/food-profile', '#/home', '#/room/create', '#/room/join', '#/room/preview', '#/room/lobby',
+    '#/meal-preference', '#/recommendation-loading', '#/food-picks', '#/vote', '#/winner', '#/restaurant', '#/restaurant/detail', '#/bills'
   ];
 
   P.WAVE1 = {
@@ -698,6 +877,9 @@
     restrictions,
     mediaSlots,
     recentFoodFights,
+    mealPreferenceOptions,
+    recommendations,
+    restaurants,
     getState,
     t,
     routes,
@@ -707,6 +889,9 @@
     setNotice,
     clearNotice,
     runLoading,
+    startRecommendationLoading,
+    cancelRecommendationLoading,
+    skipRecommendationLoading,
     navigate,
     refresh,
     setCurrentRoom,
