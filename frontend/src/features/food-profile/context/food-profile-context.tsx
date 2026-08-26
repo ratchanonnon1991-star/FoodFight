@@ -21,24 +21,35 @@ export function FoodProfileProvider({ children, initialDraft }: FoodProfileProvi
     ...INITIAL_FOOD_PROFILE_DRAFT,
     ...initialDraft,
   }));
+  const [isLoading, setIsLoading] = React.useState(
+    () => resolveAuthMode() === "api",
+  );
 
   React.useEffect(() => {
     let isCancelled = false;
 
     const loadFoodProfile = async () => {
-      if (resolveAuthMode() !== "api") {
-        return;
-      }
+      try {
+        if (resolveAuthMode() !== "api") {
+          return;
+        }
 
-      const token = window.localStorage.getItem("accessToken");
-      if (!token) {
-        return;
-      }
+        const token = window.localStorage.getItem("accessToken");
+        if (!token) {
+          return;
+        }
 
-      const result = await getMyFoodProfile(token);
+        const result = await getMyFoodProfile(token);
 
-      if (!isCancelled && result.ok) {
-        setDraft(mapResponseToDraft(result.data));
+        if (!isCancelled && result.ok) {
+          setDraft(mapResponseToDraft(result.data));
+        }
+      } catch {
+        // Keep the initial draft visible when the profile cannot be loaded.
+      } finally {
+        if (!isCancelled) {
+          setIsLoading(false);
+        }
       }
     };
 
@@ -179,6 +190,7 @@ export function FoodProfileProvider({ children, initialDraft }: FoodProfileProvi
   const value = React.useMemo(
     () => ({
       draft,
+      isLoading,
       // Allergies
       setAllergies,
       setOtherAllergies,
@@ -199,6 +211,7 @@ export function FoodProfileProvider({ children, initialDraft }: FoodProfileProvi
     }),
     [
       draft,
+      isLoading,
       setAllergies,
       setOtherAllergies,
       setHasNoAllergies,

@@ -68,6 +68,7 @@ export function SelectMealScreen() {
       })
       .catch((err) => {
         if (isMounted) {
+          setRooms([]);
           setError(
             err instanceof ApiError ? err.message : "Unable to load meals.",
           );

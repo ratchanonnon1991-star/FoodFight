@@ -27,7 +27,7 @@ export function useBill(billId: string) {
   }, [billId]);
 
   React.useEffect(() => {
-    void refresh();
+    void Promise.resolve().then(refresh);
   }, [refresh]);
 
   return { bill, isLoading, error, refresh, setBill };

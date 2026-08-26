@@ -2,6 +2,7 @@ import * as React from "react";
 import Link from "next/link";
 import { ROUTES } from "@/config/routes";
 import { buttonVariants } from "@/components/ui/Button";
+import { Spinner } from "@/components/ui/Spinner";
 import { cn } from "@/lib/utils/cn";
 
 export interface AuthSessionFallbackProps {
@@ -9,6 +10,20 @@ export interface AuthSessionFallbackProps {
   description?: string;
   actionLabel?: string;
   actionHref?: string;
+}
+
+export function AuthSessionLoading() {
+  return (
+    <div
+      className="flex min-h-40 flex-col items-center justify-center gap-3 text-center"
+      role="status"
+      aria-live="polite"
+      aria-busy="true"
+    >
+      <Spinner size="md" />
+      <p className="text-xs text-text-secondary">Restoring your session...</p>
+    </div>
+  );
 }
 
 export function AuthSessionFallback({

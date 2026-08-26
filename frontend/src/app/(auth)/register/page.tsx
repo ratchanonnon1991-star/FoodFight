@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { GuestOnlyGuard } from "@/components/auth/GuestOnlyGuard";
 import { RegisterForm } from "@/features/auth/components/RegisterForm";
 
 export const metadata: Metadata = {
@@ -7,5 +8,9 @@ export const metadata: Metadata = {
 };
 
 export default function RegisterPage() {
-  return <RegisterForm />;
+  return (
+    <GuestOnlyGuard>
+      <RegisterForm />
+    </GuestOnlyGuard>
+  );
 }

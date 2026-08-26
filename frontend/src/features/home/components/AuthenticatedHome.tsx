@@ -71,6 +71,11 @@ export function AuthenticatedHome({
   const [recentFoodFights, setRecentFoodFights] = React.useState<
     readonly RecentFoodFightItemData[]
   >([]);
+  const [isUserLoading, setIsUserLoading] = React.useState(true);
+  const [isCurrentSessionLoading, setIsCurrentSessionLoading] =
+    React.useState(true);
+  const [isRecentFoodFightsLoading, setIsRecentFoodFightsLoading] =
+    React.useState(true);
   const [isLoggingOut, setIsLoggingOut] = React.useState(false);
   const [selectedRecentRoom, setSelectedRecentRoom] =
     React.useState<RoomLobby | null>(null);
@@ -131,6 +136,10 @@ export function AuthenticatedHome({
         if (isMounted) {
           setCurrentSession(null);
         }
+      } finally {
+        if (isMounted) {
+          setIsCurrentSessionLoading(false);
+        }
       }
     };
 
@@ -175,6 +184,11 @@ export function AuthenticatedHome({
         if (isMounted) {
           router.replace(ROUTES.AUTH.LOGIN);
         }
+      })
+      .finally(() => {
+        if (isMounted) {
+          setIsUserLoading(false);
+        }
       });
 
     return () => {
@@ -193,16 +207,22 @@ export function AuthenticatedHome({
     }
 
     const loadHomeData = async () => {
-      const historyResult = await Promise.allSettled([getMyHistory()]);
+      try {
+        const historyResult = await Promise.allSettled([getMyHistory()]);
 
-      if (!isMounted) {
-        return;
-      }
+        if (!isMounted) {
+          return;
+        }
 
-      if (historyResult[0]?.status === "fulfilled") {
-        setRecentFoodFights(
-          historyResult[0].value.slice(0, 3).map(mapHistoryToRecentItem),
-        );
+        if (historyResult[0]?.status === "fulfilled") {
+          setRecentFoodFights(
+            historyResult[0].value.slice(0, 3).map(mapHistoryToRecentItem),
+          );
+        }
+      } finally {
+        if (isMounted) {
+          setIsRecentFoodFightsLoading(false);
+        }
       }
     };
 
@@ -254,6 +274,7 @@ export function AuthenticatedHome({
         {/* 1. Header with greeting and avatar/notification */}
         <HomeHeader
           user={user ?? { name: "FoodFighter" }}
+          isLoading={isUserLoading}
           onLogout={handleLogout}
         />
 
@@ -294,6 +315,7 @@ export function AuthenticatedHome({
             {/* 4. Current FoodFight Section */}
             <CurrentFoodFightCard
               session={currentSession}
+              isLoading={isCurrentSessionLoading}
               onContinue={continueCurrentRoom}
             />
           </div>
@@ -302,6 +324,7 @@ export function AuthenticatedHome({
             {/* 5. Recent FoodFights Section */}
             <RecentFoodFightsSection
               items={recentFoodFights}
+              isLoading={isRecentFoodFightsLoading}
               onViewAll={onViewAllRecent ?? (() => router.push(ROUTES.HISTORY))}
               onItemClick={(item) => void openRecentRoomDetails(item)}
             />

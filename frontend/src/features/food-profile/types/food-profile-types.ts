@@ -26,6 +26,7 @@ export interface FoodProfileDraft {
 
 export interface FoodProfileContextValue {
   draft: FoodProfileDraft;
+  isLoading: boolean;
 
   // Allergies Step 1
   setAllergies: (allergies: string[]) => void;

@@ -12,6 +12,8 @@ interface StoredAuthFlow {
 }
 
 export interface AuthFlowContextValue {
+  isHydrating: boolean;
+
   challenge: EmailVerificationChallenge | null;
   setChallenge: (challenge: EmailVerificationChallenge | null) => void;
 
@@ -30,6 +32,7 @@ export interface AuthFlowContextValue {
 const AuthFlowContext = React.createContext<AuthFlowContextValue | null>(null);
 
 export function AuthFlowProvider({ children }: { children: React.ReactNode }) {
+  const [isHydrating, setIsHydrating] = React.useState(true);
   const [challenge, setChallengeState] =
     React.useState<EmailVerificationChallenge | null>(null);
 
@@ -43,21 +46,25 @@ export function AuthFlowProvider({ children }: { children: React.ReactNode }) {
 
   // Restore auth flow after refresh
   React.useEffect(() => {
-    try {
-      const stored = sessionStorage.getItem(AUTH_FLOW_STORAGE_KEY);
+    void Promise.resolve().then(() => {
+      try {
+        const stored = sessionStorage.getItem(AUTH_FLOW_STORAGE_KEY);
 
-      if (stored) {
-        const parsed = JSON.parse(stored) as StoredAuthFlow;
+        if (stored) {
+          const parsed = JSON.parse(stored) as StoredAuthFlow;
 
-        setChallengeState(parsed.challenge ?? null);
+          setChallengeState(parsed.challenge ?? null);
 
-        setVerificationCompletedState(parsed.verificationCompleted ?? false);
+          setVerificationCompletedState(parsed.verificationCompleted ?? false);
 
-        setIsFoodProfileCompletedState(parsed.isFoodProfileCompleted ?? false);
+          setIsFoodProfileCompletedState(parsed.isFoodProfileCompleted ?? false);
+        }
+      } catch {
+        sessionStorage.removeItem(AUTH_FLOW_STORAGE_KEY);
+      } finally {
+        setIsHydrating(false);
       }
-    } catch {
-      sessionStorage.removeItem(AUTH_FLOW_STORAGE_KEY);
-    }
+    });
   }, []);
 
   const persistFlow = React.useCallback(
@@ -115,6 +122,7 @@ export function AuthFlowProvider({ children }: { children: React.ReactNode }) {
 
   const value = React.useMemo(
     () => ({
+      isHydrating,
       challenge,
       setChallenge,
 
@@ -130,6 +138,7 @@ export function AuthFlowProvider({ children }: { children: React.ReactNode }) {
       clearFlowState,
     }),
     [
+      isHydrating,
       challenge,
       setChallenge,
       verificationCompleted,

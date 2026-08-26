@@ -349,15 +349,15 @@ export declare class RoomController {
             id: string;
             updatedAt: Date;
             userId: string;
-            cuisines: string[];
-            restaurantStyles: string[];
             sessionId: string;
             cookingTypes: string[];
             otherCookingType: string | null;
+            cuisines: string[];
             otherCuisine: string | null;
             ingredients: string[];
             otherIngredient: string | null;
             budgetRange: import("../database/generated/prisma/enums").MealBudgetRange | null;
+            restaurantStyles: string[];
             otherRestaurantStyle: string | null;
             otherNote: string | null;
             submittedAt: Date;

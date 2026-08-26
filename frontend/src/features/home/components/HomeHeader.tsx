@@ -20,6 +20,7 @@ import type { AuthenticatedUserDisplay } from "../types/home-types";
 
 export interface HomeHeaderProps {
   user: AuthenticatedUserDisplay;
+  isLoading?: boolean;
   onNotificationClick?: () => void;
   onProfileClick?: () => void;
   onLogout?: () => void;
@@ -27,6 +28,7 @@ export interface HomeHeaderProps {
 
 export function HomeHeader({
   user,
+  isLoading = false,
   onNotificationClick,
   onProfileClick,
   onLogout,
@@ -69,7 +71,19 @@ export function HomeHeader({
     <header className="flex items-start justify-between gap-3 pt-2">
       {/* Greeting Text */}
       <div className="space-y-0.5 min-w-0">
-        <h1
+        {isLoading ? (
+          <div
+            className="space-y-2"
+            role="status"
+            aria-live="polite"
+            aria-label="Loading profile"
+          >
+            <div className="h-9 w-64 max-w-full animate-pulse rounded-lg bg-surface-subtle sm:h-11" />
+            <div className="h-4 w-52 max-w-full animate-pulse rounded bg-surface-subtle" />
+          </div>
+        ) : (
+          <>
+          <h1
           className={cn(
             pageTypography.title,
             "truncate font-extrabold text-text-primary",
@@ -80,6 +94,8 @@ export function HomeHeader({
         <p className="text-xs sm:text-sm text-text-secondary">
           Ready to fight for the best meal?
         </p>
+          </>
+        )}
       </div>
 
       {/* Header Actions */}
@@ -105,11 +121,18 @@ export function HomeHeader({
             aria-label="Open profile menu"
             aria-haspopup="menu"
             aria-expanded={isMenuOpen}
-            title={user.name}
-            className="flex items-center gap-1 rounded-full p-0.5 text-text-secondary transition-colors hover:text-brand-primary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-secondary"
+            aria-busy={isLoading}
+            disabled={isLoading}
+            title={isLoading ? "Loading profile" : user.name}
+            className="flex items-center gap-1 rounded-full p-0.5 text-text-secondary transition-colors hover:text-brand-primary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-secondary disabled:cursor-wait"
           >
             <span className="size-10 rounded-full border border-border/80 bg-surface flex items-center justify-center shadow-2xs">
-              {user.avatarUrl && failedAvatarUrl !== user.avatarUrl ? (
+              {isLoading ? (
+                <span
+                  className="size-full animate-pulse rounded-full bg-surface-subtle"
+                  aria-hidden="true"
+                />
+              ) : user.avatarUrl && failedAvatarUrl !== user.avatarUrl ? (
                 <img
                   key={user.avatarUrl}
                   src={user.avatarUrl}
@@ -133,7 +156,7 @@ export function HomeHeader({
             />
           </button>
 
-          {isMenuOpen ? (
+          {isMenuOpen && !isLoading ? (
             <div
               role="menu"
               aria-label="Profile menu"

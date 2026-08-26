@@ -100,40 +100,32 @@ enum OcrStatus {
 }
 
 model User {
-  id            String  @id @default(uuid())
-  displayName   String
-  email         String  @unique
-  passwordHash  String?
-  avatarUrl     String?
-  emailVerified Boolean @default(false)
-  role          Role    @default(USER)
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  accounts          Account[]
-  refreshTokens     RefreshToken[]
-  emailVerification EmailVerification?
-  passwordResets    PasswordReset[]
-
-  foodProfile    FoodProfile?
-  paymentAccount PaymentAccount?
-
-  hostedRooms Room[]       @relation("RoomHost")
-  roomMembers RoomMember[]
-
-  sessionMembers  SessionMember[]
-  mealPreferences MealPreference[]
-  votes           Vote[]
-  finalVotes      FinalVote[]
-
-  finalSelections FinalSelection[] @relation("FinalSelectedBy")
-
+  id                  String                @id @default(uuid())
+  displayName         String
+  email               String                @unique
+  passwordHash        String?
+  avatarUrl           String?
+  emailVerified       Boolean               @default(false)
+  role                Role                  @default(USER)
+  createdAt           DateTime              @default(now())
+  updatedAt           DateTime              @updatedAt
+  accounts            Account[]
+  refreshTokens       RefreshToken[]
+  emailVerification   EmailVerification?
+  passwordResets      PasswordReset[]
+  foodProfile         FoodProfile?
+  paymentAccount      PaymentAccount?
+  hostedRooms         Room[]                @relation("RoomHost")
+  roomMembers         RoomMember[]
+  sessionMembers      SessionMember[]
+  mealPreferences     MealPreference[]
+  votes               Vote[]
+  finalVotes          FinalVote[]
+  finalSelections     FinalSelection[]      @relation("FinalSelectedBy")
   selectedRestaurants RestaurantSelection[] @relation("RestaurantSelectedBy")
-
-  createdBills Bill[]        @relation("BillCreatedBy")
-  itemShares   ItemShare[]
-  payments     UserPayment[]
+  createdBills        Bill[]                @relation("BillCreatedBy")
+  itemShares          ItemShare[]
+  payments            UserPayment[]
 
   @@map("users")
 }
@@ -143,11 +135,9 @@ model Account {
   userId            String
   provider          AuthProvider
   providerAccountId String
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  user              User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt         DateTime     @default(now())
+  updatedAt         DateTime     @updatedAt
 
   @@unique([provider, providerAccountId])
   @@unique([userId, provider])
@@ -162,8 +152,7 @@ model RefreshToken {
   expiresAt DateTime
   revokedAt DateTime?
   createdAt DateTime  @default(now())
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
   @@index([expiresAt])
@@ -176,11 +165,9 @@ model EmailVerification {
   otpHash           String
   expiresAt         DateTime
   resendAvailableAt DateTime
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("email_verifications")
 }
@@ -192,81 +179,61 @@ model PasswordReset {
   expiresAt         DateTime
   resendAvailableAt DateTime
   used              Boolean  @default(false)
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
   @@map("password_resets")
 }
 
 model FoodProfile {
-  id     String @id @default(uuid())
-  userId String @unique
-
-  allergies      String[]
-  otherAllergies String?
-
+  id                String   @id @default(uuid())
+  userId            String   @unique
+  allergies         String[]
+  otherAllergies    String?
   restrictions      String[]
   otherRestrictions String?
-
-  additionalNotes String?
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  additionalNotes   String?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("food_profiles")
 }
 
 model PaymentAccount {
-  id              String  @id @default(uuid())
-  userId          String  @unique
-  paymentType     String  @default("PROMPTPAY")
+  id              String   @id @default(uuid())
+  userId          String   @unique
+  paymentType     String   @default("PROMPTPAY")
   accountName     String
   promptPayNumber String
   qrCodeUrl       String?
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("payment_accounts")
 }
 
 model Room {
-  id     String @id @default(uuid())
-  hostId String
-
-  name String
-
-  roomCode    String @unique
-  inviteToken String @unique
-
-  maxMembers Int
-
-  locationName String
-  latitude     Float?
-  longitude    Float?
-
+  id             String            @id @default(uuid())
+  hostId         String
+  name           String
+  roomCode       String            @unique
+  inviteToken    String            @unique
+  maxMembers     Int
+  locationName   String
+  latitude       Float?
+  longitude      Float?
   searchRadiusKm Int
-
-  scheduledAt DateTime
-
-  status RoomStatus @default(LOBBY)
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  host User @relation("RoomHost", fields: [hostId], references: [id], onDelete: Restrict)
-
-  members RoomMember[]
-
-  session FoodFightSession?
+  scheduledAt    DateTime
+  status         RoomStatus        @default(LOBBY)
+  createdAt      DateTime          @default(now())
+  updatedAt      DateTime          @updatedAt
+  host           User              @relation("RoomHost", fields: [hostId], references: [id], onDelete: Restrict)
+  members        RoomMember[]
+  session        FoodFightSession?
 
   @@index([hostId])
   @@index([status])
@@ -280,9 +247,8 @@ model RoomMember {
   isReady  Boolean   @default(false)
   joinedAt DateTime  @default(now())
   leftAt   DateTime?
-
-  room Room @relation(fields: [roomId], references: [id], onDelete: Cascade)
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  room     Room      @relation(fields: [roomId], references: [id], onDelete: Cascade)
+  user     User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([roomId, userId])
   @@index([roomId])
@@ -332,32 +298,24 @@ model SessionMember {
 }
 
 model MealPreference {
-  id        String @id @default(uuid())
-  sessionId String
-  userId    String
-
-  cookingTypes     String[]
-  otherCookingType String?
-
-  cuisines     String[]
-  otherCuisine String?
-
-  ingredients     String[]
-  otherIngredient String?
-
-  budgetRange MealBudgetRange?
-
+  id                   String           @id @default(uuid())
+  sessionId            String
+  userId               String
+  cookingTypes         String[]
+  otherCookingType     String?
+  cuisines             String[]
+  otherCuisine         String?
+  ingredients          String[]
+  otherIngredient      String?
+  budgetRange          MealBudgetRange?
   restaurantStyles     String[]
   otherRestaurantStyle String?
-
-  otherNote String?
-
-  submittedAt DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  otherNote            String?
+  submittedAt          DateTime         @default(now())
+  updatedAt            DateTime         @updatedAt
 
   session FoodFightSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user    User             @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([sessionId, userId])
   @@index([sessionId])
@@ -366,19 +324,15 @@ model MealPreference {
 }
 
 model RecommendationRound {
-  id        String @id @default(uuid())
-  sessionId String
-
+  id          String                    @id @default(uuid())
+  sessionId   String
   roundNumber Int
-
-  status RecommendationRoundStatus @default(GENERATING)
-
-  generatedAt DateTime  @default(now())
+  status      RecommendationRoundStatus @default(GENERATING)
+  generatedAt DateTime                  @default(now())
   completedAt DateTime?
+  items       RecommendationItem[]
 
   session FoodFightSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
-
-  items RecommendationItem[]
 
   @@unique([sessionId, roundNumber])
   @@index([sessionId])
@@ -386,29 +340,22 @@ model RecommendationRound {
 }
 
 model RecommendationItem {
-  id                    String @id @default(uuid())
+  id                    String           @id @default(uuid())
   recommendationRoundId String
-
-  menuName    String
-  description String?
-  reason      String?
-  imageUrl    String?
-
-  recommendationScore Float?
-
-  metadata Json?
-
-  displayOrder Int
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  menuName              String
+  description           String?
+  reason                String?
+  imageUrl              String?
+  recommendationScore   Float?
+  metadata              Json?
+  displayOrder          Int
+  createdAt             DateTime         @default(now())
+  updatedAt             DateTime         @updatedAt
+  votes                 Vote[]
+  finalVotes            FinalVote[]
+  finalSelections       FinalSelection[]
 
   round RecommendationRound @relation(fields: [recommendationRoundId], references: [id], onDelete: Cascade)
-
-  votes Vote[]
-
-  finalVotes      FinalVote[]
-  finalSelections FinalSelection[]
 
   @@index([recommendationRoundId])
   @@map("recommendation_items")
@@ -418,18 +365,13 @@ model Vote {
   id String @id @default(uuid())
 
   recommendationItemId String
-
-  userId String
-
-  action VoteAction
-
-  createdAt DateTime @default(now())
-
-  updatedAt DateTime @updatedAt
+  userId               String
+  action               VoteAction
+  createdAt            DateTime   @default(now())
+  updatedAt            DateTime   @updatedAt
 
   recommendationItem RecommendationItem @relation(fields: [recommendationItemId], references: [id], onDelete: Cascade)
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user               User               @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([recommendationItemId, userId])
   @@index([recommendationItemId])
@@ -438,22 +380,15 @@ model Vote {
 }
 
 model FinalVote {
-  id String @id @default(uuid())
-
-  sessionId String
-
-  userId String
-
+  id                   String        @id @default(uuid())
+  sessionId            String
+  userId               String
   recommendationItemId String
+  voteType             FinalVoteType
+  createdAt            DateTime      @default(now())
 
-  voteType FinalVoteType
-
-  createdAt DateTime @default(now())
-
-  session FoodFightSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-
+  session            FoodFightSession   @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  user               User               @relation(fields: [userId], references: [id], onDelete: Cascade)
   recommendationItem RecommendationItem @relation(fields: [recommendationItemId], references: [id], onDelete: Cascade)
 
   @@unique([sessionId, userId, voteType])
@@ -464,23 +399,16 @@ model FinalVote {
 }
 
 model FinalSelection {
-  id String @id @default(uuid())
-
-  sessionId String @unique
-
+  id                   String               @id @default(uuid())
+  sessionId            String               @unique
   recommendationItemId String
+  selectedById         String?
+  method               FinalSelectionMethod
+  selectedAt           DateTime             @default(now())
 
-  selectedById String?
-
-  method FinalSelectionMethod
-
-  selectedAt DateTime @default(now())
-
-  session FoodFightSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
-
+  session            FoodFightSession   @relation(fields: [sessionId], references: [id], onDelete: Cascade)
   recommendationItem RecommendationItem @relation(fields: [recommendationItemId], references: [id], onDelete: Restrict)
-
-  selectedBy User? @relation("FinalSelectedBy", fields: [selectedById], references: [id], onDelete: SetNull)
+  selectedBy         User?              @relation("FinalSelectedBy", fields: [selectedById], references: [id], onDelete: SetNull)
 
   @@index([recommendationItemId])
   @@index([selectedById])
@@ -488,7 +416,7 @@ model FinalSelection {
 }
 
 model RestaurantRecommendation {
-  id                      String                         @id @default(uuid())
+  id                      String   @id @default(uuid())
   sessionId               String
   externalPlaceId         String?
   name                    String
@@ -499,15 +427,16 @@ model RestaurantRecommendation {
   phone                   String?
   openingHours            Json?
   imageUrl                String?
-  finalMenuMatch          Boolean                        @default(false)
+  finalMenuMatch          Boolean  @default(false)
   varietyScore            Float?
   groupCompatibilityScore Float?
   rankingScore            Float?
   reason                  String?
-  status                  RestaurantRecommendationStatus @default(ACTIVE)
   displayOrder            Int?
-  createdAt               DateTime                       @default(now())
-  updatedAt               DateTime                       @updatedAt
+  createdAt               DateTime @default(now())
+  updatedAt               DateTime @updatedAt
+
+  status RestaurantRecommendationStatus @default(ACTIVE)
 
   session FoodFightSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
 
@@ -541,26 +470,24 @@ model RestaurantSelection {
 }
 
 model Bill {
-  id            String     @id @default(uuid())
-  sessionId     String     @unique
+  id            String        @id @default(uuid())
+  sessionId     String        @unique
   createdById   String
-  status        BillStatus @default(DRAFT)
-  subtotal      Decimal?   @db.Decimal(10, 2)
-  serviceCharge Decimal?   @db.Decimal(10, 2)
-  tax           Decimal?   @db.Decimal(10, 2)
-  discount      Decimal?   @db.Decimal(10, 2)
-  totalAmount   Decimal?   @db.Decimal(10, 2)
+  status        BillStatus    @default(DRAFT)
+  subtotal      Decimal?      @db.Decimal(10, 2)
+  serviceCharge Decimal?      @db.Decimal(10, 2)
+  tax           Decimal?      @db.Decimal(10, 2)
+  discount      Decimal?      @db.Decimal(10, 2)
+  totalAmount   Decimal?      @db.Decimal(10, 2)
   closedAt      DateTime?
-  createdAt     DateTime   @default(now())
-  updatedAt     DateTime   @updatedAt
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+  receipt       Receipt?
+  items         ReceiptItem[]
+  payments      UserPayment[]
 
   session   FoodFightSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
   createdBy User             @relation("BillCreatedBy", fields: [createdById], references: [id], onDelete: Restrict)
-
-  receipt Receipt?
-
-  items    ReceiptItem[]
-  payments UserPayment[]
 
   @@index([createdById])
   @@index([status])
@@ -583,19 +510,18 @@ model Receipt {
 }
 
 model ReceiptItem {
-  id         String   @id @default(uuid())
+  id         String      @id @default(uuid())
   billId     String
   name       String
   imageUrl   String?
-  quantity   Int      @default(1)
-  unitPrice  Decimal  @db.Decimal(10, 2)
-  totalPrice Decimal  @db.Decimal(10, 2)
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  quantity   Int         @default(1)
+  unitPrice  Decimal     @db.Decimal(10, 2)
+  totalPrice Decimal     @db.Decimal(10, 2)
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+  shares     ItemShare[]
 
   bill Bill @relation(fields: [billId], references: [id], onDelete: Cascade)
-
-  shares ItemShare[]
 
   @@index([billId])
   @@map("receipt_items")
