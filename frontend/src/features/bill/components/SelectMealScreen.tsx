@@ -5,7 +5,10 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { PackageOpen, Users } from "lucide-react";
 import { ROUTES, billRoutes } from "@/config/routes";
-import { PageContainer } from "@/components/layout/PageContainer";
+import {
+  AuthenticatedPageHeader,
+  AuthenticatedPageLayout,
+} from "@/components/layout/AuthenticatedPageLayout";
 import { Card } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
@@ -13,7 +16,6 @@ import { Avatar } from "@/components/ui/Avatar";
 import { Alert, AlertDescription } from "@/components/ui/Alert";
 import { Spinner } from "@/components/ui/Spinner";
 import { ApiError } from "@/lib/api/client";
-import { BillPageHeader } from "./BillPageHeader";
 import { PendingBillsSection } from "./PendingBillsSection";
 import { billService } from "../services/bill-service";
 import { usePendingBills } from "../hooks/use-pending-bills";
@@ -110,14 +112,12 @@ export function SelectMealScreen() {
   }, []);
 
   return (
-    <div className="min-h-dvh flex flex-col bg-background text-text-primary">
-      <BillPageHeader title="Select Meal" backHref={ROUTES.AUTHENTICATED_HOME} />
-
-      <main className="flex-1 py-6 sm:py-8 pb-28">
-        <PageContainer maxWidth="auth" paddingY="none" className="space-y-6">
-          <p className="text-sm text-text-secondary leading-relaxed">
-            Continue an unfinished bill or choose a meal to create a new one.
-          </p>
+    <AuthenticatedPageLayout>
+      <AuthenticatedPageHeader
+        eyebrow="Your bills"
+        title="Select Meal"
+        description="Continue an unfinished bill or choose a meal to create a new one."
+      />
 
           <PendingBillsSection
             bills={pendingBills}
@@ -235,8 +235,6 @@ export function SelectMealScreen() {
             </Link>
           </p>
         )}
-        </PageContainer>
-      </main>
-    </div>
+    </AuthenticatedPageLayout>
   );
 }

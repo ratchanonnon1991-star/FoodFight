@@ -7,7 +7,6 @@ import * as React from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import {
-  ArrowLeft,
   Check,
   CreditCard,
   ImageUp,
@@ -15,7 +14,10 @@ import {
   Utensils,
 } from 'lucide-react';
 import { ROUTES } from '@/config/routes';
-import { PageContainer } from '@/components/layout/PageContainer';
+import {
+  AuthenticatedPageLayout,
+  AuthenticatedPageHeader,
+} from '@/components/layout/AuthenticatedPageLayout';
 import { Alert, AlertDescription } from '@/components/ui/Alert';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
@@ -247,47 +249,30 @@ export function ProfilePageContent() {
 
   if (isLoading) {
     return (
-      <main className="min-h-dvh bg-background">
-        <PageContainer maxWidth="auth" className="py-10">
-          <p className="text-sm text-text-secondary">Loading profile...</p>
-        </PageContainer>
-      </main>
+      <AuthenticatedPageLayout className="py-10">
+        <p className="text-sm text-text-secondary">Loading profile...</p>
+      </AuthenticatedPageLayout>
     );
   }
 
   return (
-    <main className="min-h-dvh bg-background text-text-primary">
-      <PageContainer maxWidth="auth" className="space-y-6 py-5 pb-28 sm:py-8">
-        <div className="flex items-center gap-3">
-          <Link
-            href={ROUTES.AUTHENTICATED_HOME}
-            aria-label="Back to home"
-            className="flex size-10 items-center justify-center rounded-full border border-border bg-surface text-text-secondary hover:text-text-primary"
-          >
-            <ArrowLeft className="size-5" />
-          </Link>
-          <div>
-            <p className="text-xs font-semibold uppercase tracking-wider text-brand-primary">
-              Account
-            </p>
-            <h1 className="text-2xl font-bold text-text-primary">My profile</h1>
-          </div>
-        </div>
+    <AuthenticatedPageLayout>
+      <AuthenticatedPageHeader eyebrow="Account" title="My profile" />
 
-        {errorMessage ? (
-          <Alert variant="error">
-            <AlertDescription>{errorMessage}</AlertDescription>
-          </Alert>
-        ) : null}
+      {errorMessage ? (
+        <Alert variant="error">
+          <AlertDescription>{errorMessage}</AlertDescription>
+        </Alert>
+      ) : null}
 
-        {successMessage ? (
-          <Alert variant="success">
-            <Check className="size-4" />
-            <AlertDescription>{successMessage}</AlertDescription>
-          </Alert>
-        ) : null}
+      {successMessage ? (
+        <Alert variant="success">
+          <Check className="size-4" />
+          <AlertDescription>{successMessage}</AlertDescription>
+        </Alert>
+      ) : null}
 
-        <section className="rounded-2xl border border-border/80 bg-surface p-5 shadow-xs sm:p-6">
+      <section className="rounded-2xl border border-border/80 bg-surface p-5 shadow-xs sm:p-6">
           <div className="mb-6 flex items-center gap-4">
             <AvatarPreview name={displayName} avatarUrl={avatarUrl} />
             <div className="min-w-0">
@@ -345,9 +330,9 @@ export function ProfilePageContent() {
               Save profile
             </Button>
           </form>
-        </section>
+      </section>
 
-        <section className="rounded-2xl border border-border/80 bg-surface p-5 shadow-xs sm:p-6">
+      <section className="rounded-2xl border border-border/80 bg-surface p-5 shadow-xs sm:p-6">
           <div className="flex items-start justify-between gap-4">
             <div className="flex min-w-0 items-start gap-3">
               <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-surface-subtle text-brand-primary">
@@ -441,9 +426,9 @@ export function ProfilePageContent() {
               </div>
             </div>
           )}
-        </section>
+      </section>
 
-        <section className="rounded-2xl border border-border/80 bg-surface p-5 shadow-xs sm:p-6">
+      <section className="rounded-2xl border border-border/80 bg-surface p-5 shadow-xs sm:p-6">
           <div className="flex items-start gap-3">
             <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-surface-subtle text-brand-primary">
               <CreditCard className="size-5" />
@@ -461,8 +446,7 @@ export function ProfilePageContent() {
               </Link>
             </div>
           </div>
-        </section>
-      </PageContainer>
-    </main>
+      </section>
+    </AuthenticatedPageLayout>
   );
 }
