@@ -1,7 +1,6 @@
-
 generator client {
-  provider = "prisma-client"
-  output   = "../src/database/generated/prisma"
+  provider     = "prisma-client"
+  output       = "../src/database/generated/prisma"
   moduleFormat = "cjs"
 }
 
@@ -101,13 +100,13 @@ enum OcrStatus {
 }
 
 model User {
-  id            String   @id @default(uuid())
+  id            String  @id @default(uuid())
   displayName   String
-  email         String   @unique
+  email         String  @unique
   passwordHash  String?
   avatarUrl     String?
-  emailVerified Boolean  @default(false)
-  role          Role     @default(USER)
+  emailVerified Boolean @default(false)
+  role          Role    @default(USER)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -117,7 +116,7 @@ model User {
   emailVerification EmailVerification?
   passwordResets    PasswordReset[]
 
-  foodProfile FoodProfile?
+  foodProfile    FoodProfile?
   paymentAccount PaymentAccount?
 
   hostedRooms Room[]       @relation("RoomHost")
@@ -152,7 +151,6 @@ model Account {
 
   @@unique([provider, providerAccountId])
   @@unique([userId, provider])
-
   @@index([userId])
   @@map("accounts")
 }
@@ -225,9 +223,9 @@ model FoodProfile {
 }
 
 model PaymentAccount {
-  id              String   @id @default(uuid())
-  userId          String   @unique
-  paymentType     String   @default("PROMPTPAY")
+  id              String  @id @default(uuid())
+  userId          String  @unique
+  paymentType     String  @default("PROMPTPAY")
   accountName     String
   promptPayNumber String
   qrCodeUrl       String?
@@ -276,78 +274,60 @@ model Room {
 }
 
 model RoomMember {
-  id     String @id @default(uuid())
-  roomId String
-  userId String
-
-  isReady Boolean @default(false)
-
-  joinedAt DateTime @default(now())
+  id       String    @id @default(uuid())
+  roomId   String
+  userId   String
+  isReady  Boolean   @default(false)
+  joinedAt DateTime  @default(now())
   leftAt   DateTime?
 
   room Room @relation(fields: [roomId], references: [id], onDelete: Cascade)
-
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([roomId, userId])
-
   @@index([roomId])
   @@index([userId])
-
   @@map("room_members")
 }
 
 model FoodFightSession {
-  id     String @id @default(uuid())
-  roomId String @unique
-
-  status FoodFightStatus @default(COLLECTING_PREFERENCES)
-
-  startedAt   DateTime @default(now())
+  id          String          @id @default(uuid())
+  roomId      String          @unique
+  status      FoodFightStatus @default(COLLECTING_PREFERENCES)
+  startedAt   DateTime        @default(now())
   finalizedAt DateTime?
   completedAt DateTime?
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
 
   room Room @relation(fields: [roomId], references: [id], onDelete: Cascade)
 
-  members SessionMember[]
-
-  preferences MealPreference[]
-
-  recommendationRounds RecommendationRound[]
-
-  finalVotes     FinalVote[]
-  finalSelection FinalSelection?
-
+  members                   SessionMember[]
+  preferences               MealPreference[]
+  recommendationRounds      RecommendationRound[]
+  finalVotes                FinalVote[]
+  finalSelection            FinalSelection?
   restaurantRecommendations RestaurantRecommendation[]
   restaurantSelection       RestaurantSelection?
-
-  bill Bill?
+  bill                      Bill?
 
   @@index([status])
   @@map("foodfight_sessions")
 }
 
 model SessionMember {
-  id        String @id @default(uuid())
+  id        String            @id @default(uuid())
   sessionId String
   userId    String
-
-  role SessionMemberRole
-
-  joinedAt DateTime @default(now())
+  role      SessionMemberRole
+  joinedAt  DateTime          @default(now())
 
   session FoodFightSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user    User             @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([sessionId, userId])
-
   @@index([sessionId])
   @@index([userId])
-
   @@map("session_members")
 }
 
@@ -380,10 +360,8 @@ model MealPreference {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([sessionId, userId])
-
   @@index([sessionId])
   @@index([userId])
-
   @@map("meal_preferences")
 }
 
@@ -395,7 +373,7 @@ model RecommendationRound {
 
   status RecommendationRoundStatus @default(GENERATING)
 
-  generatedAt DateTime @default(now())
+  generatedAt DateTime  @default(now())
   completedAt DateTime?
 
   session FoodFightSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
@@ -403,9 +381,7 @@ model RecommendationRound {
   items RecommendationItem[]
 
   @@unique([sessionId, roundNumber])
-
   @@index([sessionId])
-
   @@map("recommendation_rounds")
 }
 
@@ -435,594 +411,227 @@ model RecommendationItem {
   finalSelections FinalSelection[]
 
   @@index([recommendationRoundId])
-
   @@map("recommendation_items")
 }
 
 model Vote {
-
-  id                   String @id @default(uuid())
-
-  recommendationItemId String
-
-  userId               String
-
-
-
-  action VoteAction
-
-
-
-  createdAt DateTime @default(now())
-
-  updatedAt DateTime @updatedAt
-
-
-
-  recommendationItem RecommendationItem @relation(fields: [recommendationItemId], references: [id], onDelete: Cascade)
-
-
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-
-
-  @@unique([recommendationItemId, userId])
-
-
-
-  @@index([recommendationItemId])
-
-  @@index([userId])
-
-
-
-  @@map("votes")
-
-}
-
-
-
-
-
-
-model FinalVote {
-
-  id                   String @id @default(uuid())
-
-  sessionId            String
-
-  userId               String
+  id String @id @default(uuid())
 
   recommendationItemId String
-
-
-
-  voteType FinalVoteType
-
-
-
-  createdAt DateTime @default(now())
-
-
-
-  session FoodFightSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
-
-
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-
-
-  recommendationItem RecommendationItem @relation(fields: [recommendationItemId], references: [id], onDelete: Cascade)
-
-
-
-  @@unique([sessionId, userId, voteType])
-
-
-
-  @@index([sessionId])
-
-  @@index([userId])
-
-  @@index([recommendationItemId])
-
-
-
-  @@map("final_votes")
-
-}
-
-
-
-
-
-
-model FinalSelection {
-
-  id                   String @id @default(uuid())
-
-  sessionId            String @unique
-
-  recommendationItemId String
-
-
-
-
-  selectedById String?
-
-
-
-  method FinalSelectionMethod
-
-
-
-  selectedAt DateTime @default(now())
-
-
-
-  session FoodFightSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
-
-
-
-  recommendationItem RecommendationItem @relation(fields: [recommendationItemId], references: [id], onDelete: Restrict)
-
-
-
-  selectedBy User? @relation("FinalSelectedBy", fields: [selectedById], references: [id], onDelete: SetNull)
-
-
-
-  @@index([recommendationItemId])
-
-  @@index([selectedById])
-
-
-
-  @@map("final_selections")
-
-}
-
-
-
-
-
-
-model RestaurantRecommendation {
-
-  id        String @id @default(uuid())
-
-  sessionId String
-
-
-
-  externalPlaceId String?
-
-
-
-  name    String
-
-  address String?
-
-
-
-  latitude  Float?
-
-  longitude Float?
-
-
-
-  distanceMeters Int?
-
-
-
-  phone String?
-
-
-
-  openingHours Json?
-
-
-
-  imageUrl String?
-
-
-
-
-  finalMenuMatch Boolean @default(false)
-
-
-
-
-  varietyScore Float?
-
-
-
-
-  groupCompatibilityScore Float?
-
-
-
-
-  rankingScore Float?
-
-
-
-
-
-  reason String?
-
-
-
-  status RestaurantRecommendationStatus @default(ACTIVE)
-
-
-
-  displayOrder Int?
-
-
-
-  createdAt DateTime @default(now())
-
-  updatedAt DateTime @updatedAt
-
-
-
-  session FoodFightSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
-
-
-
-  @@index([sessionId])
-
-  @@index([externalPlaceId])
-
-  @@index([status])
-
-
-
-  @@map("restaurant_recommendations")
-
-}
-
-
-
-
-
-
-model RestaurantSelection {
-
-  id        String @id @default(uuid())
-
-  sessionId String @unique
-
-
-
-  selectedById String
-
-
-
-  externalPlaceId String?
-
-
-
-  name    String
-
-  address String?
-
-
-
-  latitude  Float?
-
-  longitude Float?
-
-
-
-  distanceMeters Int?
-
-
-
-  phone String?
-
-
-
-  openingHours Json?
-
-
-
-  imageUrl String?
-
-
-
-  selectedAt DateTime @default(now())
-
-
-
-  session FoodFightSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
-
-
-
-  selectedBy User @relation("RestaurantSelectedBy", fields: [selectedById], references: [id], onDelete: Restrict)
-
-
-
-  @@index([externalPlaceId])
-
-  @@index([selectedById])
-
-
-
-  @@map("restaurant_selections")
-
-}
-
-
-
-
-
-
-model Bill {
-
-  id        String @id @default(uuid())
-
-  sessionId String @unique
-
-
-
-  createdById String
-
-
-
-  status BillStatus @default(DRAFT)
-
-
-
-  subtotal      Decimal? @db.Decimal(10, 2)
-
-  serviceCharge Decimal? @db.Decimal(10, 2)
-
-  tax           Decimal? @db.Decimal(10, 2)
-
-  discount      Decimal? @db.Decimal(10, 2)
-
-
-
-  totalAmount Decimal? @db.Decimal(10, 2)
-
-
-
-  closedAt DateTime?
-
-
-
-  createdAt DateTime @default(now())
-
-  updatedAt DateTime @updatedAt
-
-
-
-  session FoodFightSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
-
-
-
-  createdBy User @relation("BillCreatedBy", fields: [createdById], references: [id], onDelete: Restrict)
-
-
-
-  receipt Receipt?
-
-
-
-  items ReceiptItem[]
-
-
-
-  payments UserPayment[]
-
-
-
-  @@index([createdById])
-
-  @@index([status])
-
-
-
-  @@map("bills")
-
-}
-
-
-
-
-
-
-model Receipt {
-
-  id     String @id @default(uuid())
-
-  billId String @unique
-
-
-
-  imageUrl String
-
-
-
-  ocrStatus OcrStatus @default(NOT_USED)
-
-
-
-  rawOcrText String?
-
-
-
-  parsedData Json?
-
-
-
-  uploadedAt DateTime @default(now())
-
-  updatedAt  DateTime @updatedAt
-
-
-
-  bill Bill @relation(fields: [billId], references: [id], onDelete: Cascade)
-
-
-
-  @@map("receipts")
-
-}
-
-
-
-
-
-
-model ReceiptItem {
-
-  id     String @id @default(uuid())
-
-  billId String
-
-
-
-  name String
-
-  imageUrl String?
-
-
-
-  quantity Int @default(1)
-
-
-
-  unitPrice  Decimal @db.Decimal(10, 2)
-
-  totalPrice Decimal @db.Decimal(10, 2)
-
-
-
-  createdAt DateTime @default(now())
-
-  updatedAt DateTime @updatedAt
-
-
-
-  bill Bill @relation(fields: [billId], references: [id], onDelete: Cascade)
-
-
-
-  shares ItemShare[]
-
-
-
-  @@index([billId])
-
-
-
-  @@map("receipt_items")
-
-}
-
-
-
-
-
-
-model ItemShare {
-
-  id            String @id @default(uuid())
-
-  receiptItemId String
-
-  userId        String
-
-
-
-  amount Decimal @db.Decimal(10, 2)
-
-
-
-  createdAt DateTime @default(now())
-
-
-
-  receiptItem ReceiptItem @relation(fields: [receiptItemId], references: [id], onDelete: Cascade)
-
-
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-
-
-  @@unique([receiptItemId, userId])
-
-
-
-  @@index([receiptItemId])
-
-  @@index([userId])
-
-
-
-  @@map("item_shares")
-
-}
-
-
-
-
-
-
-model UserPayment {
-
-  id     String @id @default(uuid())
-
-  billId String
 
   userId String
 
-
-
-  amount Decimal @db.Decimal(10, 2)
-
-
-
-  status PaymentStatus @default(UNPAID)
-
-  slipImageUrl String?
-
-
-
-  paidAt DateTime?
-
-
+  action VoteAction
 
   createdAt DateTime @default(now())
 
   updatedAt DateTime @updatedAt
 
-
-
-  bill Bill @relation(fields: [billId], references: [id], onDelete: Cascade)
-
-
+  recommendationItem RecommendationItem @relation(fields: [recommendationItemId], references: [id], onDelete: Cascade)
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
+  @@unique([recommendationItemId, userId])
+  @@index([recommendationItemId])
+  @@index([userId])
+  @@map("votes")
+}
 
+model FinalVote {
+  id String @id @default(uuid())
 
-  @@unique([billId, userId])
+  sessionId String
 
+  userId String
 
+  recommendationItemId String
+
+  voteType FinalVoteType
+
+  createdAt DateTime @default(now())
+
+  session FoodFightSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  recommendationItem RecommendationItem @relation(fields: [recommendationItemId], references: [id], onDelete: Cascade)
+
+  @@unique([sessionId, userId, voteType])
+  @@index([sessionId])
+  @@index([userId])
+  @@index([recommendationItemId])
+  @@map("final_votes")
+}
+
+model FinalSelection {
+  id String @id @default(uuid())
+
+  sessionId String @unique
+
+  recommendationItemId String
+
+  selectedById String?
+
+  method FinalSelectionMethod
+
+  selectedAt DateTime @default(now())
+
+  session FoodFightSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+
+  recommendationItem RecommendationItem @relation(fields: [recommendationItemId], references: [id], onDelete: Restrict)
+
+  selectedBy User? @relation("FinalSelectedBy", fields: [selectedById], references: [id], onDelete: SetNull)
+
+  @@index([recommendationItemId])
+  @@index([selectedById])
+  @@map("final_selections")
+}
+
+model RestaurantRecommendation {
+  id                      String                         @id @default(uuid())
+  sessionId               String
+  externalPlaceId         String?
+  name                    String
+  address                 String?
+  latitude                Float?
+  longitude               Float?
+  distanceMeters          Int?
+  phone                   String?
+  openingHours            Json?
+  imageUrl                String?
+  finalMenuMatch          Boolean                        @default(false)
+  varietyScore            Float?
+  groupCompatibilityScore Float?
+  rankingScore            Float?
+  reason                  String?
+  status                  RestaurantRecommendationStatus @default(ACTIVE)
+  displayOrder            Int?
+  createdAt               DateTime                       @default(now())
+  updatedAt               DateTime                       @updatedAt
+
+  session FoodFightSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+
+  @@index([sessionId])
+  @@index([externalPlaceId])
+  @@index([status])
+  @@map("restaurant_recommendations")
+}
+
+model RestaurantSelection {
+  id              String   @id @default(uuid())
+  sessionId       String   @unique
+  selectedById    String
+  externalPlaceId String?
+  name            String
+  address         String?
+  latitude        Float?
+  longitude       Float?
+  distanceMeters  Int?
+  phone           String?
+  openingHours    Json?
+  imageUrl        String?
+  selectedAt      DateTime @default(now())
+
+  session    FoodFightSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  selectedBy User             @relation("RestaurantSelectedBy", fields: [selectedById], references: [id], onDelete: Restrict)
+
+  @@index([externalPlaceId])
+  @@index([selectedById])
+  @@map("restaurant_selections")
+}
+
+model Bill {
+  id            String     @id @default(uuid())
+  sessionId     String     @unique
+  createdById   String
+  status        BillStatus @default(DRAFT)
+  subtotal      Decimal?   @db.Decimal(10, 2)
+  serviceCharge Decimal?   @db.Decimal(10, 2)
+  tax           Decimal?   @db.Decimal(10, 2)
+  discount      Decimal?   @db.Decimal(10, 2)
+  totalAmount   Decimal?   @db.Decimal(10, 2)
+  closedAt      DateTime?
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+
+  session   FoodFightSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  createdBy User             @relation("BillCreatedBy", fields: [createdById], references: [id], onDelete: Restrict)
+
+  receipt Receipt?
+
+  items    ReceiptItem[]
+  payments UserPayment[]
+
+  @@index([createdById])
+  @@index([status])
+  @@map("bills")
+}
+
+model Receipt {
+  id         String    @id @default(uuid())
+  billId     String    @unique
+  imageUrl   String
+  ocrStatus  OcrStatus @default(NOT_USED)
+  rawOcrText String?
+  parsedData Json?
+  uploadedAt DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+
+  bill Bill @relation(fields: [billId], references: [id], onDelete: Cascade)
+
+  @@map("receipts")
+}
+
+model ReceiptItem {
+  id         String   @id @default(uuid())
+  billId     String
+  name       String
+  imageUrl   String?
+  quantity   Int      @default(1)
+  unitPrice  Decimal  @db.Decimal(10, 2)
+  totalPrice Decimal  @db.Decimal(10, 2)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  bill Bill @relation(fields: [billId], references: [id], onDelete: Cascade)
+
+  shares ItemShare[]
 
   @@index([billId])
+  @@map("receipt_items")
+}
 
+model ItemShare {
+  id            String      @id @default(uuid())
+  receiptItemId String
+  userId        String
+  amount        Decimal     @db.Decimal(10, 2)
+  createdAt     DateTime    @default(now())
+  receiptItem   ReceiptItem @relation(fields: [receiptItemId], references: [id], onDelete: Cascade)
+  user          User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([receiptItemId, userId])
+  @@index([receiptItemId])
   @@index([userId])
+  @@map("item_shares")
+}
 
+model UserPayment {
+  id           String        @id @default(uuid())
+  billId       String
+  userId       String
+  amount       Decimal       @db.Decimal(10, 2)
+  status       PaymentStatus @default(UNPAID)
+  slipImageUrl String?
+  paidAt       DateTime?
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
 
+  bill Bill @relation(fields: [billId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
+  @@unique([billId, userId])
+  @@index([billId])
+  @@index([userId])
   @@map("user_payments")
-
 }

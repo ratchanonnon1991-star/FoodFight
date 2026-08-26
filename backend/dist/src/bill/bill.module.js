@@ -14,6 +14,7 @@ const local_storage_module_1 = require("../infrastructure/storage/local-storage.
 const bill_access_service_1 = require("./bill-access.service");
 const bill_controller_1 = require("./bill.controller");
 const bill_detail_service_1 = require("./bill-detail.service");
+const bill_list_service_1 = require("./bill-list.service");
 const create_bill_service_1 = require("./create-bill.service");
 const payment_service_1 = require("./payment.service");
 const receipt_service_1 = require("./receipt.service");
@@ -28,6 +29,7 @@ exports.BillModule = BillModule = __decorate([
         providers: [
             bill_access_service_1.BillAccessService,
             bill_detail_service_1.BillDetailService,
+            bill_list_service_1.BillListService,
             create_bill_service_1.CreateBillService,
             receipt_service_1.ReceiptService,
             split_service_1.SplitService,

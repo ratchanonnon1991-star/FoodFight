@@ -22,19 +22,19 @@ export declare class FoodFightService {
     private readonly recommendationAiService;
     constructor(prisma: PrismaService, recommendationAiService: RecommendationAiService);
     createSessionForStartedRoom(tx: Prisma.TransactionClient, roomId: string, hostId: string, activeMemberUserIds: string[]): Promise<{
+        id: string;
         roomId: string;
         status: FoodFightStatus;
-        id: string;
     }>;
     upsertMealPreference(roomId: string, userId: string, dto: UpsertMealPreferenceDto): Promise<{
         message: string;
         preference: {
-            cuisines: string[];
-            restaurantStyles: string[];
             id: string;
             updatedAt: Date;
-            sessionId: string;
             userId: string;
+            cuisines: string[];
+            restaurantStyles: string[];
+            sessionId: string;
             cookingTypes: string[];
             otherCookingType: string | null;
             otherCuisine: string | null;
@@ -74,8 +74,8 @@ export declare class FoodFightService {
             hasSubmittedFinalVote: boolean;
         };
         currentRound: {
-            status: RecommendationRoundStatus;
             id: string;
+            status: RecommendationRoundStatus;
             roundNumber: number;
             items: {
                 id: string;
@@ -180,8 +180,8 @@ export declare class FoodFightService {
             hasSubmittedFinalVote: boolean;
         };
         currentRound: {
-            status: RecommendationRoundStatus;
             id: string;
+            status: RecommendationRoundStatus;
             roundNumber: number;
             items: {
                 id: string;
@@ -286,8 +286,8 @@ export declare class FoodFightService {
             hasSubmittedFinalVote: boolean;
         };
         currentRound: {
-            status: RecommendationRoundStatus;
             id: string;
+            status: RecommendationRoundStatus;
             roundNumber: number;
             items: {
                 id: string;
@@ -357,8 +357,8 @@ export declare class FoodFightService {
             hasSubmittedFinalVote: boolean;
         };
         currentRound: {
-            status: RecommendationRoundStatus;
             id: string;
+            status: RecommendationRoundStatus;
             roundNumber: number;
             items: {
                 id: string;
@@ -428,8 +428,8 @@ export declare class FoodFightService {
             hasSubmittedFinalVote: boolean;
         };
         currentRound: {
-            status: RecommendationRoundStatus;
             id: string;
+            status: RecommendationRoundStatus;
             roundNumber: number;
             items: {
                 id: string;

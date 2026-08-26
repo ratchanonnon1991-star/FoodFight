@@ -61,6 +61,36 @@ export function BillDetailScreen({ billId }: BillDetailScreenProps) {
     );
   }
 
+  const isCancelled =
+    bill.status === "CANCELLED" || bill.roomStatus === "CANCELLED";
+
+  if (isCancelled) {
+    return (
+      <div className="min-h-dvh flex flex-col bg-background text-text-primary">
+        <BillPageHeader
+          title="Bill"
+          subtitle={bill.meal.name}
+          backHref={ROUTES.BILLS}
+        />
+        <main className="flex-1 py-8">
+          <PageContainer maxWidth="auth" paddingY="none">
+            <Alert variant="warning">
+              <AlertDescription className="space-y-2">
+                <p>This bill cannot be continued because its room was cancelled.</p>
+                <Link
+                  href={ROUTES.BILLS}
+                  className={cn(buttonVariants({ size: "sm" }))}
+                >
+                  Back to Bills
+                </Link>
+              </AlertDescription>
+            </Alert>
+          </PageContainer>
+        </main>
+      </div>
+    );
+  }
+
   if (bill.status !== "COMPLETED" && bill.status !== "CLOSED") {
     const resumeHref =
       bill.items.length === 0

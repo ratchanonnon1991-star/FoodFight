@@ -1,8 +1,11 @@
-"use client";
+'use client';
 
-import * as React from "react";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
+/* Profile images can be external OAuth URLs or browser-selected data URLs. */
+/* eslint-disable @next/next/no-img-element */
+
+import * as React from 'react';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import {
   ArrowLeft,
   Check,
@@ -10,27 +13,27 @@ import {
   ImageUp,
   Pencil,
   Utensils,
-} from "lucide-react";
-import { ROUTES } from "@/config/routes";
-import { PageContainer } from "@/components/layout/PageContainer";
-import { Alert, AlertDescription } from "@/components/ui/Alert";
-import { Button } from "@/components/ui/Button";
-import { Input } from "@/components/ui/Input";
-import { Label } from "@/components/ui/Label";
+} from 'lucide-react';
+import { ROUTES } from '@/config/routes';
+import { PageContainer } from '@/components/layout/PageContainer';
+import { Alert, AlertDescription } from '@/components/ui/Alert';
+import { Button } from '@/components/ui/Button';
+import { Input } from '@/components/ui/Input';
+import { Label } from '@/components/ui/Label';
 import {
   STANDARD_ALLERGIES,
   STANDARD_RESTRICTIONS,
-} from "@/features/food-profile/constants/food-profile-constants";
+} from '@/features/food-profile/constants/food-profile-constants';
 import {
   getMyFoodProfile,
   type FoodProfileResponse,
-} from "@/features/food-profile/services/food-profile-service";
-import { resolveAuthMode } from "@/features/auth/services/auth-runtime";
+} from '@/features/food-profile/services/food-profile-service';
+import { resolveAuthMode } from '@/features/auth/services/auth-runtime';
 import {
   getCurrentUserProfile,
   updateCurrentUserProfile,
   type CurrentUserProfile,
-} from "../services/profile-service";
+} from '../services/profile-service';
 
 const MAX_AVATAR_FILE_SIZE = 2 * 1024 * 1024;
 
@@ -53,7 +56,8 @@ function readFileAsDataUrl(file: File): Promise<string> {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
     reader.onload = () => resolve(String(reader.result));
-    reader.onerror = () => reject(new Error("Unable to read the selected image."));
+    reader.onerror = () =>
+      reject(new Error('Unable to read the selected image.'));
     reader.readAsDataURL(file);
   });
 }
@@ -65,20 +69,20 @@ function AvatarPreview({
   name: string;
   avatarUrl: string;
 }) {
-  const [imageFailed, setImageFailed] = React.useState(false);
-  const initial = name.trim().charAt(0).toUpperCase() || "?";
+  const [failedAvatarUrl, setFailedAvatarUrl] = React.useState<string | null>(
+    null,
+  );
+  const initial = name.trim().charAt(0).toUpperCase() || '?';
 
-  React.useEffect(() => {
-    setImageFailed(false);
-  }, [avatarUrl]);
-
-  if (avatarUrl && !imageFailed) {
+  if (avatarUrl && failedAvatarUrl !== avatarUrl) {
     return (
       <img
+        key={avatarUrl}
         src={avatarUrl}
-        alt={`${name || "User"}'s profile`}
+        alt={`${name || 'User'}'s profile`}
         className="size-24 rounded-full border-4 border-surface object-cover shadow-md"
-        onError={() => setImageFailed(true)}
+        referrerPolicy="no-referrer"
+        onError={() => setFailedAvatarUrl(avatarUrl)}
       />
     );
   }
@@ -94,18 +98,23 @@ export function ProfilePageContent() {
   const router = useRouter();
   const avatarFileInputRef = React.useRef<HTMLInputElement>(null);
   const [profile, setProfile] = React.useState<CurrentUserProfile | null>(null);
-  const [foodProfile, setFoodProfile] = React.useState<FoodProfileResponse | null>(null);
-  const [displayName, setDisplayName] = React.useState("");
-  const [avatarUrl, setAvatarUrl] = React.useState("");
+  const [foodProfile, setFoodProfile] =
+    React.useState<FoodProfileResponse | null>(null);
+  const [displayName, setDisplayName] = React.useState('');
+  const [avatarUrl, setAvatarUrl] = React.useState('');
   const [isLoading, setIsLoading] = React.useState(true);
-  const [isFoodProfileLoading, setIsFoodProfileLoading] = React.useState(true);
+  const [isFoodProfileLoading, setIsFoodProfileLoading] = React.useState(
+    () => resolveAuthMode() === 'api',
+  );
   const [isSaving, setIsSaving] = React.useState(false);
   const [errorMessage, setErrorMessage] = React.useState<string | null>(null);
-  const [successMessage, setSuccessMessage] = React.useState<string | null>(null);
+  const [successMessage, setSuccessMessage] = React.useState<string | null>(
+    null,
+  );
 
   React.useEffect(() => {
     let isMounted = true;
-    const token = window.localStorage.getItem("accessToken");
+    const token = window.localStorage.getItem('accessToken');
 
     if (!token) {
       router.replace(ROUTES.AUTH.LOGIN);
@@ -122,7 +131,7 @@ export function ProfilePageContent() {
 
         setProfile(currentProfile);
         setDisplayName(currentProfile.displayName);
-        setAvatarUrl(currentProfile.avatarUrl ?? "");
+        setAvatarUrl(currentProfile.avatarUrl ?? '');
       })
       .catch((error: unknown) => {
         if (!isMounted) {
@@ -132,7 +141,7 @@ export function ProfilePageContent() {
         if (error instanceof Error) {
           setErrorMessage(error.message);
         } else {
-          setErrorMessage("Unable to load your profile.");
+          setErrorMessage('Unable to load your profile.');
         }
       })
       .finally(() => {
@@ -141,7 +150,7 @@ export function ProfilePageContent() {
         }
       });
 
-    if (resolveAuthMode() === "api") {
+    if (resolveAuthMode() === 'api') {
       getMyFoodProfile(token)
         .then((result) => {
           if (isMounted && result.ok) {
@@ -153,8 +162,6 @@ export function ProfilePageContent() {
             setIsFoodProfileLoading(false);
           }
         });
-    } else {
-      setIsFoodProfileLoading(false);
     }
 
     return () => {
@@ -165,7 +172,7 @@ export function ProfilePageContent() {
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    const token = window.localStorage.getItem("accessToken");
+    const token = window.localStorage.getItem('accessToken');
     const nextDisplayName = displayName.trim();
     const nextAvatarUrl = avatarUrl.trim();
 
@@ -178,7 +185,7 @@ export function ProfilePageContent() {
     }
 
     if (!nextDisplayName) {
-      setErrorMessage("Please enter your name.");
+      setErrorMessage('Please enter your name.');
       return;
     }
 
@@ -192,13 +199,13 @@ export function ProfilePageContent() {
 
       setProfile(updatedProfile);
       setDisplayName(updatedProfile.displayName);
-      setAvatarUrl(updatedProfile.avatarUrl ?? "");
-      setSuccessMessage("Profile updated successfully.");
+      setAvatarUrl(updatedProfile.avatarUrl ?? '');
+      setSuccessMessage('Profile updated successfully.');
     } catch (error: unknown) {
       setErrorMessage(
         error instanceof Error
           ? error.message
-          : "Unable to update your profile.",
+          : 'Unable to update your profile.',
       );
     } finally {
       setIsSaving(false);
@@ -209,7 +216,7 @@ export function ProfilePageContent() {
     event: React.ChangeEvent<HTMLInputElement>,
   ) => {
     const file = event.target.files?.[0];
-    event.target.value = "";
+    event.target.value = '';
 
     if (!file) {
       return;
@@ -217,13 +224,13 @@ export function ProfilePageContent() {
 
     setErrorMessage(null);
 
-    if (!file.type.startsWith("image/")) {
-      setErrorMessage("Please select an image file.");
+    if (!file.type.startsWith('image/')) {
+      setErrorMessage('Please select an image file.');
       return;
     }
 
     if (file.size > MAX_AVATAR_FILE_SIZE) {
-      setErrorMessage("Profile picture must be 2 MB or smaller.");
+      setErrorMessage('Profile picture must be 2 MB or smaller.');
       return;
     }
 
@@ -231,7 +238,9 @@ export function ProfilePageContent() {
       setAvatarUrl(await readFileAsDataUrl(file));
     } catch (error: unknown) {
       setErrorMessage(
-        error instanceof Error ? error.message : "Unable to read the profile picture.",
+        error instanceof Error
+          ? error.message
+          : 'Unable to read the profile picture.',
       );
     }
   };
@@ -283,7 +292,7 @@ export function ProfilePageContent() {
             <AvatarPreview name={displayName} avatarUrl={avatarUrl} />
             <div className="min-w-0">
               <h2 className="truncate text-lg font-bold text-text-primary">
-                {displayName || "Your profile"}
+                {displayName || 'Your profile'}
               </h2>
               <p className="truncate text-sm text-text-secondary">
                 {profile?.email}
@@ -327,7 +336,12 @@ export function ProfilePageContent() {
               </p>
             </div>
 
-            <Button type="submit" fullWidth loading={isSaving} loadingText="Saving...">
+            <Button
+              type="submit"
+              fullWidth
+              loading={isSaving}
+              loadingText="Saving..."
+            >
               Save profile
             </Button>
           </form>
@@ -340,14 +354,16 @@ export function ProfilePageContent() {
                 <Utensils className="size-5" />
               </div>
               <div className="min-w-0">
-                <h2 className="font-bold text-text-primary">Food Safety &amp; Diet Profile</h2>
+                <h2 className="font-bold text-text-primary">
+                  Food Safety &amp; Diet Profile
+                </h2>
                 <p className="mt-1 text-sm leading-relaxed text-text-secondary">
                   Applied automatically to all group sessions.
                 </p>
               </div>
             </div>
             <Link
-              href={ROUTES.FOOD_PROFILE.ALLERGIES}
+              href={`${ROUTES.FOOD_PROFILE.ALLERGIES}?from=profile`}
               className="inline-flex shrink-0 items-center gap-1.5 rounded-full border border-brand-primary/40 px-4 py-2 text-sm font-semibold text-text-primary hover:bg-brand-primary/5"
             >
               Edit
@@ -356,7 +372,9 @@ export function ProfilePageContent() {
           </div>
 
           {isFoodProfileLoading ? (
-            <p className="mt-6 text-sm text-text-secondary">Loading food preferences...</p>
+            <p className="mt-6 text-sm text-text-secondary">
+              Loading food preferences...
+            </p>
           ) : (
             <div className="mt-6 space-y-5">
               <div>
@@ -364,7 +382,8 @@ export function ProfilePageContent() {
                   Food allergies
                 </p>
                 <div className="mt-2 flex flex-wrap gap-2">
-                  {foodProfile?.allergies.length || foodProfile?.otherAllergies ? (
+                  {foodProfile?.allergies.length ||
+                  foodProfile?.otherAllergies ? (
                     <>
                       {foodProfile?.allergies.map((allergy) => (
                         <FoodTag key={allergy}>
@@ -388,11 +407,15 @@ export function ProfilePageContent() {
                   Dietary restrictions
                 </p>
                 <div className="mt-2 flex flex-wrap gap-2">
-                  {foodProfile?.restrictions.length || foodProfile?.otherRestrictions ? (
+                  {foodProfile?.restrictions.length ||
+                  foodProfile?.otherRestrictions ? (
                     <>
                       {foodProfile?.restrictions.map((restriction) => (
                         <FoodTag key={restriction}>
-                          {getFoodOptionLabel(restriction, STANDARD_RESTRICTIONS)}
+                          {getFoodOptionLabel(
+                            restriction,
+                            STANDARD_RESTRICTIONS,
+                          )}
                         </FoodTag>
                       ))}
                       {foodProfile?.otherRestrictions ? (
@@ -412,7 +435,8 @@ export function ProfilePageContent() {
                   Additional nuances
                 </p>
                 <p className="mt-2 text-sm leading-relaxed text-text-secondary">
-                  {foodProfile?.additionalNotes || "No additional food preferences yet."}
+                  {foodProfile?.additionalNotes ||
+                    'No additional food preferences yet.'}
                 </p>
               </div>
             </div>

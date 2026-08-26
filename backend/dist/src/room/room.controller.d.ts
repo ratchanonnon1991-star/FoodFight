@@ -191,8 +191,8 @@ export declare class RoomController {
             hasSubmittedFinalVote: boolean;
         };
         currentRound: {
-            status: import("../database/generated/prisma/enums").RecommendationRoundStatus;
             id: string;
+            status: import("../database/generated/prisma/enums").RecommendationRoundStatus;
             roundNumber: number;
             items: {
                 id: string;
@@ -346,12 +346,12 @@ export declare class RoomController {
     upsertMealPreference(roomId: string, dto: UpsertMealPreferenceDto, currentUser: AccessTokenPayload): Promise<{
         message: string;
         preference: {
-            cuisines: string[];
-            restaurantStyles: string[];
             id: string;
             updatedAt: Date;
-            sessionId: string;
             userId: string;
+            cuisines: string[];
+            restaurantStyles: string[];
+            sessionId: string;
             cookingTypes: string[];
             otherCookingType: string | null;
             otherCuisine: string | null;
@@ -461,8 +461,8 @@ export declare class RoomController {
             hasSubmittedFinalVote: boolean;
         };
         currentRound: {
-            status: import("../database/generated/prisma/enums").RecommendationRoundStatus;
             id: string;
+            status: import("../database/generated/prisma/enums").RecommendationRoundStatus;
             roundNumber: number;
             items: {
                 id: string;
@@ -541,8 +541,8 @@ export declare class RoomController {
             hasSubmittedFinalVote: boolean;
         };
         currentRound: {
-            status: import("../database/generated/prisma/enums").RecommendationRoundStatus;
             id: string;
+            status: import("../database/generated/prisma/enums").RecommendationRoundStatus;
             roundNumber: number;
             items: {
                 id: string;
@@ -621,8 +621,8 @@ export declare class RoomController {
             hasSubmittedFinalVote: boolean;
         };
         currentRound: {
-            status: import("../database/generated/prisma/enums").RecommendationRoundStatus;
             id: string;
+            status: import("../database/generated/prisma/enums").RecommendationRoundStatus;
             roundNumber: number;
             items: {
                 id: string;
@@ -701,8 +701,8 @@ export declare class RoomController {
             hasSubmittedFinalVote: boolean;
         };
         currentRound: {
-            status: import("../database/generated/prisma/enums").RecommendationRoundStatus;
             id: string;
+            status: import("../database/generated/prisma/enums").RecommendationRoundStatus;
             roundNumber: number;
             items: {
                 id: string;

@@ -29,13 +29,11 @@ export function HomeHeader({
   onProfileClick,
   onLogout,
 }: HomeHeaderProps) {
-  const [imageFailed, setImageFailed] = React.useState(false);
+  const [failedAvatarUrl, setFailedAvatarUrl] = React.useState<string | null>(
+    null,
+  );
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
   const menuRef = React.useRef<HTMLDivElement>(null);
-
-  React.useEffect(() => {
-    setImageFailed(false);
-  }, [user.avatarUrl]);
 
   React.useEffect(() => {
     if (!isMenuOpen) {
@@ -104,12 +102,14 @@ export function HomeHeader({
             className="flex items-center gap-1 rounded-full p-0.5 text-text-secondary transition-colors hover:text-brand-primary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-secondary"
           >
             <span className="size-10 rounded-full border border-border/80 bg-surface flex items-center justify-center shadow-2xs">
-              {user.avatarUrl && !imageFailed ? (
+              {user.avatarUrl && failedAvatarUrl !== user.avatarUrl ? (
                 <img
+                  key={user.avatarUrl}
                   src={user.avatarUrl}
                   alt={`${user.name}'s profile`}
                   className="size-full rounded-full object-cover"
-                  onError={() => setImageFailed(true)}
+                  referrerPolicy="no-referrer"
+                  onError={() => setFailedAvatarUrl(user.avatarUrl ?? null)}
                 />
               ) : (
                 <span

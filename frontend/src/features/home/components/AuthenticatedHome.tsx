@@ -2,9 +2,8 @@
 
 import * as React from "react";
 import { useRouter } from "next/navigation";
-import { LogIn, LogOut, UserPlus } from "lucide-react";
+import { LogIn, UserPlus } from "lucide-react";
 import { PageContainer } from "@/components/layout/PageContainer";
-import { Button } from "@/components/ui/Button";
 import { ROUTES } from "@/config/routes";
 import { API_BASE_URL } from "@/config/api";
 import { roomService } from "@/features/room/services/room-service";
@@ -26,6 +25,8 @@ import { getMyHistory } from "@/features/history/services/history-service";
 import type { HistoryItem } from "@/features/history/types/history-types";
 
 import { formatRoomDate } from "@/features/room/utils/room-format";
+import { PendingBillsSection } from "@/features/bill/components/PendingBillsSection";
+import { usePendingBills } from "@/features/bill/hooks/use-pending-bills";
 
 function mapHistoryToRecentItem(item: HistoryItem): RecentFoodFightItemData {
   const menuName = item.finalMenu?.name;
@@ -70,6 +71,12 @@ export function AuthenticatedHome({
     readonly RecentFoodFightItemData[]
   >([]);
   const [isLoggingOut, setIsLoggingOut] = React.useState(false);
+  const {
+    bills: pendingBills,
+    isLoading: isPendingBillsLoading,
+    error: pendingBillsError,
+    refresh: refreshPendingBills,
+  } = usePendingBills();
 
   const handleLogout = React.useCallback(async () => {
     if (isLoggingOut) {
@@ -243,34 +250,29 @@ export function AuthenticatedHome({
           />
         </div>
 
-        {/* 3. Current FoodFight Section */}
+        {/* 3. Unfinished Bills Section */}
+        <PendingBillsSection
+          bills={pendingBills}
+          isLoading={isPendingBillsLoading}
+          error={pendingBillsError}
+          onRetry={() => void refreshPendingBills()}
+          variant="home"
+        />
+
+        {/* 4. Current FoodFight Section */}
         <CurrentFoodFightCard
           session={currentSession}
           onContinue={continueCurrentRoom}
         />
 
-        {/* 4. Recent FoodFights Section */}
+        {/* 5. Recent FoodFights Section */}
         <RecentFoodFightsSection
           items={recentFoodFights}
           onViewAll={onViewAllRecent ?? (() => router.push(ROUTES.HISTORY))}
         />
 
-        {/* 5. Helpful Tip Card */}
+        {/* 6. Helpful Tip Card */}
         <HomeTipCard tip={HOME_TIP} />
-
-        {/* 6. Quick logout action */}
-        <Button
-          type="button"
-          variant="outline"
-          fullWidth
-          loading={isLoggingOut}
-          loadingText="Logging out..."
-          leftIcon={<LogOut className="size-4" />}
-          onClick={() => void handleLogout()}
-          className="border-status-danger-text/30 text-status-danger-text hover:border-status-danger-text/50 hover:bg-status-danger-bg"
-        >
-          Log out
-        </Button>
       </PageContainer>
     </main>
   );

@@ -1,5 +1,6 @@
 import type { AccessTokenPayload } from '../infrastructure/jwt/types/jwt-payload';
 import { BillDetailService } from './bill-detail.service';
+import { BillListService } from './bill-list.service';
 import { CreateBillService } from './create-bill.service';
 import { AssignItemDto } from './dto/assign-item.dto';
 import { CalculateSummaryDto } from './dto/calculate-summary.dto';
@@ -13,10 +14,11 @@ import { SplitService } from './split.service';
 export declare class BillController {
     private readonly createBillService;
     private readonly billDetailService;
+    private readonly billListService;
     private readonly receiptService;
     private readonly splitService;
     private readonly paymentService;
-    constructor(createBillService: CreateBillService, billDetailService: BillDetailService, receiptService: ReceiptService, splitService: SplitService, paymentService: PaymentService);
+    constructor(createBillService: CreateBillService, billDetailService: BillDetailService, billListService: BillListService, receiptService: ReceiptService, splitService: SplitService, paymentService: PaymentService);
     listAvailableRooms(currentUser: AccessTokenPayload): Promise<{
         roomId: string;
         name: string;
@@ -29,6 +31,26 @@ export declare class BillController {
         }[];
         billId: string | null;
         billStatus: import("../database/generated/prisma/enums").BillStatus | null;
+    }[]>;
+    listPendingBills(currentUser: AccessTokenPayload): Promise<{
+        id: string;
+        status: import("../database/generated/prisma/enums").BillStatus;
+        title: string;
+        restaurantName: string | null;
+        createdByName: string;
+        isCreator: boolean;
+        receiptUploaded: boolean;
+        itemCount: number;
+        unassignedItemCount: number;
+        totalAmount: number | null;
+        paymentProgress: {
+            paidCount: number;
+            totalCount: number;
+        };
+        nextStep: "PAYMENT" | "RECEIPT" | "SPLIT" | "SUMMARY";
+        continueHref: string;
+        createdAt: Date;
+        updatedAt: Date;
     }[]>;
     createBill(currentUser: AccessTokenPayload, dto: CreateBillDto): Promise<{
         id: string;
@@ -45,6 +67,7 @@ export declare class BillController {
             name: string;
             restaurantName: string | null;
         };
+        roomStatus: import("../database/generated/prisma/enums").RoomStatus;
         members: {
             userId: string;
             displayName: string;
@@ -113,6 +136,7 @@ export declare class BillController {
             name: string;
             restaurantName: string | null;
         };
+        roomStatus: import("../database/generated/prisma/enums").RoomStatus;
         members: {
             userId: string;
             displayName: string;
@@ -181,6 +205,7 @@ export declare class BillController {
             name: string;
             restaurantName: string | null;
         };
+        roomStatus: import("../database/generated/prisma/enums").RoomStatus;
         members: {
             userId: string;
             displayName: string;
@@ -249,6 +274,7 @@ export declare class BillController {
             name: string;
             restaurantName: string | null;
         };
+        roomStatus: import("../database/generated/prisma/enums").RoomStatus;
         members: {
             userId: string;
             displayName: string;
@@ -317,6 +343,7 @@ export declare class BillController {
             name: string;
             restaurantName: string | null;
         };
+        roomStatus: import("../database/generated/prisma/enums").RoomStatus;
         members: {
             userId: string;
             displayName: string;
@@ -385,6 +412,7 @@ export declare class BillController {
             name: string;
             restaurantName: string | null;
         };
+        roomStatus: import("../database/generated/prisma/enums").RoomStatus;
         members: {
             userId: string;
             displayName: string;
@@ -453,6 +481,7 @@ export declare class BillController {
             name: string;
             restaurantName: string | null;
         };
+        roomStatus: import("../database/generated/prisma/enums").RoomStatus;
         members: {
             userId: string;
             displayName: string;
@@ -521,6 +550,7 @@ export declare class BillController {
             name: string;
             restaurantName: string | null;
         };
+        roomStatus: import("../database/generated/prisma/enums").RoomStatus;
         members: {
             userId: string;
             displayName: string;
@@ -589,6 +619,7 @@ export declare class BillController {
             name: string;
             restaurantName: string | null;
         };
+        roomStatus: import("../database/generated/prisma/enums").RoomStatus;
         members: {
             userId: string;
             displayName: string;
@@ -657,6 +688,7 @@ export declare class BillController {
             name: string;
             restaurantName: string | null;
         };
+        roomStatus: import("../database/generated/prisma/enums").RoomStatus;
         members: {
             userId: string;
             displayName: string;
@@ -725,6 +757,7 @@ export declare class BillController {
             name: string;
             restaurantName: string | null;
         };
+        roomStatus: import("../database/generated/prisma/enums").RoomStatus;
         members: {
             userId: string;
             displayName: string;
@@ -798,6 +831,7 @@ export declare class BillController {
             name: string;
             restaurantName: string | null;
         };
+        roomStatus: import("../database/generated/prisma/enums").RoomStatus;
         members: {
             userId: string;
             displayName: string;
@@ -866,6 +900,7 @@ export declare class BillController {
             name: string;
             restaurantName: string | null;
         };
+        roomStatus: import("../database/generated/prisma/enums").RoomStatus;
         members: {
             userId: string;
             displayName: string;
@@ -934,6 +969,7 @@ export declare class BillController {
             name: string;
             restaurantName: string | null;
         };
+        roomStatus: import("../database/generated/prisma/enums").RoomStatus;
         members: {
             userId: string;
             displayName: string;

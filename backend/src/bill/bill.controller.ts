@@ -15,6 +15,7 @@ import { memoryStorage } from 'multer';
 import { CurrentUser } from '../common/decorators/current-user.decorator';
 import type { AccessTokenPayload } from '../infrastructure/jwt/types/jwt-payload';
 import { BillDetailService } from './bill-detail.service';
+import { BillListService } from './bill-list.service';
 import { CreateBillService } from './create-bill.service';
 import { AssignItemDto } from './dto/assign-item.dto';
 import { CalculateSummaryDto } from './dto/calculate-summary.dto';
@@ -33,6 +34,7 @@ export class BillController {
   constructor(
     private readonly createBillService: CreateBillService,
     private readonly billDetailService: BillDetailService,
+    private readonly billListService: BillListService,
     private readonly receiptService: ReceiptService,
     private readonly splitService: SplitService,
     private readonly paymentService: PaymentService,
@@ -41,6 +43,11 @@ export class BillController {
   @Get('rooms/available')
   listAvailableRooms(@CurrentUser() currentUser: AccessTokenPayload) {
     return this.createBillService.listAvailableRooms(currentUser.sub);
+  }
+
+  @Get('pending')
+  listPendingBills(@CurrentUser() currentUser: AccessTokenPayload) {
+    return this.billListService.listPending(currentUser.sub);
   }
 
   @Post()
