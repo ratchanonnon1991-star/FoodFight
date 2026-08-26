@@ -23,6 +23,9 @@ type LeafletMarker = {
   setLatLng: (position: [number, number]) => LeafletMarker;
   getLatLng: () => MapLatLng;
   on: (event: string, handler: () => void) => LeafletMarker;
+  remove: () => LeafletMarker;
+  setOpacity: (opacity: number) => LeafletMarker;
+  setZIndexOffset: (offset: number) => LeafletMarker;
 };
 
 type LeafletApi = {
@@ -47,6 +50,13 @@ type LeafletWindow = Window & {
 
 const DEFAULT_CENTER: [number, number] = [13.7563, 100.5018];
 const DEFAULT_ZOOM = 12;
+
+export interface LocationMapMarker {
+  id: string;
+  latitude?: number | null;
+  longitude?: number | null;
+  label?: string;
+}
 
 function isValidCoordinate(
   latitude?: number | null,
@@ -134,29 +144,58 @@ export function LocationMap({
   longitude,
   onPositionChange,
   onError,
+  markers = [],
+  selectedMarkerId = null,
+  onMarkerSelect,
+  readOnly = false,
 }: {
   latitude?: number | null;
   longitude?: number | null;
   onPositionChange: (latitude: number, longitude: number) => void;
   onError: (message: string) => void;
+  markers?: LocationMapMarker[];
+  selectedMarkerId?: string | null;
+  onMarkerSelect?: (markerId: string) => void;
+  readOnly?: boolean;
 }) {
   const mapElement = React.useRef<HTMLDivElement | null>(null);
   const map = React.useRef<LeafletMap | null>(null);
   const marker = React.useRef<LeafletMarker | null>(null);
+  const leafletRef = React.useRef<LeafletApi | null>(null);
+  const restaurantMarkers = React.useRef<Map<string, LeafletMarker>>(new Map());
   const onPositionChangeRef = React.useRef(onPositionChange);
   const onErrorRef = React.useRef(onError);
-  const initialCenterRef = React.useRef({
-    center: isValidCoordinate(latitude, longitude)
-      ? ([latitude, longitude] as [number, number])
-      : DEFAULT_CENTER,
-    hasCoordinate: isValidCoordinate(latitude, longitude),
+  const onMarkerSelectRef = React.useRef(onMarkerSelect);
+  const markersRef = React.useRef(markers);
+  const selectedMarkerIdRef = React.useRef(selectedMarkerId);
+  const [initialMapState] = React.useState(() => {
+    const hasCoordinate = isValidCoordinate(latitude, longitude);
+    const firstMarkerWithCoordinate = markers.find((mapMarker) =>
+      isValidCoordinate(mapMarker.latitude, mapMarker.longitude),
+    );
+
+    return {
+      center: hasCoordinate
+        ? ([latitude as number, longitude as number] as [number, number])
+        : firstMarkerWithCoordinate
+          ? ([
+              firstMarkerWithCoordinate.latitude as number,
+              firstMarkerWithCoordinate.longitude as number,
+            ] as [number, number])
+          : DEFAULT_CENTER,
+      hasCoordinate: Boolean(hasCoordinate || firstMarkerWithCoordinate),
+    };
   });
+  const { center: initialCenter, hasCoordinate } = initialMapState;
   const [isLoading, setIsLoading] = React.useState(true);
 
   React.useEffect(() => {
     onPositionChangeRef.current = onPositionChange;
     onErrorRef.current = onError;
-  }, [onError, onPositionChange]);
+    onMarkerSelectRef.current = onMarkerSelect;
+    markersRef.current = markers;
+    selectedMarkerIdRef.current = selectedMarkerId;
+  }, [markers, onError, onMarkerSelect, onPositionChange, selectedMarkerId]);
 
   React.useEffect(() => {
     let isCancelled = false;
@@ -166,8 +205,6 @@ export function LocationMap({
     }
 
     const element = mapElement.current;
-    const { center: initialCenter, hasCoordinate } = initialCenterRef.current;
-
     setIsLoading(true);
 
     void loadLeaflet()
@@ -178,7 +215,10 @@ export function LocationMap({
 
         const nextMap = leaflet
           .map(element, { zoomControl: true })
-          .setView(initialCenter, hasCoordinate ? 15 : DEFAULT_ZOOM);
+          .setView(
+            initialCenter,
+            readOnly ? (hasCoordinate ? 14 : DEFAULT_ZOOM) : hasCoordinate ? 15 : DEFAULT_ZOOM,
+          );
 
         leaflet
           .tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
@@ -188,20 +228,49 @@ export function LocationMap({
           })
           .addTo(nextMap);
 
-        const nextMarker = leaflet
-          .marker(initialCenter, { draggable: true })
-          .addTo(nextMap);
+        if (readOnly) {
+          markersRef.current
+            .filter((mapMarker) =>
+              isValidCoordinate(mapMarker.latitude, mapMarker.longitude),
+            )
+            .forEach((mapMarker) => {
+              const nextMarker = leaflet
+                .marker(
+                  [mapMarker.latitude as number, mapMarker.longitude as number],
+                  { draggable: false },
+                )
+                .addTo(nextMap);
 
-        const updatePosition = (position: MapLatLng) => {
-          nextMarker.setLatLng([position.lat, position.lng]);
-          onPositionChangeRef.current(position.lat, position.lng);
-        };
+              nextMarker.on("click", () => {
+                onMarkerSelectRef.current?.(mapMarker.id);
+              });
+              restaurantMarkers.current.set(mapMarker.id, nextMarker);
+            });
+        } else {
+          const nextMarker = leaflet
+            .marker(initialCenter, { draggable: true })
+            .addTo(nextMap);
 
-        nextMap.on("click", (event) => updatePosition(event.latlng));
-        nextMarker.on("dragend", () => updatePosition(nextMarker.getLatLng()));
+          const updatePosition = (position: MapLatLng) => {
+            nextMarker.setLatLng([position.lat, position.lng]);
+            onPositionChangeRef.current(position.lat, position.lng);
+          };
+
+          nextMap.on("click", (event) => updatePosition(event.latlng));
+          nextMarker.on("dragend", () => updatePosition(nextMarker.getLatLng()));
+          marker.current = nextMarker;
+        }
 
         map.current = nextMap;
-        marker.current = nextMarker;
+        leafletRef.current = leaflet;
+        restaurantMarkers.current.forEach((restaurantMarker, markerId) => {
+          const isSelected = selectedMarkerIdRef.current === markerId;
+          restaurantMarker
+            .setOpacity(
+              selectedMarkerIdRef.current && !isSelected ? 0.55 : 1,
+            )
+            .setZIndexOffset(isSelected ? 1000 : 0);
+        });
         setIsLoading(false);
       })
       .catch(() => {
@@ -213,38 +282,106 @@ export function LocationMap({
         }
       });
 
+    const markersToRemove = restaurantMarkers.current;
     return () => {
       isCancelled = true;
+      markersToRemove.forEach((restaurantMarker) => restaurantMarker.remove());
+      markersToRemove.clear();
       marker.current = null;
       map.current?.remove();
       map.current = null;
+      leafletRef.current = null;
     };
-  }, []);
+  }, [hasCoordinate, initialCenter, readOnly]);
+
+  React.useEffect(() => {
+    if (!readOnly || !map.current || !leafletRef.current) {
+      return;
+    }
+
+    const nextMarkers = markers.filter((mapMarker) =>
+      isValidCoordinate(mapMarker.latitude, mapMarker.longitude),
+    );
+    const nextMarkerIds = new Set(nextMarkers.map((mapMarker) => mapMarker.id));
+
+    restaurantMarkers.current.forEach((restaurantMarker, markerId) => {
+      if (!nextMarkerIds.has(markerId)) {
+        restaurantMarker.remove();
+        restaurantMarkers.current.delete(markerId);
+      }
+    });
+
+    nextMarkers.forEach((mapMarker) => {
+      const position: [number, number] = [
+        mapMarker.latitude as number,
+        mapMarker.longitude as number,
+      ];
+      const existingMarker = restaurantMarkers.current.get(mapMarker.id);
+
+      if (existingMarker) {
+        existingMarker.setLatLng(position);
+        return;
+      }
+
+      const nextMarker = leafletRef.current
+        ?.marker(position, { draggable: false })
+        .addTo(map.current as LeafletMap);
+
+      if (nextMarker) {
+        nextMarker.on("click", () => {
+          onMarkerSelectRef.current?.(mapMarker.id);
+        });
+        restaurantMarkers.current.set(mapMarker.id, nextMarker);
+      }
+    });
+
+    restaurantMarkers.current.forEach((restaurantMarker, markerId) => {
+      const isSelected = selectedMarkerId === markerId;
+      restaurantMarker
+        .setOpacity(selectedMarkerId && !isSelected ? 0.55 : 1)
+        .setZIndexOffset(isSelected ? 1000 : 0);
+    });
+
+    const selectedMarker = nextMarkers.find(
+      (mapMarker) => mapMarker.id === selectedMarkerId,
+    );
+    const focusMarker = selectedMarker ?? nextMarkers[0];
+    if (
+      focusMarker &&
+      isValidCoordinate(focusMarker.latitude, focusMarker.longitude)
+    ) {
+      map.current.setView(
+        [focusMarker.latitude as number, focusMarker.longitude as number],
+        Math.max(map.current.getZoom(), 14),
+      );
+    }
+  }, [markers, readOnly, selectedMarkerId]);
 
   React.useEffect(() => {
     if (
+      readOnly ||
       !map.current ||
       !marker.current ||
-      !isValidCoordinate(latitude, longitude)
+      !isValidCoordinate(latitude, longitude) ||
+      typeof latitude !== "number" ||
+      typeof longitude !== "number"
     ) {
       return;
     }
 
-    if (typeof latitude !== "number" || typeof longitude !== "number") {
-      return;
-    }
-
+    const currentMap = map.current;
+    const currentMarker = marker.current;
     const position: [number, number] = [latitude, longitude];
-    marker.current.setLatLng(position);
-    map.current.setView(position, Math.max(map.current.getZoom(), 15));
-  }, [latitude, longitude]);
+    currentMarker.setLatLng(position);
+    currentMap.setView(position, Math.max(currentMap.getZoom(), 15));
+  }, [latitude, longitude, readOnly]);
 
   return (
     <div className="relative isolate z-0 overflow-hidden rounded-xl border border-border">
       <div
         ref={mapElement}
         className="h-64 w-full bg-surface-subtle"
-        aria-label="Choose a location on the map"
+        aria-label={readOnly ? "Restaurant recommendations map" : "Choose a location on the map"}
       />
       {isLoading ? (
         <div className="pointer-events-none absolute inset-0 flex items-center justify-center bg-surface/70 text-sm text-text-secondary">
@@ -252,7 +389,9 @@ export function LocationMap({
         </div>
       ) : null}
       <p className="bg-surface px-3 py-1.5 text-[10px] text-text-muted">
-        Click or drag the pin to change the location.
+        {readOnly
+          ? "เลือกการ์ดร้านอาหารเพื่อโฟกัสหมุดบนแผนที่"
+          : "Click or drag the pin to change the location."}
       </p>
     </div>
   );

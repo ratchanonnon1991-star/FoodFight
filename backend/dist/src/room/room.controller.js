@@ -17,6 +17,10 @@ const common_1 = require("@nestjs/common");
 const rxjs_1 = require("rxjs");
 const current_user_decorator_1 = require("../common/decorators/current-user.decorator");
 const public_decorator_1 = require("../common/decorators/public.decorator");
+const food_fight_service_1 = require("../food-fight/food-fight.service");
+const upsert_meal_preference_dto_1 = require("../food-fight/dto/upsert-meal-preference.dto");
+const submit_final_vote_dto_1 = require("../food-fight/dto/submit-final-vote.dto");
+const submit_votes_dto_1 = require("../food-fight/dto/submit-votes.dto");
 const create_room_service_1 = require("./create-room.service");
 const create_room_dto_1 = require("./dto/create-room.dto");
 const join_room_service_1 = require("./join-room.service");
@@ -32,12 +36,14 @@ let RoomController = class RoomController {
     locationSearchService;
     roomPreviewService;
     roomRealtimeService;
-    constructor(createRoomService, joinRoomService, locationSearchService, roomPreviewService, roomRealtimeService) {
+    foodFightService;
+    constructor(createRoomService, joinRoomService, locationSearchService, roomPreviewService, roomRealtimeService, foodFightService) {
         this.createRoomService = createRoomService;
         this.joinRoomService = joinRoomService;
         this.locationSearchService = locationSearchService;
         this.roomPreviewService = roomPreviewService;
         this.roomRealtimeService = roomRealtimeService;
+        this.foodFightService = foodFightService;
     }
     createRoom(currentUser, dto) {
         return this.createRoomService.createRoom(currentUser.sub, dto);
@@ -69,6 +75,9 @@ let RoomController = class RoomController {
     getRoom(roomId, currentUser) {
         return this.joinRoomService.getRoom(roomId, currentUser.sub);
     }
+    getFoodFightState(roomId, currentUser) {
+        return this.foodFightService.getFlowState(roomId, currentUser.sub);
+    }
     joinRoom(roomId, currentUser) {
         return this.joinRoomService.joinRoom(roomId, currentUser.sub);
     }
@@ -77,6 +86,27 @@ let RoomController = class RoomController {
     }
     startRoom(roomId, currentUser) {
         return this.joinRoomService.startRoom(roomId, currentUser.sub);
+    }
+    upsertMealPreference(roomId, dto, currentUser) {
+        return this.foodFightService.upsertMealPreference(roomId, currentUser.sub, dto);
+    }
+    startRecommendation(roomId, currentUser) {
+        return this.foodFightService.startRecommendation(roomId, currentUser.sub);
+    }
+    rerollRecommendation(roomId, currentUser) {
+        return this.foodFightService.rerollRecommendation(roomId, currentUser.sub);
+    }
+    startRestaurantRecommendations(roomId, currentUser) {
+        return this.foodFightService.startRestaurantRecommendations(roomId, currentUser.sub);
+    }
+    submitVotes(roomId, dto, currentUser) {
+        return this.foodFightService.submitVotes(roomId, currentUser.sub, dto);
+    }
+    submitFinalVote(roomId, dto, currentUser) {
+        return this.foodFightService.submitFinalVote(roomId, currentUser.sub, dto);
+    }
+    submitHostTieBreak(roomId, dto, currentUser) {
+        return this.foodFightService.submitHostTieBreak(roomId, currentUser.sub, dto);
     }
     leaveRoom(roomId, currentUser) {
         return this.joinRoomService.leaveRoom(roomId, currentUser.sub);
@@ -173,6 +203,14 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], RoomController.prototype, "getRoom", null);
 __decorate([
+    (0, common_1.Get)(':roomId/food-fight/state'),
+    __param(0, (0, common_1.Param)('roomId')),
+    __param(1, (0, current_user_decorator_1.CurrentUser)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, Object]),
+    __metadata("design:returntype", void 0)
+], RoomController.prototype, "getFoodFightState", null);
+__decorate([
     (0, common_1.Post)(':roomId/join'),
     __param(0, (0, common_1.Param)('roomId')),
     __param(1, (0, current_user_decorator_1.CurrentUser)()),
@@ -197,6 +235,66 @@ __decorate([
     __metadata("design:paramtypes", [String, Object]),
     __metadata("design:returntype", void 0)
 ], RoomController.prototype, "startRoom", null);
+__decorate([
+    (0, common_1.Put)(':roomId/preferences'),
+    __param(0, (0, common_1.Param)('roomId')),
+    __param(1, (0, common_1.Body)()),
+    __param(2, (0, current_user_decorator_1.CurrentUser)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, upsert_meal_preference_dto_1.UpsertMealPreferenceDto, Object]),
+    __metadata("design:returntype", void 0)
+], RoomController.prototype, "upsertMealPreference", null);
+__decorate([
+    (0, common_1.Post)(':roomId/recommendations/start'),
+    __param(0, (0, common_1.Param)('roomId')),
+    __param(1, (0, current_user_decorator_1.CurrentUser)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, Object]),
+    __metadata("design:returntype", void 0)
+], RoomController.prototype, "startRecommendation", null);
+__decorate([
+    (0, common_1.Post)(':roomId/recommendations/reroll'),
+    __param(0, (0, common_1.Param)('roomId')),
+    __param(1, (0, current_user_decorator_1.CurrentUser)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, Object]),
+    __metadata("design:returntype", void 0)
+], RoomController.prototype, "rerollRecommendation", null);
+__decorate([
+    (0, common_1.Post)(':roomId/restaurants/start'),
+    __param(0, (0, common_1.Param)('roomId')),
+    __param(1, (0, current_user_decorator_1.CurrentUser)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, Object]),
+    __metadata("design:returntype", void 0)
+], RoomController.prototype, "startRestaurantRecommendations", null);
+__decorate([
+    (0, common_1.Put)(':roomId/votes'),
+    __param(0, (0, common_1.Param)('roomId')),
+    __param(1, (0, common_1.Body)()),
+    __param(2, (0, current_user_decorator_1.CurrentUser)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, submit_votes_dto_1.SubmitVotesDto, Object]),
+    __metadata("design:returntype", void 0)
+], RoomController.prototype, "submitVotes", null);
+__decorate([
+    (0, common_1.Put)(':roomId/final-votes'),
+    __param(0, (0, common_1.Param)('roomId')),
+    __param(1, (0, common_1.Body)()),
+    __param(2, (0, current_user_decorator_1.CurrentUser)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, submit_final_vote_dto_1.SubmitFinalVoteDto, Object]),
+    __metadata("design:returntype", void 0)
+], RoomController.prototype, "submitFinalVote", null);
+__decorate([
+    (0, common_1.Put)(':roomId/final-votes/host-tie-break'),
+    __param(0, (0, common_1.Param)('roomId')),
+    __param(1, (0, common_1.Body)()),
+    __param(2, (0, current_user_decorator_1.CurrentUser)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, submit_final_vote_dto_1.SubmitFinalVoteDto, Object]),
+    __metadata("design:returntype", void 0)
+], RoomController.prototype, "submitHostTieBreak", null);
 __decorate([
     (0, common_1.Delete)(':roomId/leave'),
     __param(0, (0, common_1.Param)('roomId')),
@@ -229,7 +327,8 @@ exports.RoomController = RoomController = __decorate([
         join_room_service_1.JoinRoomService,
         location_search_service_1.LocationSearchService,
         room_preview_service_1.RoomPreviewService,
-        room_realtime_service_1.RoomRealtimeService])
+        room_realtime_service_1.RoomRealtimeService,
+        food_fight_service_1.FoodFightService])
 ], RoomController);
 function parseOptionalCoordinate(value) {
     return value.trim() ? Number(value) : undefined;

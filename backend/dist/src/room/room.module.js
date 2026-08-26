@@ -8,6 +8,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.RoomModule = void 0;
 const common_1 = require("@nestjs/common");
+const food_fight_module_1 = require("../food-fight/food-fight.module");
 const create_room_service_1 = require("./create-room.service");
 const join_room_service_1 = require("./join-room.service");
 const location_search_service_1 = require("./location-search.service");
@@ -19,6 +20,7 @@ let RoomModule = class RoomModule {
 exports.RoomModule = RoomModule;
 exports.RoomModule = RoomModule = __decorate([
     (0, common_1.Module)({
+        imports: [food_fight_module_1.FoodFightModule],
         controllers: [room_controller_1.RoomController],
         providers: [
             create_room_service_1.CreateRoomService,

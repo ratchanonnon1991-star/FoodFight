@@ -146,3 +146,177 @@
     scroll-behavior: auto !important;
   }
 }
+
+/* FoodFight AI waiting state */
+@keyframes foodfight-cooking-pot-bob {
+  0%,
+  100% {
+    transform: translateY(1px) rotate(-2deg);
+  }
+  50% {
+    transform: translateY(-3px) rotate(2deg);
+  }
+}
+
+@keyframes foodfight-cooking-hat-wiggle {
+  0%,
+  100% {
+    transform: translateX(-50%) rotate(-3deg);
+  }
+  50% {
+    transform: translateX(-50%) rotate(3deg) translateY(-1px);
+  }
+}
+
+@keyframes foodfight-cooking-steam {
+  0% {
+    opacity: 0;
+    transform: translateY(7px) scale(0.75);
+  }
+  35% {
+    opacity: 0.75;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-13px) scale(1.1);
+  }
+}
+
+@keyframes foodfight-cooking-spark {
+  0%,
+  100% {
+    opacity: 0.35;
+    transform: scale(0.8);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.2);
+  }
+}
+
+.foodfight-cooking-animation {
+  position: relative;
+  display: flex;
+  width: 7rem;
+  height: 7rem;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-brand-primary);
+}
+
+.foodfight-cooking-animation-sm {
+  transform: scale(0.75);
+}
+
+.foodfight-cooking-scene {
+  position: relative;
+  display: flex;
+  width: 5.5rem;
+  height: 5.5rem;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border-radius: 9999px;
+  background: var(--color-surface-muted);
+}
+
+.foodfight-cooking-hat {
+  position: absolute;
+  top: 0.7rem;
+  left: 50%;
+  width: 2.25rem;
+  height: 2.25rem;
+  color: var(--color-brand-secondary);
+  transform: translateX(-50%) rotate(-3deg);
+  transform-origin: 50% 100%;
+  animation: foodfight-cooking-hat-wiggle 2.2s ease-in-out infinite;
+}
+
+.foodfight-cooking-pot {
+  position: absolute;
+  bottom: 0.85rem;
+  width: 2.8rem;
+  height: 2.8rem;
+  color: var(--color-brand-primary);
+  animation: foodfight-cooking-pot-bob 2.2s ease-in-out infinite;
+}
+
+.foodfight-cooking-steam {
+  position: absolute;
+  top: 1.95rem;
+  width: 0.45rem;
+  height: 0.85rem;
+  border: 2px solid currentColor;
+  border-bottom: 0;
+  border-radius: 9999px 9999px 0 0;
+  opacity: 0;
+  animation: foodfight-cooking-steam 1.8s ease-out infinite;
+}
+
+.foodfight-cooking-steam-one {
+  left: 1.75rem;
+}
+
+.foodfight-cooking-steam-two {
+  left: 2.5rem;
+  animation-delay: 0.55s;
+}
+
+.foodfight-cooking-steam-three {
+  left: 3.25rem;
+  animation-delay: 1.05s;
+}
+
+.foodfight-cooking-spark {
+  position: absolute;
+  width: 0.35rem;
+  height: 0.35rem;
+  border-radius: 9999px;
+  background: var(--color-accent-apricot);
+  animation: foodfight-cooking-spark 1.5s ease-in-out infinite;
+}
+
+.foodfight-cooking-spark-one {
+  right: 1.2rem;
+  bottom: 1.5rem;
+}
+
+.foodfight-cooking-spark-two {
+  bottom: 2.6rem;
+  left: 1.1rem;
+  animation-delay: 0.75s;
+}
+
+.foodfight-cooking-ground {
+  width: 3.25rem;
+  height: 0.35rem;
+  margin-top: 0.35rem;
+  border-radius: 9999px;
+  background: var(--color-border-subtle);
+}
+
+.foodfight-compatibility-meter {
+  display: block;
+  width: 100%;
+  height: 0.45rem;
+  overflow: hidden;
+  border: 0;
+  border-radius: 9999px;
+  background: var(--color-surface-muted);
+}
+
+.foodfight-compatibility-meter::-webkit-progress-bar {
+  border-radius: 9999px;
+  background: var(--color-surface-muted);
+}
+
+.foodfight-compatibility-meter::-webkit-progress-value {
+  border-radius: 9999px;
+  background: var(--color-brand-primary);
+}
+
+.foodfight-compatibility-meter::-moz-progress-bar {
+  border-radius: 9999px;
+  background: var(--color-brand-primary);
+}

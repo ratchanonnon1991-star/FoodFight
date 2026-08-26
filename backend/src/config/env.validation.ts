@@ -33,6 +33,8 @@ const envSchema = z.object({
   FRONTEND_URL: z.string().url().default('http://localhost:3000'),
 
   GOOGLE_AI_API_KEY: z.string().min(1).optional(),
+
+  AI_SERVICE_URL: z.string().url().default('http://127.0.0.1:8001'),
 });
 
 export function validate(config: Record<string, any>) {
