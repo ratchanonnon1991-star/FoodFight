@@ -11,6 +11,7 @@ import {
   Info,
   LoaderCircle,
   MoreHorizontal,
+  Search,
   TriangleAlert,
   X,
 } from "lucide-react";
@@ -372,6 +373,14 @@ export function Combobox({ options, id, ...props }: ComboboxProps) {
   return <><TextInput {...props} id={inputId} list={listId} /><datalist id={listId}>{options.map((option) => <option key={option} value={option} />)}</datalist></>;
 }
 
+export type SearchInputProps = Omit<TextInputProps, "leadingIcon" | "type">;
+
+export const SearchInput = React.forwardRef<HTMLInputElement, SearchInputProps>(
+  ({ label = "Search", ...props }, ref) => <TextInput {...props} ref={ref} label={label} type="search" leadingIcon={<Search aria-hidden="true" />} />,
+);
+
+SearchInput.displayName = "DesignSystemSearchInput";
+
 export interface CheckboxProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, "type"> {
   label: string;
   description?: string;
@@ -530,6 +539,40 @@ export function Chip({ children, variant = "display", onSelect, onRemove, icon, 
   );
 }
 
+export interface PreferenceChipProps extends Omit<ChipProps, "variant"> {
+  selected?: boolean;
+}
+
+export function PreferenceChip({ selected = false, ...props }: PreferenceChipProps) {
+  return <Chip {...props} variant={selected ? "selected" : "selectable"} />;
+}
+
+export function CuisineChip(props: PreferenceChipProps) {
+  return <PreferenceChip {...props} />;
+}
+
+export function ProteinChip(props: PreferenceChipProps) {
+  return <PreferenceChip {...props} />;
+}
+
+export function BudgetChip(props: PreferenceChipProps) {
+  return <PreferenceChip {...props} />;
+}
+
+export function AllergyChip(props: PreferenceChipProps) {
+  return <PreferenceChip {...props} />;
+}
+
+export function DietChip(props: PreferenceChipProps) {
+  return <PreferenceChip {...props} />;
+}
+
+export type TagProps = Omit<ChipProps, "variant" | "onSelect">;
+
+export function Tag(props: TagProps) {
+  return <Chip {...props} variant="display" />;
+}
+
 export type BadgeVariant = "neutral" | "brand" | "fresh" | "success" | "warning" | "danger" | "info";
 
 export interface BadgeProps extends React.HTMLAttributes<HTMLSpanElement> {
@@ -627,6 +670,10 @@ export function Alert({ variant = "info", title, children, action, onDismiss, cl
   );
 }
 
+export function Banner(props: React.ComponentProps<typeof Alert>) {
+  return <Alert {...props} />;
+}
+
 export function Toast({ variant = "success", title, children, onDismiss }: { variant?: AlertVariant; title: string; children?: React.ReactNode; onDismiss?: () => void }) {
   return <div className={cn("ff-ds-toast", `ff-ds-toast--${variant}`)} role="status"><span className="ff-ds-toast__icon">{alertIcon[variant]}</span><div><strong>{title}</strong>{children ? <p>{children}</p> : null}</div>{onDismiss ? <IconButton label="Dismiss notification" icon={<X aria-hidden="true" />} size="sm" variant="subtle" onClick={onDismiss} /> : null}</div>;
 }
@@ -672,6 +719,10 @@ export function Dialog({ open, title, description, children, footer, onClose }: 
   );
 }
 
+export function ConfirmationDialog(props: DialogProps) {
+  return <Dialog {...props} />;
+}
+
 export function Sheet({ open, title, side = "bottom", children, onClose }: { open: boolean; title: string; side?: "bottom" | "right"; children?: React.ReactNode; onClose: () => void }) {
   React.useEffect(() => {
     if (!open) return undefined;
@@ -681,6 +732,14 @@ export function Sheet({ open, title, side = "bottom", children, onClose }: { ope
   }, [open, onClose]);
   if (!open) return null;
   return <div className="ff-ds-sheet-layer" onMouseDown={(event) => { if (event.target === event.currentTarget) onClose(); }}><aside className={cn("ff-ds-sheet", `ff-ds-sheet--${side}`)} aria-label={title}><div className="ff-ds-sheet__header"><h3>{title}</h3><IconButton label="Close sheet" icon={<X aria-hidden="true" />} variant="subtle" onClick={onClose} /></div><div className="ff-ds-sheet__content">{children}</div></aside></div>;
+}
+
+export function BottomSheet(props: Omit<React.ComponentProps<typeof Sheet>, "side">) {
+  return <Sheet {...props} side="bottom" />;
+}
+
+export function SideSheet(props: Omit<React.ComponentProps<typeof Sheet>, "side">) {
+  return <Sheet {...props} side="right" />;
 }
 
 export interface MenuItem {

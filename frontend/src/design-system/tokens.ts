@@ -74,6 +74,7 @@ export const typographyScale = [
   { name: "Heading 1", token: "--ff-type-heading-1", size: "2.25rem", line: "1.08", weight: "700", use: "page titles" },
   { name: "Heading 2", token: "--ff-type-heading-2", size: "1.75rem", line: "1.15", weight: "700", use: "section titles" },
   { name: "Heading 3", token: "--ff-type-heading-3", size: "1.25rem", line: "1.25", weight: "700", use: "card titles" },
+  { name: "Title L", token: "--ff-type-title-lg", size: "1.25rem", line: "1.3", weight: "600", use: "prominent card and panel titles" },
   { name: "Title", token: "--ff-type-title", size: "1.0625rem", line: "1.35", weight: "600", use: "emphasized labels" },
   { name: "Body L", token: "--ff-type-body-lg", size: "1.0625rem", line: "1.6", weight: "400", use: "introductory copy" },
   { name: "Body", token: "--ff-type-body", size: "0.9375rem", line: "1.55", weight: "400", use: "default reading" },
