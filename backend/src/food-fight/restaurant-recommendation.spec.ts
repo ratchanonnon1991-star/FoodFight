@@ -1,4 +1,5 @@
 import {
+  BadGatewayException,
   BadRequestException,
   ConflictException,
   ForbiddenException,
@@ -440,5 +441,112 @@ describe('FoodFightService restaurant recommendations', () => {
     expect(context.state.status).toBe(FoodFightStatus.FINALIZED);
     expect(context.state.deleteCalls).toBe(0);
     expect(context.state.createCalls).toBe(0);
+  });
+
+  it('keeps provider discoveries without claiming verified menu compatibility', async () => {
+    const context = createRestaurantContext({
+      aiResponse: {
+        success: true,
+        conceptId: 'RAMEN',
+        restaurants: [
+          {
+            restaurantId: 'longdo-unverified-1',
+            name: 'Ramen discovery',
+            rank: 1,
+            score: 4.5,
+            matchType: null,
+            groupCoverage: null,
+            budget: null,
+            styles: [],
+            latitude: 13.757,
+            longitude: 100.502,
+            address: 'Bangkok',
+            phone: null,
+            openingHours: null,
+            openNow: null,
+            distanceKm: 0.18,
+            memberMenuOptions: [],
+            menuDataAvailable: false,
+            reasons: ['Provider result for the selected concept'],
+          },
+        ],
+      },
+    });
+
+    const result = await context.service.startRestaurantRecommendations(
+      ROOM_ID,
+      HOST_ID,
+    );
+    const createCalls = context.prisma.restaurantRecommendation.create.mock
+      .calls as unknown[][];
+    const createCall = createCalls[0]?.[0] as
+      { data: { finalMenuMatch?: boolean } } | undefined;
+
+    expect(result.restaurantState).toBe('RESTAURANTS_READY');
+    expect(context.state.restaurantRecords[0]).toMatchObject({
+      externalPlaceId: 'longdo-unverified-1',
+      groupCompatibilityScore: null,
+      finalMenuMatch: false,
+    });
+    expect(createCall?.data.finalMenuMatch).toBe(false);
+  });
+
+  it('exposes an empty retryable state and permits a later host retry', async () => {
+    const context = createRestaurantContext({
+      aiResponse: {
+        success: true,
+        conceptId: 'RAMEN',
+        restaurants: [],
+      },
+    });
+
+    let searchError: unknown;
+    try {
+      await context.service.startRestaurantRecommendations(ROOM_ID, HOST_ID);
+    } catch (error) {
+      searchError = error;
+    }
+    expect(searchError).toBeInstanceOf(BadGatewayException);
+    expect(context.state.status).toBe(FoodFightStatus.FINALIZED);
+
+    const emptyState = await context.service.getFlowState(ROOM_ID, HOST_ID);
+    expect(emptyState.restaurantState).toBe('RESTAURANTS_EMPTY');
+    expect(emptyState.restaurants).toHaveLength(0);
+
+    context.ai.restaurants.mockResolvedValue({
+      success: true,
+      conceptId: 'RAMEN',
+      restaurants: [
+        {
+          restaurantId: 'longdo-retry-1',
+          name: 'Ramen after retry',
+          rank: 1,
+          score: 4.5,
+          matchType: null,
+          groupCoverage: null,
+          budget: null,
+          styles: [],
+          latitude: 13.757,
+          longitude: 100.502,
+          address: 'Bangkok',
+          phone: null,
+          openingHours: null,
+          openNow: null,
+          distanceKm: 0.18,
+          memberMenuOptions: [],
+          menuDataAvailable: false,
+          reasons: ['Provider result for the selected concept'],
+        },
+      ],
+    });
+
+    const retriedState = await context.service.startRestaurantRecommendations(
+      ROOM_ID,
+      HOST_ID,
+    );
+    expect(retriedState.restaurantState).toBe('RESTAURANTS_READY');
+    expect(context.state.restaurantRecords[0]?.externalPlaceId).toBe(
+      'longdo-retry-1',
+    );
   });
 });

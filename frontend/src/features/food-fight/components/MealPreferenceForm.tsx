@@ -11,7 +11,6 @@ import {
   RotateCcw,
   Sparkles,
   UsersRound,
-  Utensils,
 } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/Alert";
 import { Button } from "@/components/ui/Button";
@@ -19,6 +18,7 @@ import { Card } from "@/components/ui/Card";
 import { Input } from "@/components/ui/Input";
 import { Textarea } from "@/components/ui/Textarea";
 import { ROUTES } from "@/config/routes";
+import { CookingAnimation } from "@/features/food-fight/components/CookingAnimation";
 import { RoomPageHeader } from "@/features/room/components/RoomPageHeader";
 import {
   RestaurantLoadingScreen,
@@ -46,15 +46,15 @@ import type {
 } from "@/features/food-fight/types/food-fight-types";
 
 const EMPTY_DRAFT: MealPreferenceDraft = {
-  cookingMethods: [],
+  cookingMethods: ["ANY"],
   cookingMethodsOther: "",
-  cuisines: [],
+  cuisines: ["ANY"],
   cuisinesOther: "",
-  proteins: [],
+  proteins: ["ANY"],
   proteinsOther: "",
-  budget: null,
+  budget: "ANY",
   budgetOther: "",
-  restaurantStyles: [],
+  restaurantStyles: ["ANY"],
   restaurantStylesOther: "",
   additionalNuances: "",
 };
@@ -129,7 +129,12 @@ export function MealPreferenceForm({ roomId }: { roomId: string }) {
   }, [loadState]);
 
   React.useEffect(() => {
-    if (!state || state.restaurantState === "RESTAURANTS_READY") return;
+    if (
+      !state ||
+      state.restaurantState === "RESTAURANTS_EMPTY" ||
+      state.restaurantState === "RESTAURANTS_READY"
+    )
+      return;
     const pollId = window.setInterval(
       () =>
         void loadState({ clearError: false }).catch(() =>
@@ -178,30 +183,22 @@ export function MealPreferenceForm({ roomId }: { roomId: string }) {
           : [...withoutAny, value],
       };
     });
-  const validationMessage = () => {
-    if (!draft.cookingMethods.length && !draft.cookingMethodsOther.trim())
-      return "เลือกวิธีปรุงอาหารอย่างน้อย 1 รายการ";
-    if (!draft.cuisines.length && !draft.cuisinesOther.trim())
-      return "เลือกประเภทอาหารอย่างน้อย 1 รายการ";
-    if (!draft.proteins.length && !draft.proteinsOther.trim())
-      return "เลือกโปรตีนอย่างน้อย 1 รายการ";
-    if (!draft.budget) return "เลือกงบประมาณของมื้ออาหาร";
-    if (!draft.restaurantStyles.length && !draft.restaurantStylesOther.trim())
-      return "เลือกรูปแบบร้านอาหารอย่างน้อย 1 รายการ";
-    return null;
-  };
-
   const submitPreference = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const validation = validationMessage();
-    if (validation) {
-      setError(validation);
-      return;
-    }
     setError(null);
     setIsSubmitting(true);
+    const preference = {
+      ...draft,
+      cookingMethods: draft.cookingMethods.length ? draft.cookingMethods : ["ANY"],
+      cuisines: draft.cuisines.length ? draft.cuisines : ["ANY"],
+      proteins: draft.proteins.length ? draft.proteins : ["ANY"],
+      budget: draft.budget ?? "ANY",
+      restaurantStyles: draft.restaurantStyles.length
+        ? draft.restaurantStyles
+        : ["ANY"],
+    } satisfies MealPreferenceDraft;
     try {
-      await foodFightService.submitMealPreference(roomId, draft);
+      await foodFightService.submitMealPreference(roomId, preference);
       setIsEditing(false);
       setView("submitted");
       await loadState();
@@ -330,7 +327,8 @@ export function MealPreferenceForm({ roomId }: { roomId: string }) {
   const startRestaurantRecommendations = async () => {
     if (
       !state?.currentUser.isHost ||
-      state.restaurantState !== "FINALIZED_MENU" ||
+      (state.restaurantState !== "FINALIZED_MENU" &&
+        state.restaurantState !== "RESTAURANTS_EMPTY") ||
       isStartingRestaurants
     )
       return;
@@ -509,7 +507,9 @@ export function MealPreferenceForm({ roomId }: { roomId: string }) {
         {state.state === "FINALIZED" && isStartingRestaurants ? (
           <RestaurantLoadingScreen />
         ) : null}
-        {state.state === "FINALIZED" && !isStartingRestaurants ? (
+        {state.state === "FINALIZED" &&
+        !isStartingRestaurants &&
+        state.restaurantState !== "RESTAURANTS_EMPTY" ? (
           <FinalizedScreen
             state={state}
             onStartRestaurants={() => void startRestaurantRecommendations()}
@@ -517,6 +517,7 @@ export function MealPreferenceForm({ roomId }: { roomId: string }) {
           />
         ) : null}
         {state.restaurantState === "RECOMMENDING_RESTAURANTS" ||
+        state.restaurantState === "RESTAURANTS_EMPTY" ||
         state.restaurantState === "RESTAURANTS_READY" ||
         state.state === "RECOMMENDING_RESTAURANTS" ||
         state.state === "RESTAURANTS_READY" ? (
@@ -704,6 +705,8 @@ function VoteSubmissionScreen({
 function getFoodFightTitle(state: FoodFightState) {
   if (state.restaurantState === "RECOMMENDING_RESTAURANTS")
     return "กำลังค้นหาร้านอาหาร";
+  if (state.restaurantState === "RESTAURANTS_EMPTY")
+    return "ยังไม่พบร้านอาหารที่ใช้ได้";
   if (state.restaurantState === "RESTAURANTS_READY") return "ร้านอาหารที่แนะนำ";
   if (state.state === "WAITING_FOR_PREFERENCES") return "กำลังรอสมาชิก";
   if (state.state === "READY_TO_RECOMMEND") return "ทุกคนพร้อมแล้ว!";
@@ -1012,6 +1015,9 @@ function FinalVoteCard({
           <h3 className="text-base font-semibold">
             {metadata?.nameTh ?? item.menuName}
           </h3>
+          <CompatibilityIndicator
+            percentage={metadata?.compatibilityPercentage}
+          />
           {metadata?.name && metadata.name !== metadata.nameTh ? (
             <p className="text-xs text-text-secondary">{metadata.name}</p>
           ) : null}
@@ -1130,7 +1136,7 @@ function RerollLoadingCard() {
   return (
     <Card variant="outline" className="rounded-3xl p-8 text-center shadow-sm">
       <div className="mx-auto flex size-24 items-center justify-center rounded-full bg-surface-muted text-text-secondary">
-        <RotateCcw className="size-12 animate-spin" aria-hidden="true" />
+        <CookingAnimation size="sm" />
       </div>
       <h2 className="mt-6 text-xl font-semibold">กำลังหาเมนูใหม่ให้คุณ...</h2>
       <p className="mt-2 text-sm leading-6 text-text-secondary">
@@ -1208,7 +1214,8 @@ function FinalizedScreen({
             variant="outline"
             onClick={onStartRestaurants}
             disabled={
-              state.restaurantState !== "FINALIZED_MENU" ||
+              (state.restaurantState !== "FINALIZED_MENU" &&
+                state.restaurantState !== "RESTAURANTS_EMPTY") ||
               isStartingRestaurants
             }
             loading={isStartingRestaurants}
@@ -1260,6 +1267,9 @@ function RecommendationCard({
           <h3 className="text-base font-semibold leading-6">
             {metadata?.nameTh ?? item.menuName}
           </h3>
+          <CompatibilityIndicator
+            percentage={metadata?.compatibilityPercentage}
+          />
           {metadata?.name && metadata.name !== metadata.nameTh ? (
             <p className="text-xs font-medium text-text-secondary">
               {metadata.name}
@@ -1311,6 +1321,37 @@ function RecommendationCard({
   );
 }
 
+function CompatibilityIndicator({
+  percentage,
+}: {
+  percentage?: number | null;
+}) {
+  if (
+    typeof percentage !== "number" ||
+    !Number.isFinite(percentage) ||
+    percentage < 0 ||
+    percentage > 100
+  ) {
+    return null;
+  }
+
+  return (
+    <div className="mt-2" aria-label={`เหมาะกับกลุ่ม ${percentage}%`}>
+      <p className="flex items-center gap-1 text-sm font-semibold text-brand-primary">
+        <Sparkles className="size-4" aria-hidden="true" />
+        เหมาะกับกลุ่ม {percentage}%
+      </p>
+      <progress
+        className="foodfight-compatibility-meter mt-1"
+        max={100}
+        value={percentage}
+      >
+        {percentage}%
+      </progress>
+    </div>
+  );
+}
+
 function WaitingScreen({
   title,
   description,
@@ -1356,7 +1397,7 @@ function LoadingCard({
   return (
     <Card variant="outline" className="rounded-3xl p-8 text-center shadow-sm">
       <div className="mx-auto flex size-24 items-center justify-center rounded-full bg-surface-muted text-text-secondary">
-        <Utensils className="size-11" aria-hidden="true" />
+        <CookingAnimation size="sm" />
       </div>
       <div className="mt-4 flex justify-center gap-2 text-text-muted">
         <span className="size-2 rounded-full bg-text-muted" />

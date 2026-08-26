@@ -28,6 +28,7 @@ export type FoodFightFlowState =
 
 export type RestaurantFlowState =
   | "FINALIZED_MENU"
+  | "RESTAURANTS_EMPTY"
   | "RECOMMENDING_RESTAURANTS"
   | "RESTAURANTS_READY";
 
@@ -47,6 +48,7 @@ export interface RecommendationMetadata {
   memberCount?: number | null;
   satisfactionRatio?: number | null;
   safeCoverage?: number | null;
+  compatibilityPercentage?: number | null;
   reasons?: string[];
 }
 

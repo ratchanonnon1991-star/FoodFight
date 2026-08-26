@@ -43,7 +43,10 @@ export type FoodFightFlowState =
   | 'FINALIZED';
 
 export type RestaurantFlowState =
-  'FINALIZED_MENU' | 'RECOMMENDING_RESTAURANTS' | 'RESTAURANTS_READY';
+  | 'FINALIZED_MENU'
+  | 'RESTAURANTS_EMPTY'
+  | 'RECOMMENDING_RESTAURANTS'
+  | 'RESTAURANTS_READY';
 
 type RecommendationItemSource = {
   id: string;
@@ -186,6 +189,7 @@ type RestaurantRecommendationResult = {
   openNow: boolean | null;
   distanceKm: number | null;
   memberMenuOptions: AiJsonValue[];
+  menuDataAvailable: boolean | null;
   reasons: string[];
 };
 
@@ -213,6 +217,7 @@ interface RecommendationItemResult {
   conceptId: string;
   name: string;
   nameTh: string;
+  aliases: string[];
   score: number | null;
   preferenceScore: number | null;
   fairnessBonus: number | null;
@@ -232,6 +237,7 @@ interface RecommendationItemResult {
   memberCount: number | null;
   satisfactionRatio: number | null;
   safeCoverage: number | null;
+  compatibilityPercentage: number | null;
   reasons: string[];
 }
 
@@ -398,6 +404,9 @@ export class FoodFightService {
       );
     }
 
+    const storedRestaurantRecommendations =
+      session.restaurantRecommendations ?? [];
+
     if (!session.members.some((member) => member.userId === userId)) {
       throw new ForbiddenException('You are not a member of this FoodFight');
     }
@@ -523,6 +532,7 @@ export class FoodFightService {
     const restaurantState = resolveRestaurantFlowState(
       session.status,
       Boolean(session.finalSelection),
+      storedRestaurantRecommendations.length > 0,
     );
 
     if (session.status === FoodFightStatus.RESTAURANT_RECOMMENDATION) {
@@ -565,7 +575,7 @@ export class FoodFightService {
       finalSelection: session.finalSelection
         ? toFinalSelectionView(session.finalSelection)
         : null,
-      restaurants: (session.restaurantRecommendations ?? []).map(
+      restaurants: storedRestaurantRecommendations.map(
         toRestaurantRecommendationView,
       ),
     };
@@ -897,7 +907,10 @@ export class FoodFightService {
               phone: restaurant.phone,
               openingHours: buildRestaurantMetadata(restaurant),
               imageUrl: null,
-              finalMenuMatch: true,
+              finalMenuMatch:
+                restaurant.menuDataAvailable ??
+                (restaurant.groupCoverage !== null ||
+                  restaurant.memberMenuOptions.length > 0),
               varietyScore: null,
               groupCompatibilityScore: restaurant.groupCoverage,
               rankingScore: restaurant.score,
@@ -1675,30 +1688,20 @@ export class FoodFightService {
       dto.cookingMethods,
       dto.cookingMethodsOther,
     );
-    const cuisineGroup = normalizePreferenceGroup(dto.cuisines, dto.cuisinesOther);
-    const proteinGroup = normalizePreferenceGroup(dto.proteins, dto.proteinsOther);
+    const cuisineGroup = normalizePreferenceGroup(
+      dto.cuisines,
+      dto.cuisinesOther,
+    );
+    const proteinGroup = normalizePreferenceGroup(
+      dto.proteins,
+      dto.proteinsOther,
+    );
     const restaurantStyleGroup = normalizePreferenceGroup(
       dto.restaurantStyles,
       dto.restaurantStylesOther,
     );
 
-    this.assertPreferenceGroup(
-      'cooking methods',
-      cookingGroup.selected,
-      cookingGroup.other,
-    );
-    this.assertPreferenceGroup('cuisines', cuisineGroup.selected, cuisineGroup.other);
-    this.assertPreferenceGroup('proteins', proteinGroup.selected, proteinGroup.other);
-    this.assertPreferenceGroup(
-      'restaurant styles',
-      restaurantStyleGroup.selected,
-      restaurantStyleGroup.other,
-    );
-
-    const budgetRange = FRONTEND_BUDGET_TO_PRISMA[dto.budget];
-    if (!budgetRange) {
-      throw new BadRequestException('A valid budget is required');
-    }
+    const budgetRange = FRONTEND_BUDGET_TO_PRISMA[dto.budget ?? 'ANY'];
 
     return {
       cookingTypes: cookingGroup.selected,
@@ -1712,16 +1715,6 @@ export class FoodFightService {
       otherRestaurantStyle: restaurantStyleGroup.other,
       otherNote: normalizeOptionalText(dto.additionalNuances),
     };
-  }
-
-  private assertPreferenceGroup(
-    name: string,
-    selected: string[],
-    other: string | null | undefined,
-  ) {
-    if (selected.length === 0 && !other?.trim()) {
-      throw new BadRequestException(`At least one ${name} option is required`);
-    }
   }
 }
 
@@ -1761,9 +1754,10 @@ function mapStoredMealPreference(
 function resolveRestaurantFlowState(
   status: FoodFightStatus,
   hasFinalSelection: boolean,
+  hasRestaurants: boolean,
 ): RestaurantFlowState | null {
   if (status === FoodFightStatus.FINALIZED && hasFinalSelection) {
-    return 'FINALIZED_MENU';
+    return hasRestaurants ? 'FINALIZED_MENU' : 'RESTAURANTS_EMPTY';
   }
   if (status === FoodFightStatus.RESTAURANT_RECOMMENDATION) {
     return 'RECOMMENDING_RESTAURANTS';
@@ -1799,6 +1793,7 @@ function buildFinalConcept(selection: FinalSelectionSource): AiJsonObject {
     name: metadataName ?? persistedMenuName,
     nameTh,
     cuisine,
+    aliases: stringArray(metadata, 'aliases'),
   };
 }
 
@@ -1868,6 +1863,10 @@ function parseRestaurantResponse(
       openNow: optionalRestaurantBoolean(rawRestaurant, 'openNow'),
       distanceKm: optionalRestaurantNumber(rawRestaurant, 'distanceKm'),
       memberMenuOptions: jsonArray(rawRestaurant, 'memberMenuOptions'),
+      menuDataAvailable: optionalRestaurantBoolean(
+        rawRestaurant,
+        'menuDataAvailable',
+      ),
       reasons: strictStringArray(rawRestaurant, 'reasons'),
     };
   });
@@ -1885,6 +1884,7 @@ function buildRestaurantMetadata(
     openNow: restaurant.openNow,
     reasons: restaurant.reasons,
     memberMenuOptions: restaurant.memberMenuOptions,
+    menuDataAvailable: restaurant.menuDataAvailable,
   };
 }
 
@@ -2312,6 +2312,7 @@ function parseRecommendationResponse(
       conceptId,
       name: name ?? nameTh ?? conceptId,
       nameTh: nameTh ?? name ?? conceptId,
+      aliases: stringArray(rawRecommendation, 'aliases'),
       score: optionalNumber(rawRecommendation, 'score'),
       preferenceScore: optionalNumber(rawRecommendation, 'preferenceScore'),
       fairnessBonus: optionalNumber(rawRecommendation, 'fairnessBonus'),
@@ -2331,6 +2332,10 @@ function parseRecommendationResponse(
       memberCount: optionalNumber(rawRecommendation, 'memberCount'),
       satisfactionRatio: optionalNumber(rawRecommendation, 'satisfactionRatio'),
       safeCoverage: optionalNumber(rawRecommendation, 'safeCoverage'),
+      compatibilityPercentage: optionalNumber(
+        rawRecommendation,
+        'compatibilityPercentage',
+      ),
       reasons: stringArray(rawRecommendation, 'reasons'),
     };
   });
@@ -2343,6 +2348,7 @@ function buildRecommendationMetadata(
     conceptId: item.conceptId,
     name: item.name,
     nameTh: item.nameTh,
+    aliases: item.aliases,
     score: item.score,
     preferenceScore: item.preferenceScore,
     fairnessBonus: item.fairnessBonus,
@@ -2362,6 +2368,7 @@ function buildRecommendationMetadata(
     memberCount: item.memberCount,
     satisfactionRatio: item.satisfactionRatio,
     safeCoverage: item.safeCoverage,
+    compatibilityPercentage: item.compatibilityPercentage,
     reasons: item.reasons,
   };
 }

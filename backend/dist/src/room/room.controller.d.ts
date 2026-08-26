@@ -349,15 +349,15 @@ export declare class RoomController {
             id: string;
             updatedAt: Date;
             userId: string;
+            cuisines: string[];
+            restaurantStyles: string[];
             sessionId: string;
             cookingTypes: string[];
             otherCookingType: string | null;
-            cuisines: string[];
             otherCuisine: string | null;
             ingredients: string[];
             otherIngredient: string | null;
             budgetRange: import("../database/generated/prisma/enums").MealBudgetRange | null;
-            restaurantStyles: string[];
             otherRestaurantStyle: string | null;
             otherNote: string | null;
             submittedAt: Date;
@@ -372,6 +372,7 @@ export declare class RoomController {
             conceptId: string;
             name: string;
             nameTh: string;
+            aliases: string[];
             score: number | null;
             preferenceScore: number | null;
             fairnessBonus: number | null;
@@ -391,6 +392,7 @@ export declare class RoomController {
             memberCount: number | null;
             satisfactionRatio: number | null;
             safeCoverage: number | null;
+            compatibilityPercentage: number | null;
             reasons: string[];
             id: string;
             displayOrder: number;
@@ -405,6 +407,7 @@ export declare class RoomController {
             conceptId: string;
             name: string;
             nameTh: string;
+            aliases: string[];
             score: number | null;
             preferenceScore: number | null;
             fairnessBonus: number | null;
@@ -424,6 +427,7 @@ export declare class RoomController {
             memberCount: number | null;
             satisfactionRatio: number | null;
             safeCoverage: number | null;
+            compatibilityPercentage: number | null;
             reasons: string[];
             id: string;
             displayOrder: number;

@@ -72,7 +72,11 @@ type TestItem = {
   reason: string | null;
   imageUrl: string | null;
   recommendationScore: number | null;
-  metadata: { conceptId: string; nameTh: string };
+  metadata: {
+    conceptId: string;
+    nameTh: string;
+    compatibilityPercentage?: number;
+  };
   displayOrder: number;
 };
 
@@ -184,7 +188,11 @@ function makeItem(
     reason: null,
     imageUrl: null,
     recommendationScore: null,
-    metadata: { conceptId, nameTh: conceptId },
+    metadata: {
+      conceptId,
+      nameTh: conceptId,
+      compatibilityPercentage: 91 - (displayOrder - 1) * 4,
+    },
     displayOrder,
   };
 }
@@ -208,10 +216,11 @@ function makeRound(
 function makeAiResponse(concepts: string[]) {
   return {
     success: true,
-    recommendations: concepts.map((conceptId) => ({
+    recommendations: concepts.map((conceptId, index) => ({
       conceptId,
       name: conceptId,
       nameTh: conceptId,
+      compatibilityPercentage: 91 - index * 4,
     })),
   };
 }
@@ -549,6 +558,13 @@ describe('FoodFightService voting state machine', () => {
     expect(state.state).toBe('FINAL_VOTE_REQUIRED');
     expect(state.finalVoteType).toBe(FinalVoteType.TIE_BREAK);
     expect(state.finalVoteCandidates).toHaveLength(2);
+    expect(
+      state.finalVoteCandidates.map(
+        (item) =>
+          (item.metadata as { compatibilityPercentage?: number } | null)
+            ?.compatibilityPercentage,
+      ),
+    ).toEqual([91, 87]);
     expect(context.state.finalSelection).toBeNull();
   });
 
@@ -667,6 +683,11 @@ describe('FoodFightService voting state machine', () => {
     expect(
       context.state.rounds[1].items.map((item) => item.metadata.conceptId),
     ).toEqual(['C', 'D']);
+    expect(
+      context.state.rounds[1].items.map(
+        (item) => item.metadata.compatibilityPercentage,
+      ),
+    ).toEqual([91, 87]);
     expect(context.state.session.status).toBe(FoodFightStatus.VOTING);
   });
 
@@ -695,6 +716,13 @@ describe('FoodFightService voting state machine', () => {
         (item) => (item.metadata as { conceptId: string } | null)?.conceptId,
       ),
     ).toEqual(['A', 'B', 'C', 'D']);
+    expect(
+      state.finalVoteCandidates.map(
+        (item) =>
+          (item.metadata as { compatibilityPercentage?: number } | null)
+            ?.compatibilityPercentage,
+      ),
+    ).toEqual([91, 87, 91, 87]);
     expect(context.state.rounds[1].status).toBe(
       RecommendationRoundStatus.COMPLETED,
     );

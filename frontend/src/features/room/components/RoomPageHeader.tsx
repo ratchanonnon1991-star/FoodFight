@@ -58,13 +58,13 @@ export function RoomPageHeader({
   return (
     <header className="flex items-start justify-between gap-3 pb-4">
       <div className="flex min-w-0 items-start gap-3">
-        <Link
+        <a
           href={backHref}
           aria-label="Back"
-          className="mt-1 inline-flex size-10 shrink-0 items-center justify-center rounded-full text-text-primary transition-colors hover:bg-surface-subtle focus-visible:outline-2 focus-visible:outline-brand-secondary"
+          className="relative z-10 mt-1 inline-flex size-10 shrink-0 cursor-pointer items-center justify-center rounded-full text-text-primary transition-colors hover:bg-surface-subtle focus-visible:outline-2 focus-visible:outline-brand-secondary"
         >
           <ArrowLeft className="size-6" aria-hidden="true" />
-        </Link>
+        </a>
         <div className="min-w-0">
           <h1 className="truncate text-2xl font-semibold tracking-tight text-text-primary">
             {title}

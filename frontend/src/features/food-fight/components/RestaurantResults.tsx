@@ -1,9 +1,10 @@
 "use client";
 
 import * as React from "react";
-import { ChevronDown, Clock3, Info, MapPin, Navigation, Star } from "lucide-react";
+import { ChevronDown, Clock3, Info, MapPin, Star } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
+import { CookingAnimation } from "@/features/food-fight/components/CookingAnimation";
 import { foodFightService, FoodFightApiError } from "@/features/food-fight/services/food-fight-service";
 import { LocationMap } from "@/features/room/components/LocationMap";
 import type { FoodFightState, RestaurantRecommendation } from "@/features/food-fight/types/food-fight-types";
@@ -60,6 +61,7 @@ export function RestaurantResults({ roomId, state: providedState }: RestaurantRe
     if (
       providedState ||
       restaurantState == null ||
+      restaurantState === "RESTAURANTS_EMPTY" ||
       restaurantState === "RESTAURANTS_READY" ||
       foodFightState === "RESTAURANTS_READY"
     ) return;
@@ -89,7 +91,11 @@ export function RestaurantResults({ roomId, state: providedState }: RestaurantRe
     state.restaurantState === "RECOMMENDING_RESTAURANTS" ||
     state.state === "RECOMMENDING_RESTAURANTS"
   ) return <RestaurantLoadingScreen />;
-  if (state.restaurantState !== "RESTAURANTS_READY" && state.state !== "RESTAURANTS_READY") {
+  if (
+    state.restaurantState !== "RESTAURANTS_EMPTY" &&
+    state.restaurantState !== "RESTAURANTS_READY" &&
+    state.state !== "RESTAURANTS_READY"
+  ) {
     return (
       <Card variant="outline" className="rounded-3xl p-6 text-center shadow-sm">
         <Clock3 className="mx-auto size-10 text-text-secondary" aria-hidden="true" />
@@ -110,9 +116,9 @@ export function RestaurantResults({ roomId, state: providedState }: RestaurantRe
   return (
     <section aria-labelledby="restaurant-results-title">
       <div className="mb-5">
-        <p className="text-sm font-medium text-brand-primary">Restaurants Ready</p>
-        <h2 id="restaurant-results-title" className="mt-1 text-2xl font-semibold tracking-tight">ร้านอาหารที่เหมาะกับกลุ่ม</h2>
-        <p className="mt-2 text-sm leading-6 text-text-secondary">รายการร้านและเหตุผลด้านล่างมาจากผลลัพธ์ที่ Backend บันทึกไว้</p>
+        <p className="text-sm font-medium text-brand-primary">{state.restaurantState === "RESTAURANTS_EMPTY" ? "ค้นหาร้านอาหารอีกครั้งได้" : "Restaurants Ready"}</p>
+        <h2 id="restaurant-results-title" className="mt-1 text-2xl font-semibold tracking-tight">{state.restaurantState === "RESTAURANTS_EMPTY" ? "ยังไม่พบร้านอาหารที่ใช้ได้" : "ร้านอาหารที่เหมาะกับกลุ่ม"}</h2>
+        <p className="mt-2 text-sm leading-6 text-text-secondary">{state.restaurantState === "RESTAURANTS_EMPTY" ? "ผู้ให้บริการยังไม่ส่งร้านที่ใช้งานได้กลับมา ลองค้นหาอีกครั้งได้" : "รายการร้านและเหตุผลด้านล่างมาจากผลลัพธ์ที่ Backend บันทึกไว้"}</p>
       </div>
       {state.finalSelection ? (
         <Card variant="subtle" className="mb-4 rounded-2xl p-4">
@@ -155,7 +161,7 @@ export function RestaurantResults({ roomId, state: providedState }: RestaurantRe
 export function RestaurantLoadingScreen() {
   return (
     <Card variant="outline" className="rounded-3xl p-8 text-center shadow-sm">
-      <div className="mx-auto flex size-24 items-center justify-center rounded-full bg-surface-muted text-text-secondary"><Navigation className="size-11 animate-pulse" aria-hidden="true" /></div>
+      <div className="mx-auto flex size-24 items-center justify-center rounded-full bg-surface-muted text-text-secondary"><CookingAnimation size="sm" /></div>
       <div className="mt-5 flex justify-center gap-2 text-text-muted" aria-hidden="true"><span className="size-2 rounded-full bg-text-muted" /><span className="size-2 rounded-full bg-text-muted opacity-70" /><span className="size-2 rounded-full bg-text-muted opacity-40" /></div>
       <h2 className="mt-6 text-xl font-semibold">กำลังค้นหาร้านที่เหมาะกับทุกคน...</h2>
       <p className="mt-2 text-sm leading-6 text-text-secondary">กำลังตรวจเมนู ระยะทาง และข้อจำกัดของสมาชิก</p>
@@ -167,6 +173,7 @@ export function RestaurantLoadingScreen() {
 function RestaurantCard({ restaurant, selected, onSelect }: { restaurant: RestaurantRecommendation; selected: boolean; onSelect: () => void }) {
   return (
     <Card variant="outline" className={`rounded-2xl p-4 shadow-sm transition-colors ${selected ? "border-brand-primary bg-brand-primary/5" : ""}`}>
+      {!restaurant.finalMenuMatch ? <p className="mb-3 rounded-xl bg-surface-subtle p-3 text-sm leading-5 text-text-secondary">ร้านนี้ค้นพบจากเมนูที่เลือก แต่รายละเอียดเมนูสำหรับสมาชิกยังไม่ได้รับการยืนยัน</p> : null}
       <button type="button" aria-pressed={selected} onClick={onSelect} className="flex w-full items-start gap-3 text-left outline-none focus-visible:ring-2 focus-visible:ring-focus-ring">
         <span className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-surface-muted text-sm font-semibold text-text-secondary">{restaurant.rank == null ? <MapPin className="size-5" aria-hidden="true" /> : `#${restaurant.rank}`}</span>
         <span className="min-w-0 flex-1"><span className="block text-lg font-semibold">{restaurant.name}</span><span className="mt-1 flex flex-wrap gap-x-3 gap-y-1 text-sm text-text-secondary">{restaurant.distanceKm != null ? <span className="inline-flex items-center gap-1"><MapPin className="size-4" aria-hidden="true" />{formatNumber(restaurant.distanceKm)} กม.</span> : null}{restaurant.openNow != null ? <span>{restaurant.openNow ? "เปิดอยู่" : "ปิดอยู่"}</span> : null}</span></span>
@@ -177,7 +184,7 @@ function RestaurantCard({ restaurant, selected, onSelect }: { restaurant: Restau
         {restaurant.groupCoverage != null ? <div className="rounded-xl bg-surface-subtle p-3"><span className="block font-medium text-text-primary">ความเข้ากันกับกลุ่ม</span><span className="mt-1 block">{formatCoverage(restaurant.groupCoverage)}</span></div> : null}
       </div>
       <div className="mt-4"><h4 className="text-sm font-semibold">ทำไมร้านนี้เหมาะกับกลุ่ม</h4>{restaurant.reasons.length ? <ul className="mt-2 space-y-1 text-sm leading-5 text-text-secondary">{restaurant.reasons.map((reason, index) => <li key={`${restaurant.id}-reason-${index}`} className="flex gap-2"><span aria-hidden="true">•</span><span>{reason}</span></li>)}</ul> : <p className="mt-2 text-sm text-text-secondary">Backend ไม่ได้ส่งเหตุผลของร้านนี้</p>}</div>
-      <div className="mt-4 border-t border-border-subtle pt-4"><h4 className="text-sm font-semibold">เมนูที่เหมาะกับสมาชิก</h4>{restaurant.memberMenuOptions.length ? <details className="mt-2"><summary className="flex cursor-pointer list-none items-center gap-2 text-sm text-brand-primary">ดูตัวเลือกเมนูจาก Backend ({restaurant.memberMenuOptions.length})</summary><div className="mt-3 space-y-2">{restaurant.memberMenuOptions.map((option, index) => <MemberMenuOption key={`${restaurant.id}-menu-${index}`} option={option} />)}</div></details> : <p className="mt-2 text-sm text-text-secondary">ไม่มีข้อมูลตัวเลือกเมนูสำหรับร้านนี้</p>}</div>
+      <div className="mt-4 border-t border-border-subtle pt-4"><h4 className="text-sm font-semibold">{restaurant.finalMenuMatch ? "เมนูที่ตรวจสอบแล้วสำหรับสมาชิก" : "ข้อมูลเมนูสำหรับสมาชิก"}</h4>{restaurant.memberMenuOptions.length ? <details className="mt-2"><summary className="flex cursor-pointer list-none items-center gap-2 text-sm text-brand-primary">ดูตัวเลือกเมนูจาก Backend ({restaurant.memberMenuOptions.length})</summary><div className="mt-3 space-y-2">{restaurant.memberMenuOptions.map((option, index) => <MemberMenuOption key={`${restaurant.id}-menu-${index}`} option={option} />)}</div></details> : <p className="mt-2 text-sm text-text-secondary">ร้านนี้ไม่มีข้อมูลเมนูสมาชิกที่ตรวจสอบแล้ว</p>}</div>
       {restaurant.address ? <p className="mt-4 flex items-start gap-2 text-sm leading-5 text-text-secondary"><MapPin className="mt-0.5 size-4 shrink-0" aria-hidden="true" /><span>{restaurant.address}</span></p> : null}
     </Card>
   );

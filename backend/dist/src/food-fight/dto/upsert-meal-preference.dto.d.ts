@@ -6,7 +6,7 @@ export declare class UpsertMealPreferenceDto {
     cuisinesOther?: string | null;
     proteins: string[];
     proteinsOther?: string | null;
-    budget: FrontendMealPreferenceBudget;
+    budget?: FrontendMealPreferenceBudget;
     restaurantStyles: string[];
     restaurantStylesOther?: string | null;
     additionalNuances?: string | null;

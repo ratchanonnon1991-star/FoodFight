@@ -47,8 +47,9 @@ export class UpsertMealPreferenceDto {
   @Trim()
   proteinsOther?: string | null;
 
+  @IsOptional()
   @IsIn(['LOW', 'MID', 'HIGH', 'ANY'])
-  budget: FrontendMealPreferenceBudget;
+  budget?: FrontendMealPreferenceBudget;
 
   @IsArray()
   @ArrayMaxSize(20)

@@ -6,7 +6,7 @@ import { UpsertMealPreferenceDto } from './dto/upsert-meal-preference.dto';
 import { SubmitFinalVoteDto } from './dto/submit-final-vote.dto';
 import { SubmitVotesDto } from './dto/submit-votes.dto';
 export type FoodFightFlowState = 'WAITING_FOR_PREFERENCES' | 'READY_TO_RECOMMEND' | 'RECOMMENDING' | 'VOTING' | 'WAITING_FOR_VOTES' | 'FINAL_VOTE_REQUIRED' | 'REROLL_REQUIRED' | 'RECOMMENDING_RESTAURANTS' | 'RESTAURANTS_READY' | 'FINALIZED';
-export type RestaurantFlowState = 'FINALIZED_MENU' | 'RECOMMENDING_RESTAURANTS' | 'RESTAURANTS_READY';
+export type RestaurantFlowState = 'FINALIZED_MENU' | 'RESTAURANTS_EMPTY' | 'RECOMMENDING_RESTAURANTS' | 'RESTAURANTS_READY';
 type RecommendationItemSource = {
     id: string;
     menuName: string;
@@ -23,8 +23,8 @@ export declare class FoodFightService {
     constructor(prisma: PrismaService, recommendationAiService: RecommendationAiService);
     createSessionForStartedRoom(tx: Prisma.TransactionClient, roomId: string, hostId: string, activeMemberUserIds: string[]): Promise<{
         id: string;
-        status: FoodFightStatus;
         roomId: string;
+        status: FoodFightStatus;
     }>;
     upsertMealPreference(roomId: string, userId: string, dto: UpsertMealPreferenceDto): Promise<{
         message: string;
@@ -32,15 +32,15 @@ export declare class FoodFightService {
             id: string;
             updatedAt: Date;
             userId: string;
+            cuisines: string[];
+            restaurantStyles: string[];
             sessionId: string;
             cookingTypes: string[];
             otherCookingType: string | null;
-            cuisines: string[];
             otherCuisine: string | null;
             ingredients: string[];
             otherIngredient: string | null;
             budgetRange: MealBudgetRange | null;
-            restaurantStyles: string[];
             otherRestaurantStyle: string | null;
             otherNote: string | null;
             submittedAt: Date;
@@ -126,6 +126,7 @@ export declare class FoodFightService {
             conceptId: string;
             name: string;
             nameTh: string;
+            aliases: string[];
             score: number | null;
             preferenceScore: number | null;
             fairnessBonus: number | null;
@@ -145,6 +146,7 @@ export declare class FoodFightService {
             memberCount: number | null;
             satisfactionRatio: number | null;
             safeCoverage: number | null;
+            compatibilityPercentage: number | null;
             reasons: string[];
             id: string;
             displayOrder: number;
@@ -230,6 +232,7 @@ export declare class FoodFightService {
             conceptId: string;
             name: string;
             nameTh: string;
+            aliases: string[];
             score: number | null;
             preferenceScore: number | null;
             fairnessBonus: number | null;
@@ -249,6 +252,7 @@ export declare class FoodFightService {
             memberCount: number | null;
             satisfactionRatio: number | null;
             safeCoverage: number | null;
+            compatibilityPercentage: number | null;
             reasons: string[];
             id: string;
             displayOrder: number;
@@ -473,6 +477,5 @@ export declare class FoodFightService {
     private evaluateAndPersistInitialVotes;
     private evaluateAndPersistFinalVotes;
     private normalizePreference;
-    private assertPreferenceGroup;
 }
 export {};

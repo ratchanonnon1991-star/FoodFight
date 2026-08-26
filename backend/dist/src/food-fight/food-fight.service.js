@@ -161,6 +161,7 @@ let FoodFightService = class FoodFightService {
         if (!session) {
             throw new common_1.NotFoundException('FoodFight session not found. Start the room first.');
         }
+        const storedRestaurantRecommendations = session.restaurantRecommendations ?? [];
         if (!session.members.some((member) => member.userId === userId)) {
             throw new common_1.ForbiddenException('You are not a member of this FoodFight');
         }
@@ -257,7 +258,7 @@ let FoodFightService = class FoodFightService {
         if (session.status === client_1.FoodFightStatus.FINALIZED) {
             state = 'FINALIZED';
         }
-        const restaurantState = resolveRestaurantFlowState(session.status, Boolean(session.finalSelection));
+        const restaurantState = resolveRestaurantFlowState(session.status, Boolean(session.finalSelection), storedRestaurantRecommendations.length > 0);
         if (session.status === client_1.FoodFightStatus.RESTAURANT_RECOMMENDATION) {
             state = 'RECOMMENDING_RESTAURANTS';
         }
@@ -297,7 +298,7 @@ let FoodFightService = class FoodFightService {
             finalSelection: session.finalSelection
                 ? toFinalSelectionView(session.finalSelection)
                 : null,
-            restaurants: (session.restaurantRecommendations ?? []).map(toRestaurantRecommendationView),
+            restaurants: storedRestaurantRecommendations.map(toRestaurantRecommendationView),
         };
     }
     async startRecommendation(roomId, userId) {
@@ -554,7 +555,9 @@ let FoodFightService = class FoodFightService {
                             phone: restaurant.phone,
                             openingHours: buildRestaurantMetadata(restaurant),
                             imageUrl: null,
-                            finalMenuMatch: true,
+                            finalMenuMatch: restaurant.menuDataAvailable ??
+                                (restaurant.groupCoverage !== null ||
+                                    restaurant.memberMenuOptions.length > 0),
                             varietyScore: null,
                             groupCompatibilityScore: restaurant.groupCoverage,
                             rankingScore: restaurant.score,
@@ -1168,14 +1171,7 @@ let FoodFightService = class FoodFightService {
         const cuisineGroup = normalizePreferenceGroup(dto.cuisines, dto.cuisinesOther);
         const proteinGroup = normalizePreferenceGroup(dto.proteins, dto.proteinsOther);
         const restaurantStyleGroup = normalizePreferenceGroup(dto.restaurantStyles, dto.restaurantStylesOther);
-        this.assertPreferenceGroup('cooking methods', cookingGroup.selected, cookingGroup.other);
-        this.assertPreferenceGroup('cuisines', cuisineGroup.selected, cuisineGroup.other);
-        this.assertPreferenceGroup('proteins', proteinGroup.selected, proteinGroup.other);
-        this.assertPreferenceGroup('restaurant styles', restaurantStyleGroup.selected, restaurantStyleGroup.other);
-        const budgetRange = FRONTEND_BUDGET_TO_PRISMA[dto.budget];
-        if (!budgetRange) {
-            throw new common_1.BadRequestException('A valid budget is required');
-        }
+        const budgetRange = FRONTEND_BUDGET_TO_PRISMA[dto.budget ?? 'ANY'];
         return {
             cookingTypes: cookingGroup.selected,
             otherCookingType: cookingGroup.other,
@@ -1188,11 +1184,6 @@ let FoodFightService = class FoodFightService {
             otherRestaurantStyle: restaurantStyleGroup.other,
             otherNote: normalizeOptionalText(dto.additionalNuances),
         };
-    }
-    assertPreferenceGroup(name, selected, other) {
-        if (selected.length === 0 && !other?.trim()) {
-            throw new common_1.BadRequestException(`At least one ${name} option is required`);
-        }
     }
 };
 exports.FoodFightService = FoodFightService;
@@ -1226,9 +1217,9 @@ function mapStoredMealPreference(preference) {
         notes: preference.otherNote ?? '',
     };
 }
-function resolveRestaurantFlowState(status, hasFinalSelection) {
+function resolveRestaurantFlowState(status, hasFinalSelection, hasRestaurants) {
     if (status === client_1.FoodFightStatus.FINALIZED && hasFinalSelection) {
-        return 'FINALIZED_MENU';
+        return hasRestaurants ? 'FINALIZED_MENU' : 'RESTAURANTS_EMPTY';
     }
     if (status === client_1.FoodFightStatus.RESTAURANT_RECOMMENDATION) {
         return 'RECOMMENDING_RESTAURANTS';
@@ -1256,6 +1247,7 @@ function buildFinalConcept(selection) {
         name: metadataName ?? persistedMenuName,
         nameTh,
         cuisine,
+        aliases: stringArray(metadata, 'aliases'),
     };
 }
 function toFinalSelectionView(selection) {
@@ -1307,6 +1299,7 @@ function parseRestaurantResponse(response) {
             openNow: optionalRestaurantBoolean(rawRestaurant, 'openNow'),
             distanceKm: optionalRestaurantNumber(rawRestaurant, 'distanceKm'),
             memberMenuOptions: jsonArray(rawRestaurant, 'memberMenuOptions'),
+            menuDataAvailable: optionalRestaurantBoolean(rawRestaurant, 'menuDataAvailable'),
             reasons: strictStringArray(rawRestaurant, 'reasons'),
         };
     });
@@ -1321,6 +1314,7 @@ function buildRestaurantMetadata(restaurant) {
         openNow: restaurant.openNow,
         reasons: restaurant.reasons,
         memberMenuOptions: restaurant.memberMenuOptions,
+        menuDataAvailable: restaurant.menuDataAvailable,
     };
 }
 function toRestaurantRecommendationView(recommendation) {
@@ -1629,6 +1623,7 @@ function parseRecommendationResponse(response) {
             conceptId,
             name: name ?? nameTh ?? conceptId,
             nameTh: nameTh ?? name ?? conceptId,
+            aliases: stringArray(rawRecommendation, 'aliases'),
             score: optionalNumber(rawRecommendation, 'score'),
             preferenceScore: optionalNumber(rawRecommendation, 'preferenceScore'),
             fairnessBonus: optionalNumber(rawRecommendation, 'fairnessBonus'),
@@ -1648,6 +1643,7 @@ function parseRecommendationResponse(response) {
             memberCount: optionalNumber(rawRecommendation, 'memberCount'),
             satisfactionRatio: optionalNumber(rawRecommendation, 'satisfactionRatio'),
             safeCoverage: optionalNumber(rawRecommendation, 'safeCoverage'),
+            compatibilityPercentage: optionalNumber(rawRecommendation, 'compatibilityPercentage'),
             reasons: stringArray(rawRecommendation, 'reasons'),
         };
     });
@@ -1657,6 +1653,7 @@ function buildRecommendationMetadata(item) {
         conceptId: item.conceptId,
         name: item.name,
         nameTh: item.nameTh,
+        aliases: item.aliases,
         score: item.score,
         preferenceScore: item.preferenceScore,
         fairnessBonus: item.fairnessBonus,
@@ -1676,6 +1673,7 @@ function buildRecommendationMetadata(item) {
         memberCount: item.memberCount,
         satisfactionRatio: item.satisfactionRatio,
         safeCoverage: item.safeCoverage,
+        compatibilityPercentage: item.compatibilityPercentage,
         reasons: item.reasons,
     };
 }

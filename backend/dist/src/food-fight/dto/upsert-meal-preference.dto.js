@@ -68,6 +68,7 @@ __decorate([
     __metadata("design:type", Object)
 ], UpsertMealPreferenceDto.prototype, "proteinsOther", void 0);
 __decorate([
+    (0, class_validator_1.IsOptional)(),
     (0, class_validator_1.IsIn)(['LOW', 'MID', 'HIGH', 'ANY']),
     __metadata("design:type", String)
 ], UpsertMealPreferenceDto.prototype, "budget", void 0);
