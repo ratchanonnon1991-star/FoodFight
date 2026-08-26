@@ -17,9 +17,11 @@
      1. Main Route Switch Dispatcher (All 38 Registered Screens Live)
      ========================================================================== */
   function renderCurrentRoute() {
-    const hash = window.location.hash || '#/login';
+    const hash = window.location.hash || '#/ux-lab';
     const appRoot = document.getElementById('app-root');
     if (!appRoot) return;
+
+    document.body.classList.toggle('ux-lab-active', hash === '#/ux-lab');
 
     // Reset window scroll on navigation
     window.scrollTo({ top: 0, behavior: 'instant' });
@@ -28,6 +30,12 @@
     let bindFn = null;
 
     switch (hash) {
+      // Developer UX Lab (isolated reference surface)
+      case '#/ux-lab':
+        screenHtml = P.renderUXLab();
+        bindFn = P.bindUXLabEvents;
+        break;
+
       // V1 Auth (4 Screens)
       case '#/login':
         screenHtml = P.renderLogin();
@@ -219,9 +227,9 @@
     window.addEventListener('hashchange', renderCurrentRoute);
     P.initPrototypeNavigator();
 
-    // Default route to #/login if blank hash
+    // Default route to the isolated UX Lab if blank hash
     if (!window.location.hash) {
-      window.location.hash = '#/login';
+      window.location.hash = '#/ux-lab';
     } else {
       renderCurrentRoute();
     }
