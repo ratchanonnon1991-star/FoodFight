@@ -4,8 +4,32 @@ export type BillStatus =
   | "COMPLETED"
   | "CLOSED"
   | "CANCELLED";
+export type RoomStatus = "LOBBY" | "IN_PROGRESS" | "COMPLETED" | "CANCELLED";
 export type PaymentStatus = "UNPAID" | "PAID";
 export type OcrStatus = "NOT_USED" | "PROCESSING" | "COMPLETED" | "FAILED";
+
+export type PendingBillNextStep = "RECEIPT" | "SPLIT" | "SUMMARY" | "PAYMENT";
+
+export interface PendingBill {
+  id: string;
+  status: Extract<BillStatus, "DRAFT" | "SPLITTING" | "COMPLETED">;
+  title: string;
+  restaurantName: string | null;
+  createdByName: string;
+  isCreator: boolean;
+  receiptUploaded: boolean;
+  itemCount: number;
+  unassignedItemCount: number;
+  totalAmount: number | null;
+  paymentProgress: {
+    paidCount: number;
+    totalCount: number;
+  };
+  nextStep: PendingBillNextStep;
+  continueHref: string;
+  createdAt: string;
+  updatedAt: string;
+}
 
 export interface AvailableRoomMember {
   userId: string;
@@ -67,6 +91,7 @@ export interface BillPaymentAccountSummary {
 export interface BillDetail {
   id: string;
   status: BillStatus;
+  roomStatus?: RoomStatus;
   closedAt: string | null;
   summaryCalculated: boolean;
   isCreator: boolean;

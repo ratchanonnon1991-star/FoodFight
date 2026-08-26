@@ -25,7 +25,7 @@ import { cn } from "@/lib/utils/cn";
 import { VerificationCodeInput } from "./VerificationCodeInput";
 import { ResendCodeControl } from "./ResendCodeControl";
 import { VerificationSecurityNotice } from "./VerificationSecurityNotice";
-import { AuthSessionFallback } from "./AuthSessionFallback";
+import { AuthSessionFallback, AuthSessionLoading } from "./AuthSessionFallback";
 
 function maskEmail(email: string): string {
   const parts = email.split("@");
@@ -46,7 +46,12 @@ function maskEmail(email: string): string {
 export function VerifyEmailForm() {
   const router = useRouter();
 
-  const { challenge, setChallenge, setVerificationCompleted } = useAuthFlow();
+  const {
+    challenge,
+    isHydrating,
+    setChallenge,
+    setVerificationCompleted,
+  } = useAuthFlow();
 
   const [generalError, setGeneralError] = React.useState<string | null>(null);
 
@@ -151,6 +156,10 @@ export function VerifyEmailForm() {
       setIsResending(false);
     }
   };
+
+  if (isHydrating) {
+    return <AuthSessionLoading />;
+  }
 
   if (!challenge) {
     return (

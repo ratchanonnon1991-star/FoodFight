@@ -5,7 +5,10 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { PackageOpen, Users } from "lucide-react";
 import { ROUTES, billRoutes } from "@/config/routes";
-import { PageContainer } from "@/components/layout/PageContainer";
+import {
+  AuthenticatedPageHeader,
+  AuthenticatedPageLayout,
+} from "@/components/layout/AuthenticatedPageLayout";
 import { Card } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
@@ -13,8 +16,9 @@ import { Avatar } from "@/components/ui/Avatar";
 import { Alert, AlertDescription } from "@/components/ui/Alert";
 import { Spinner } from "@/components/ui/Spinner";
 import { ApiError } from "@/lib/api/client";
-import { BillPageHeader } from "./BillPageHeader";
+import { PendingBillsSection } from "./PendingBillsSection";
 import { billService } from "../services/bill-service";
+import { usePendingBills } from "../hooks/use-pending-bills";
 import { paymentAccountService } from "../services/payment-account-service";
 import type { AvailableRoom } from "../types/bill-types";
 
@@ -24,6 +28,12 @@ export function SelectMealScreen() {
   const [error, setError] = React.useState<string | null>(null);
   const [creatingRoomId, setCreatingRoomId] = React.useState<string | null>(null);
   const [hasPaymentAccount, setHasPaymentAccount] = React.useState(false);
+  const {
+    bills: pendingBills,
+    isLoading: isPendingBillsLoading,
+    error: pendingBillsError,
+    refresh: refreshPendingBills,
+  } = usePendingBills();
 
   const handleSelect = async (room: AvailableRoom) => {
     setError(null);
@@ -58,6 +68,7 @@ export function SelectMealScreen() {
       })
       .catch((err) => {
         if (isMounted) {
+          setRooms([]);
           setError(
             err instanceof ApiError ? err.message : "Unable to load meals.",
           );
@@ -68,6 +79,19 @@ export function SelectMealScreen() {
       isMounted = false;
     };
   }, []);
+
+  const pendingBillIds = React.useMemo(
+    () => new Set(pendingBills.map((bill) => bill.id)),
+    [pendingBills],
+  );
+  const roomsForCreation =
+    rooms?.filter(
+      (room) =>
+        !room.billId ||
+        isPendingBillsLoading ||
+        Boolean(pendingBillsError) ||
+        !pendingBillIds.has(room.billId),
+    ) ?? [];
 
   React.useEffect(() => {
     let isMounted = true;
@@ -89,15 +113,19 @@ export function SelectMealScreen() {
   }, []);
 
   return (
-    <div className="min-h-dvh flex flex-col bg-background text-text-primary">
-      <BillPageHeader title="Select Meal" backHref={ROUTES.AUTHENTICATED_HOME} />
+    <AuthenticatedPageLayout>
+      <AuthenticatedPageHeader
+        eyebrow="Your bills"
+        title="Select Meal"
+        description="Continue an unfinished bill or choose a meal to create a new one."
+      />
 
-      <main className="flex-1 py-6 sm:py-8 pb-28">
-        <PageContainer maxWidth="auth" paddingY="none" className="space-y-6">
-          <p className="text-sm text-text-secondary leading-relaxed">
-            Choose the meal to create a bill for. Only meals with a final
-            restaurant selected can be billed.
-          </p>
+          <PendingBillsSection
+            bills={pendingBills}
+            isLoading={isPendingBillsLoading}
+            error={pendingBillsError}
+            onRetry={() => void refreshPendingBills()}
+          />
 
           {error && (
           <Alert variant="error">
@@ -109,20 +137,32 @@ export function SelectMealScreen() {
           <div className="flex justify-center py-12">
             <Spinner size="lg" />
           </div>
-        ) : rooms.length === 0 ? (
+        ) : roomsForCreation.length === 0 ? (
           <Card variant="subtle" padding="lg" className="text-center space-y-3">
             <PackageOpen className="size-10 mx-auto text-text-muted" />
             <p className="text-sm font-medium text-text-primary">
-              Can&apos;t find your meal?
+              {pendingBills.length > 0 ? "No new meals available" : "Can't find your meal?"}
             </p>
             <p className="text-sm text-text-secondary">
-              A bill can only be created after your group has selected a
-              final restaurant.
+              {pendingBills.length > 0
+                ? "Your unfinished bills are listed above."
+                : "A bill can only be created after your group has selected a final restaurant."}
             </p>
           </Card>
         ) : (
-          <div className="space-y-3">
-            {rooms.map((room) => (
+          <section aria-labelledby="new-bill-heading" className="space-y-3">
+            <div>
+              <h2
+                id="new-bill-heading"
+                className="text-sm font-bold tracking-tight text-text-primary sm:text-base"
+              >
+                Start a new bill
+              </h2>
+              <p className="mt-1 text-xs leading-relaxed text-text-secondary">
+                Only meals with a final restaurant selected can be billed.
+              </p>
+            </div>
+            {roomsForCreation.map((room) => (
               <Card
                 key={room.roomId}
                 variant="default"
@@ -182,7 +222,7 @@ export function SelectMealScreen() {
                 </div>
               </Card>
             ))}
-          </div>
+          </section>
         )}
 
         {!hasPaymentAccount && (
@@ -196,8 +236,6 @@ export function SelectMealScreen() {
             </Link>
           </p>
         )}
-        </PageContainer>
-      </main>
-    </div>
+    </AuthenticatedPageLayout>
   );
 }

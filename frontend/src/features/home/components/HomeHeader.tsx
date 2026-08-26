@@ -14,10 +14,13 @@ import {
   Utensils,
 } from "lucide-react";
 import { ROUTES } from "@/config/routes";
+import { pageTypography } from "@/components/layout/PageContainer";
+import { cn } from "@/lib/utils/cn";
 import type { AuthenticatedUserDisplay } from "../types/home-types";
 
 export interface HomeHeaderProps {
   user: AuthenticatedUserDisplay;
+  isLoading?: boolean;
   onNotificationClick?: () => void;
   onProfileClick?: () => void;
   onLogout?: () => void;
@@ -25,17 +28,16 @@ export interface HomeHeaderProps {
 
 export function HomeHeader({
   user,
+  isLoading = false,
   onNotificationClick,
   onProfileClick,
   onLogout,
 }: HomeHeaderProps) {
-  const [imageFailed, setImageFailed] = React.useState(false);
+  const [failedAvatarUrl, setFailedAvatarUrl] = React.useState<string | null>(
+    null,
+  );
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
   const menuRef = React.useRef<HTMLDivElement>(null);
-
-  React.useEffect(() => {
-    setImageFailed(false);
-  }, [user.avatarUrl]);
 
   React.useEffect(() => {
     if (!isMenuOpen) {
@@ -69,16 +71,35 @@ export function HomeHeader({
     <header className="flex items-start justify-between gap-3 pt-2">
       {/* Greeting Text */}
       <div className="space-y-0.5 min-w-0">
-        <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-text-primary truncate">
+        {isLoading ? (
+          <div
+            className="space-y-2"
+            role="status"
+            aria-live="polite"
+            aria-label="Loading profile"
+          >
+            <div className="h-9 w-64 max-w-full animate-pulse rounded-lg bg-surface-subtle sm:h-11" />
+            <div className="h-4 w-52 max-w-full animate-pulse rounded bg-surface-subtle" />
+          </div>
+        ) : (
+          <>
+          <h1
+          className={cn(
+            pageTypography.title,
+            "truncate font-extrabold text-text-primary",
+          )}
+        >
           Hi, {user.name} 👋
         </h1>
         <p className="text-xs sm:text-sm text-text-secondary">
           Ready to fight for the best meal?
         </p>
+          </>
+        )}
       </div>
 
       {/* Header Actions */}
-      <div className="flex items-center gap-2 shrink-0 pt-0.5">
+      <div className="flex shrink-0 items-center gap-2 pt-0.5 lg:fixed lg:right-10 lg:top-3 lg:z-40 2xl:right-[calc((100vw-1440px)/2+2.5rem)]">
         {/* Notification Bell */}
         <button
           type="button"
@@ -100,16 +121,25 @@ export function HomeHeader({
             aria-label="Open profile menu"
             aria-haspopup="menu"
             aria-expanded={isMenuOpen}
-            title={user.name}
-            className="flex items-center gap-1 rounded-full p-0.5 text-text-secondary transition-colors hover:text-brand-primary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-secondary"
+            aria-busy={isLoading}
+            disabled={isLoading}
+            title={isLoading ? "Loading profile" : user.name}
+            className="flex items-center gap-1 rounded-full p-0.5 text-text-secondary transition-colors hover:text-brand-primary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-secondary disabled:cursor-wait"
           >
             <span className="size-10 rounded-full border border-border/80 bg-surface flex items-center justify-center shadow-2xs">
-              {user.avatarUrl && !imageFailed ? (
+              {isLoading ? (
+                <span
+                  className="size-full animate-pulse rounded-full bg-surface-subtle"
+                  aria-hidden="true"
+                />
+              ) : user.avatarUrl && failedAvatarUrl !== user.avatarUrl ? (
                 <img
+                  key={user.avatarUrl}
                   src={user.avatarUrl}
                   alt={`${user.name}'s profile`}
                   className="size-full rounded-full object-cover"
-                  onError={() => setImageFailed(true)}
+                  referrerPolicy="no-referrer"
+                  onError={() => setFailedAvatarUrl(user.avatarUrl ?? null)}
                 />
               ) : (
                 <span
@@ -126,7 +156,7 @@ export function HomeHeader({
             />
           </button>
 
-          {isMenuOpen ? (
+          {isMenuOpen && !isLoading ? (
             <div
               role="menu"
               aria-label="Profile menu"

@@ -7,7 +7,7 @@ import { ROUTES } from "@/config/routes";
 import { useAuthFlow } from "@/features/auth/context/auth-flow-context";
 import { buttonVariants } from "@/components/ui/Button";
 import { cn } from "@/lib/utils/cn";
-import { AuthSessionFallback } from "./AuthSessionFallback";
+import { AuthSessionFallback, AuthSessionLoading } from "./AuthSessionFallback";
 
 function maskEmail(email: string): string {
   const parts = email.split("@");
@@ -18,7 +18,11 @@ function maskEmail(email: string): string {
 }
 
 export function VerificationSuccess() {
-  const { verificationCompleted, challenge } = useAuthFlow();
+  const { isHydrating, verificationCompleted, challenge } = useAuthFlow();
+
+  if (isHydrating) {
+    return <AuthSessionLoading />;
+  }
 
   if (!verificationCompleted) {
     return (

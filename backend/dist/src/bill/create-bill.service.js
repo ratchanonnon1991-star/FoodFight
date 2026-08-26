@@ -56,26 +56,31 @@ let CreateBillService = class CreateBillService {
         return rooms
             .filter((room) => room.session?.bill?.status !== client_1.BillStatus.COMPLETED &&
             room.session?.bill?.status !== client_1.BillStatus.CLOSED)
-            .map((room) => ({
-            roomId: room.id,
-            name: room.name,
-            scheduledAt: room.scheduledAt,
-            restaurantName: room.session?.restaurantSelection?.name ?? null,
-            members: [
-                {
-                    userId: room.hostId,
-                    displayName: room.host.displayName,
-                    avatarUrl: room.host.avatarUrl,
-                },
-                ...room.members.map((member) => ({
-                    userId: member.userId,
-                    displayName: member.user.displayName,
-                    avatarUrl: member.user.avatarUrl,
-                })),
-            ],
-            billId: room.session?.bill?.id ?? null,
-            billStatus: room.session?.bill?.status ?? null,
-        }));
+            .map((room) => {
+            const isCancelledBill = room.session?.bill?.status === client_1.BillStatus.CANCELLED;
+            return {
+                roomId: room.id,
+                name: room.name,
+                scheduledAt: room.scheduledAt,
+                restaurantName: room.session?.restaurantSelection?.name ?? null,
+                members: [
+                    {
+                        userId: room.hostId,
+                        displayName: room.host.displayName,
+                        avatarUrl: room.host.avatarUrl,
+                    },
+                    ...room.members.map((member) => ({
+                        userId: member.userId,
+                        displayName: member.user.displayName,
+                        avatarUrl: member.user.avatarUrl,
+                    })),
+                ],
+                billId: isCancelledBill ? null : (room.session?.bill?.id ?? null),
+                billStatus: isCancelledBill
+                    ? null
+                    : (room.session?.bill?.status ?? null),
+            };
+        });
     }
     async createBill(userId, dto) {
         const room = await this.prisma.room.findUnique({

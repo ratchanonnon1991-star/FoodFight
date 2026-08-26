@@ -18,6 +18,7 @@ const platform_express_1 = require("@nestjs/platform-express");
 const multer_1 = require("multer");
 const current_user_decorator_1 = require("../common/decorators/current-user.decorator");
 const bill_detail_service_1 = require("./bill-detail.service");
+const bill_list_service_1 = require("./bill-list.service");
 const create_bill_service_1 = require("./create-bill.service");
 const assign_item_dto_1 = require("./dto/assign-item.dto");
 const calculate_summary_dto_1 = require("./dto/calculate-summary.dto");
@@ -32,18 +33,23 @@ const fileUpload = () => (0, platform_express_1.FileInterceptor)('file', { stora
 let BillController = class BillController {
     createBillService;
     billDetailService;
+    billListService;
     receiptService;
     splitService;
     paymentService;
-    constructor(createBillService, billDetailService, receiptService, splitService, paymentService) {
+    constructor(createBillService, billDetailService, billListService, receiptService, splitService, paymentService) {
         this.createBillService = createBillService;
         this.billDetailService = billDetailService;
+        this.billListService = billListService;
         this.receiptService = receiptService;
         this.splitService = splitService;
         this.paymentService = paymentService;
     }
     listAvailableRooms(currentUser) {
         return this.createBillService.listAvailableRooms(currentUser.sub);
+    }
+    listPendingBills(currentUser) {
+        return this.billListService.listPending(currentUser.sub);
     }
     createBill(currentUser, dto) {
         return this.createBillService.createBill(currentUser.sub, dto);
@@ -99,6 +105,13 @@ __decorate([
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", void 0)
 ], BillController.prototype, "listAvailableRooms", null);
+__decorate([
+    (0, common_1.Get)('pending'),
+    __param(0, (0, current_user_decorator_1.CurrentUser)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", void 0)
+], BillController.prototype, "listPendingBills", null);
 __decorate([
     (0, common_1.Post)(),
     __param(0, (0, current_user_decorator_1.CurrentUser)()),
@@ -239,6 +252,7 @@ exports.BillController = BillController = __decorate([
     (0, common_1.Controller)('bills'),
     __metadata("design:paramtypes", [create_bill_service_1.CreateBillService,
         bill_detail_service_1.BillDetailService,
+        bill_list_service_1.BillListService,
         receipt_service_1.ReceiptService,
         split_service_1.SplitService,
         payment_service_1.PaymentService])

@@ -176,13 +176,9 @@ export function ReceiptStepScreen({ billId }: ReceiptStepScreenProps) {
 
           <Card variant="default" padding="md">
             <div className="flex items-center justify-between mb-3">
-              {isUploading ? (
-                <Skeleton className="h-4 w-20" />
-              ) : (
-                <p className="text-sm font-semibold text-text-primary">
-                  Items ({bill.items.length})
-                </p>
-              )}
+              <p className="text-sm font-semibold text-text-primary">
+                Items ({bill.items.length})
+              </p>
               {isUploading ? (
                 <Skeleton className="h-4 w-14" />
               ) : (

@@ -5,6 +5,7 @@ import Link from "next/link";
 import { ChevronLeft, Eye } from "lucide-react";
 import { cn } from "@/lib/utils/cn";
 import { PageContainer } from "@/components/layout/PageContainer";
+import { Spinner } from "@/components/ui/Spinner";
 import {
   STANDARD_ALLERGIES,
   STANDARD_RESTRICTIONS,
@@ -137,6 +138,8 @@ export function FoodProfileStepLayout({
   footer,
   className,
 }: FoodProfileStepLayoutProps) {
+  const { isLoading } = useFoodProfile();
+
   return (
     <div className="min-h-dvh flex flex-col justify-between bg-background text-text-primary">
       {/* Top Header & Navigation */}
@@ -184,33 +187,58 @@ export function FoodProfileStepLayout({
       {/* Main Content Area */}
       <main className={cn("flex-1 py-6 sm:py-8", className)}>
         <PageContainer maxWidth="auth" paddingY="none" className="space-y-6">
-          {/* Question & Supporting Text */}
-          <div className="space-y-1.5 text-left">
-            <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-text-primary">
-              {title}
-            </h1>
-            <p className="text-sm text-text-secondary leading-relaxed">
-              {description}
-            </p>
-          </div>
+          {isLoading ? (
+            <FoodProfileLoadingState />
+          ) : (
+            <>
+              {/* Question & Supporting Text */}
+              <div className="space-y-1.5 text-left">
+                <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-text-primary">
+                  {title}
+                </h1>
+                <p className="text-sm text-text-secondary leading-relaxed">
+                  {description}
+                </p>
+              </div>
 
-          <FoodProfilePreview />
+              <FoodProfilePreview />
 
-          {/* Step Content */}
-          <div className="space-y-4">
-            {children}
-          </div>
+              {/* Step Content */}
+              <div className="space-y-4">
+                {children}
+              </div>
+            </>
+          )}
         </PageContainer>
       </main>
 
       {/* Sticky / Bottom Footer */}
-      {footer && (
+      {footer && !isLoading && (
         <footer className="w-full border-t border-border/40 bg-surface/90 backdrop-blur-xs py-4">
           <PageContainer maxWidth="auth" paddingY="none">
             {footer}
           </PageContainer>
         </footer>
       )}
+    </div>
+  );
+}
+
+function FoodProfileLoadingState() {
+  return (
+    <div
+      className="flex min-h-56 flex-col items-center justify-center rounded-2xl border border-border/60 bg-surface p-6 text-center shadow-xs"
+      role="status"
+      aria-live="polite"
+      aria-busy="true"
+    >
+      <Spinner size="lg" />
+      <p className="mt-4 text-sm font-semibold text-text-primary">
+        Loading your food profile...
+      </p>
+      <p className="mt-1 text-xs text-text-secondary">
+        Restoring your saved preferences.
+      </p>
     </div>
   );
 }

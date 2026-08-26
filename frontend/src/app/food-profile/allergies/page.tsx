@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { ROUTES } from "@/config/routes";
 import { AllergiesStep } from "@/features/food-profile/components/AllergiesStep";
 
 export const metadata: Metadata = {
@@ -6,6 +7,25 @@ export const metadata: Metadata = {
   description: "Set your dietary allergy preferences for personalized FoodFighter meal recommendations.",
 };
 
-export default function AllergiesPage() {
-  return <AllergiesStep />;
+type AllergiesSearchParams = Promise<{
+  from?: string | string[];
+}>;
+
+function getValue(value: string | string[] | undefined) {
+  return Array.isArray(value) ? value[0] : value;
+}
+
+export default async function AllergiesPage({
+  searchParams,
+}: {
+  searchParams: AllergiesSearchParams;
+}) {
+  const params = await searchParams;
+  const from = getValue(params.from);
+
+  return (
+    <AllergiesStep
+      backHref={from === "profile" ? ROUTES.PROFILE : undefined}
+    />
+  );
 }

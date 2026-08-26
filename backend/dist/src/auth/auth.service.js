@@ -297,7 +297,10 @@ let AuthService = class AuthService {
                 });
             }
         }
-        if (profile.avatarUrl && !user.avatarUrl) {
+        const hasUserUploadedAvatar = user.avatarUrl?.startsWith('data:image/');
+        if (profile.avatarUrl &&
+            !hasUserUploadedAvatar &&
+            profile.avatarUrl !== user.avatarUrl) {
             user = await this.userService.updateAvatarUrl(user.id, profile.avatarUrl);
         }
         const accessToken = await this.jwtService.sign({

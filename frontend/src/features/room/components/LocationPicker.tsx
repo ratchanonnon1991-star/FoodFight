@@ -3,8 +3,13 @@
 import * as React from "react";
 import { Crosshair, Map as MapIcon, MapPin } from "lucide-react";
 import { Input } from "@/components/ui/Input";
-import { RoomApiError, roomService } from "../services/room-service";
-import type { LocationSearchSuggestion } from "../types/room-types";
+import { RoomApiError } from "../services/room-service";
+import { locationProvider } from "../services/location-provider";
+import type {
+  LocationSearchSuggestion,
+  LocationSelection,
+  LocationSelectionSource,
+} from "../types/room-types";
 import { LocationMap } from "./LocationMap";
 
 export interface LocationPickerProps {
@@ -13,7 +18,7 @@ export interface LocationPickerProps {
   latitude?: number | null;
   longitude?: number | null;
   onChange: (value: string) => void;
-  onPlaceSelected: (place: LocationSearchSuggestion) => void;
+  onPlaceSelected: (place: LocationSelection) => void;
   onBlur?: React.FocusEventHandler<HTMLInputElement>;
   disabled?: boolean;
 }
@@ -35,6 +40,8 @@ export function LocationPicker({
   const [isOpen, setIsOpen] = React.useState(false);
   const [isMapOpen, setIsMapOpen] = React.useState(false);
   const [isLocating, setIsLocating] = React.useState(false);
+  const [selectionSource, setSelectionSource] =
+    React.useState<LocationSelectionSource | null>(null);
   const [message, setMessage] = React.useState<string | null>(null);
   const [searchError, setSearchError] = React.useState<string | null>(null);
   const searchTimeout = React.useRef<number | null>(null);
@@ -69,7 +76,8 @@ export function LocationPicker({
       setSearchError(null);
 
       try {
-        const results = await roomService.searchLocations(normalizedQuery, {
+        const results = await locationProvider.search({
+          query: normalizedQuery,
           signal: controller.signal,
           latitude,
           longitude,
@@ -127,6 +135,7 @@ export function LocationPicker({
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const nextValue = event.target.value;
     onChange(nextValue);
+    setSelectionSource(null);
     setMessage(null);
     setSearchError(null);
 
@@ -146,7 +155,8 @@ export function LocationPicker({
     requestController.current?.abort();
     requestId.current += 1;
     onChange(suggestion.locationName);
-    onPlaceSelected(suggestion);
+    onPlaceSelected({ ...suggestion, source: "search" });
+    setSelectionSource("search");
     setSuggestions([]);
     setIsOpen(false);
     setIsLoading(false);
@@ -158,6 +168,7 @@ export function LocationPicker({
     nextLatitude: number,
     nextLongitude: number,
     fallbackName: string,
+    source: LocationSelectionSource,
   ) => {
     requestController.current?.abort();
     const controller = new AbortController();
@@ -168,12 +179,14 @@ export function LocationPicker({
       locationName: fallbackName,
       latitude: nextLatitude,
       longitude: nextLongitude,
+      source,
     });
+    setSelectionSource(source);
     setMessage("Finding the address for this pin...");
     setSearchError(null);
 
     try {
-      const selectedLocation = await roomService.reverseLocation(
+      const selectedLocation = await locationProvider.reverse(
         nextLatitude,
         nextLongitude,
         controller.signal,
@@ -184,7 +197,7 @@ export function LocationPicker({
       }
 
       onChange(selectedLocation.locationName);
-      onPlaceSelected(selectedLocation);
+      onPlaceSelected({ ...selectedLocation, source });
       setMessage("Location selected.");
     } catch {
       if (!controller.signal.aborted) {
@@ -219,6 +232,7 @@ export function LocationPicker({
             coords.latitude,
             coords.longitude,
             "Current location",
+            "current",
           );
         },
         (error) => {
@@ -243,8 +257,23 @@ export function LocationPicker({
     }
   };
 
+  const hasCoordinates =
+    typeof latitude === "number" && typeof longitude === "number";
+  const sourceLabel =
+    selectionSource === "current"
+      ? "Current location"
+      : selectionSource === "map"
+        ? "Map pin"
+        : selectionSource === "search"
+          ? "Search result"
+          : "Selected location";
+
   return (
     <div className="space-y-3">
+      <p className="text-xs leading-relaxed text-text-secondary">
+        Search for a place, use your current location, or drop a pin on the
+        map.
+      </p>
       <div className="relative z-10">
         <span className="pointer-events-none absolute inset-y-0 left-4 z-10 flex items-center">
           <MapPin className="size-5 text-text-primary" aria-hidden="true" />
@@ -358,16 +387,23 @@ export function LocationPicker({
                 nextLatitude,
                 nextLongitude,
                 "Selected location",
+                "map",
               );
             }}
             onError={setSearchError}
           />
-          {typeof latitude === "number" && typeof longitude === "number" ? (
+          {hasCoordinates ? (
             <p className="text-xs text-text-secondary" role="status">
-              Pinned location: {latitude.toFixed(5)}, {longitude.toFixed(5)}
+              {sourceLabel}: {latitude.toFixed(5)}, {longitude.toFixed(5)}
             </p>
           ) : null}
         </>
+      ) : null}
+
+      {isMapOpen && hasCoordinates ? null : hasCoordinates ? (
+        <p className="text-xs text-text-secondary" role="status">
+          {sourceLabel}: {latitude.toFixed(5)}, {longitude.toFixed(5)}
+        </p>
       ) : null}
 
       {message ? (

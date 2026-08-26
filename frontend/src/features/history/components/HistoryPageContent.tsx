@@ -4,7 +4,6 @@ import * as React from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
-  ArrowLeft,
   CalendarDays,
   Clock3,
   MapPin,
@@ -12,7 +11,10 @@ import {
   Users,
 } from "lucide-react";
 import { ROUTES } from "@/config/routes";
-import { PageContainer } from "@/components/layout/PageContainer";
+import {
+  AuthenticatedPageHeader,
+  AuthenticatedPageLayout,
+} from "@/components/layout/AuthenticatedPageLayout";
 import { Alert, AlertDescription } from "@/components/ui/Alert";
 import { formatRoomDate, formatRoomTime } from "@/features/room/utils/room-format";
 import { getMyHistory, HistoryApiError } from "../services/history-service";
@@ -118,9 +120,6 @@ export function HistoryPageContent() {
   const [errorMessage, setErrorMessage] = React.useState<string | null>(null);
 
   const loadHistory = React.useCallback(async () => {
-    setIsLoading(true);
-    setErrorMessage(null);
-
     try {
       setItems(await getMyHistory());
     } catch (error: unknown) {
@@ -139,63 +138,48 @@ export function HistoryPageContent() {
   }, [router]);
 
   React.useEffect(() => {
-    void loadHistory();
+    void Promise.resolve().then(loadHistory);
   }, [loadHistory]);
 
   return (
-    <main className="min-h-dvh bg-background text-text-primary">
-      <PageContainer maxWidth="auth" className="space-y-5 pb-32 pt-5 sm:space-y-6 sm:pt-8">
-        <header className="flex items-start gap-3">
-          <Link
-            href={ROUTES.AUTHENTICATED_HOME}
-            aria-label="Back to home"
-            className="flex size-10 shrink-0 items-center justify-center rounded-full border border-border bg-surface text-text-secondary hover:text-text-primary"
-          >
-            <ArrowLeft className="size-5" />
-          </Link>
-          <div>
-            <p className="text-xs font-semibold uppercase tracking-wider text-brand-primary">
-              Your activity
-            </p>
-            <h1 className="text-2xl font-bold text-text-primary">History</h1>
-            <p className="mt-1 text-sm text-text-secondary">
-              Review your completed FoodFights and past group meals.
-            </p>
+    <AuthenticatedPageLayout>
+      <AuthenticatedPageHeader
+        eyebrow="Your activity"
+        title="History"
+        description="Review your completed FoodFights and past group meals."
+      />
+
+      {errorMessage ? (
+        <Alert variant="error">
+          <AlertDescription>{errorMessage}</AlertDescription>
+        </Alert>
+      ) : null}
+
+      {isLoading ? (
+        <HistoryLoadingState />
+      ) : items.length > 0 ? (
+        <section aria-label="FoodFight history" className="space-y-3">
+          {items.map((item) => (
+            <HistoryItemCard key={item.id} item={item} />
+          ))}
+        </section>
+      ) : (
+        <section className="rounded-2xl border border-dashed border-border bg-surface p-8 text-center shadow-xs">
+          <div className="mx-auto flex size-12 items-center justify-center rounded-2xl bg-surface-subtle text-brand-primary">
+            <Clock3 className="size-6" />
           </div>
-        </header>
-
-        {errorMessage ? (
-          <Alert variant="error">
-            <AlertDescription>{errorMessage}</AlertDescription>
-          </Alert>
-        ) : null}
-
-        {isLoading ? (
-          <HistoryLoadingState />
-        ) : items.length > 0 ? (
-          <section aria-label="FoodFight history" className="space-y-3">
-            {items.map((item) => (
-              <HistoryItemCard key={item.id} item={item} />
-            ))}
-          </section>
-        ) : (
-          <section className="rounded-2xl border border-dashed border-border bg-surface p-8 text-center shadow-xs">
-            <div className="mx-auto flex size-12 items-center justify-center rounded-2xl bg-surface-subtle text-brand-primary">
-              <Clock3 className="size-6" />
-            </div>
-            <h2 className="mt-4 text-lg font-bold text-text-primary">No history yet</h2>
-            <p className="mx-auto mt-2 max-w-xs text-sm leading-relaxed text-text-secondary">
-              Your completed FoodFights will appear here once you finish a group meal.
-            </p>
-            <Link
-              href={ROUTES.ROOM.CREATE}
-              className="mt-5 inline-flex h-10 items-center rounded-xl bg-brand-primary px-4 text-sm font-semibold text-white hover:bg-brand-primary-hover"
-            >
-              Start a FoodFight
-            </Link>
-          </section>
-        )}
-      </PageContainer>
-    </main>
+          <h2 className="mt-4 text-lg font-bold text-text-primary">No history yet</h2>
+          <p className="mx-auto mt-2 max-w-xs text-sm leading-relaxed text-text-secondary">
+            Your completed FoodFights will appear here once you finish a group meal.
+          </p>
+          <Link
+            href={ROUTES.ROOM.CREATE}
+            className="mt-5 inline-flex h-10 items-center rounded-xl bg-brand-primary px-4 text-sm font-semibold text-white hover:bg-brand-primary-hover"
+          >
+            Start a FoodFight
+          </Link>
+        </section>
+      )}
+    </AuthenticatedPageLayout>
   );
 }

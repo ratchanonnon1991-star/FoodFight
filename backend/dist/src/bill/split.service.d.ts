@@ -25,6 +25,7 @@ export declare class SplitService {
             name: string;
             restaurantName: string | null;
         };
+        roomStatus: import("../database/generated/prisma/enums").RoomStatus;
         members: {
             userId: string;
             displayName: string;
@@ -93,6 +94,7 @@ export declare class SplitService {
             name: string;
             restaurantName: string | null;
         };
+        roomStatus: import("../database/generated/prisma/enums").RoomStatus;
         members: {
             userId: string;
             displayName: string;
@@ -161,6 +163,7 @@ export declare class SplitService {
             name: string;
             restaurantName: string | null;
         };
+        roomStatus: import("../database/generated/prisma/enums").RoomStatus;
         members: {
             userId: string;
             displayName: string;
@@ -229,6 +232,7 @@ export declare class SplitService {
             name: string;
             restaurantName: string | null;
         };
+        roomStatus: import("../database/generated/prisma/enums").RoomStatus;
         members: {
             userId: string;
             displayName: string;

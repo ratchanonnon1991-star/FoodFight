@@ -21,7 +21,7 @@ export interface AllergiesStepProps {
 
 export function AllergiesStep({
   onNext,
-  backHref = ROUTES.HOME,
+  backHref,
 }: AllergiesStepProps) {
   const router = useRouter();
   const {
@@ -61,12 +61,17 @@ export function AllergiesStep({
     }
   };
 
+  const handleBack = () => {
+    router.back();
+  };
+
   return (
     <FoodProfileStepLayout
       currentStep={1}
       title="Do you have any food allergies?"
       description="Select all that apply."
       backHref={backHref}
+      onBack={backHref ? undefined : handleBack}
       footer={
         <div className="space-y-3">
           {/* Informational Notice */}

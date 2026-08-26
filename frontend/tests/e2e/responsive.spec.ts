@@ -5,6 +5,8 @@ const VIEWPORTS = [
   { name: "mobile-primary", width: 390, height: 844 },
   { name: "mobile-large", width: 430, height: 932 },
   { name: "tablet", width: 768, height: 1024 },
+  { name: "tablet-wide", width: 1024, height: 900 },
+  { name: "desktop-standard", width: 1280, height: 900 },
   { name: "desktop", width: 1440, height: 900 },
 ] as const;
 

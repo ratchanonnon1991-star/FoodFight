@@ -15,7 +15,7 @@ const prisma_service_1 = require("../database/prisma.service");
 exports.billInclude = {
     session: {
         include: {
-            room: { select: { name: true } },
+            room: { select: { name: true, status: true } },
             restaurantSelection: { select: { name: true } },
             members: {
                 select: {

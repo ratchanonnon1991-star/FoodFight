@@ -49,6 +49,7 @@ let BillDetailService = class BillDetailService {
                 name: bill.session.room.name,
                 restaurantName: bill.session.restaurantSelection?.name ?? null,
             },
+            roomStatus: bill.session.room.status,
             members: bill.session.members.map((member) => ({
                 userId: member.userId,
                 displayName: member.user.displayName,

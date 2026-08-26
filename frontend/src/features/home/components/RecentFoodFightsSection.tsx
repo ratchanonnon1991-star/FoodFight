@@ -7,12 +7,14 @@ import { RecentFoodFightItem } from "./RecentFoodFightItem";
 
 export interface RecentFoodFightsSectionProps {
   items: readonly RecentFoodFightItemData[];
+  isLoading?: boolean;
   onViewAll?: () => void;
   onItemClick?: (item: RecentFoodFightItemData) => void;
 }
 
 export function RecentFoodFightsSection({
   items,
+  isLoading = false,
   onViewAll,
   onItemClick,
 }: RecentFoodFightsSectionProps) {
@@ -36,7 +38,22 @@ export function RecentFoodFightsSection({
         </button>
       </div>
 
-      {items.length > 0 ? (
+      {isLoading ? (
+        <div
+          className="space-y-2 rounded-2xl border border-border/80 bg-surface p-3 shadow-xs"
+          role="status"
+          aria-live="polite"
+          aria-busy="true"
+          aria-label="Loading recent FoodFights"
+        >
+          {[0, 1].map((item) => (
+            <div
+              key={item}
+              className="h-16 animate-pulse rounded-xl bg-surface-subtle"
+            />
+          ))}
+        </div>
+      ) : items.length > 0 ? (
         <div className="rounded-2xl border border-border/80 bg-surface shadow-xs divide-y divide-border/60 overflow-hidden">
           {items.map((item) => (
             <RecentFoodFightItem

@@ -53,26 +53,37 @@ export function SummaryStepScreen({ billId }: SummaryStepScreenProps) {
   const { bill, isLoading, error, setBill } = useBill(billId);
   const [actionError, setActionError] = React.useState<string | null>(null);
   const [isConfirming, setIsConfirming] = React.useState(false);
+  const [isCalculating, setIsCalculating] = React.useState(false);
   const hasCalculatedRef = React.useRef(false);
 
-  React.useEffect(() => {
+  const calculateSummary = React.useCallback(async () => {
     if (!bill || bill.summaryCalculated || hasCalculatedRef.current) {
       return;
     }
+
     hasCalculatedRef.current = true;
-    billService
-      .calculateSummary(billId, {
+
+    setIsCalculating(true);
+
+    try {
+      const updated = await billService.calculateSummary(billId, {
         serviceCharge: bill.serviceCharge,
         tax: bill.tax,
         discount: bill.discount,
-      })
-      .then(setBill)
-      .catch((err) => {
-        setActionError(
-          err instanceof ApiError ? err.message : "Unable to calculate the bill.",
-        );
       });
+      setBill(updated);
+    } catch (err) {
+      setActionError(
+        err instanceof ApiError ? err.message : "Unable to calculate the bill.",
+      );
+    } finally {
+      setIsCalculating(false);
+    }
   }, [bill, billId, setBill]);
+
+  React.useEffect(() => {
+    void Promise.resolve().then(calculateSummary);
+  }, [calculateSummary]);
 
   const handleConfirm = async () => {
     setActionError(null);
@@ -127,6 +138,18 @@ export function SummaryStepScreen({ billId }: SummaryStepScreenProps) {
               <AlertDescription>{actionError}</AlertDescription>
             </Alert>
           )}
+
+          {isCalculating ? (
+            <div
+              className="flex items-center justify-center gap-2 rounded-2xl border border-border/80 bg-surface-subtle px-4 py-3 text-sm text-text-secondary"
+              role="status"
+              aria-live="polite"
+              aria-busy="true"
+            >
+              <Spinner size="sm" />
+              <span>Calculating bill summary...</span>
+            </div>
+          ) : null}
 
           <Card variant="default" padding="md" className="space-y-3">
             <p className="text-sm font-semibold text-text-primary">
@@ -195,7 +218,7 @@ export function SummaryStepScreen({ billId }: SummaryStepScreenProps) {
               fullWidth
               size="lg"
               loading={isConfirming}
-              disabled={!bill.summaryCalculated || missingPaymentAccount}
+              disabled={isCalculating || !bill.summaryCalculated || missingPaymentAccount}
               onClick={handleConfirm}
             >
               Confirm & Create Bill

@@ -9,7 +9,7 @@ import { PrismaService } from '../database/prisma.service';
 export const billInclude = {
   session: {
     include: {
-      room: { select: { name: true } },
+      room: { select: { name: true, status: true } },
       restaurantSelection: { select: { name: true } },
       members: {
         select: {

@@ -32,15 +32,15 @@ export declare class FoodFightService {
             id: string;
             updatedAt: Date;
             userId: string;
-            cuisines: string[];
-            restaurantStyles: string[];
             sessionId: string;
             cookingTypes: string[];
             otherCookingType: string | null;
+            cuisines: string[];
             otherCuisine: string | null;
             ingredients: string[];
             otherIngredient: string | null;
             budgetRange: MealBudgetRange | null;
+            restaurantStyles: string[];
             otherRestaurantStyle: string | null;
             otherNote: string | null;
             submittedAt: Date;
