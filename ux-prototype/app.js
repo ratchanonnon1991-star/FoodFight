@@ -12,6 +12,7 @@
 
   window.FFPrototype = window.FFPrototype || {};
   const P = window.FFPrototype;
+  let renderedRoute = '';
 
   /* ==========================================================================
      1. Main Route Switch Dispatcher (All 38 Registered Screens Live)
@@ -21,8 +22,17 @@
     const appRoot = document.getElementById('app-root');
     if (!appRoot) return;
 
+    // A loading screen owns a short local timer. Invalidate it when a user
+    // navigates away so an old completion callback cannot redirect a newer
+    // screen. The normal completion path is still allowed to navigate to
+    // Food Picks before this guard runs.
+    if (renderedRoute === '#/recommendation-loading' && hash !== renderedRoute) {
+      P.WAVE1?.cancelRecommendationLoading?.();
+    }
+    renderedRoute = hash;
+
     document.body.classList.toggle('ux-lab-active', hash === '#/ux-lab');
-    const prototypeProductRoutes = [...(P.WAVE1?.routes || []), ...(P.WAVE2?.routes || []), ...(P.WAVE3?.routes || [])];
+    const prototypeProductRoutes = [...(P.WAVE1?.routes || []), ...(P.WAVE2?.routes || []), ...(P.WAVE3?.routes || []), ...(P.WAVE4?.routes || [])];
     document.body.classList.toggle('wave1-active', prototypeProductRoutes.includes(hash));
 
     // Reset window scroll on navigation
@@ -74,6 +84,14 @@
       case '#/history/detail':
         screenHtml = P.renderWave3Route(hash);
         bindFn = P.bindWave3Events;
+        break;
+
+      // Wave 04 profile, account, and food-profile revisit prototype
+      case '#/profile':
+      case '#/profile/edit':
+      case '#/profile/food':
+        screenHtml = P.renderWave4Route(hash);
+        bindFn = P.bindWave4Events;
         break;
 
       // Developer UX Lab (isolated reference surface)
@@ -200,15 +218,6 @@
         screenHtml = P.renderBillHistory();
         bindFn = P.bindBillHistoryEvents;
         break;
-      case '#/profile':
-        screenHtml = P.renderProfile();
-        bindFn = P.bindProfileEvents;
-        break;
-      case '#/profile/food':
-        screenHtml = P.renderProfileFoodEdit();
-        bindFn = P.bindProfileFoodEditEvents;
-        break;
-
       // Unknown / 404 Fallback
       default: {
         screenHtml = P.renderNotFoundShell(hash);

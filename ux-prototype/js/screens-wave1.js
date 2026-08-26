@@ -81,7 +81,24 @@
 
   function renderProductHeader(active) {
     const ui = state().ui;
-    return `<header class="ff-product-header"><div class="ff-product-header-inner">${renderBrand('#/home', true)}${renderDesktopNav(active)}<div class="ff-product-header-actions"><button type="button" class="ff-product-icon-action" data-wave1-action="toggle-notifications" aria-label="${t('notifications')}" aria-expanded="${ui.notificationOpen}">${C.icon('bell', 18)}<i></i></button><button type="button" class="ff-product-avatar" data-wave1-action="toggle-account" aria-label="${t('account')}" aria-expanded="${ui.accountOpen}">${C.esc(state().user.initials)}</button><button type="button" class="ff-icon-button ff-product-utility" data-wave1-action="toggle-utility" aria-label="${t('prototypeUtility')}" aria-expanded="${ui.utilityOpen}">${C.icon('more', 18)}</button></div></div>${ui.notificationOpen ? `<div class="ff-header-panel ff-notification-panel" data-wave1-stop><div class="ff-panel-kicker">${t('notifications')}</div><strong>${t('waiting')}</strong><p>${state().currentRoom ? t('waitingForReady') : t('noCurrentRoomBody')}</p><button type="button" class="ff-text-button" data-wave1-action="close-panels">${t('close')}</button></div>` : ''}${ui.accountOpen ? `<div class="ff-header-panel ff-account-panel" data-wave1-stop><div class="ff-account-heading">${C.avatar(state().user, 'sm')}<div><strong>${C.esc(state().user.name)}</strong><span>${C.esc(state().user.email)}</span></div></div><a href="#/profile">${C.icon('user', 15)} ${t('profile')}</a><button type="button" class="ff-text-button" data-wave1-action="close-panels">${t('close')}</button></div>` : ''}</header>`;
+    const currentRoom = state().currentRoom;
+    const bill = state().bill;
+    const paidCount = (state().payments || []).filter((payment) => payment.status === 'paid').length;
+    const notification = bill && paidCount > 0
+      ? {
+        title: state().ui.language === 'en' ? 'Payment status update' : 'อัปเดตสถานะการจ่าย',
+        body: state().ui.language === 'en' ? `${paidCount} member share${paidCount === 1 ? '' : 's'} marked paid locally.` : `มีสมาชิกทำเครื่องหมายว่าจ่ายแล้ว ${paidCount} คนในต้นแบบ`
+      }
+      : currentRoom && state().readiness?.allReady
+        ? {
+          title: state().ui.language === 'en' ? 'Room is ready' : 'ห้องพร้อมแล้ว',
+          body: state().ui.language === 'en' ? 'Everyone is ready for the next FoodFight.' : 'ทุกคนพร้อมสำหรับ FoodFight ครั้งถัดไปแล้ว'
+        }
+        : {
+          title: state().ui.language === 'en' ? 'You are all caught up' : 'ไม่มีการแจ้งเตือนใหม่',
+          body: currentRoom ? t('waitingForReady') : t('noCurrentRoomBody')
+        };
+    return `<header class="ff-product-header"><div class="ff-product-header-inner">${renderBrand('#/home', true)}${renderDesktopNav(active)}<div class="ff-product-header-actions"><button type="button" class="ff-product-icon-action" data-wave1-action="toggle-notifications" aria-label="${t('notifications')}" aria-expanded="${ui.notificationOpen}">${C.icon('bell', 18)}<i></i></button><button type="button" class="ff-product-avatar" data-wave1-action="toggle-account" aria-label="${t('account')}" aria-expanded="${ui.accountOpen}">${C.esc(state().user.initials)}</button><button type="button" class="ff-icon-button ff-product-utility" data-wave1-action="toggle-utility" aria-label="${t('prototypeUtility')}" aria-expanded="${ui.utilityOpen}">${C.icon('more', 18)}</button></div></div>${ui.notificationOpen ? `<div class="ff-header-panel ff-notification-panel" data-wave1-stop><div class="ff-panel-kicker">${t('notifications')}</div><strong>${notification.title}</strong><p>${notification.body}</p><button type="button" class="ff-text-button" data-wave1-action="close-panels">${t('close')}</button></div>` : ''}${ui.accountOpen ? `<div class="ff-header-panel ff-account-panel" data-wave1-stop><div class="ff-account-heading">${C.avatar(state().user, 'sm')}<div><strong>${C.esc(state().user.name)}</strong><span>${C.esc(state().user.email)}</span></div></div><a href="#/profile">${C.icon('user', 15)} ${t('profile')}</a><a href="#/profile/food">${C.icon('utensils', 15)} ${state().ui.language === 'en' ? 'Food Profile' : 'โปรไฟล์อาหาร'}</a><button type="button" class="ff-text-button ff-account-logout" data-wave1-action="logout">${state().ui.language === 'en' ? 'Log out' : 'ออกจากระบบ'}</button><button type="button" class="ff-text-button" data-wave1-action="close-panels">${t('close')}</button></div>` : ''}</header>`;
   }
 
   function renderPageNotice() {
@@ -480,6 +497,10 @@
     }
     if (action === 'toggle-account') {
       W.toggleAccount();
+      return;
+    }
+    if (action === 'logout') {
+      if (typeof P.logoutPrototype === 'function') P.logoutPrototype();
       return;
     }
     if (action === 'close-panels') {
