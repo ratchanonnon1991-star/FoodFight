@@ -166,7 +166,7 @@ export function RestrictionsStep({
         <SelectableOptionCard
           id="no-restrictions-option"
           label="No other restrictions"
-          description="None of the above apply to me"
+          description="Anything is fine — no dietary restrictions"
           selected={draft.hasNoRestrictions}
           onClick={() => setHasNoRestrictions(!draft.hasNoRestrictions)}
           icon={<ShieldCheck className="size-5 text-brand-primary" />}

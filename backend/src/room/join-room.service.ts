@@ -5,8 +5,12 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { Prisma, RoomStatus } from '../database/generated/prisma/client';
+import {
+  Prisma,
+  RoomStatus,
+} from '../database/generated/prisma/client';
 import { PrismaService } from '../database/prisma.service';
+import { FoodFightService } from '../food-fight/food-fight.service';
 import { UpdateRoomDto } from './dto/update-room.dto';
 import { RoomRealtimeService } from './room-realtime.service';
 
@@ -18,6 +22,7 @@ export class JoinRoomService {
     private readonly prisma: PrismaService,
     private readonly configService: ConfigService,
     private readonly roomRealtimeService: RoomRealtimeService,
+    private readonly foodFightService: FoodFightService,
   ) {}
 
   async joinRoom(roomId: string, userId: string) {
@@ -331,7 +336,7 @@ export class JoinRoomService {
 
       const members = await tx.roomMember.findMany({
         where: { roomId, leftAt: null },
-        select: { isReady: true },
+        select: { userId: true, isReady: true },
       });
 
       if (members.length === 0 || members.some((member) => !member.isReady)) {
@@ -339,6 +344,13 @@ export class JoinRoomService {
           'All members must be ready before starting',
         );
       }
+
+      await this.foodFightService.createSessionForStartedRoom(
+        tx,
+        roomId,
+        room.hostId,
+        members.map((member) => member.userId),
+      );
 
       await tx.room.update({
         where: { id: roomId },

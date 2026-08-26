@@ -1,13 +1,15 @@
 import { ConfigService } from '@nestjs/config';
 import { RoomStatus } from '../database/generated/prisma/client';
 import { PrismaService } from '../database/prisma.service';
+import { FoodFightService } from '../food-fight/food-fight.service';
 import { UpdateRoomDto } from './dto/update-room.dto';
 import { RoomRealtimeService } from './room-realtime.service';
 export declare class JoinRoomService {
     private readonly prisma;
     private readonly configService;
     private readonly roomRealtimeService;
-    constructor(prisma: PrismaService, configService: ConfigService, roomRealtimeService: RoomRealtimeService);
+    private readonly foodFightService;
+    constructor(prisma: PrismaService, configService: ConfigService, roomRealtimeService: RoomRealtimeService, foodFightService: FoodFightService);
     joinRoom(roomId: string, userId: string): Promise<{
         message: string;
         member: {

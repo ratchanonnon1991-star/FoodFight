@@ -5,7 +5,9 @@ type RefreshResponse = {
 };
 
 let refreshInFlight: Promise<string | null> | null = null;
-const API_REQUEST_TIMEOUT_MS = 3_000;
+// Recommendation and restaurant generation can take up to 60 seconds on the
+// first backend request while the AI service loads its food catalog.
+const API_REQUEST_TIMEOUT_MS = 70_000;
 
 async function fetchWithTimeout(
   input: RequestInfo | URL,

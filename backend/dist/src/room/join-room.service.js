@@ -14,16 +14,19 @@ const common_1 = require("@nestjs/common");
 const config_1 = require("@nestjs/config");
 const client_1 = require("../database/generated/prisma/client");
 const prisma_service_1 = require("../database/prisma.service");
+const food_fight_service_1 = require("../food-fight/food-fight.service");
 const room_realtime_service_1 = require("./room-realtime.service");
 const JOIN_TRANSACTION_ATTEMPTS = 3;
 let JoinRoomService = class JoinRoomService {
     prisma;
     configService;
     roomRealtimeService;
-    constructor(prisma, configService, roomRealtimeService) {
+    foodFightService;
+    constructor(prisma, configService, roomRealtimeService, foodFightService) {
         this.prisma = prisma;
         this.configService = configService;
         this.roomRealtimeService = roomRealtimeService;
+        this.foodFightService = foodFightService;
     }
     async joinRoom(roomId, userId) {
         let joinedMember;
@@ -257,11 +260,12 @@ let JoinRoomService = class JoinRoomService {
             }
             const members = await tx.roomMember.findMany({
                 where: { roomId, leftAt: null },
-                select: { isReady: true },
+                select: { userId: true, isReady: true },
             });
             if (members.length === 0 || members.some((member) => !member.isReady)) {
                 throw new common_1.ConflictException('All members must be ready before starting');
             }
+            await this.foodFightService.createSessionForStartedRoom(tx, roomId, room.hostId, members.map((member) => member.userId));
             await tx.room.update({
                 where: { id: roomId },
                 data: { status: client_1.RoomStatus.IN_PROGRESS },
@@ -452,6 +456,7 @@ exports.JoinRoomService = JoinRoomService = __decorate([
     (0, common_1.Injectable)(),
     __metadata("design:paramtypes", [prisma_service_1.PrismaService,
         config_1.ConfigService,
-        room_realtime_service_1.RoomRealtimeService])
+        room_realtime_service_1.RoomRealtimeService,
+        food_fight_service_1.FoodFightService])
 ], JoinRoomService);
 //# sourceMappingURL=join-room.service.js.map
