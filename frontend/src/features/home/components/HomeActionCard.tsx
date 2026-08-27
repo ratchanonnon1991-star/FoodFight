@@ -45,7 +45,7 @@ export function HomeActionCard({
       {/* Decorative Transparent 3D Soft Media Slot (Lower-Right 1:1) */}
       <div
         aria-hidden="true"
-        className="pointer-events-none select-none absolute -bottom-1.5 -right-1.5 z-0 flex size-24 sm:size-28 md:size-32 items-center justify-center overflow-hidden"
+        className="pointer-events-none select-none absolute -bottom-2 -right-2 sm:-bottom-1.5 sm:-right-1.5 z-0 flex size-[78px] min-[430px]:size-[88px] sm:size-28 md:size-32 items-center justify-center overflow-hidden"
       >
         <img
           src={imageSrc}

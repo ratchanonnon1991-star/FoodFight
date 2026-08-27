@@ -421,7 +421,7 @@ function HomeActionCardsGroup({
         {/* Decorative 3D Ornament (Behind Card, rises above top-right edge) */}
         <div
           aria-hidden="true"
-          className="pointer-events-none select-none absolute z-0 -top-[55px] xs:-top-[65px] sm:-top-[85px] md:-top-[100px] lg:-top-[110px] right-1 sm:right-2 lg:right-2 w-[85px] xs:w-[100px] sm:w-[130px] md:w-[145px] lg:w-[160px] aspect-square overflow-visible"
+          className="pointer-events-none select-none absolute z-0 -top-[48px] min-[430px]:-top-[52px] sm:-top-[85px] md:-top-[100px] lg:-top-[110px] right-0 sm:right-2 lg:right-2 w-[76px] min-[430px]:w-[80px] sm:w-[130px] md:w-[145px] lg:w-[160px] aspect-square overflow-visible"
         >
           <img
             src="/images/home/home-join-corner-decor.webp"
