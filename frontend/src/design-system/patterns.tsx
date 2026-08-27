@@ -27,6 +27,7 @@ import {
   type BadgeVariant,
 } from "./primitives";
 import { MediaFrame, type MediaRatio } from "./media";
+import { BrandMark } from "./brand";
 
 export interface PageHeaderProps {
   eyebrow?: string;
@@ -286,5 +287,27 @@ export function ErrorState({ title, description, retry, support }: { title: stri
 }
 
 export function NavigationSpecimen() {
-  return <div className="ff-ds-navigation-specimen"><div className="ff-ds-top-nav"><strong>FoodFighter</strong><nav aria-label="Design system top navigation">{["Home", "History", "Bills", "Profile"].map((item, index) => <a key={item} href={`#nav-${item.toLowerCase()}`} className={index === 0 ? "ff-ds-top-nav__active" : undefined}>{item}</a>)}</nav><IconButton label="Account menu" icon={<Avatar name="Pure" size="xs" />} size="sm" variant="subtle" /></div><div className="ff-ds-bottom-nav" aria-label="Design system mobile navigation">{["Home", "History", "Bills", "Profile"].map((item, index) => <button key={item} type="button" className={index === 0 ? "ff-ds-bottom-nav__active" : undefined}><span>{index === 0 ? "⌂" : index === 1 ? "◷" : index === 2 ? "▤" : "◎"}</span>{item}</button>)}</div></div>;
+  return (
+    <div className="ff-ds-navigation-specimen">
+      <div className="ff-ds-top-nav">
+        <BrandMark variant="primary" size="sm" alt="FoodFighter" />
+        <nav aria-label="Design system top navigation">
+          {["Home", "History", "Bills", "Profile"].map((item, index) => (
+            <a key={item} href={`#nav-${item.toLowerCase()}`} className={index === 0 ? "ff-ds-top-nav__active" : undefined}>
+              {item}
+            </a>
+          ))}
+        </nav>
+        <IconButton label="Account menu" icon={<Avatar name="Pure" size="xs" />} size="sm" variant="subtle" />
+      </div>
+      <div className="ff-ds-bottom-nav" aria-label="Design system mobile navigation">
+        {["Home", "History", "Bills", "Profile"].map((item, index) => (
+          <button key={item} type="button" className={index === 0 ? "ff-ds-bottom-nav__active" : undefined}>
+            <span>{index === 0 ? "⌂" : index === 1 ? "◷" : index === 2 ? "▤" : "◎"}</span>
+            {item}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
 }

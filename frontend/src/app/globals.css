@@ -8,10 +8,19 @@
   --color-brand-primary-active: var(--color-brand-primary-active);
   --color-brand-primary-foreground: var(--color-brand-primary-foreground);
 
+  --color-interactive-primary: var(--color-interactive-primary);
+  --color-interactive-primary-hover: var(--color-interactive-primary-hover);
+  --color-interactive-primary-active: var(--color-interactive-primary-active);
+  --color-interactive-primary-foreground: var(--color-interactive-primary-foreground);
+
   --color-brand-secondary: var(--color-brand-secondary);
   --color-brand-secondary-hover: var(--color-brand-secondary-hover);
   --color-brand-secondary-active: var(--color-brand-secondary-active);
   --color-brand-secondary-foreground: var(--color-brand-secondary-foreground);
+
+  --color-accent-energy: var(--color-accent-energy);
+  --color-accent-fresh: var(--color-accent-fresh);
+  --color-accent-warm: var(--color-accent-warm);
 
   --color-accent-petal: var(--color-accent-petal);
   --color-accent-petal-hover: var(--color-accent-petal-hover);
@@ -129,8 +138,8 @@
 
   /* Selection */
   ::selection {
-    background-color: var(--palette-pastel-petal);
-    color: var(--palette-blackberry-cream);
+    background-color: var(--color-accent-warm);
+    color: var(--color-text-primary);
   }
 }
 
@@ -274,7 +283,7 @@
   width: 0.35rem;
   height: 0.35rem;
   border-radius: 9999px;
-  background: var(--color-accent-apricot);
+  background: var(--color-accent-warm);
   animation: foodfight-cooking-spark 1.5s ease-in-out infinite;
 }
 

@@ -24,6 +24,10 @@
   --ff-brand-primary-hover: #b93a28;
   --ff-brand-primary-active: #9f2f20;
   --ff-brand-primary-soft: #f8d9d0;
+  --ff-interactive-primary: #d0432b;
+  --ff-interactive-primary-hover: #b93a28;
+  --ff-interactive-primary-active: #9f2f20;
+  --ff-interactive-primary-soft: #f8d9d0;
   --ff-brand-secondary: #bc6c25;
   --ff-brand-secondary-soft: #f1dec8;
   --ff-brand-accent: #f2af32;
@@ -313,7 +317,7 @@
 [data-ff-design-system] .ff-ds-button--full { width: 100%; }
 [data-ff-design-system] .ff-ds-button__icon { display: inline-flex; width: 1.1rem; height: 1.1rem; align-items: center; justify-content: center; }
 [data-ff-design-system] .ff-ds-button svg { width: 1rem; height: 1rem; }
-[data-ff-design-system] .ff-ds-button--primary { background: var(--ff-brand-primary); color: var(--ff-text-inverse); box-shadow: var(--ff-shadow-sm); }
+[data-ff-design-system] .ff-ds-button--primary { background: var(--ff-interactive-primary, var(--ff-brand-primary)); color: #ffffff; box-shadow: var(--ff-shadow-sm); }
 [data-ff-design-system] .ff-ds-button--secondary { background: var(--ff-brand-accent); color: var(--ff-bg-inverse); }
 [data-ff-design-system] .ff-ds-button--tertiary { border-color: var(--ff-border-default); background: var(--ff-bg-surface); color: var(--ff-text-primary); }
 [data-ff-design-system] .ff-ds-button--ghost { background: transparent; color: var(--ff-text-primary); }
@@ -321,13 +325,14 @@
 [data-ff-design-system] .ff-ds-button:disabled { cursor: not-allowed; opacity: 0.52; transform: none; }
 @media (hover: hover) and (pointer: fine) {
   [data-ff-design-system] .ff-ds-button:not(:disabled):hover { transform: translateY(-2px); }
-  [data-ff-design-system] .ff-ds-button--primary:not(:disabled):hover { background: var(--ff-brand-primary-hover); box-shadow: var(--ff-shadow-md); }
+  [data-ff-design-system] .ff-ds-button--primary:not(:disabled):hover { background: var(--ff-interactive-primary-hover, var(--ff-brand-primary-hover)); box-shadow: var(--ff-shadow-md); }
   [data-ff-design-system] .ff-ds-button--secondary:not(:disabled):hover { background: var(--ff-brand-accent-soft); }
   [data-ff-design-system] .ff-ds-button--tertiary:not(:disabled):hover { border-color: var(--ff-brand-primary); background: var(--ff-bg-subtle); }
   [data-ff-design-system] .ff-ds-button--ghost:not(:disabled):hover { background: var(--ff-bg-subtle); }
   [data-ff-design-system] .ff-ds-button--danger:not(:disabled):hover { background: color-mix(in srgb, var(--ff-danger) 86%, var(--ff-bg-inverse)); }
 }
 [data-ff-design-system] .ff-ds-button:not(:disabled):active { transform: translateY(1px) scale(0.985); box-shadow: none; }
+[data-ff-design-system] .ff-ds-button--primary:not(:disabled):active { background: var(--ff-interactive-primary-active, var(--ff-brand-primary-active)); }
 
 /* Icon buttons and icon wells */
 [data-ff-design-system] .ff-ds-icon-button {
@@ -515,6 +520,22 @@
 [data-ff-design-system] .ff-ds-avatar__status--away { background: var(--ff-warning); }
 [data-ff-design-system] .ff-ds-avatar-group { display: inline-flex; align-items: center; padding-left: 0.35rem; }
 [data-ff-design-system] .ff-ds-avatar-group .ff-ds-avatar { margin-left: -0.35rem; }
+
+/* Brand Mark */
+[data-ff-design-system] .ff-ds-brand-mark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  user-select: none;
+  line-height: 0;
+}
+[data-ff-design-system] .ff-ds-brand-mark__image {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  display: block;
+}
 
 /* Media */
 [data-ff-design-system] .ff-ds-media { position: relative; display: flex; overflow: hidden; align-items: center; justify-content: center; background: linear-gradient(135deg, var(--ff-brand-primary-soft), var(--ff-brand-accent-soft)); color: var(--ff-text-primary); }

@@ -94,3 +94,40 @@ export const mediaGuidance = [
 ] as const;
 
 export const navigationItems = ["Home", "History", "Bills", "Profile"] as const;
+
+export const brandLogoAssets = {
+  primary: {
+    src: "/logoIcon/Primary.png",
+    width: 2172,
+    height: 724,
+    aspectRatio: 2172 / 724, // 3.000
+    name: "Primary (Horizontal)",
+    description: "Horizontal lockup with symbol and wordmark for headers, top navigation, marketing headers, and wide layouts.",
+  },
+  stacked: {
+    src: "/logoIcon/stacked.png",
+    width: 1122,
+    height: 1402,
+    aspectRatio: 1122 / 1402, // 0.800
+    name: "Stacked (Vertical)",
+    description: "Vertically stacked lockup with symbol above wordmark for centered auth cards, splash screens, and narrow brand blocks.",
+  },
+  icon: {
+    src: "/logoIcon/icon.png",
+    width: 1254,
+    height: 1254,
+    aspectRatio: 1, // 1.000
+    name: "Icon (Symbol Only)",
+    description: "Symbol-only mark for compact navigation, small indicators, avatar placeholders, and favicon candidate.",
+  },
+  app: {
+    src: "/logoIcon/iconapp.png",
+    width: 1254,
+    height: 1254,
+    aspectRatio: 1, // 1.000
+    name: "App Icon (Squircle)",
+    description: "Rounded application icon for PWA, app store, and OS home screen contexts.",
+  },
+} as const;
+
+export type BrandLogoVariant = keyof typeof brandLogoAssets;

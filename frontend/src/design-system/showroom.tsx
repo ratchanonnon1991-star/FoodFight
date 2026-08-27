@@ -83,7 +83,9 @@ import {
 } from "./primitives";
 import { DesignSystemProvider } from "./provider";
 import { MediaFrame } from "./media";
+import { BrandMark } from "./brand";
 import {
+  brandLogoAssets,
   mediaGuidance,
   spacingScale,
   typographyScale,
@@ -160,7 +162,7 @@ export function DesignSystemShowroom() {
       <div className="ff-ds-showroom">
         <header className="ff-ds-showroom__header">
           <div className="ff-ds-showroom__brand">
-            <span className="ff-ds-showroom__mark"><Flame aria-hidden="true" /></span>
+            <BrandMark variant="icon" size="sm" alt="FoodFighter Logo" priority />
             <div><strong>FoodFighter</strong><span>Design System V4.1 · Fire &amp; Flavor</span></div>
           </div>
           <div className="ff-ds-showroom__header-actions">
@@ -192,6 +194,44 @@ export function DesignSystemShowroom() {
                 </div>
                 <Card surface="brand" padding="lg"><div className="ff-ds-showroom__row"><Badge variant="brand" icon={<Flame aria-hidden="true" />}>Active direction</Badge><span style={{ opacity: 0.78, fontSize: "0.75rem" }}>{designSystemThemes.find((option) => option.id === theme)?.description}</span></div></Card>
                 <div className="ff-ds-showroom__panel"><h3>Brand palette</h3><div className="ff-ds-showroom__swatches">{(designSystemThemes.find((option) => option.id === theme)?.palette ?? []).map((color) => <div key={color.name} className="ff-ds-showroom__swatch"><div className="ff-ds-showroom__swatch-color" style={{ backgroundColor: color.value }} /><div className="ff-ds-showroom__swatch-copy"><strong>{color.name}</strong><span>{color.value}</span></div></div>)}</div></div>
+                <div className="ff-ds-showroom__panel">
+                  <h3>Brand Logo Assets (Owner Asset Contract)</h3>
+                  <p>Four typed variants mapped from repository assets in <code>/logoIcon/</code>. Protected brand colors, stable aspect ratios, and zero layout shift.</p>
+                  <div className="ff-ds-showroom__grid ff-ds-showroom__grid--4">
+                    <div className="ff-ds-showroom__panel" style={{ textAlign: "center", display: "flex", flexDirection: "column", alignItems: "center", gap: "0.75rem" }}>
+                      <span className="ff-ds-showroom__panel-label">Primary (3:1)</span>
+                      <div style={{ height: "64px", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                        <BrandMark variant="primary" size="md" alt="Primary Logo" />
+                      </div>
+                      <strong>Primary.png</strong>
+                      <small style={{ color: "var(--ff-text-muted)" }}>2172 × 724 · Top nav &amp; headers</small>
+                    </div>
+                    <div className="ff-ds-showroom__panel" style={{ textAlign: "center", display: "flex", flexDirection: "column", alignItems: "center", gap: "0.75rem" }}>
+                      <span className="ff-ds-showroom__panel-label">Stacked (4:5)</span>
+                      <div style={{ height: "64px", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                        <BrandMark variant="stacked" size="xs" alt="Stacked Logo" />
+                      </div>
+                      <strong>stacked.png</strong>
+                      <small style={{ color: "var(--ff-text-muted)" }}>1122 × 1402 · Centered auth &amp; splash</small>
+                    </div>
+                    <div className="ff-ds-showroom__panel" style={{ textAlign: "center", display: "flex", flexDirection: "column", alignItems: "center", gap: "0.75rem" }}>
+                      <span className="ff-ds-showroom__panel-label">Icon (1:1)</span>
+                      <div style={{ height: "64px", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                        <BrandMark variant="icon" size="md" alt="Icon Mark" />
+                      </div>
+                      <strong>icon.png</strong>
+                      <small style={{ color: "var(--ff-text-muted)" }}>1254 × 1254 · Symbol only mark</small>
+                    </div>
+                    <div className="ff-ds-showroom__panel" style={{ textAlign: "center", display: "flex", flexDirection: "column", alignItems: "center", gap: "0.75rem" }}>
+                      <span className="ff-ds-showroom__panel-label">App Icon (1:1)</span>
+                      <div style={{ height: "64px", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                        <BrandMark variant="app" size="sm" alt="App Icon" />
+                      </div>
+                      <strong>iconapp.png</strong>
+                      <small style={{ color: "var(--ff-text-muted)" }}>1254 × 1254 · PWA / App icon</small>
+                    </div>
+                  </div>
+                </div>
                 <div className="ff-ds-showroom__grid"><div className="ff-ds-showroom__panel"><h3>Semantic surface hierarchy</h3><div className="ff-ds-showroom__row"><span className="ff-ds-showroom__token-chip ff-ds-showroom__token-chip--canvas">Canvas</span><span className="ff-ds-showroom__token-chip ff-ds-showroom__token-chip--subtle">Subtle</span><span className="ff-ds-showroom__token-chip ff-ds-showroom__token-chip--surface">Surface</span><span className="ff-ds-showroom__token-chip ff-ds-showroom__token-chip--inverse">Inverse</span></div></div><div className="ff-ds-showroom__panel"><h3>Functional status</h3><div className="ff-ds-showroom__row"><Badge variant="success" dot>Success</Badge><Badge variant="warning" dot>Warning</Badge><Badge variant="danger" dot>Danger</Badge><Badge variant="info" dot>Info</Badge></div></div></div>
                 <div className="ff-ds-showroom__do-dont"><div className="ff-ds-showroom__do"><strong>Do</strong><br />Let food media and one clear action lead the frame.</div><div className="ff-ds-showroom__dont"><strong>Don&apos;t</strong><br />Use brand red as a substitute for every success, warning, or error state.</div></div>
               </div>

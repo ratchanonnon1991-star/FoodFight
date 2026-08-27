@@ -13,7 +13,7 @@ export const inputVariants = cva(
       },
       isInvalid: {
         true: "border-status-danger-icon text-status-danger-text focus-visible:outline-status-danger-icon",
-        false: "border-border hover:border-brand-secondary focus-visible:outline-brand-secondary",
+        false: "border-border hover:border-border-strong focus-visible:outline-focus-ring",
       },
     },
     defaultVariants: {

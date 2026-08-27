@@ -35,7 +35,7 @@ export function TopNavigation({ activeTab, className }: TopNavigationProps) {
       >
         <Link
           href={ROUTES.AUTHENTICATED_HOME}
-          className="shrink-0 text-xl font-bold tracking-tight text-brand-primary transition-colors hover:text-brand-primary-hover focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-secondary"
+          className="shrink-0 text-xl font-bold tracking-tight text-brand-primary transition-colors hover:text-brand-primary-hover focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-ring"
           aria-label="FoodFighter Home"
         >
           FoodFighter
@@ -57,7 +57,7 @@ export function TopNavigation({ activeTab, className }: TopNavigationProps) {
                     aria-current={isActive ? "page" : undefined}
                     className={cn(
                       "flex items-center gap-2 rounded-xl px-3.5 py-2.5 text-sm transition-colors",
-                      "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-secondary",
+                      "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-ring",
                       isActive
                         ? "bg-surface-subtle font-bold text-brand-primary"
                         : "font-medium text-text-secondary hover:bg-surface-subtle/70 hover:text-text-primary",

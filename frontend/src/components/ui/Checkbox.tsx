@@ -44,11 +44,11 @@ export const Checkbox = React.forwardRef<HTMLInputElement, CheckboxProps>(
             onChange={onChange}
             className={cn(
               "peer size-4 shrink-0 cursor-pointer appearance-none rounded-xs border transition-colors",
-              "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-secondary",
-              "checked:bg-brand-primary checked:border-brand-primary",
+              "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-ring",
+              "checked:bg-interactive-primary checked:border-interactive-primary",
               isActuallyInvalid
                 ? "border-status-danger-icon focus-visible:outline-status-danger-icon"
-                : "border-border hover:border-brand-secondary",
+                : "border-border hover:border-border-strong",
               "disabled:cursor-not-allowed disabled:bg-surface-muted disabled:border-border-disabled disabled:checked:bg-text-disabled",
               className
             )}
