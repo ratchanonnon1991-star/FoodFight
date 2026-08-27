@@ -15,10 +15,13 @@ import type {
 import { apiFetch, getStoredAccessToken } from "@/config/api-client";
 import { HOME_TIP } from "../constants/home-static-data";
 import { HomeHeader } from "./HomeHeader";
+import { HomeFoodCarousel } from "./HomeFoodCarousel";
 import { HomeActionCard } from "./HomeActionCard";
 import { CurrentFoodFightCard } from "./CurrentFoodFightCard";
+import { HomeFoodProfileCard } from "./HomeFoodProfileCard";
 import { RecentFoodFightsSection } from "./RecentFoodFightsSection";
 import { HomeTipCard } from "./HomeTipCard";
+import { HomeLanguageProvider, useHomeLanguage } from "../i18n/HomeLanguageContext";
 import type { RecentFoodFightItemData } from "@/features/home/types/home-types";
 
 import { getMyHistory } from "@/features/history/services/history-service";
@@ -264,129 +267,185 @@ export function AuthenticatedHome({
   };
 
   return (
-    <main className="min-h-dvh bg-background text-text-primary lg:min-h-[calc(100dvh-4rem)]">
-      <PageContainer
-        maxWidth="wide"
-        paddingY="none"
-        spacing="comfortable"
-        className="pt-3 pb-24 sm:pt-4 lg:pb-10"
-      >
-        {/* 1. Header with greeting and avatar/notification */}
-        <HomeHeader
-          user={user ?? { name: "FoodFighter" }}
-          isLoading={isUserLoading}
-          onLogout={handleLogout}
-        />
-
-        <div
-          data-testid="home-dashboard-grid"
-          className="grid items-start gap-5 md:grid-cols-12 md:gap-6 lg:gap-8 xl:gap-10"
+    <HomeLanguageProvider>
+      <main className="min-h-dvh bg-background text-text-primary lg:min-h-[calc(100dvh-4rem)]">
+        <PageContainer
+          maxWidth="wide"
+          paddingY="none"
+          spacing="comfortable"
+          className="pt-3 pb-24 sm:pt-4 lg:pb-10"
         >
-          <div className="space-y-5 md:col-span-7 lg:col-span-8 sm:space-y-6">
-            {/* 2. Primary Action Cards (Create Room & Join Room) */}
-            <div className="grid grid-cols-2 gap-3 sm:gap-3.5">
-              <HomeActionCard
-                id="create-room-card"
-                title="CREATE ROOM"
-                description="Start a new FoodFight"
-                icon={<UserPlus className="size-6 text-text-primary stroke-[2]" />}
-                href={ROUTES.ROOM.CREATE}
-                onClick={onCreateRoom}
+          {/* 1. Header with greeting and avatar/notification */}
+          <HomeHeader
+            user={user ?? { name: "FoodFighter" }}
+            isLoading={isUserLoading}
+            onLogout={handleLogout}
+          />
+
+          {/* 2. Responsive Dashboard Grid */}
+          <div
+            data-testid="home-dashboard-grid"
+            className="grid grid-cols-1 items-start gap-5 sm:gap-6 lg:grid-cols-12 lg:gap-8 xl:gap-10"
+          >
+            {/* Primary Column (Inspiration Carousel, Create/Join, Pending Bills, Current FoodFight) */}
+            <div className="space-y-5 sm:space-y-6 lg:col-span-8">
+              {/* 2. Food Inspiration Carousel ("What are we eating today?") */}
+              <HomeFoodCarousel />
+
+              {/* 3. Primary Action Cards (Create Room & Join Room) */}
+              <HomeActionCardsGroup
+                onCreateRoom={onCreateRoom}
+                onJoinRoom={onJoinRoom}
               />
-              <HomeActionCard
-                id="join-room-card"
-                title="JOIN ROOM"
-                description="Enter code or scan QR"
-                icon={<LogIn className="size-6 text-text-primary stroke-[2]" />}
-                href={ROUTES.ROOM.JOIN}
-                onClick={onJoinRoom}
+
+              {/* Unfinished Bills Section (Shared component consumed as-is) */}
+              <PendingBillsSection
+                bills={pendingBills}
+                isLoading={isPendingBillsLoading}
+                error={pendingBillsError}
+                onRetry={() => void refreshPendingBills()}
+                variant="home"
+              />
+
+              {/* Current FoodFight Section */}
+              <CurrentFoodFightCard
+                session={currentSession}
+                isLoading={isCurrentSessionLoading}
+                onContinue={continueCurrentRoom}
               />
             </div>
 
-            {/* 3. Unfinished Bills Section */}
-            <PendingBillsSection
-              bills={pendingBills}
-              isLoading={isPendingBillsLoading}
-              error={pendingBillsError}
-              onRetry={() => void refreshPendingBills()}
-              variant="home"
-            />
+            {/* Supporting Column (Food Profile Nudge, Recent FoodFights, Tip) */}
+            <div className="space-y-5 sm:space-y-6 lg:col-span-4">
+              {/* Food Profile Preferences Nudge */}
+              <HomeFoodProfileCard />
 
-            {/* 4. Current FoodFight Section */}
-            <CurrentFoodFightCard
-              session={currentSession}
-              isLoading={isCurrentSessionLoading}
-              onContinue={continueCurrentRoom}
-            />
-          </div>
+              {/* Recent FoodFights Section */}
+              <RecentFoodFightsSection
+                items={recentFoodFights}
+                isLoading={isRecentFoodFightsLoading}
+                onViewAll={onViewAllRecent ?? (() => router.push(ROUTES.HISTORY))}
+                onItemClick={(item) => void openRecentRoomDetails(item)}
+              />
 
-          <div className="space-y-5 md:col-span-5 md:space-y-6 lg:col-span-4">
-            {/* 5. Recent FoodFights Section */}
-            <RecentFoodFightsSection
-              items={recentFoodFights}
-              isLoading={isRecentFoodFightsLoading}
-              onViewAll={onViewAllRecent ?? (() => router.push(ROUTES.HISTORY))}
-              onItemClick={(item) => void openRecentRoomDetails(item)}
-            />
-
-            {/* 6. Helpful Tip Card */}
-            <HomeTipCard tip={HOME_TIP} />
-          </div>
-        </div>
-      </PageContainer>
-      {isRecentRoomLoading ? (
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/40 px-4 py-6 backdrop-blur-[2px]"
-          role="status"
-          aria-label="Loading room details"
-        >
-          <div className="w-full max-w-sm rounded-2xl border border-border bg-surface p-5 text-center shadow-2xl">
-            <p className="text-sm text-text-secondary">Loading room details...</p>
-          </div>
-        </div>
-      ) : null}
-      {selectedRecentRoom ? (
-        <RoomDetailsModal
-          room={selectedRecentRoom}
-          isHost={false}
-          isSaving={false}
-          error={null}
-          onClose={closeRecentRoomDetails}
-          onSave={async () => undefined}
-          onRequestClose={() => undefined}
-        />
-      ) : null}
-      {recentRoomError ? (
-        <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/40 px-4 py-6 backdrop-blur-[2px]"
-          role="alertdialog"
-          aria-modal="true"
-          aria-label="Room details unavailable"
-          onMouseDown={(event) => {
-            if (event.target === event.currentTarget) {
-              closeRecentRoomDetails();
-            }
-          }}
-        >
-          <div className="w-full max-w-sm rounded-2xl border border-border bg-surface p-5 shadow-2xl">
-            <div className="flex items-start justify-between gap-4">
-              <h2 className="text-lg font-semibold text-text-primary">
-                Room details
-              </h2>
-              <button
-                type="button"
-                aria-label="Close"
-                className="text-xl leading-none text-text-secondary"
-                onClick={closeRecentRoomDetails}
-              >
-                ×
-              </button>
+              {/* Helpful Tip Card */}
+              <HomeTipCard tip={HOME_TIP} />
             </div>
-            <p className="mt-4 text-sm text-status-danger-text">{recentRoomError}</p>
           </div>
+        </PageContainer>
+
+        {/* Room Details Modal Backdrop & Dialogs */}
+        {isRecentRoomLoading ? (
+          <div
+            className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/40 px-4 py-6 backdrop-blur-[2px]"
+            role="status"
+            aria-label="Loading room details"
+          >
+            <div className="w-full max-w-sm rounded-2xl border border-border bg-surface p-5 text-center shadow-2xl">
+              <p className="text-sm text-text-secondary">Loading room details...</p>
+            </div>
+          </div>
+        ) : null}
+
+        {selectedRecentRoom ? (
+          <RoomDetailsModal
+            room={selectedRecentRoom}
+            isHost={false}
+            isSaving={false}
+            error={null}
+            onClose={closeRecentRoomDetails}
+            onSave={async () => undefined}
+            onRequestClose={() => undefined}
+          />
+        ) : null}
+
+        {recentRoomError ? (
+          <div
+            className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/40 px-4 py-6 backdrop-blur-[2px]"
+            role="alertdialog"
+            aria-modal="true"
+            aria-label="Room details unavailable"
+            onMouseDown={(event) => {
+              if (event.target === event.currentTarget) {
+                closeRecentRoomDetails();
+              }
+            }}
+          >
+            <div className="w-full max-w-sm rounded-2xl border border-border bg-surface p-5 shadow-2xl">
+              <div className="flex items-start justify-between gap-4">
+                <h2 className="text-lg font-semibold text-text-primary">
+                  Room details
+                </h2>
+                <button
+                  type="button"
+                  aria-label="Close"
+                  className="text-xl leading-none text-text-secondary hover:text-text-primary"
+                  onClick={closeRecentRoomDetails}
+                >
+                  ×
+                </button>
+              </div>
+              <p className="mt-4 text-sm text-status-danger-text">{recentRoomError}</p>
+            </div>
+          </div>
+        ) : null}
+      </main>
+    </HomeLanguageProvider>
+  );
+}
+
+function HomeActionCardsGroup({
+  onCreateRoom,
+  onJoinRoom,
+}: {
+  onCreateRoom?: () => void;
+  onJoinRoom?: () => void;
+}) {
+  const { t } = useHomeLanguage();
+
+  return (
+    <div className="grid grid-cols-2 gap-3 sm:gap-3.5">
+      {/* Create Room Card */}
+      <HomeActionCard
+        id="create-room-card"
+        title={t.actionCards.createTitle}
+        description={t.actionCards.createDesc}
+        ctaText={t.actionCards.createCta}
+        icon={<UserPlus className="size-6 text-text-primary stroke-[2]" />}
+        href={ROUTES.ROOM.CREATE}
+        onClick={onCreateRoom}
+      />
+
+      {/* Join Room Wrapper with Top-Right Corner 3D Decor Behind */}
+      <div className="relative overflow-visible">
+        {/* Decorative 3D Ornament (Behind Card, rises above top-right edge) */}
+        <div
+          aria-hidden="true"
+          className="pointer-events-none select-none absolute z-0 -top-[55px] xs:-top-[65px] sm:-top-[85px] md:-top-[100px] lg:-top-[110px] right-1 sm:right-2 lg:right-2 w-[85px] xs:w-[100px] sm:w-[130px] md:w-[145px] lg:w-[160px] aspect-square overflow-visible"
+        >
+          <img
+            src="/images/home/home-join-corner-decor.webp"
+            alt=""
+            className="size-full object-contain"
+            onError={(e) => {
+              e.currentTarget.style.display = "none";
+            }}
+          />
         </div>
-      ) : null}
-    </main>
+
+        {/* Join Room Action Card (Front Layer) */}
+        <HomeActionCard
+          id="join-room-card"
+          className="relative z-10"
+          title={t.actionCards.joinTitle}
+          description={t.actionCards.joinDesc}
+          ctaText={t.actionCards.joinCta}
+          icon={<LogIn className="size-6 text-text-primary stroke-[2]" />}
+          href={ROUTES.ROOM.JOIN}
+          onClick={onJoinRoom}
+        />
+      </div>
+    </div>
   );
 }
 

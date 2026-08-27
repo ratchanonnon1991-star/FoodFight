@@ -13,6 +13,8 @@ export interface HomeActionCardProps {
   onClick?: () => void;
   id?: string;
   className?: string;
+  variant?: "create" | "join" | "primary" | "secondary";
+  ctaText?: string;
 }
 
 export function HomeActionCard({
@@ -23,47 +25,105 @@ export function HomeActionCard({
   onClick,
   id,
   className,
+  variant,
+  ctaText,
 }: HomeActionCardProps) {
+  // Infer variant from id/title if not explicitly provided
+  const isCreate =
+    variant === "create" ||
+    variant === "primary" ||
+    (id?.toLowerCase().includes("create") ?? false) ||
+    title.toLowerCase().includes("create");
+
+  const resolvedCtaText = ctaText || (isCreate ? "Create Now" : "Join Now");
+  const imageSrc = isCreate
+    ? "/images/home/home-create-room.webp"
+    : "/images/home/home-join-room.webp";
+
   const content = (
     <>
-      {/* Icon in larger soft rounded box */}
-      <div className="size-12 sm:size-14 rounded-2xl border border-border/70 bg-surface flex items-center justify-center text-text-primary mb-3.5 shadow-2xs">
-        {icon}
+      {/* Decorative Transparent 3D Soft Media Slot (Lower-Right 1:1) */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none select-none absolute -bottom-1.5 -right-1.5 z-0 flex size-24 sm:size-28 md:size-32 items-center justify-center overflow-hidden"
+      >
+        <img
+          src={imageSrc}
+          alt=""
+          className="size-full object-contain drop-shadow-xs transition-transform duration-300 group-hover:scale-105"
+        />
       </div>
 
-      <div>
-        {/* Title with inline small Chevron */}
-        <div className="flex items-center justify-between gap-1 w-full">
-          <span className="text-xs sm:text-sm font-extrabold uppercase tracking-wider text-text-primary truncate">
-            {title}
-          </span>
-          <ChevronRight className="size-4 shrink-0 text-text-secondary group-hover:translate-x-0.5 transition-transform" />
+      {/* Main Content Stack */}
+      <div className="relative z-10 flex flex-col justify-between h-full space-y-3">
+        {/* Top Row: Filled Color Badge Icon */}
+        <div className="flex items-center justify-between">
+          <div
+            className={cn(
+              "flex size-11 items-center justify-center rounded-full shadow-xs transition-transform duration-200 group-hover:scale-105 sm:size-12",
+              "[&>svg]:text-white [&>svg]:stroke-[2.2] [&>svg]:size-5 sm:[&>svg]:size-6",
+              isCreate
+                ? "bg-brand-primary text-white"
+                : "bg-accent-fresh text-white"
+            )}
+          >
+            {icon}
+          </div>
         </div>
 
-        {/* Description */}
-        <p className="text-xs text-text-secondary mt-1 line-clamp-1 leading-snug">
-          {description}
-        </p>
+        {/* Text Details */}
+        <div className="space-y-0.5 pr-1">
+          <h3 className="text-xs sm:text-sm md:text-base font-extrabold uppercase tracking-wider text-text-primary truncate">
+            {title}
+          </h3>
+          <p className="text-xs text-text-secondary line-clamp-1 leading-snug">
+            {description}
+          </p>
+        </div>
+
+        {/* Bottom Action CTA Pill Button */}
+        <div className="pt-0.5 flex items-center">
+          {isCreate ? (
+            <div className="inline-flex items-center gap-1 rounded-xl bg-brand-primary px-3 py-1.5 text-xs font-bold text-white shadow-xs group-hover:bg-brand-primary-hover transition-colors">
+              <span>{resolvedCtaText}</span>
+              <ChevronRight className="size-3.5 stroke-[2.5]" />
+            </div>
+          ) : (
+            <div className="inline-flex items-center gap-1 rounded-xl border border-border/80 bg-surface px-3 py-1.5 text-xs font-bold text-text-primary shadow-2xs group-hover:bg-surface-subtle transition-colors">
+              <span>{resolvedCtaText}</span>
+              <ChevronRight className="size-3.5 stroke-[2.5]" />
+            </div>
+          )}
+        </div>
       </div>
     </>
   );
 
   const cardClasses = cn(
-    "group flex flex-col justify-between min-h-[148px] p-5 rounded-2xl border border-border/80 bg-surface shadow-xs hover:border-brand-secondary/60 hover:shadow-sm transition-all duration-150 text-left select-none",
-    "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-secondary cursor-pointer active:scale-[0.98]",
-    className
+    "group relative flex flex-col justify-between overflow-hidden rounded-2xl border p-4 sm:p-5 text-left select-none",
+    "min-h-[150px] sm:min-h-[160px] transition-all duration-200",
+    "focus-visible:outline-2 focus-visible:outline-focus-ring cursor-pointer active:scale-[0.98]",
+    "border-border/80 bg-surface shadow-xs hover:shadow-md",
+    isCreate
+      ? "hover:border-brand-primary/40 hover:ring-1 hover:ring-brand-primary/20"
+      : "hover:border-accent-fresh/40 hover:ring-1 hover:ring-accent-fresh/20"
   );
 
   if (href) {
     return (
-      <Link href={href} id={id} className={cardClasses}>
+      <Link href={href} id={id} className={cn(cardClasses, className)}>
         {content}
       </Link>
     );
   }
 
   return (
-    <button type="button" id={id} onClick={onClick} className={cardClasses}>
+    <button
+      type="button"
+      id={id}
+      onClick={onClick}
+      className={cn(cardClasses, className)}
+    >
       {content}
     </button>
   );

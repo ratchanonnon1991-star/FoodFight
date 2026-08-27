@@ -5,8 +5,8 @@
 
 import * as React from "react";
 import Link from "next/link";
-import { Bell } from "lucide-react";
 import {
+  Bell,
   ChevronDown,
   CreditCard,
   LogOut,
@@ -17,6 +17,8 @@ import { ROUTES } from "@/config/routes";
 import { pageTypography } from "@/components/layout/PageContainer";
 import { cn } from "@/lib/utils/cn";
 import type { AuthenticatedUserDisplay } from "../types/home-types";
+import { useHomeLanguage } from "../i18n/HomeLanguageContext";
+import { HomeLanguageSwitcher } from "./HomeLanguageSwitcher";
 
 export interface HomeHeaderProps {
   user: AuthenticatedUserDisplay;
@@ -33,6 +35,7 @@ export function HomeHeader({
   onProfileClick,
   onLogout,
 }: HomeHeaderProps) {
+  const { t } = useHomeLanguage();
   const [failedAvatarUrl, setFailedAvatarUrl] = React.useState<string | null>(
     null,
   );
@@ -83,29 +86,32 @@ export function HomeHeader({
           </div>
         ) : (
           <>
-          <h1
-          className={cn(
-            pageTypography.title,
-            "truncate font-extrabold text-text-primary",
-          )}
-        >
-          Hi, {user.name} 👋
-        </h1>
-        <p className="text-xs sm:text-sm text-text-secondary">
-          Ready to fight for the best meal?
-        </p>
+            <h1
+              className={cn(
+                pageTypography.title,
+                "truncate font-extrabold text-text-primary",
+              )}
+            >
+              {t.header.greeting(user.name)} 👋
+            </h1>
+            <p className="text-xs sm:text-sm text-text-secondary">
+              {t.header.greetingSubtitle}
+            </p>
           </>
         )}
       </div>
 
       {/* Header Actions */}
       <div className="flex shrink-0 items-center gap-2 pt-0.5 lg:fixed lg:right-10 lg:top-3 lg:z-40 2xl:right-[calc((100vw-1440px)/2+2.5rem)]">
-        {/* Notification Bell */}
+        {/* Language Switcher Dropdown */}
+        <HomeLanguageSwitcher />
+
+        {/* Notification Bell (Dormant Control preserved) */}
         <button
           type="button"
           onClick={onNotificationClick}
-          aria-label="View notifications"
-          className="size-10 rounded-full border border-border/80 bg-surface flex items-center justify-center text-text-secondary hover:text-brand-primary hover:border-brand-secondary/50 transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-secondary cursor-pointer shadow-2xs"
+          aria-label={t.header.notificationsLabel}
+          className="size-10 rounded-full border border-border/80 bg-surface flex items-center justify-center text-text-secondary hover:text-brand-primary hover:border-brand-primary/50 transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-ring cursor-pointer shadow-2xs"
         >
           <Bell className="size-5" />
         </button>
@@ -118,13 +124,13 @@ export function HomeHeader({
               setIsMenuOpen((open) => !open);
               onProfileClick?.();
             }}
-            aria-label="Open profile menu"
+            aria-label={t.header.profileMenuLabel}
             aria-haspopup="menu"
             aria-expanded={isMenuOpen}
             aria-busy={isLoading}
             disabled={isLoading}
             title={isLoading ? "Loading profile" : user.name}
-            className="flex items-center gap-1 rounded-full p-0.5 text-text-secondary transition-colors hover:text-brand-primary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-secondary disabled:cursor-wait"
+            className="flex items-center gap-1 rounded-full p-0.5 text-text-secondary transition-colors hover:text-brand-primary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-ring disabled:cursor-wait"
           >
             <span className="size-10 rounded-full border border-border/80 bg-surface flex items-center justify-center shadow-2xs">
               {isLoading ? (
@@ -159,7 +165,7 @@ export function HomeHeader({
           {isMenuOpen && !isLoading ? (
             <div
               role="menu"
-              aria-label="Profile menu"
+              aria-label={t.header.profileMenuLabel}
               className="absolute right-0 z-50 mt-2 w-64 overflow-hidden rounded-2xl border border-border bg-surface shadow-lg"
             >
               <div className="border-b border-border-subtle px-4 py-3">
@@ -181,7 +187,7 @@ export function HomeHeader({
                   className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-text-primary hover:bg-surface-subtle"
                 >
                   <Pencil className="size-4 text-text-secondary" />
-                  Edit profile
+                  {t.header.editProfile}
                 </Link>
                 <Link
                   href={ROUTES.FOOD_PROFILE.ALLERGIES}
@@ -190,7 +196,7 @@ export function HomeHeader({
                   className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-text-primary hover:bg-surface-subtle"
                 >
                   <Utensils className="size-4 text-text-secondary" />
-                  Edit food profile
+                  {t.header.editFoodProfile}
                 </Link>
                 <Link
                   href={ROUTES.PAYMENT_ACCOUNT}
@@ -199,7 +205,7 @@ export function HomeHeader({
                   className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-text-primary hover:bg-surface-subtle"
                 >
                   <CreditCard className="size-4 text-text-secondary" />
-                  Payment account
+                  {t.header.paymentAccount}
                 </Link>
                 <button
                   type="button"
@@ -211,7 +217,7 @@ export function HomeHeader({
                   className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left text-sm font-medium text-status-danger-text hover:bg-status-danger-bg"
                 >
                   <LogOut className="size-4" />
-                  Log out
+                  {t.header.logout}
                 </button>
               </div>
             </div>
