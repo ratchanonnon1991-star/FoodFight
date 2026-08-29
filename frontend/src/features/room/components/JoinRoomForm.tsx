@@ -10,10 +10,14 @@ import { Input } from "@/components/ui/Input";
 import { ROUTES } from "@/config/routes";
 import { roomCodeSchema } from "../schemas/room-schema";
 import { roomService, RoomApiError } from "../services/room-service";
+import { useLanguage } from "@/i18n/LanguageProvider";
+import { roomTranslations } from "../i18n/room-translations";
 import { RoomPageHeader } from "./RoomPageHeader";
 
 export function JoinRoomForm() {
   const router = useRouter();
+  const { locale } = useLanguage();
+  const t = roomTranslations[locale].join;
   const [roomCode, setRoomCode] = React.useState("");
   const [error, setError] = React.useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = React.useState(false);
@@ -26,7 +30,7 @@ export function JoinRoomForm() {
     const parsed = roomCodeSchema.safeParse(normalizedCode);
 
     if (!parsed.success) {
-      setError(parsed.error.issues[0]?.message ?? "Enter a valid room code.");
+      setError(parsed.error.issues[0]?.message ?? t.invalidCode);
       return;
     }
 
@@ -39,7 +43,7 @@ export function JoinRoomForm() {
       setError(
         requestError instanceof RoomApiError
           ? requestError.message
-          : "Unable to find the room. Please try again.",
+          : t.genericError,
       );
     } finally {
       setIsSubmitting(false);
@@ -49,31 +53,31 @@ export function JoinRoomForm() {
   return (
     <main className="min-h-dvh overflow-x-clip bg-background text-text-primary">
       <div className="mx-auto w-full max-w-md px-4 pb-32 pt-3 sm:px-6 sm:pt-5 md:max-w-xl lg:max-w-2xl">
-        <RoomPageHeader title="Join Room" subtitle="Enter the room code to continue" backHref={ROUTES.AUTHENTICATED_HOME} />
+        <RoomPageHeader title={t.title} subtitle={t.subtitle} backHref={ROUTES.AUTHENTICATED_HOME} />
 
         <Card variant="outline" className="rounded-2xl p-5 sm:p-6 md:p-8">
           <div className="mb-6 flex flex-col items-center text-center">
             <div className="mb-4 flex size-16 items-center justify-center rounded-full bg-surface-subtle text-text-primary">
               <KeyRound className="size-7" aria-hidden="true" />
             </div>
-            <h2 className="text-xl font-semibold">Enter Room Code</h2>
-            <p className="mt-2 text-sm leading-relaxed text-text-secondary">Enter the 6-character room code shared by your host.</p>
+            <h2 className="text-xl font-semibold">{t.cardTitle}</h2>
+            <p className="mt-2 text-sm leading-relaxed text-text-secondary">{t.cardDesc}</p>
           </div>
 
           {error ? (
             <Alert variant="error" className="mb-5">
-              <AlertTitle>Could not find room</AlertTitle>
+              <AlertTitle>{t.errorTitle}</AlertTitle>
               <AlertDescription>{error}</AlertDescription>
             </Alert>
           ) : null}
 
           <form onSubmit={submit} className="space-y-5" noValidate>
-            <label htmlFor="room-code" className="sr-only">Room code</label>
+            <label htmlFor="room-code" className="sr-only">{t.cardTitle}</label>
             <Input
               id="room-code"
               value={roomCode}
               onChange={(event) => setRoomCode(event.target.value.replace(/[^a-zA-Z0-9]/g, "").slice(0, 6).toUpperCase())}
-              placeholder="F8K2Q9"
+              placeholder={t.inputPlaceholder}
               autoComplete="off"
               autoCapitalize="characters"
               maxLength={6}
@@ -81,9 +85,9 @@ export function JoinRoomForm() {
               aria-describedby="room-code-help"
               disabled={isSubmitting}
             />
-            <p id="room-code-help" className="text-center text-sm text-text-secondary">The room code is 6 letters or numbers.</p>
-            <Button type="submit" fullWidth size="lg" loading={isSubmitting} loadingText="Finding room" rightIcon={<ArrowRight className="size-5" aria-hidden="true" />}>
-              Join Room
+            <p id="room-code-help" className="text-center text-sm text-text-secondary">{t.helpText}</p>
+            <Button type="submit" fullWidth size="lg" loading={isSubmitting} loadingText={t.submitting} rightIcon={<ArrowRight className="size-5" aria-hidden="true" />}>
+              {t.submit}
             </Button>
           </form>
         </Card>

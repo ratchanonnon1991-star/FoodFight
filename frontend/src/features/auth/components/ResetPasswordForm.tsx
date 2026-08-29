@@ -12,6 +12,8 @@ import {
   type ResetPasswordFormValues,
 } from "@/features/auth/schemas/reset-password-schema";
 
+import { useLanguage } from "@/i18n/LanguageProvider";
+import { authTranslations } from "@/features/auth/i18n/auth-translations";
 import { Button } from "@/components/ui/Button";
 import { PasswordInput } from "@/components/ui/PasswordInput";
 import { FormField, FormLabel, FormError } from "@/components/ui/form-field";
@@ -20,6 +22,8 @@ import { Alert, AlertTitle, AlertDescription } from "@/components/ui/Alert";
 export function ResetPasswordForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const { locale } = useLanguage();
+  const t = authTranslations[locale].resetPassword;
 
   const email = searchParams.get("email") ?? "";
 
@@ -44,9 +48,7 @@ export function ResetPasswordForm() {
     setGeneralError(null);
 
     if (!email || !otp) {
-      setGeneralError(
-        "Password reset session is missing or invalid. Please request a new reset code.",
-      );
+      setGeneralError(t.missingSession);
       return;
     }
 
@@ -65,7 +67,7 @@ export function ResetPasswordForm() {
 
       router.replace(ROUTES.AUTH.LOGIN);
     } catch {
-      setGeneralError("Unable to reset password. Please try again.");
+      setGeneralError(t.unexpectedError);
     }
   };
 
@@ -73,15 +75,15 @@ export function ResetPasswordForm() {
     <div className="w-full space-y-6">
       <div className="space-y-1.5 text-center">
         <h1 className="text-2xl font-bold tracking-tight text-text-primary">
-          Reset password
+          {t.title}
         </h1>
 
-        <p className="text-xs text-text-secondary">Enter your new password.</p>
+        <p className="text-xs text-text-secondary">{t.subtitle}</p>
       </div>
 
       {generalError && (
         <Alert variant="error">
-          <AlertTitle>Reset Password Failed</AlertTitle>
+          <AlertTitle>{t.failedTitle}</AlertTitle>
 
           <AlertDescription>{generalError}</AlertDescription>
         </Alert>
@@ -90,12 +92,12 @@ export function ResetPasswordForm() {
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4" noValidate>
         <FormField isInvalid={!!errors.password}>
           <FormLabel htmlFor="password" required>
-            New Password
+            {t.newPasswordLabel}
           </FormLabel>
 
           <PasswordInput
             id="password"
-            placeholder="••••••••"
+            placeholder={t.newPasswordPlaceholder}
             autoComplete="new-password"
             disabled={isSubmitting}
             {...register("password")}
@@ -106,12 +108,12 @@ export function ResetPasswordForm() {
 
         <FormField isInvalid={!!errors.confirmPassword}>
           <FormLabel htmlFor="confirmPassword" required>
-            Confirm Password
+            {t.confirmPasswordLabel}
           </FormLabel>
 
           <PasswordInput
             id="confirmPassword"
-            placeholder="••••••••"
+            placeholder={t.confirmPasswordPlaceholder}
             autoComplete="new-password"
             disabled={isSubmitting}
             {...register("confirmPassword")}
@@ -129,7 +131,7 @@ export function ResetPasswordForm() {
           disabled={isSubmitting}
           loading={isSubmitting}
         >
-          RESET PASSWORD
+          {t.submit}
         </Button>
       </form>
     </div>

@@ -6,6 +6,9 @@ import { ArrowLeft, Bell, CircleUserRound, LogOut, House } from 'lucide-react';
 import { IconButton } from '@/components/ui/IconButton';
 import { ROUTES } from '@/config/routes';
 
+import { useLanguage } from '@/i18n/LanguageProvider';
+import { roomTranslations } from '../i18n/room-translations';
+
 export interface RoomPageHeaderProps {
   title: string;
   subtitle: string;
@@ -23,6 +26,8 @@ export function RoomPageHeader({
   showAccountActions = false,
   actions,
 }: RoomPageHeaderProps) {
+  const { locale } = useLanguage();
+  const t = roomTranslations[locale].header;
   const [openMenu, setOpenMenu] = React.useState<
     'notifications' | 'profile' | null
   >(null);
@@ -65,7 +70,7 @@ export function RoomPageHeader({
         {showBackButton ? (
           <a
             href={backHref}
-            aria-label="Back"
+            aria-label={t.back}
             className="relative z-10 mt-1 inline-flex size-10 shrink-0 cursor-pointer items-center justify-center rounded-full text-text-primary transition-colors hover:bg-surface-subtle focus-visible:outline-2 focus-visible:outline-brand-secondary"
           >
             <ArrowLeft className="size-6" aria-hidden="true" />
@@ -87,7 +92,7 @@ export function RoomPageHeader({
         {showAccountActions ? (
           <>
             <IconButton
-              aria-label="Notifications"
+              aria-label={t.notifications}
               icon={<Bell className="size-5" aria-hidden="true" />}
               className="text-text-primary"
               aria-expanded={openMenu === 'notifications'}
@@ -95,7 +100,7 @@ export function RoomPageHeader({
               onClick={() => toggleMenu('notifications')}
             />
             <IconButton
-              aria-label="Profile"
+              aria-label={t.profile}
               icon={<CircleUserRound className="size-6" aria-hidden="true" />}
               className="text-text-primary"
               aria-expanded={openMenu === 'profile'}
@@ -106,12 +111,12 @@ export function RoomPageHeader({
             {openMenu === 'notifications' ? (
               <div
                 role="dialog"
-                aria-label="Notifications"
+                aria-label={t.notifications}
                 className="absolute right-0 top-12 z-20 w-64 rounded-2xl border border-border bg-surface p-4 shadow-xl"
               >
-                <p className="font-semibold text-text-primary">Notifications</p>
+                <p className="font-semibold text-text-primary">{t.notifications}</p>
                 <p className="mt-1 text-sm text-text-secondary">
-                  You&apos;re all caught up.
+                  {t.allCaughtUp}
                 </p>
               </div>
             ) : null}
@@ -119,7 +124,7 @@ export function RoomPageHeader({
             {openMenu === 'profile' ? (
               <div
                 role="menu"
-                aria-label="Profile menu"
+                aria-label={t.profile}
                 className="absolute right-0 top-12 z-20 w-52 rounded-2xl border border-border bg-surface p-2 shadow-xl"
               >
                 <Link
@@ -129,7 +134,7 @@ export function RoomPageHeader({
                   className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-text-primary transition-colors hover:bg-surface-subtle focus-visible:outline-2 focus-visible:outline-brand-secondary"
                 >
                   <House className="size-4" aria-hidden="true" />
-                  Home
+                  {t.home}
                 </Link>
                 <button
                   type="button"
@@ -138,7 +143,7 @@ export function RoomPageHeader({
                   className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left text-sm font-medium text-status-danger-text transition-colors hover:bg-surface-subtle focus-visible:outline-2 focus-visible:outline-brand-secondary"
                 >
                   <LogOut className="size-4" aria-hidden="true" />
-                  Sign out
+                  {t.signOut}
                 </button>
               </div>
             ) : null}

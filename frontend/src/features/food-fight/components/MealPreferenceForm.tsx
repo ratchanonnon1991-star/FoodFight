@@ -32,6 +32,8 @@ import {
   RESTAURANT_STYLE_OPTIONS,
   type MealPreferenceOption,
 } from "@/features/food-fight/constants/meal-preference-options";
+import { useLanguage } from "@/i18n/LanguageProvider";
+import { foodFightTranslations } from "../i18n/food-fight-translations";
 import {
   foodFightService,
   FoodFightApiError,
@@ -552,17 +554,20 @@ function PreferenceForm({
   ) => void;
   submitPreference: (event: React.FormEvent<HTMLFormElement>) => void;
 }) {
+  const { locale } = useLanguage();
+  const t = foodFightTranslations[locale].preferences;
+
   return (
     <main className="min-h-dvh bg-background text-text-primary">
       <div className="mx-auto w-full max-w-md px-4 pb-32 pt-3 sm:px-6 sm:pt-5 md:max-w-2xl">
         <RoomPageHeader
-          title="Meal Preference"
-          subtitle="บอกความต้องการของคุณสำหรับมื้อนี้"
+          title={t.title}
+          subtitle={t.subtitle}
           backHref={ROUTES.ROOM.LOBBY(roomId)}
         />
         {error ? (
           <Alert variant="warning" className="mb-4">
-            <AlertTitle>ข้อมูลยังไม่ครบ</AlertTitle>
+            <AlertTitle>{locale === "th" ? "ข้อมูลยังไม่ครบ" : "Incomplete Information"}</AlertTitle>
             <AlertDescription>{error}</AlertDescription>
           </Alert>
         ) : null}
@@ -573,13 +578,12 @@ function PreferenceForm({
               aria-hidden="true"
             />
             <p className="text-sm leading-6 text-text-secondary">
-              เลือกเฉพาะสิ่งที่อยากทานในมื้อนี้
-              ข้อมูลนี้จะใช้ร่วมกับความต้องการของสมาชิกคนอื่นในห้อง
+              {t.description}
             </p>
           </div>
           <form className="mt-6 space-y-7" onSubmit={submitPreference}>
             <OptionGroup
-              title="วิธีปรุงอาหาร"
+              title={t.cookingMethod}
               options={COOKING_METHOD_OPTIONS}
               selectedValues={draft.cookingMethods}
               onToggle={(value) => toggleOption("cookingMethods", value)}
@@ -589,7 +593,7 @@ function PreferenceForm({
               }
             />
             <OptionGroup
-              title="ประเภทอาหาร"
+              title={t.cuisine}
               options={CUISINE_OPTIONS}
               selectedValues={draft.cuisines}
               onToggle={(value) => toggleOption("cuisines", value)}
@@ -597,7 +601,7 @@ function PreferenceForm({
               onOtherChange={(value) => updateDraft("cuisinesOther", value)}
             />
             <OptionGroup
-              title="โปรตีนที่อยากทาน"
+              title={t.protein}
               options={PROTEIN_OPTIONS}
               selectedValues={draft.proteins}
               onToggle={(value) => toggleOption("proteins", value)}
@@ -605,7 +609,7 @@ function PreferenceForm({
               onOtherChange={(value) => updateDraft("proteinsOther", value)}
             />
             <fieldset>
-              <legend className="text-sm font-semibold">งบประมาณต่อคน</legend>
+              <legend className="text-sm font-semibold">{t.budget}</legend>
               <div className="mt-3 grid gap-2 sm:grid-cols-3">
                 {BUDGET_OPTIONS.map((option) => (
                   <button
@@ -631,7 +635,7 @@ function PreferenceForm({
               </div>
             </fieldset>
             <OptionGroup
-              title="รูปแบบร้านอาหาร"
+              title={t.restaurantStyle}
               options={RESTAURANT_STYLE_OPTIONS}
               selectedValues={draft.restaurantStyles}
               onToggle={(value) => toggleOption("restaurantStyles", value)}
@@ -641,14 +645,14 @@ function PreferenceForm({
               }
             />
             <label className="block">
-              <span className="text-sm font-semibold">รายละเอียดเพิ่มเติม</span>
+              <span className="text-sm font-semibold">{t.additionalNotes}</span>
               <Textarea
                 value={draft.additionalNuances}
                 onChange={(event) =>
                   updateDraft("additionalNuances", event.target.value)
                 }
                 className="mt-3"
-                placeholder="บอกความต้องการเพิ่มเติมได้ที่นี่"
+                placeholder={t.additionalNotesPlaceholder}
                 rows={4}
               />
             </label>
@@ -656,10 +660,10 @@ function PreferenceForm({
               type="submit"
               fullWidth
               loading={isSubmitting}
-              loadingText="กำลังส่งข้อมูล..."
+              loadingText={t.submitting}
               rightIcon={<ArrowRight className="size-4" aria-hidden="true" />}
             >
-              ส่ง Meal Preference
+              {t.submit}
             </Button>
           </form>
         </Card>

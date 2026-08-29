@@ -6,6 +6,9 @@ import { ChevronLeft } from "lucide-react";
 import { cn } from "@/lib/utils/cn";
 import { PageContainer } from "@/components/layout/PageContainer";
 
+import { useLanguage } from "@/i18n/LanguageProvider";
+import { billTranslations } from "../i18n/bill-translations";
+
 export interface BillPageHeaderProps {
   title: string;
   subtitle?: string;
@@ -21,6 +24,9 @@ export function BillPageHeader({
   rightSlot,
   className,
 }: BillPageHeaderProps) {
+  const { locale } = useLanguage();
+  const t = billTranslations[locale].header;
+
   return (
     <header
       className={cn(
@@ -33,10 +39,10 @@ export function BillPageHeader({
           <Link
             href={backHref}
             className="inline-flex items-center gap-1 text-sm font-medium text-text-secondary hover:text-brand-primary transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-secondary rounded-sm p-1 -ml-1"
-            aria-label="Go back"
+            aria-label={t.goBack}
           >
             <ChevronLeft className="size-5" />
-            <span>Back</span>
+            <span>{t.back}</span>
           </Link>
 
           <div className="flex-1 text-center px-2">

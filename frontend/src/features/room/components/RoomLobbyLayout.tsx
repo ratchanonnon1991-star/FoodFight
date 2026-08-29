@@ -20,6 +20,8 @@ import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
 import { IconButton } from '@/components/ui/IconButton';
 import { ROUTES } from '@/config/routes';
+import { useLanguage } from '@/i18n/LanguageProvider';
+import { roomTranslations } from '../i18n/room-translations';
 import type { RoomLobby, RoomMember } from '../types/room-types';
 import { formatRoomDate, formatRoomTime, getInitials } from '../utils/room-format';
 import { RoomPageHeader } from './RoomPageHeader';
@@ -69,18 +71,21 @@ export function RoomLobbyLayout({
   onSetReady,
   onOpenLeave,
 }: RoomLobbyLayoutProps) {
+  const { locale } = useLanguage();
+  const t = roomTranslations[locale].lobby;
+
   return (
     <main className="min-h-dvh overflow-x-clip bg-background text-text-primary">
       <div className="mx-auto w-full max-w-md px-4 pb-32 pt-3 sm:px-6 sm:pt-5 md:max-w-4xl lg:max-w-6xl">
         <RoomPageHeader
-          title="Room Lobby"
-          subtitle="Invite friends and get ready!"
+          title={t.title}
+          subtitle={t.subtitle}
           backHref={ROUTES.AUTHENTICATED_HOME}
           actions={
             <>
               <IconButton
                 aria-label={
-                  room.isHost ? 'Room settings' : 'Room settings (host only)'
+                  room.isHost ? t.settingsHost : t.settingsHostOnly
                 }
                 aria-haspopup={room.isHost ? 'dialog' : undefined}
                 disabled={!room.isHost}
@@ -89,7 +94,7 @@ export function RoomLobbyLayout({
                 onClick={onOpenSettings}
               />
               <IconButton
-                aria-label="Room actions"
+                aria-label={t.roomActions}
                 aria-haspopup="dialog"
                 icon={<MoreHorizontal className="size-5" aria-hidden="true" />}
                 className="text-text-primary"

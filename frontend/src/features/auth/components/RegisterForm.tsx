@@ -27,11 +27,15 @@ import {
 import { Separator } from "@/components/ui/Separator";
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/Alert";
 
+import { useLanguage } from "@/i18n/LanguageProvider";
+import { authTranslations } from "@/features/auth/i18n/auth-translations";
 import { SocialAuthButtons } from "./SocialAuthButtons";
 import { TermsConsent } from "./TermsConsent";
 
 export function RegisterForm() {
   const router = useRouter();
+  const { locale } = useLanguage();
+  const t = authTranslations[locale].register;
   const { setChallenge } = useAuthFlow();
 
   const [generalError, setGeneralError] = React.useState<string | null>(null);
@@ -87,9 +91,7 @@ export function RegisterForm() {
       }
 
       if (!result.data) {
-        setGeneralError(
-          "Registration succeeded, but verification information was not returned.",
-        );
+        setGeneralError(t.noVerificationInfo);
 
         return;
       }
@@ -98,9 +100,7 @@ export function RegisterForm() {
 
       router.push(ROUTES.AUTH.VERIFY_EMAIL);
     } catch {
-      setGeneralError(
-        "An unexpected error occurred during registration. Please try again.",
-      );
+      setGeneralError(t.genericError);
     }
   };
 
@@ -111,33 +111,33 @@ export function RegisterForm() {
         <Link
           href={ROUTES.HOME}
           className="inline-flex items-center gap-1.5 rounded-sm text-xs font-medium text-text-secondary transition-colors hover:text-text-primary focus-visible:outline-2 focus-visible:outline-brand-secondary"
-          aria-label="Back to home"
+          aria-label={t.back}
         >
           <ArrowLeft className="size-4" aria-hidden="true" />
 
-          <span>Back</span>
+          <span>{t.back}</span>
         </Link>
       </div>
 
       {/* Header */}
       <div className="space-y-1.5 text-center">
         <div className="text-xl font-bold tracking-tight text-brand-primary">
-          FoodFighter
+          {t.brand}
         </div>
 
         <h1 className="text-2xl font-bold tracking-tight text-text-primary">
-          Create your account
+          {t.title}
         </h1>
 
         <p className="text-xs text-text-secondary">
-          Join FoodFighter to decide group meals easily with AI.
+          {t.subtitle}
         </p>
       </div>
 
       {/* General Error */}
       {generalError && (
         <Alert variant="error">
-          <AlertTitle>Registration Failed</AlertTitle>
+          <AlertTitle>{t.failedTitle}</AlertTitle>
 
           <AlertDescription>{generalError}</AlertDescription>
         </Alert>
@@ -148,12 +148,12 @@ export function RegisterForm() {
         {/* Full Name */}
         <FormField isInvalid={!!errors.name}>
           <FormLabel htmlFor="name" required>
-            Full Name
+            {t.nameLabel}
           </FormLabel>
 
           <Input
             id="name"
-            placeholder="e.g. Somchai Dee"
+            placeholder={t.namePlaceholder}
             autoComplete="name"
             disabled={isSubmitting}
             {...register("name")}
@@ -165,13 +165,13 @@ export function RegisterForm() {
         {/* Email */}
         <FormField isInvalid={!!errors.email}>
           <FormLabel htmlFor="email" required>
-            Email Address
+            {t.emailLabel}
           </FormLabel>
 
           <Input
             id="email"
             type="email"
-            placeholder="you@example.com"
+            placeholder={t.emailPlaceholder}
             autoComplete="email"
             disabled={isSubmitting}
             {...register("email")}
@@ -183,20 +183,19 @@ export function RegisterForm() {
         {/* Password */}
         <FormField isInvalid={!!errors.password}>
           <FormLabel htmlFor="password" required>
-            Password
+            {t.passwordLabel}
           </FormLabel>
 
           <PasswordInput
             id="password"
-            placeholder="••••••••"
+            placeholder={t.passwordPlaceholder}
             autoComplete="new-password"
             disabled={isSubmitting}
             {...register("password")}
           />
 
           <FormDescription>
-            At least 8 characters with lowercase, uppercase, a number, and a
-            special character.
+            {t.passwordDescription}
           </FormDescription>
 
           {errors.password && <FormError>{errors.password.message}</FormError>}
@@ -205,12 +204,12 @@ export function RegisterForm() {
         {/* Confirm Password */}
         <FormField isInvalid={!!errors.confirmPassword}>
           <FormLabel htmlFor="confirmPassword" required>
-            Confirm Password
+            {t.confirmPasswordLabel}
           </FormLabel>
 
           <PasswordInput
             id="confirmPassword"
-            placeholder="••••••••"
+            placeholder={t.confirmPasswordPlaceholder}
             autoComplete="new-password"
             disabled={isSubmitting}
             {...register("confirmPassword")}
@@ -237,14 +236,14 @@ export function RegisterForm() {
             disabled={isSubmitting}
             loading={isSubmitting}
           >
-            CREATE ACCOUNT
+            {t.submit}
           </Button>
         </div>
       </form>
 
       {/* Divider */}
       <div className="relative my-4">
-        <Separator text="OR" />
+        <Separator text={t.or} />
       </div>
 
       {/* Social Auth */}
@@ -262,12 +261,12 @@ export function RegisterForm() {
 
       {/* Login */}
       <div className="pt-2 text-center text-xs text-text-secondary">
-        Already have an account?{" "}
+        {t.hasAccount}{" "}
         <Link
           href={ROUTES.AUTH.LOGIN}
           className="rounded-sm font-semibold text-brand-primary underline underline-offset-2 transition-colors hover:text-brand-primary-hover focus-visible:outline-2 focus-visible:outline-brand-secondary"
         >
-          Log in
+          {t.logIn}
         </Link>
       </div>
     </div>

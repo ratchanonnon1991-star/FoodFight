@@ -12,6 +12,8 @@ import { Spinner } from "@/components/ui/Spinner";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { ApiError, resolveMediaUrl } from "@/lib/api/client";
 import { compressImage } from "@/lib/utils/image";
+import { useLanguage } from "@/i18n/LanguageProvider";
+import { billTranslations } from "../i18n/bill-translations";
 import { BillPageHeader } from "./BillPageHeader";
 import { ReceiptItemRow } from "./ReceiptItemRow";
 import { AddReceiptItemForm } from "./AddReceiptItemForm";
@@ -24,6 +26,8 @@ export interface ReceiptStepScreenProps {
 
 export function ReceiptStepScreen({ billId }: ReceiptStepScreenProps) {
   const router = useRouter();
+  const { locale } = useLanguage();
+  const t = billTranslations[locale];
   const { bill, isLoading, error, setBill } = useBill(billId);
   const [actionError, setActionError] = React.useState<string | null>(null);
   const [scanWarning, setScanWarning] = React.useState<string | null>(null);

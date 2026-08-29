@@ -2,7 +2,8 @@
 
 import * as React from "react";
 import { cn } from "@/lib/utils/cn";
-import { FOOD_PROFILE_STEPS } from "../constants/food-profile-constants";
+import { useLanguage } from "@/i18n/LanguageProvider";
+import { foodProfileTranslations } from "../i18n/food-profile-translations";
 
 export interface StepProgressProps {
   currentStep: number;
@@ -10,10 +11,19 @@ export interface StepProgressProps {
 }
 
 export function StepProgress({ currentStep, className }: StepProgressProps) {
+  const { locale } = useLanguage();
+  const t = foodProfileTranslations[locale].steps;
+
+  const stepsConfig = [
+    { step: 1, label: t.allergies },
+    { step: 2, label: t.restrictions },
+    { step: 3, label: t.details },
+  ];
+
   return (
-    <nav aria-label="Onboarding Progress" className={cn("w-full", className)}>
+    <nav aria-label={t.ariaLabel} className={cn("w-full", className)}>
       <ol className="flex items-center justify-between gap-2" role="list">
-        {FOOD_PROFILE_STEPS.map(({ step, label }, index) => {
+        {stepsConfig.map(({ step, label }, index) => {
           const isActive = step === currentStep;
           const isCompleted = step < currentStep;
 

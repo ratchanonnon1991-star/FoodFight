@@ -15,6 +15,8 @@ import {
   createRoomSchema,
   type CreateRoomFormValues,
 } from "../schemas/room-schema";
+import { useLanguage } from "@/i18n/LanguageProvider";
+import { roomTranslations } from "../i18n/room-translations";
 import { LocationPicker } from "./LocationPicker";
 import { RoomPageHeader } from "./RoomPageHeader";
 
@@ -30,6 +32,8 @@ function getInitialDate() {
 }
 
 export function CreateRoomForm() {
+  const { locale } = useLanguage();
+  const t = roomTranslations[locale].create;
   const [generalError, setGeneralError] = React.useState<string | null>(null);
 
   const {
@@ -110,7 +114,7 @@ export function CreateRoomForm() {
       setGeneralError(
         error instanceof RoomApiError
           ? error.message
-          : "Unable to create the room. Please try again.",
+          : t.genericError,
       );
     }
   };
@@ -119,19 +123,19 @@ export function CreateRoomForm() {
     <main className="min-h-dvh overflow-x-clip bg-background text-text-primary">
       <div className="mx-auto w-full max-w-5xl px-4 pb-32 pt-3 sm:px-6 sm:pt-5">
         <RoomPageHeader
-          title="Create Room"
-          subtitle="Set up your FoodFight"
+          title={t.title}
+          subtitle={t.subtitle}
           backHref={ROUTES.AUTHENTICATED_HOME}
           showAccountActions
         />
 
         <p className="mb-5 text-base leading-relaxed text-text-secondary">
-          Fill in the details below to create a room for your group.
+          {t.description}
         </p>
 
         {generalError ? (
           <Alert variant="error" className="mb-4">
-            <AlertTitle>Could not create room</AlertTitle>
+            <AlertTitle>{t.errorTitle}</AlertTitle>
             <AlertDescription>{generalError}</AlertDescription>
           </Alert>
         ) : null}
@@ -149,7 +153,7 @@ export function CreateRoomForm() {
                 className="text-base font-semibold normal-case tracking-normal"
               >
                 <span className="inline-flex items-center gap-2">
-                  Room Name
+                  {t.roomNameLabel}
                   <Info
                     className="size-4 text-text-secondary"
                     aria-hidden="true"
@@ -164,7 +168,7 @@ export function CreateRoomForm() {
                 <Input
                   id="room-name"
                   maxLength={30}
-                  placeholder="e.g. Saturday dinner"
+                  placeholder={t.roomNamePlaceholder}
                   className="h-14 rounded-xl pl-12 pr-14 text-base"
                   {...register("name")}
                 />
@@ -176,7 +180,7 @@ export function CreateRoomForm() {
                 <FormError>{errors.name.message}</FormError>
               ) : null}
               <p className="text-sm text-text-secondary">
-                This is how your room will appear to others.
+                {t.roomNameHelp}
               </p>
             </FormField>
           </Card>
@@ -189,7 +193,7 @@ export function CreateRoomForm() {
                   className="text-base font-semibold normal-case tracking-normal"
                 >
                   <span className="inline-flex items-center gap-2">
-                    Max Members
+                    {t.maxMembersLabel}
                     <Info
                       className="size-4 text-text-secondary"
                       aria-hidden="true"
@@ -197,13 +201,13 @@ export function CreateRoomForm() {
                   </span>
                 </FormLabel>
                 <span className="rounded-full bg-surface-subtle px-3 py-1 text-xs text-text-secondary">
-                  2 – 15 people
+                  {t.maxMembersBadge}
                 </span>
               </div>
               <div className="flex h-16 items-center justify-center gap-12 rounded-xl border border-border bg-surface">
                 <button
                   type="button"
-                  aria-label="Decrease maximum members"
+                  aria-label={t.decreaseMembers}
                   onClick={() => updateMaxMembers(maxMembers - 1)}
                   disabled={maxMembers <= 2 || isSubmitting}
                   className="inline-flex size-10 items-center justify-center rounded-full border border-border text-text-primary transition-colors hover:bg-surface-subtle focus-visible:outline-2 focus-visible:outline-brand-secondary disabled:opacity-40"
@@ -216,13 +220,13 @@ export function CreateRoomForm() {
                   min={2}
                   max={15}
                   inputMode="numeric"
-                  aria-label="Maximum members"
+                  aria-label={t.maxMembersLabel}
                   className="h-auto w-12 border-0 p-0 text-center text-3xl font-semibold focus-visible:outline-none"
                   {...register("maxMembers", { valueAsNumber: true })}
                 />
                 <button
                   type="button"
-                  aria-label="Increase maximum members"
+                  aria-label={t.increaseMembers}
                   onClick={() => updateMaxMembers(maxMembers + 1)}
                   disabled={maxMembers >= 15 || isSubmitting}
                   className="inline-flex size-10 items-center justify-center rounded-full border border-border text-text-primary transition-colors hover:bg-surface-subtle focus-visible:outline-2 focus-visible:outline-brand-secondary disabled:opacity-40"
@@ -234,7 +238,7 @@ export function CreateRoomForm() {
                 <FormError>{errors.maxMembers.message}</FormError>
               ) : null}
               <p className="text-sm text-text-secondary">
-                Set the maximum number of people who can join.
+                {t.maxMembersHelp}
               </p>
             </FormField>
           </Card>
@@ -247,7 +251,7 @@ export function CreateRoomForm() {
                 className="text-base font-semibold normal-case tracking-normal"
               >
                 <span className="inline-flex items-center gap-2">
-                  Location
+                  {t.locationLabel}
                   <Info
                     className="size-4 text-text-secondary"
                     aria-hidden="true"
@@ -289,7 +293,7 @@ export function CreateRoomForm() {
                     className="text-base font-semibold normal-case tracking-normal"
                   >
                     <span className="inline-flex items-center gap-2">
-                      Search Radius
+                      {t.searchRadiusLabel}
                       <Info
                         className="size-4 text-text-secondary"
                         aria-hidden="true"
@@ -297,14 +301,14 @@ export function CreateRoomForm() {
                     </span>
                   </FormLabel>
                   <span className="rounded-full bg-surface-subtle px-3 py-1 text-xs text-text-secondary">
-                    Within {selectedRadius} km
+                    {t.searchRadiusBadge(selectedRadius)}
                   </span>
                 </div>
                 <div
                   id="search-radius"
                   className="grid grid-cols-4 gap-2"
                   role="group"
-                  aria-label="Search radius"
+                  aria-label={t.searchRadiusLabel}
                 >
                   {SEARCH_RADII.map((radius) => (
                     <button
@@ -325,7 +329,7 @@ export function CreateRoomForm() {
                   ))}
                 </div>
                 <p className="mt-3 text-sm text-text-secondary">
-                  AI will search for restaurants within the selected distance.
+                  {t.searchRadiusHelp}
                 </p>
               </div>
             </FormField>
@@ -335,7 +339,7 @@ export function CreateRoomForm() {
             <FormField isInvalid={!!errors.date || !!errors.time}>
               <FormLabel className="text-base font-semibold normal-case tracking-normal">
                 <span className="inline-flex items-center gap-2">
-                  Date &amp; Time
+                  {t.dateTimeLabel}
                   <Info
                     className="size-4 text-text-secondary"
                     aria-hidden="true"
@@ -344,7 +348,7 @@ export function CreateRoomForm() {
               </FormLabel>
               <div className="grid gap-3 sm:grid-cols-2">
                 <label className="space-y-1.5">
-                  <span className="text-sm text-text-secondary">Date</span>
+                  <span className="text-sm text-text-secondary">{t.dateLabel}</span>
                   <div className="relative">
                     <CalendarDays
                       className="pointer-events-none absolute left-3 top-1/2 size-5 -translate-y-1/2 text-text-primary"
@@ -358,7 +362,7 @@ export function CreateRoomForm() {
                     />
                     <button
                       type="button"
-                      aria-label="Open date picker"
+                      aria-label={t.openDatePicker}
                       onClick={openDatePicker}
                       className="absolute right-1 top-1/2 inline-flex size-10 -translate-y-1/2 items-center justify-center rounded-lg text-text-primary transition-colors hover:bg-surface-subtle focus-visible:outline-2 focus-visible:outline-brand-secondary"
                     >
@@ -367,7 +371,7 @@ export function CreateRoomForm() {
                   </div>
                 </label>
                 <label className="space-y-1.5">
-                  <span className="text-sm text-text-secondary">Time</span>
+                  <span className="text-sm text-text-secondary">{t.timeLabel}</span>
                   <div className="relative">
                     <Timer
                       className="pointer-events-none absolute left-3 top-1/2 size-5 -translate-y-1/2 text-text-primary"
@@ -388,18 +392,17 @@ export function CreateRoomForm() {
                 <FormError>{errors.time.message}</FormError>
               ) : null}
               <p className="text-sm text-text-secondary">
-                When will you and your friends meet for the meal?
+                {t.dateTimeHelp}
               </p>
             </FormField>
           </Card>
 
           <div className="rounded-2xl border border-border bg-surface-subtle p-5">
             <p className="font-semibold text-text-primary">
-              After you create the room
+              {t.afterCreateTitle}
             </p>
             <p className="mt-1 text-sm leading-relaxed text-text-secondary">
-              We will generate a room code, invite link and QR code for you to
-              share with your friends.
+              {t.afterCreateDesc}
             </p>
           </div>
 
@@ -409,9 +412,9 @@ export function CreateRoomForm() {
             size="lg"
             fullWidth
             loading={isSubmitting}
-            loadingText="Creating room"
+            loadingText={t.submitting}
           >
-            Create Room
+            {t.submit}
           </Button>
         </form>
       </div>

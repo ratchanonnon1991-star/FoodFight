@@ -8,6 +8,8 @@ import { Button } from "@/components/ui/Button";
 import { Label } from "@/components/ui/Label";
 import { Textarea } from "@/components/ui/Textarea";
 import { Alert, AlertDescription } from "@/components/ui/Alert";
+import { useLanguage } from "@/i18n/LanguageProvider";
+import { foodProfileTranslations } from "../i18n/food-profile-translations";
 import { useFoodProfile } from "../context/food-profile-context";
 import { saveFoodProfile } from "../services/food-profile-service";
 import { FoodProfileStepLayout } from "./FoodProfileStepLayout";
@@ -24,6 +26,8 @@ export function DetailsStep({
   backHref = ROUTES.FOOD_PROFILE.RESTRICTIONS,
 }: DetailsStepProps) {
   const router = useRouter();
+  const { locale } = useLanguage();
+  const t = foodProfileTranslations[locale].details;
   const { draft, setAdditionalNotes } = useFoodProfile();
   const [isSaving, setIsSaving] = React.useState(false);
   const [errorMessage, setErrorMessage] = React.useState<string | null>(null);
@@ -56,9 +60,7 @@ export function DetailsStep({
         router.push(ROUTES.AUTHENTICATED_HOME);
       }
     } catch {
-      setErrorMessage(
-        "An unexpected error occurred while saving your profile. Please try again."
-      );
+      setErrorMessage(t.errorDefault);
       setIsSaving(false);
     }
   };
@@ -66,8 +68,8 @@ export function DetailsStep({
   return (
     <FoodProfileStepLayout
       currentStep={3}
-      title="Anything else we should know?"
-      description="Tell us about any other food preferences, likes, dislikes, or details that help FoodFighter find your best meals. (Optional)"
+      title={t.title}
+      description={t.description}
       backHref={backHref}
       footer={
         <div className="space-y-3">
@@ -84,7 +86,7 @@ export function DetailsStep({
           <Alert variant="info" className="py-2.5 px-3">
             <Info className="size-4 shrink-0 text-status-info-icon" />
             <AlertDescription className="text-xs text-status-info-text leading-snug">
-              FoodFighter combines your profile preferences with meal-specific votes to find recommendations everyone will enjoy.
+              {t.notice}
             </AlertDescription>
           </Alert>
 
@@ -95,11 +97,11 @@ export function DetailsStep({
             size="lg"
             fullWidth
             loading={isSaving}
-            loadingText="Saving..."
+            loadingText={t.saving}
             onClick={handleSaveAndContinue}
             id="details-save-continue-button"
           >
-            Save &amp; Continue
+            {t.saveAndContinue}
           </Button>
         </div>
       }
@@ -111,9 +113,9 @@ export function DetailsStep({
             htmlFor="additional-notes-input"
             className="text-sm font-semibold text-text-primary"
           >
-            Additional Preferences &amp; Notes
+            {t.notesLabel}
           </Label>
-          <span className="text-xs text-text-muted">Optional</span>
+          <span className="text-xs text-text-muted">{t.optional}</span>
         </div>
 
         {/* Textarea Primitive */}
@@ -122,12 +124,12 @@ export function DetailsStep({
             id="additional-notes-input"
             name="additionalNotes"
             rows={5}
-            placeholder="e.g. I prefer spicy food, don't like cilantro, looking for high-protein options..."
+            placeholder={t.notesPlaceholder}
             value={draft.additionalNotes}
             onChange={handleChange}
             maxLength={MAX_NOTES_LENGTH}
             className="w-full text-sm leading-relaxed"
-            aria-label="Additional food preferences or notes"
+            aria-label={t.notesLabel}
             aria-describedby="character-counter"
           />
         </div>

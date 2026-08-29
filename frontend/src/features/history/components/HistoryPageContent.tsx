@@ -16,11 +16,19 @@ import {
   AuthenticatedPageLayout,
 } from "@/components/layout/AuthenticatedPageLayout";
 import { Alert, AlertDescription } from "@/components/ui/Alert";
+import { useLanguage } from "@/i18n/LanguageProvider";
+import { historyTranslations } from "../i18n/history-translations";
 import { formatRoomDate, formatRoomTime } from "@/features/room/utils/room-format";
 import { getMyHistory, HistoryApiError } from "../services/history-service";
 import type { HistoryItem } from "../types/history-types";
 
-function HistoryStatusBadge({ status }: { status: HistoryItem["status"] }) {
+function HistoryStatusBadge({
+  status,
+  t,
+}: {
+  status: HistoryItem["status"];
+  t: { completed: string; cancelled: string };
+}) {
   const isCompleted = status === "COMPLETED";
 
   return (
@@ -31,12 +39,18 @@ function HistoryStatusBadge({ status }: { status: HistoryItem["status"] }) {
           : "rounded-full bg-status-danger-bg px-2.5 py-1 text-[11px] font-bold text-status-danger-text"
       }
     >
-      {isCompleted ? "Completed" : "Cancelled"}
+      {isCompleted ? t.completed : t.cancelled}
     </span>
   );
 }
 
-function HistoryItemCard({ item }: { item: HistoryItem }) {
+function HistoryItemCard({
+  item,
+  t,
+}: {
+  item: HistoryItem;
+  t: typeof historyTranslations["en"];
+}) {
   return (
     <article className="rounded-2xl border border-border/80 bg-surface p-4 shadow-xs sm:p-5">
       <div className="flex items-start justify-between gap-3">
@@ -47,7 +61,7 @@ function HistoryItemCard({ item }: { item: HistoryItem }) {
             <span className="truncate">{item.room.locationName}</span>
           </p>
         </div>
-        <HistoryStatusBadge status={item.status} />
+        <HistoryStatusBadge status={item.status} t={t} />
       </div>
 
       <div className="mt-4 flex flex-wrap gap-x-4 gap-y-2 text-xs text-text-secondary">
@@ -61,7 +75,7 @@ function HistoryItemCard({ item }: { item: HistoryItem }) {
         </span>
         <span className="inline-flex items-center gap-1.5">
           <Users className="size-3.5" />
-          {item.memberCount} {item.memberCount === 1 ? "member" : "members"}
+          {item.memberCount} {item.memberCount === 1 ? t.memberSingular : t.memberPlural}
         </span>
       </div>
 
@@ -70,7 +84,7 @@ function HistoryItemCard({ item }: { item: HistoryItem }) {
           {item.restaurant ? (
             <div className="min-w-0">
               <p className="text-[11px] font-bold uppercase tracking-wider text-text-secondary">
-                Restaurant
+                {t.restaurant}
               </p>
               <p className="mt-1 truncate text-sm font-semibold text-text-primary">
                 {item.restaurant.name}
@@ -85,7 +99,7 @@ function HistoryItemCard({ item }: { item: HistoryItem }) {
           {item.finalMenu ? (
             <div className="min-w-0">
               <p className="text-[11px] font-bold uppercase tracking-wider text-text-secondary">
-                Winning menu
+                {t.winningMenu}
               </p>
               <p className="mt-1 flex items-center gap-1.5 truncate text-sm font-semibold text-text-primary">
                 <Utensils className="size-3.5 shrink-0 text-brand-primary" />
@@ -97,7 +111,7 @@ function HistoryItemCard({ item }: { item: HistoryItem }) {
       ) : null}
 
       <p className="mt-3 text-xs text-text-muted">
-        {item.role === "HOST" ? "Hosted by you" : "Joined by you"}
+        {item.role === "HOST" ? t.hostedByYou : t.joinedByYou}
       </p>
     </article>
   );
@@ -115,6 +129,8 @@ function HistoryLoadingState() {
 
 export function HistoryPageContent() {
   const router = useRouter();
+  const { locale } = useLanguage();
+  const t = historyTranslations[locale];
   const [items, setItems] = React.useState<HistoryItem[]>([]);
   const [isLoading, setIsLoading] = React.useState(true);
   const [errorMessage, setErrorMessage] = React.useState<string | null>(null);
@@ -130,12 +146,12 @@ export function HistoryPageContent() {
       }
 
       setErrorMessage(
-        error instanceof Error ? error.message : "Unable to load your history.",
+        error instanceof Error ? error.message : t.errorDefault,
       );
     } finally {
       setIsLoading(false);
     }
-  }, [router]);
+  }, [router, t.errorDefault]);
 
   React.useEffect(() => {
     void Promise.resolve().then(loadHistory);
@@ -144,9 +160,9 @@ export function HistoryPageContent() {
   return (
     <AuthenticatedPageLayout>
       <AuthenticatedPageHeader
-        eyebrow="Your activity"
-        title="History"
-        description="Review your completed FoodFights and past group meals."
+        eyebrow={t.eyebrow}
+        title={t.title}
+        description={t.description}
       />
 
       {errorMessage ? (
@@ -158,9 +174,9 @@ export function HistoryPageContent() {
       {isLoading ? (
         <HistoryLoadingState />
       ) : items.length > 0 ? (
-        <section aria-label="FoodFight history" className="space-y-3">
+        <section aria-label={t.title} className="space-y-3">
           {items.map((item) => (
-            <HistoryItemCard key={item.id} item={item} />
+            <HistoryItemCard key={item.id} item={item} t={t} />
           ))}
         </section>
       ) : (
@@ -168,15 +184,15 @@ export function HistoryPageContent() {
           <div className="mx-auto flex size-12 items-center justify-center rounded-2xl bg-surface-subtle text-brand-primary">
             <Clock3 className="size-6" />
           </div>
-          <h2 className="mt-4 text-lg font-bold text-text-primary">No history yet</h2>
+          <h2 className="mt-4 text-lg font-bold text-text-primary">{t.emptyTitle}</h2>
           <p className="mx-auto mt-2 max-w-xs text-sm leading-relaxed text-text-secondary">
-            Your completed FoodFights will appear here once you finish a group meal.
+            {t.emptyDesc}
           </p>
           <Link
             href={ROUTES.ROOM.CREATE}
             className="mt-5 inline-flex h-10 items-center rounded-xl bg-brand-primary px-4 text-sm font-semibold text-white hover:bg-brand-primary-hover"
           >
-            Start a FoodFight
+            {t.startFoodFight}
           </Link>
         </section>
       )}

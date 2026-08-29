@@ -12,6 +12,8 @@ import { cn } from "@/lib/utils/cn";
 import { Spinner } from "@/components/ui/Spinner";
 import { Button } from "@/components/ui/Button";
 import { ApiError } from "@/lib/api/client";
+import { useLanguage } from "@/i18n/LanguageProvider";
+import { billTranslations } from "../i18n/bill-translations";
 import { useBill } from "../hooks/use-bill";
 import { useCurrentUser } from "../hooks/use-current-user";
 import { billService } from "../services/bill-service";
@@ -23,6 +25,8 @@ export interface BillDetailScreenProps {
 }
 
 export function BillDetailScreen({ billId }: BillDetailScreenProps) {
+  const { locale } = useLanguage();
+  const t = billTranslations[locale];
   const { bill, isLoading, error, setBill } = useBill(billId);
   const { user } = useCurrentUser();
   const [isClosing, setIsClosing] = React.useState(false);

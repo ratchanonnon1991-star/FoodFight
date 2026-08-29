@@ -9,6 +9,8 @@ import { Input } from "@/components/ui/Input";
 import { Label } from "@/components/ui/Label";
 import { Separator } from "@/components/ui/Separator";
 import { Alert, AlertDescription } from "@/components/ui/Alert";
+import { useLanguage } from "@/i18n/LanguageProvider";
+import { foodProfileTranslations } from "../i18n/food-profile-translations";
 import { STANDARD_ALLERGIES } from "../constants/food-profile-constants";
 import { useFoodProfile } from "../context/food-profile-context";
 import { FoodProfileStepLayout } from "./FoodProfileStepLayout";
@@ -24,6 +26,8 @@ export function AllergiesStep({
   backHref,
 }: AllergiesStepProps) {
   const router = useRouter();
+  const { locale } = useLanguage();
+  const t = foodProfileTranslations[locale].allergies;
   const {
     draft,
     toggleAllergy,
@@ -68,8 +72,8 @@ export function AllergiesStep({
   return (
     <FoodProfileStepLayout
       currentStep={1}
-      title="Do you have any food allergies?"
-      description="Select all that apply."
+      title={t.title}
+      description={t.description}
       backHref={backHref}
       onBack={backHref ? undefined : handleBack}
       footer={
@@ -78,7 +82,7 @@ export function AllergiesStep({
           <Alert variant="info" className="py-2.5 px-3">
             <Info className="size-4 shrink-0 text-status-info-icon" />
             <AlertDescription className="text-xs text-status-info-text leading-snug">
-              You can update your food profile anytime in your account settings.
+              {t.notice}
             </AlertDescription>
           </Alert>
 
@@ -92,7 +96,7 @@ export function AllergiesStep({
             onClick={handleNext}
             id="allergies-next-button"
           >
-            Next
+            {t.next}
           </Button>
         </div>
       }
@@ -101,15 +105,16 @@ export function AllergiesStep({
       <div
         className="grid grid-cols-2 gap-2.5 sm:gap-3"
         role="group"
-        aria-label="Standard Food Allergies"
+        aria-label={t.title}
       >
         {STANDARD_ALLERGIES.map((option) => {
           const isSelected = draft.allergies.includes(option.id);
+          const optionLabel = t.options[option.id] ?? option.label;
           return (
             <SelectableOptionCard
               key={option.id}
               id={`allergy-${option.id}`}
-              label={option.label}
+              label={optionLabel}
               selected={isSelected}
               onClick={() => toggleAllergy(option.id)}
             />
@@ -123,23 +128,23 @@ export function AllergiesStep({
           <div className="space-y-1.5 p-3.5 rounded-xl border border-border bg-surface shadow-2xs animate-fade-in">
             <div className="flex items-center justify-between">
               <Label htmlFor="custom-allergy-input" className="text-xs font-semibold text-text-primary">
-                Other Allergy
+                {t.otherAllergy}
               </Label>
               <button
                 type="button"
                 onClick={handleClearCustomInput}
                 className="text-xs text-text-muted hover:text-text-primary flex items-center gap-0.5 transition-colors cursor-pointer"
-                aria-label="Remove custom allergy input"
+                aria-label={t.remove}
               >
                 <X className="size-3.5" />
-                <span>Remove</span>
+                <span>{t.remove}</span>
               </button>
             </div>
             <Input
               ref={customInputRef}
               id="custom-allergy-input"
               type="text"
-              placeholder="e.g. Kiwi, Shellfish, Strawberries"
+              placeholder={t.otherPlaceholder}
               value={draft.otherAllergies}
               onChange={(e) => setOtherAllergies(e.target.value)}
               className="text-sm h-10"
@@ -157,27 +162,27 @@ export function AllergiesStep({
             className="border-dashed hover:border-solid text-text-secondary hover:text-brand-primary"
             id="add-other-allergy-button"
           >
-            Add other allergy
+            {t.addOtherAllergy}
           </Button>
         )}
       </div>
 
       {/* OR Divider */}
       <div className="py-1">
-        <Separator text="OR" className="text-xs font-medium text-text-muted" />
+        <Separator text={t.or} className="text-xs font-medium text-text-muted" />
       </div>
 
       {/* No Allergies Option (Mutually Exclusive) */}
       <div>
         <SelectableOptionCard
           id="no-allergies-option"
-          label="I don't have any food allergies"
-          description="Anything is fine — no allergy restrictions"
+          label={t.noAllergiesLabel}
+          description={t.noAllergiesDesc}
           selected={draft.hasNoAllergies}
           onClick={() => setHasNoAllergies(!draft.hasNoAllergies)}
           icon={<ShieldCheck className="size-5 text-brand-primary" />}
           className="w-full border-border/80"
-          aria-label="I do not have any food allergies"
+          aria-label={t.noAllergiesLabel}
         />
       </div>
     </FoodProfileStepLayout>

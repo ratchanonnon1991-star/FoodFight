@@ -4,6 +4,8 @@ import * as React from "react";
 import { GoogleLogin, GoogleOAuthProvider } from "@react-oauth/google";
 import { Loader2 } from "lucide-react";
 
+import { useLanguage } from "@/i18n/LanguageProvider";
+import { authTranslations } from "@/features/auth/i18n/auth-translations";
 import { authService } from "@/features/auth/services/auth-runtime";
 import { cn } from "@/lib/utils/cn";
 
@@ -42,7 +44,7 @@ function LineBrandIcon({
 
       <path
         fill={onSurface ? "#FFFFFF" : "#06C755"}
-        d="M9.228 13.072H7.104a.531.531 0 0 1-.531-.531V7.955c0-.293.238-.531.531-.531h.708a.531.531 0 0 1 .531.531v3.878h1.416a.531.531 0 0 1 .531.531v.708a.531.531 0 0 1-.531.531zm2.348 0h-.708a.531.531 0 0 1-.531-.531V7.955c0-.293.238-.531.531-.531h.708a.531.531 0 0 1 .531.531v4.586a.531.531 0 0 1-.531.531zm4.721 0h-.708a.531.531 0 0 1-.447-.245l-2.022-2.889v2.603c0 .293-.238.531-.531.531h-.708a.531.531 0 0 1-.531-.531V7.955c0-.293.238-.531.531-.531h.708a.531.531 0 0 1 .447.245l2.022 2.889V7.955c0-.293.238-.531.531-.531h.708a.531.531 0 0 1 .531.531v4.586a.531.531 0 0 1-.531.531zm4.331-3.355h-1.416v.708h1.416a.531.531 0 0 1 .531.531v.708a.531.531 0 0 1-.531.531h-2.124a.531.531 0 0 1-.531-.531V7.955c0-.293.238-.531.531-.531h2.124a.531.531 0 0 1 .531.531v.708a.531.531 0 0 1-.531.531h-1.416v.708h1.416a.531.531 0 0 1 .531.531v.708a.531.531 0 0 1-.531.531z"
+        d="M9.228 13.072H7.104a.531.531 0 0 1-.531-.531V7.955c0-.293.238-.531.531-.531h.708a.531.531 0 0 1 .531.531v3.878h1.416a.531.531 0 0 1 .531.531v.708a.531.531 0 0 1-.531.531zm2.348 0h-.708a.531.531 0 0 1-.531-.531V7.955c0-.293.238-.531.531-.531h.708a.531.531 0 0 1 .531.531v4.586a.531.531 0 0 1-.531.531zm4.721 0h-.708a.531.531 0 0 1-.447-.245l-2.022-2.889v2.603c0 .293-.238.531-.531.531h-.708a.531.531 0 0 1-.531-.531V7.955c0-.293.238-.531.531-.531h.708a.531.531 0 0 1 .447.245l2.022 2.889V7.955c0-.293.238-.531.531-.531h.708a.531.531 0 0 1 .531.531v4.586a.531.531 0 0 1-.531.531zm4.331-3.355h-1.416v.708h1.416a.531.531 0 0 1 .531.531v.708a.531.531 0 0 1-.531.531h-2.124a.531.531 0 0 1-.531-.531V7.955c0-.293.238-.531.531-.531h2.124a.531.531 0 0 1 .531.531v.708a.531.531 0 0 1-.531.531z"
       />
     </svg>
   );
@@ -53,11 +55,16 @@ export function SocialAuthButtons({
   onSuccess,
   onError,
   onPendingChange,
-  googleLabel = "Continue with Google",
-  lineLabel = "Continue with LINE",
+  googleLabel,
+  lineLabel,
   appearance = "brand",
   density = "default",
 }: SocialAuthButtonsProps) {
+  const { locale } = useLanguage();
+  const t = authTranslations[locale].social;
+  const resolvedGoogleLabel = googleLabel ?? t.google;
+  const resolvedLineLabel = lineLabel ?? t.line;
+
   const [loadingProvider, setLoadingProvider] = React.useState<
     "google" | "line" | null
   >(null);

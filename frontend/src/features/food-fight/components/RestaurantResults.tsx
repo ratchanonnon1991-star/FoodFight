@@ -6,6 +6,8 @@ import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { CookingAnimation } from "@/features/food-fight/components/CookingAnimation";
 import { foodFightService, FoodFightApiError } from "@/features/food-fight/services/food-fight-service";
+import { useLanguage } from "@/i18n/LanguageProvider";
+import { foodFightTranslations } from "../i18n/food-fight-translations";
 import { LocationMap } from "@/features/room/components/LocationMap";
 import type { FoodFightState, RestaurantRecommendation } from "@/features/food-fight/types/food-fight-types";
 
@@ -15,6 +17,8 @@ interface RestaurantResultsProps {
 }
 
 export function RestaurantResults({ roomId, state: providedState }: RestaurantResultsProps) {
+  const { locale } = useLanguage();
+  const t = foodFightTranslations[locale].restaurants;
   const [loadedState, setLoadedState] = React.useState<FoodFightState | null>(null);
   const [retryState, setRetryState] = React.useState<FoodFightState | null>(null);
   const [isLoadingState, setIsLoadingState] = React.useState(!providedState);
@@ -28,11 +32,11 @@ export function RestaurantResults({ roomId, state: providedState }: RestaurantRe
     try {
       setLoadedState(await foodFightService.getFoodFightState(roomId));
     } catch (requestError) {
-      setError(requestError instanceof FoodFightApiError ? requestError.message : "ไม่สามารถโหลดร้านอาหารได้");
+      setError(requestError instanceof FoodFightApiError ? requestError.message : (locale === "th" ? "ไม่สามารถโหลดร้านอาหารได้" : "Unable to load restaurants"));
     } finally {
       if (showLoading) setIsLoadingState(false);
     }
-  }, [roomId]);
+  }, [roomId, locale]);
 
   React.useEffect(() => {
     if (providedState) return;

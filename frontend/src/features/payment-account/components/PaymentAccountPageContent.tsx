@@ -10,6 +10,8 @@ import { Alert, AlertDescription } from "@/components/ui/Alert";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { Label } from "@/components/ui/Label";
+import { useLanguage } from "@/i18n/LanguageProvider";
+import { paymentAccountTranslations } from "../i18n/payment-account-translations";
 import {
   getMyPaymentAccount,
   saveMyPaymentAccount,
@@ -28,6 +30,8 @@ function readFileAsDataUrl(file: File): Promise<string> {
 
 export function PaymentAccountPageContent() {
   const router = useRouter();
+  const { locale } = useLanguage();
+  const t = paymentAccountTranslations[locale];
   const fileInputRef = React.useRef<HTMLInputElement>(null);
   const [paymentType, setPaymentType] = React.useState<"PROMPTPAY">("PROMPTPAY");
   const [accountName, setAccountName] = React.useState("");
@@ -65,7 +69,7 @@ export function PaymentAccountPageContent() {
           setErrorMessage(
             error instanceof Error
               ? error.message
-              : "Unable to load payment account.",
+              : t.errorDefault,
           );
         }
       })
@@ -78,7 +82,7 @@ export function PaymentAccountPageContent() {
     return () => {
       isMounted = false;
     };
-  }, [router]);
+  }, [router, t.errorDefault]);
 
   const handleQrChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -139,11 +143,11 @@ export function PaymentAccountPageContent() {
         qrCodeUrl: qrCodeUrl || null,
       });
 
-      setSuccessMessage("Payment account saved successfully.");
+      setSuccessMessage(t.successSaved);
       router.push(ROUTES.AUTHENTICATED_HOME);
     } catch (error: unknown) {
       setErrorMessage(
-        error instanceof Error ? error.message : "Unable to save payment account.",
+        error instanceof Error ? error.message : t.errorDefault,
       );
     } finally {
       setIsSaving(false);
@@ -166,16 +170,16 @@ export function PaymentAccountPageContent() {
         <div className="flex items-center gap-3">
           <Link
             href={ROUTES.AUTHENTICATED_HOME}
-            aria-label="Back to home"
+            aria-label={t.back}
             className="flex size-10 items-center justify-center rounded-full border border-border bg-surface text-text-secondary hover:text-text-primary"
           >
             <ArrowLeft className="size-5" />
           </Link>
           <div>
             <p className="text-xs font-semibold uppercase tracking-wider text-brand-primary">
-              Setup Payment Account
+              {t.title}
             </p>
-            <h1 className="text-2xl font-bold text-text-primary">Set Up Payment</h1>
+            <h1 className="text-2xl font-bold text-text-primary">{t.title}</h1>
           </div>
         </div>
 
@@ -197,9 +201,9 @@ export function PaymentAccountPageContent() {
             <div className="mx-auto mb-4 flex size-20 items-center justify-center rounded-3xl bg-status-success-bg text-status-success-icon">
               <ShieldCheck className="size-10" />
             </div>
-            <h2 className="text-xl font-bold text-text-primary">Set up your payment account</h2>
+            <h2 className="text-xl font-bold text-text-primary">{t.title}</h2>
             <p className="mt-2 text-sm leading-relaxed text-text-secondary">
-              Add your PromptPay account and QR so friends can pay you back easily.
+              {t.subtitle}
             </p>
           </div>
 
@@ -220,33 +224,34 @@ export function PaymentAccountPageContent() {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="payment-account-name">Account Name</Label>
+              <Label htmlFor="payment-account-name">{t.accountName}</Label>
               <Input
                 id="payment-account-name"
                 value={accountName}
                 onChange={(event) => setAccountName(event.target.value)}
-                placeholder="e.g. Ploy P."
+                placeholder={t.accountNamePlaceholder}
                 maxLength={100}
                 required
               />
+              <p className="text-xs text-text-muted">{t.accountNameHelp}</p>
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="promptpay-number">PromptPay Number</Label>
+              <Label htmlFor="promptpay-number">{t.promptPayNumber}</Label>
               <Input
                 id="promptpay-number"
                 value={promptPayNumber}
                 onChange={(event) => setPromptPayNumber(event.target.value)}
-                placeholder="081-234-5678"
+                placeholder={t.promptPayPlaceholder}
                 maxLength={30}
                 inputMode="tel"
                 required
               />
-              <p className="text-xs text-text-muted">Your PromptPay mobile number or ID</p>
+              <p className="text-xs text-text-muted">{t.promptPayHelp}</p>
             </div>
 
             <div className="space-y-2">
-              <Label>Payment QR</Label>
+              <Label>{t.qrCode}</Label>
               <input
                 ref={fileInputRef}
                 type="file"
@@ -270,8 +275,8 @@ export function PaymentAccountPageContent() {
                     <span className="mx-auto flex size-10 items-center justify-center rounded-xl bg-status-success-bg text-status-success-icon">
                       <ImageUp className="size-5" />
                     </span>
-                    <span className="block text-sm font-semibold text-text-primary">Upload QR Code</span>
-                    <span className="block text-xs text-text-secondary">PNG, JPG (max. 5MB)</span>
+                    <span className="block text-sm font-semibold text-text-primary">{t.uploadQr}</span>
+                    <span className="block text-xs text-text-secondary">{t.qrCodeHelp}</span>
                   </span>
                 )}
               </button>
@@ -291,14 +296,14 @@ export function PaymentAccountPageContent() {
               <p>Your payment info is only shared for this bill and is never public.</p>
             </div>
 
-            <Button type="submit" variant="primary" size="lg" fullWidth loading={isSaving} loadingText="Saving...">
-              Save &amp; Continue
+            <Button type="submit" variant="primary" size="lg" fullWidth loading={isSaving} loadingText={t.saving}>
+              {t.save}
             </Button>
             <Link
               href={ROUTES.AUTHENTICATED_HOME}
               className="block text-center text-sm font-semibold text-brand-primary hover:underline"
             >
-              Save for later
+              Cancel
             </Link>
           </form>
         </div>

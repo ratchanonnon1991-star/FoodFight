@@ -3,6 +3,8 @@
 import * as React from "react";
 import { type Control, Controller } from "react-hook-form";
 import { Checkbox } from "@/components/ui/Checkbox";
+import { useLanguage } from "@/i18n/LanguageProvider";
+import { authTranslations } from "@/features/auth/i18n/auth-translations";
 import type { RegisterFormValues } from "@/features/auth/schemas/register-schema";
 
 export interface TermsConsentProps {
@@ -12,6 +14,9 @@ export interface TermsConsentProps {
 }
 
 export function TermsConsent({ control, error, disabled = false }: TermsConsentProps) {
+  const { locale } = useLanguage();
+  const t = authTranslations[locale].register;
+
   return (
     <div className="pt-1">
       <Controller
@@ -26,13 +31,13 @@ export function TermsConsent({ control, error, disabled = false }: TermsConsentP
             invalid={!!error}
             label={
               <span className="text-xs text-text-secondary font-normal">
-                I agree to the{" "}
+                {t.termsAgree}{" "}
                 <span className="font-medium text-brand-primary underline underline-offset-2">
-                  Terms of Service
+                  {t.termsOfService}
                 </span>{" "}
-                and{" "}
+                {t.and}{" "}
                 <span className="font-medium text-brand-primary underline underline-offset-2">
-                  Privacy Policy
+                  {t.privacyPolicy}
                 </span>
               </span>
             }

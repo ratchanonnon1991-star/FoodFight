@@ -1,3 +1,5 @@
+"use client";
+
 import * as React from "react";
 import Image from "next/image";
 import Link from "next/link";
@@ -6,6 +8,9 @@ import { ROUTES } from "@/config/routes";
 import { buttonVariants } from "@/components/ui/Button";
 import { cn } from "@/lib/utils/cn";
 import { BrandMark } from "@/design-system";
+import { useLanguage } from "@/i18n/LanguageProvider";
+import { LanguageSwitcher } from "@/components/language/LanguageSwitcher";
+import { landingTranslations } from "../i18n/landing-translations";
 import { LandingSocialAuth } from "./LandingSocialAuth";
 
 export interface HomeHeroProps {
@@ -13,8 +18,16 @@ export interface HomeHeroProps {
 }
 
 export function HomeHero({ className }: HomeHeroProps) {
+  const { locale } = useLanguage();
+  const t = landingTranslations[locale];
+
   return (
     <main className={cn("relative h-dvh overflow-hidden bg-background", className)}>
+      {/* Language Switcher in top right corner */}
+      <div className="absolute top-3 right-3 z-30 sm:top-4 sm:right-4">
+        <LanguageSwitcher variant="landing" />
+      </div>
+
       <Image
         src="/food-fighter-landing-background-desktop-v1.png"
         alt=""
@@ -50,10 +63,10 @@ export function HomeHero({ className }: HomeHeroProps) {
         <section className="mx-auto max-w-sm pb-3" aria-labelledby="landing-heading">
           <div className="space-y-1.5">
             <h2 id="landing-heading" className="text-lg font-bold leading-5 tracking-tight text-text-primary sm:text-2xl sm:leading-7">
-              AI-Powered Group Meal Decision Platform
+              {t.heading}
             </h2>
             <p className="text-xs leading-4 text-text-secondary sm:text-sm sm:leading-5">
-              End the daily group meal dilemma. Set your taste preferences, let AI generate personalized dish recommendations, and vote together to reach consensus effortlessly.
+              {t.description}
             </p>
           </div>
         </section>
@@ -66,7 +79,7 @@ export function HomeHero({ className }: HomeHeroProps) {
               "h-11 w-full rounded-xl text-base font-bold shadow-md sm:h-12"
             )}
           >
-            Get Started <Sparkles className="size-5 text-accent-energy" aria-hidden="true" />
+            {t.getStarted} <Sparkles className="size-5 text-accent-energy" aria-hidden="true" />
           </Link>
           <Link
             href={ROUTES.AUTH.LOGIN}
@@ -75,22 +88,22 @@ export function HomeHero({ className }: HomeHeroProps) {
               "h-11 w-full rounded-xl border-2 border-brand-primary bg-surface/85 text-base font-bold sm:h-12"
             )}
           >
-            <LogIn className="size-6" aria-hidden="true" /> Log in
+            <LogIn className="size-6" aria-hidden="true" /> {t.logIn}
           </Link>
         </section>
 
         <div className="flex items-center gap-3 py-2 text-[0.65rem] font-semibold text-text-secondary" aria-hidden="true">
           <span className="h-px flex-1 bg-border" />
-          OR
+          {t.or}
           <span className="h-px flex-1 bg-border" />
         </div>
 
         <LandingSocialAuth compact />
 
-        <section className="mt-3 grid flex-none grid-cols-3 divide-x divide-border-subtle rounded-2xl border border-border-subtle bg-surface/80 px-1 py-2.5 text-center shadow-sm" aria-label="FoodFighter benefits">
-          <Benefit icon={<UsersRound aria-hidden="true" />} title="Group Voting" tone="chili" />
-          <Benefit icon={<Bot aria-hidden="true" />} title="AI Recommendations" tone="saffron" />
-          <Benefit icon={<Zap aria-hidden="true" />} title="Save Time" tone="herb" />
+        <section className="mt-3 grid flex-none grid-cols-3 divide-x divide-border-subtle rounded-2xl border border-border-subtle bg-surface/80 px-1 py-2.5 text-center shadow-sm" aria-label={t.benefits.sectionAria}>
+          <Benefit icon={<UsersRound aria-hidden="true" />} title={t.benefits.groupVoting} tone="chili" />
+          <Benefit icon={<Bot aria-hidden="true" />} title={t.benefits.aiRecommendations} tone="saffron" />
+          <Benefit icon={<Zap aria-hidden="true" />} title={t.benefits.saveTime} tone="herb" />
         </section>
       </div>
     </main>

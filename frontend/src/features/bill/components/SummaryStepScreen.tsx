@@ -12,6 +12,8 @@ import { Alert, AlertDescription } from "@/components/ui/Alert";
 import { Spinner } from "@/components/ui/Spinner";
 import { Separator } from "@/components/ui/Separator";
 import { ApiError } from "@/lib/api/client";
+import { useLanguage } from "@/i18n/LanguageProvider";
+import { billTranslations } from "../i18n/bill-translations";
 import { BillPageHeader } from "./BillPageHeader";
 import { useBill } from "../hooks/use-bill";
 import { billService } from "../services/bill-service";
@@ -50,6 +52,8 @@ function memberBreakdown(bill: BillDetail) {
 
 export function SummaryStepScreen({ billId }: SummaryStepScreenProps) {
   const router = useRouter();
+  const { locale } = useLanguage();
+  const t = billTranslations[locale];
   const { bill, isLoading, error, setBill } = useBill(billId);
   const [actionError, setActionError] = React.useState<string | null>(null);
   const [isConfirming, setIsConfirming] = React.useState(false);

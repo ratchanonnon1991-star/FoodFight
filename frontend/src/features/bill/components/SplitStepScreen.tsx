@@ -9,6 +9,8 @@ import { Button } from "@/components/ui/Button";
 import { Alert, AlertDescription } from "@/components/ui/Alert";
 import { Spinner } from "@/components/ui/Spinner";
 import { ApiError } from "@/lib/api/client";
+import { useLanguage } from "@/i18n/LanguageProvider";
+import { billTranslations } from "../i18n/bill-translations";
 import { BillPageHeader } from "./BillPageHeader";
 import { ItemAssignmentRow } from "./ItemAssignmentRow";
 import { useBill } from "../hooks/use-bill";
@@ -20,6 +22,8 @@ export interface SplitStepScreenProps {
 
 export function SplitStepScreen({ billId }: SplitStepScreenProps) {
   const router = useRouter();
+  const { locale } = useLanguage();
+  const t = billTranslations[locale];
   const { bill, isLoading, error, setBill } = useBill(billId);
   const [actionError, setActionError] = React.useState<string | null>(null);
   const [savingItemId, setSavingItemId] = React.useState<string | null>(null);

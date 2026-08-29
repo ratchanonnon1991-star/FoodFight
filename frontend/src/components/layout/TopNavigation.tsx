@@ -5,9 +5,12 @@ import { usePathname } from "next/navigation";
 import { ROUTES } from "@/config/routes";
 import { cn } from "@/lib/utils/cn";
 import { PageContainer } from "./PageContainer";
+import { useLanguage } from "@/i18n/LanguageProvider";
+import { commonTranslations } from "@/i18n/common-translations";
+import { LanguageSwitcher } from "@/components/language/LanguageSwitcher";
 import {
   getActiveNavigationTab,
-  navigationItems,
+  getNavigationItems,
   type NavTab,
 } from "./navigation-config";
 
@@ -18,7 +21,10 @@ export interface TopNavigationProps {
 
 export function TopNavigation({ activeTab, className }: TopNavigationProps) {
   const pathname = usePathname();
+  const { locale } = useLanguage();
   const resolvedActiveTab = getActiveNavigationTab(pathname, activeTab);
+  const items = getNavigationItems(locale);
+  const t = commonTranslations[locale].nav;
 
   return (
     <header
@@ -31,7 +37,7 @@ export function TopNavigation({ activeTab, className }: TopNavigationProps) {
       <PageContainer
         maxWidth="wide"
         paddingY="none"
-        className="relative flex h-full items-center gap-8"
+        className="relative flex h-full items-center justify-between gap-8"
       >
         <Link
           href={ROUTES.AUTHENTICATED_HOME}
@@ -42,11 +48,11 @@ export function TopNavigation({ activeTab, className }: TopNavigationProps) {
         </Link>
 
         <nav
-          aria-label="Main Navigation"
+          aria-label={t.mainNavigation}
           className="absolute left-1/2 -translate-x-1/2"
         >
           <ul className="flex items-center justify-center gap-1" role="list">
-            {navigationItems.map((item) => {
+            {items.map((item) => {
               const Icon = item.icon;
               const isActive = item.id === resolvedActiveTab;
 
@@ -77,6 +83,10 @@ export function TopNavigation({ activeTab, className }: TopNavigationProps) {
             })}
           </ul>
         </nav>
+
+        <div className="flex items-center gap-3">
+          <LanguageSwitcher variant="subtle" />
+        </div>
       </PageContainer>
     </header>
   );

@@ -3,9 +3,11 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils/cn";
+import { useLanguage } from "@/i18n/LanguageProvider";
+import { commonTranslations } from "@/i18n/common-translations";
 import {
   getActiveNavigationTab,
-  navigationItems,
+  getNavigationItems,
   type NavTab,
 } from "./navigation-config";
 
@@ -21,11 +23,14 @@ export function BottomNavigation({
   className,
 }: BottomNavigationProps) {
   const pathname = usePathname();
+  const { locale } = useLanguage();
   const resolvedActiveTab = getActiveNavigationTab(pathname, activeTab);
+  const items = getNavigationItems(locale);
+  const t = commonTranslations[locale].nav;
 
   return (
     <nav
-      aria-label="Main Navigation"
+      aria-label={t.mainNavigation}
       data-navigation="bottom"
       className={cn(
         "fixed inset-x-3 bottom-[calc(0.75rem+env(safe-area-inset-bottom))] z-30 mx-auto max-w-md",
@@ -34,7 +39,7 @@ export function BottomNavigation({
       )}
     >
       <ul className="flex items-center justify-around gap-1" role="list">
-        {navigationItems.map((tab) => {
+        {items.map((tab) => {
           const isActive = tab.id === resolvedActiveTab;
           const Icon = tab.icon;
 
