@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { useRouter } from "next/navigation";
-import { Info, Plus, ShieldCheck, X } from "lucide-react";
+import { Plus, ShieldCheck, X } from "lucide-react";
 import { ROUTES } from "@/config/routes";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
@@ -71,11 +71,10 @@ export function RestrictionsStep({
       description={t.description}
       backHref={backHref}
       footer={
-        <div className="space-y-3">
+        <div className="space-y-2.5">
           {/* Informational Notice */}
-          <Alert variant="info" className="py-2.5 px-3">
-            <Info className="size-4 shrink-0 text-status-info-icon" />
-            <AlertDescription className="text-xs text-status-info-text leading-snug">
+          <Alert variant="info" className="py-2.5 px-3 rounded-xl [&>svg]:top-2.5 [&>svg]:left-3">
+            <AlertDescription className="text-xs text-status-info-text leading-tight">
               {t.notice}
             </AlertDescription>
           </Alert>
@@ -89,6 +88,7 @@ export function RestrictionsStep({
             disabled={!isRestrictionsStepValid}
             onClick={handleNext}
             id="restrictions-next-button"
+            className="h-11 sm:h-12 text-sm sm:text-base font-bold shadow-xs"
           >
             {t.next}
           </Button>
@@ -117,9 +117,9 @@ export function RestrictionsStep({
       </div>
 
       {/* Custom Restriction Section */}
-      <div className="pt-1">
+      <div className="pt-0.5">
         {isCustomInputOpen ? (
-          <div className="space-y-1.5 p-3.5 rounded-xl border border-border bg-surface shadow-2xs animate-fade-in">
+          <div className="space-y-2 p-3.5 rounded-2xl border border-border bg-surface shadow-2xs animate-fade-in">
             <div className="flex items-center justify-between">
               <Label htmlFor="custom-restriction-input" className="text-xs font-semibold text-text-primary">
                 {t.otherRestriction}
@@ -153,7 +153,7 @@ export function RestrictionsStep({
             fullWidth
             onClick={handleOpenCustomInput}
             leftIcon={<Plus className="size-4" />}
-            className="border-dashed hover:border-solid text-text-secondary hover:text-brand-primary"
+            className="rounded-xl border-dashed hover:border-solid text-text-secondary hover:text-text-primary font-medium"
             id="add-other-restriction-button"
           >
             {t.addOtherRestriction}
@@ -163,7 +163,7 @@ export function RestrictionsStep({
 
       {/* OR Divider */}
       <div className="py-1">
-        <Separator text={t.or} className="text-xs font-medium text-text-muted" />
+        <Separator text={t.or} className="text-xs font-semibold text-text-muted" />
       </div>
 
       {/* No Restrictions Option (Mutually Exclusive) */}
@@ -174,8 +174,8 @@ export function RestrictionsStep({
           description={t.noRestrictionsDesc}
           selected={draft.hasNoRestrictions}
           onClick={() => setHasNoRestrictions(!draft.hasNoRestrictions)}
-          icon={<ShieldCheck className="size-5 text-brand-primary" />}
-          className="w-full border-border/80"
+          icon={<ShieldCheck className="size-5 text-accent-fresh" />}
+          className="w-full"
           aria-label={t.noRestrictionsLabel}
         />
       </div>

@@ -38,11 +38,11 @@ export function SelectableOptionCard({
       disabled={disabled}
       onClick={onClick}
       className={cn(
-        "relative flex items-center justify-between p-3.5 sm:p-4 rounded-xl border text-left cursor-pointer select-none transition-all duration-150",
-        "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-secondary",
+        "relative flex min-h-[54px] sm:min-h-[58px] items-center justify-between p-3.5 sm:p-4 rounded-2xl border text-left cursor-pointer select-none transition-all duration-150",
+        "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-fresh",
         selected
-          ? "bg-accent-petal/30 border-brand-primary text-brand-primary shadow-xs ring-1 ring-brand-primary"
-          : "bg-surface border-border text-text-primary hover:border-brand-secondary/50 hover:bg-surface-subtle/50 active:bg-surface-subtle",
+          ? "bg-status-success-bg/35 border-2 border-accent-fresh text-text-primary shadow-xs ring-1 ring-accent-fresh/20"
+          : "bg-surface border border-border text-text-primary shadow-2xs hover:border-accent-fresh/60 hover:bg-surface-subtle active:scale-[0.99]",
         disabled && "opacity-50 pointer-events-none cursor-not-allowed",
         className
       )}
@@ -52,7 +52,7 @@ export function SelectableOptionCard({
           <span
             className={cn(
               "shrink-0 transition-colors duration-150",
-              selected ? "text-brand-primary" : "text-text-secondary"
+              selected ? "text-accent-fresh" : "text-text-secondary"
             )}
           >
             {icon}
@@ -61,8 +61,8 @@ export function SelectableOptionCard({
         <div className="min-w-0">
           <p
             className={cn(
-              "text-sm sm:text-base leading-snug truncate",
-              selected ? "font-semibold text-brand-primary" : "font-medium text-text-primary"
+              "text-sm sm:text-base leading-snug break-words",
+              selected ? "font-bold text-text-primary" : "font-semibold text-text-primary"
             )}
           >
             {label}
@@ -78,14 +78,14 @@ export function SelectableOptionCard({
       {/* Accessible visual check indicator */}
       <div
         className={cn(
-          "size-5 shrink-0 rounded-md border flex items-center justify-center transition-colors duration-150",
+          "size-5 sm:size-5.5 shrink-0 rounded-lg border flex items-center justify-center transition-all duration-150",
           selected
-            ? "bg-brand-primary border-brand-primary text-white"
-            : "border-border bg-surface"
+            ? "bg-accent-fresh border-accent-fresh text-white shadow-2xs"
+            : "border-2 border-border-strong bg-surface text-transparent"
         )}
         aria-hidden="true"
       >
-        {selected && <Check className="size-3.5 stroke-[2.5]" />}
+        {selected ? <Check className="size-3.5 stroke-[2.8]" /> : null}
       </div>
     </button>
   );

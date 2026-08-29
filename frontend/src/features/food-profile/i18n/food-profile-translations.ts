@@ -7,6 +7,23 @@ export interface FoodProfileTranslations {
     details: string;
     ariaLabel: string;
   };
+  preview: {
+    title: string;
+    subtitle: string;
+    allergies: string;
+    restrictions: string;
+    nuances: string;
+    noAllergies: string;
+    noRestrictions: string;
+    notSelected: string;
+    notAdded: string;
+  };
+  layout: {
+    back: string;
+    stepCounter: string;
+    loadingTitle: string;
+    loadingSubtitle: string;
+  };
   allergies: {
     title: string;
     description: string;
@@ -55,6 +72,23 @@ export const foodProfileTranslations: Record<Locale, FoodProfileTranslations> = 
       restrictions: "Restrictions",
       details: "Details",
       ariaLabel: "Onboarding Progress",
+    },
+    preview: {
+      title: "Current profile preview",
+      subtitle: "Your saved preferences are shown here and update as you edit.",
+      allergies: "Allergies",
+      restrictions: "Dietary restrictions",
+      nuances: "Additional nuances",
+      noAllergies: "No allergies",
+      noRestrictions: "No restrictions",
+      notSelected: "Not selected yet",
+      notAdded: "Not added yet",
+    },
+    layout: {
+      back: "Back",
+      stepCounter: "Step {current} of {total}",
+      loadingTitle: "Loading your food profile...",
+      loadingSubtitle: "Restoring your saved preferences.",
     },
     allergies: {
       title: "Do you have any food allergies?",
@@ -126,6 +160,23 @@ export const foodProfileTranslations: Record<Locale, FoodProfileTranslations> = 
       restrictions: "ข้อจำกัดอาหาร",
       details: "รายละเอียด",
       ariaLabel: "ขั้นตอนการตั้งค่าโปรไฟล์",
+    },
+    preview: {
+      title: "สรุปโปรไฟล์ปัจจุบัน",
+      subtitle: "การตั้งค่าที่คุณเลือกจะแสดงและอัปเดตแบบเรียลไทม์ที่นี่",
+      allergies: "อาการแพ้",
+      restrictions: "ข้อจำกัดอาหาร",
+      nuances: "ข้อมูลเพิ่มเติม",
+      noAllergies: "ไม่มีอาการแพ้",
+      noRestrictions: "ไม่มีข้อจำกัด",
+      notSelected: "ยังไม่ได้เลือก",
+      notAdded: "ยังไม่ได้ระบุ",
+    },
+    layout: {
+      back: "ย้อนกลับ",
+      stepCounter: "ขั้นตอนที่ {current} จาก {total}",
+      loadingTitle: "กำลังโหลดโปรไฟล์อาหาร...",
+      loadingSubtitle: "กำลังเรียกคืนข้อมูลความชอบที่คุณบันทึกไว้",
     },
     allergies: {
       title: "คุณมีอาการแพ้อาหารหรือไม่?",

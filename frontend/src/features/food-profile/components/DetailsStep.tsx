@@ -2,7 +2,6 @@
 
 import * as React from "react";
 import { useRouter } from "next/navigation";
-import { Info } from "lucide-react";
 import { ROUTES } from "@/config/routes";
 import { Button } from "@/components/ui/Button";
 import { Label } from "@/components/ui/Label";
@@ -72,10 +71,10 @@ export function DetailsStep({
       description={t.description}
       backHref={backHref}
       footer={
-        <div className="space-y-3">
+        <div className="space-y-2.5">
           {/* Error Message Alert */}
           {errorMessage && (
-            <Alert variant="error" className="py-2.5 px-3">
+            <Alert variant="error" className="py-2.5 px-3 rounded-xl [&>svg]:top-2.5 [&>svg]:left-3">
               <AlertDescription className="text-xs text-status-danger-text leading-snug">
                 {errorMessage}
               </AlertDescription>
@@ -83,9 +82,8 @@ export function DetailsStep({
           )}
 
           {/* Informational Notice */}
-          <Alert variant="info" className="py-2.5 px-3">
-            <Info className="size-4 shrink-0 text-status-info-icon" />
-            <AlertDescription className="text-xs text-status-info-text leading-snug">
+          <Alert variant="info" className="py-2.5 px-3 rounded-xl [&>svg]:top-2.5 [&>svg]:left-3">
+            <AlertDescription className="text-xs text-status-info-text leading-tight">
               {t.notice}
             </AlertDescription>
           </Alert>
@@ -100,6 +98,7 @@ export function DetailsStep({
             loadingText={t.saving}
             onClick={handleSaveAndContinue}
             id="details-save-continue-button"
+            className="h-11 sm:h-12 text-sm sm:text-base font-bold shadow-xs"
           >
             {t.saveAndContinue}
           </Button>
@@ -128,7 +127,7 @@ export function DetailsStep({
             value={draft.additionalNotes}
             onChange={handleChange}
             maxLength={MAX_NOTES_LENGTH}
-            className="w-full text-sm leading-relaxed"
+            className="w-full text-sm leading-relaxed rounded-2xl bg-surface border border-border"
             aria-label={t.notesLabel}
             aria-describedby="character-counter"
           />
@@ -148,4 +147,3 @@ export function DetailsStep({
     </FoodProfileStepLayout>
   );
 }
-

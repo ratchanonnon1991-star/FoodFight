@@ -6,6 +6,8 @@ import { ChevronLeft, Eye } from "lucide-react";
 import { cn } from "@/lib/utils/cn";
 import { PageContainer } from "@/components/layout/PageContainer";
 import { Spinner } from "@/components/ui/Spinner";
+import { useLanguage } from "@/i18n/LanguageProvider";
+import { foodProfileTranslations } from "../i18n/food-profile-translations";
 import {
   STANDARD_ALLERGIES,
   STANDARD_RESTRICTIONS,
@@ -22,11 +24,12 @@ export interface FoodProfileStepLayoutProps {
   children: React.ReactNode;
   footer?: React.ReactNode;
   className?: string;
+  previewPosition?: "top" | "bottom" | "none";
 }
 
 function PreviewTag({ children }: { children: React.ReactNode }) {
   return (
-    <span className="inline-flex items-center rounded-full border border-brand-primary/20 bg-brand-primary/5 px-2.5 py-1 text-xs font-semibold text-text-primary">
+    <span className="inline-flex items-center rounded-lg border border-accent-fresh/30 bg-accent-fresh/10 px-2.5 py-1 text-xs font-semibold text-text-primary shadow-2xs">
       {children}
     </span>
   );
@@ -41,42 +44,50 @@ function getOptionLabel(
 
 function FoodProfilePreview() {
   const { draft } = useFoodProfile();
-  const hasAllergies = draft.allergies.length > 0 || Boolean(draft.otherAllergies.trim());
+  const { locale } = useLanguage();
+  const t = foodProfileTranslations[locale];
+  const p = t.preview;
+
+  const hasAllergies =
+    draft.allergies.length > 0 || Boolean(draft.otherAllergies.trim());
   const hasRestrictions =
     draft.restrictions.length > 0 || Boolean(draft.otherRestrictions.trim());
 
   return (
     <section
-      aria-label="Food profile preview"
-      className="rounded-2xl border border-brand-primary/15 bg-surface p-4 shadow-xs sm:p-5"
+      aria-label={p.title}
+      className="rounded-2xl border border-border bg-surface p-4 sm:p-4.5 text-xs shadow-2xs"
     >
-      <div className="flex items-start gap-3">
-        <div className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-brand-primary/10 text-brand-primary">
-          <Eye className="size-4.5" />
+      <div className="flex items-center gap-2.5">
+        <div className="flex size-7 shrink-0 items-center justify-center rounded-lg bg-accent-fresh/15 text-accent-fresh">
+          <Eye className="size-4" />
         </div>
         <div className="min-w-0">
-          <h2 className="text-sm font-bold text-text-primary">Current profile preview</h2>
-          <p className="mt-0.5 text-xs leading-relaxed text-text-secondary">
-            Your saved preferences are shown here and update as you edit.
+          <h2 className="text-xs sm:text-sm font-bold text-text-primary">
+            {p.title}
+          </h2>
+          <p className="text-[11px] sm:text-xs text-text-secondary leading-normal">
+            {p.subtitle}
           </p>
         </div>
       </div>
 
-      <div className="mt-4 grid gap-4 sm:grid-cols-2">
+      <div className="mt-3.5 grid gap-3 sm:grid-cols-2">
         <div>
           <p className="text-[11px] font-bold uppercase tracking-wider text-text-secondary">
-            Allergies
+            {p.allergies}
           </p>
-          <div className="mt-2 flex flex-wrap gap-1.5">
+          <div className="mt-1.5 flex flex-wrap gap-1.5">
             {draft.hasNoAllergies ? (
-              <span className="rounded-full bg-surface-subtle px-2.5 py-1 text-xs font-semibold text-text-secondary">
-                No allergies
+              <span className="rounded-lg bg-surface-subtle border border-border px-2.5 py-1 text-xs font-medium text-text-secondary">
+                {p.noAllergies}
               </span>
             ) : hasAllergies ? (
               <>
                 {draft.allergies.map((allergy) => (
                   <PreviewTag key={allergy}>
-                    {getOptionLabel(allergy, STANDARD_ALLERGIES)}
+                    {t.allergies.options[allergy] ??
+                      getOptionLabel(allergy, STANDARD_ALLERGIES)}
                   </PreviewTag>
                 ))}
                 {draft.otherAllergies.trim() ? (
@@ -84,25 +95,26 @@ function FoodProfilePreview() {
                 ) : null}
               </>
             ) : (
-              <span className="text-xs text-text-muted">Not selected yet</span>
+              <span className="text-xs text-text-secondary">{p.notSelected}</span>
             )}
           </div>
         </div>
 
         <div>
           <p className="text-[11px] font-bold uppercase tracking-wider text-text-secondary">
-            Dietary restrictions
+            {p.restrictions}
           </p>
-          <div className="mt-2 flex flex-wrap gap-1.5">
+          <div className="mt-1.5 flex flex-wrap gap-1.5">
             {draft.hasNoRestrictions ? (
-              <span className="rounded-full bg-surface-subtle px-2.5 py-1 text-xs font-semibold text-text-secondary">
-                No restrictions
+              <span className="rounded-lg bg-surface-subtle border border-border px-2.5 py-1 text-xs font-medium text-text-secondary">
+                {p.noRestrictions}
               </span>
             ) : hasRestrictions ? (
               <>
                 {draft.restrictions.map((restriction) => (
                   <PreviewTag key={restriction}>
-                    {getOptionLabel(restriction, STANDARD_RESTRICTIONS)}
+                    {t.restrictions.options[restriction] ??
+                      getOptionLabel(restriction, STANDARD_RESTRICTIONS)}
                   </PreviewTag>
                 ))}
                 {draft.otherRestrictions.trim() ? (
@@ -110,18 +122,20 @@ function FoodProfilePreview() {
                 ) : null}
               </>
             ) : (
-              <span className="text-xs text-text-muted">Not selected yet</span>
+              <span className="text-xs text-text-secondary">{p.notSelected}</span>
             )}
           </div>
         </div>
       </div>
 
-      <div className="mt-4 border-t border-border/60 pt-3">
+      <div className="mt-3.5 border-t border-border/60 pt-2.5">
         <p className="text-[11px] font-bold uppercase tracking-wider text-text-secondary">
-          Additional nuances
+          {p.nuances}
         </p>
-        <p className="mt-1 text-xs leading-relaxed text-text-secondary">
-          {draft.additionalNotes.trim() || "Not added yet"}
+        <p className="mt-1 text-xs font-medium text-text-primary leading-relaxed">
+          {draft.additionalNotes.trim() || (
+            <span className="font-normal text-text-secondary">{p.notAdded}</span>
+          )}
         </p>
       </div>
     </section>
@@ -137,8 +151,15 @@ export function FoodProfileStepLayout({
   children,
   footer,
   className,
+  previewPosition = "top",
 }: FoodProfileStepLayoutProps) {
   const { isLoading } = useFoodProfile();
+  const { locale } = useLanguage();
+  const t = foodProfileTranslations[locale];
+
+  const stepCounterText = t.layout.stepCounter
+    .replace("{current}", String(currentStep))
+    .replace("{total}", "3");
 
   return (
     <div className="min-h-dvh flex flex-col justify-between bg-background text-text-primary">
@@ -151,20 +172,20 @@ export function FoodProfileStepLayout({
               <Link
                 href={backHref}
                 className="inline-flex items-center gap-1 text-sm font-medium text-text-secondary hover:text-brand-primary transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-secondary rounded-sm p-1 -ml-1"
-                aria-label="Go back to previous step"
+                aria-label={t.layout.back}
               >
                 <ChevronLeft className="size-5" />
-                <span>Back</span>
+                <span>{t.layout.back}</span>
               </Link>
             ) : onBack ? (
               <button
                 type="button"
                 onClick={onBack}
                 className="inline-flex items-center gap-1 text-sm font-medium text-text-secondary hover:text-brand-primary transition-colors cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-secondary rounded-sm p-1 -ml-1"
-                aria-label="Go back to previous step"
+                aria-label={t.layout.back}
               >
                 <ChevronLeft className="size-5" />
-                <span>Back</span>
+                <span>{t.layout.back}</span>
               </button>
             ) : (
               <div className="w-16" />
@@ -172,7 +193,7 @@ export function FoodProfileStepLayout({
 
             {/* Step Counter */}
             <span className="text-xs font-semibold uppercase tracking-wider text-text-secondary">
-              Step {currentStep} of 3
+              {stepCounterText}
             </span>
 
             {/* Balancer spacing */}
@@ -185,7 +206,7 @@ export function FoodProfileStepLayout({
       </header>
 
       {/* Main Content Area */}
-      <main className={cn("flex-1 py-6 sm:py-8", className)}>
+      <main className={cn("flex-1 pt-5 pb-10 sm:pt-6 sm:pb-12", className)}>
         <PageContainer maxWidth="auth" paddingY="none" className="space-y-6">
           {isLoading ? (
             <FoodProfileLoadingState />
@@ -201,12 +222,14 @@ export function FoodProfileStepLayout({
                 </p>
               </div>
 
-              <FoodProfilePreview />
+              {previewPosition === "top" && <FoodProfilePreview />}
 
               {/* Step Content */}
               <div className="space-y-4">
                 {children}
               </div>
+
+              {previewPosition === "bottom" && <FoodProfilePreview />}
             </>
           )}
         </PageContainer>
@@ -214,7 +237,7 @@ export function FoodProfileStepLayout({
 
       {/* Sticky / Bottom Footer */}
       {footer && !isLoading && (
-        <footer className="w-full border-t border-border/40 bg-surface/90 backdrop-blur-xs py-4">
+        <footer className="sticky bottom-0 z-20 w-full border-t border-border/50 bg-surface/95 backdrop-blur-md py-3 sm:py-3.5 shadow-sm">
           <PageContainer maxWidth="auth" paddingY="none">
             {footer}
           </PageContainer>
@@ -225,6 +248,9 @@ export function FoodProfileStepLayout({
 }
 
 function FoodProfileLoadingState() {
+  const { locale } = useLanguage();
+  const t = foodProfileTranslations[locale];
+
   return (
     <div
       className="flex min-h-56 flex-col items-center justify-center rounded-2xl border border-border/60 bg-surface p-6 text-center shadow-xs"
@@ -234,10 +260,10 @@ function FoodProfileLoadingState() {
     >
       <Spinner size="lg" />
       <p className="mt-4 text-sm font-semibold text-text-primary">
-        Loading your food profile...
+        {t.layout.loadingTitle}
       </p>
       <p className="mt-1 text-xs text-text-secondary">
-        Restoring your saved preferences.
+        {t.layout.loadingSubtitle}
       </p>
     </div>
   );
