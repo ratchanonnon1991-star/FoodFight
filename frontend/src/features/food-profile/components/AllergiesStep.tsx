@@ -134,11 +134,12 @@ export function AllergiesStep({
                 type="button"
                 onClick={handleClearCustomInput}
                 className="text-xs text-text-muted hover:text-text-primary flex items-center gap-0.5 transition-colors cursor-pointer"
-                aria-label={t.remove}
+                aria-label={`${t.remove} custom allergy input`}
               >
                 <X className="size-3.5" />
                 <span>{t.remove}</span>
               </button>
+
             </div>
             <Input
               ref={customInputRef}

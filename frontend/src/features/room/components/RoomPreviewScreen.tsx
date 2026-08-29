@@ -4,9 +4,11 @@ import * as React from "react";
 import Link from "next/link";
 import { CalendarDays, CheckCircle2, Clock3, MapPin, UsersRound } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/Alert";
-import { Button } from "@/components/ui/Button";
+import { Button, buttonVariants } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { ROUTES } from "@/config/routes";
+import { cn } from "@/lib/utils/cn";
+
 import { roomService, RoomApiError } from "../services/room-service";
 import type { RoomPreview } from "../types/room-types";
 import { useLanguage } from "@/i18n/LanguageProvider";
@@ -100,8 +102,9 @@ export function RoomPreviewScreen({ code, inviteToken, backHref }: RoomPreviewSc
   };
 
   return (
-    <main className="min-h-dvh overflow-x-clip bg-background text-text-primary">
-      <div className="mx-auto w-full max-w-md px-4 pb-10 pt-3 sm:px-6 sm:pt-5 md:max-w-2xl lg:max-w-3xl">
+    <main className="min-h-dvh overflow-x-clip bg-transparent text-text-primary">
+      <div className="mx-auto w-full max-w-md px-4 pb-10 pt-2 sm:px-6 sm:pt-4 md:max-w-2xl lg:max-w-3xl">
+
         <RoomPageHeader title={t.title} subtitle={t.subtitle} backHref={backHref} />
 
         {isLoading ? (
@@ -163,14 +166,29 @@ export function RoomPreviewScreen({ code, inviteToken, backHref }: RoomPreviewSc
               </Alert>
             ) : null}
 
-            <div className="mt-5 flex flex-col gap-3 sm:items-end">
-              <Button type="button" size="lg" loading={isJoining} loadingText={t.joining} onClick={joinRoom} className="sm:w-72">
+            <div className="mt-6 flex flex-col gap-3">
+              <Button
+                type="button"
+                size="lg"
+                fullWidth
+                loading={isJoining}
+                loadingText={t.joining}
+                onClick={joinRoom}
+                className="rounded-xl"
+              >
                 {t.joinButton}
               </Button>
-              <Link href={backHref} className="inline-flex min-h-11 w-full items-center justify-center rounded-xl px-4 text-sm font-medium text-text-secondary transition-colors hover:bg-surface-subtle hover:text-text-primary focus-visible:outline-2 focus-visible:outline-brand-secondary sm:w-72">
+              <Link
+                href={backHref}
+                className={cn(
+                  buttonVariants({ variant: "outline", size: "lg", fullWidth: true }),
+                  "rounded-xl font-medium",
+                )}
+              >
                 {t.cancel}
               </Link>
             </div>
+
           </>
         ) : null}
       </div>

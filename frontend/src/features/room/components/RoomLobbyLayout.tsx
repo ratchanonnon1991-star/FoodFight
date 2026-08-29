@@ -77,8 +77,9 @@ export function RoomLobbyLayout({
   const t = roomTranslations[locale].lobby;
 
   return (
-    <main className="min-h-dvh overflow-x-clip bg-background text-text-primary">
-      <div className="mx-auto w-full max-w-md px-4 pb-32 pt-3 sm:px-6 sm:pt-5 md:max-w-4xl lg:max-w-6xl">
+    <main className="min-h-dvh overflow-x-clip bg-transparent text-text-primary">
+      <div className="mx-auto w-full max-w-md px-4 pb-32 pt-2 sm:px-6 sm:pt-4 md:max-w-4xl lg:max-w-6xl">
+
         <RoomPageHeader
           title={t.title}
           subtitle={t.subtitle}
@@ -91,19 +92,20 @@ export function RoomLobbyLayout({
                 }
                 aria-haspopup={room.isHost ? 'dialog' : undefined}
                 disabled={!room.isHost}
+                variant="glass"
                 icon={<Settings className="size-5" aria-hidden="true" />}
-                className="text-text-primary"
                 onClick={onOpenSettings}
               />
               <IconButton
                 aria-label={t.roomActions}
                 aria-haspopup="dialog"
+                variant="glass"
                 icon={<MoreHorizontal className="size-5" aria-hidden="true" />}
-                className="text-text-primary"
                 onClick={onOpenRoomActions}
               />
             </>
           }
+
         />
         {error ? (
           <Alert variant="error" className="mb-4">
@@ -112,7 +114,7 @@ export function RoomLobbyLayout({
           </Alert>
         ) : null}
 
-        <div className="grid gap-4 lg:grid-cols-12 lg:items-start">
+        <div className="grid gap-5 lg:grid-cols-12 lg:items-start">
           <div className="min-w-0 lg:col-span-5">
             <RoomSummaryCard
               room={room}
@@ -120,10 +122,11 @@ export function RoomLobbyLayout({
               canInvite={canInvite}
               onOpenDetails={onOpenDetails}
               onOpenInvite={onOpenInvite}
+              t={t}
             />
           </div>
 
-          <div className="min-w-0 lg:col-span-7">
+          <div className="min-w-0 space-y-4 lg:col-span-7">
             <RoomMemberGrid
               memberCount={room.memberCount}
               maxMembers={room.maxMembers}
@@ -157,12 +160,14 @@ function RoomSummaryCard({
   canInvite,
   onOpenDetails,
   onOpenInvite,
+  t,
 }: {
   room: RoomLobby;
   hostMember: RoomMember;
   canInvite: boolean;
   onOpenDetails: () => void;
   onOpenInvite: () => void;
+  t: (typeof roomTranslations)['en']['lobby'];
 }) {
   return (
     <>
@@ -176,7 +181,7 @@ function RoomSummaryCard({
               />
               <Avatar member={hostMember} className="size-14" />
             </div>
-            <Badge size="sm">Host</Badge>
+            <Badge size="sm">{t.hostBadge}</Badge>
           </div>
           <div className="min-w-0 flex-1">
             <h2 className="truncate text-lg font-semibold">{room.name}</h2>
@@ -199,12 +204,12 @@ function RoomSummaryCard({
             <p className="mt-1 text-lg font-semibold">
               {room.memberCount} / {room.maxMembers}
             </p>
-            <p className="text-xs text-text-secondary">Members</p>
+            <p className="text-xs text-text-secondary">{t.membersTitle}</p>
           </div>
         </div>
         <div className="mt-4 flex justify-end border-t border-border pt-3">
           <Button type="button" variant="outline" size="sm" onClick={onOpenDetails}>
-            View details
+            {t.viewDetails}
           </Button>
         </div>
       </Card>
@@ -213,17 +218,17 @@ function RoomSummaryCard({
         <button
           type="button"
           onClick={onOpenInvite}
-          className="mt-4 flex min-h-24 w-full items-center justify-between rounded-2xl border border-dashed border-border bg-surface px-5 text-left transition-colors hover:bg-surface-subtle focus-visible:outline-2 focus-visible:outline-brand-secondary"
+          className="mt-4 flex min-h-20 w-full items-center justify-between rounded-2xl border border-dashed border-border bg-surface px-5 py-4 text-left shadow-2xs transition-colors hover:bg-surface-subtle focus-visible:outline-2 focus-visible:outline-brand-secondary active:scale-[0.99]"
         >
           <span className="min-w-0">
-            <span className="flex items-center gap-2 font-semibold">
-              <UserRoundPlus className="size-5" aria-hidden="true" /> Invite Friends
+            <span className="flex items-center gap-2 font-semibold text-text-primary">
+              <UserRoundPlus className="size-5" aria-hidden="true" /> {t.inviteFriends}
             </span>
             <span className="mt-1 block text-sm text-text-secondary">
-              Invite via QR code, link or room code
+              {t.inviteSubtitle}
             </span>
           </span>
-          <span className="shrink-0 text-2xl text-text-primary" aria-hidden="true">
+          <span className="shrink-0 text-2xl text-text-secondary" aria-hidden="true">
             ›
           </span>
         </button>
@@ -234,7 +239,7 @@ function RoomSummaryCard({
 
 export function LobbyLoading() {
   return (
-    <main className="min-h-dvh overflow-x-clip bg-background px-4 pt-5 text-text-primary">
+    <main className="min-h-dvh overflow-x-clip bg-transparent px-4 pt-5 text-text-primary">
       <div className="mx-auto w-full max-w-md md:max-w-4xl lg:max-w-6xl">
         <RoomPageHeader
           title="Room Lobby"
@@ -254,7 +259,7 @@ export function LobbyLoading() {
 
 export function RoomUnavailable({ error }: { error: string | null }) {
   return (
-    <main className="min-h-dvh overflow-x-clip bg-background px-4 pt-5 text-text-primary">
+    <main className="min-h-dvh overflow-x-clip bg-transparent px-4 pt-5 text-text-primary">
       <div className="mx-auto w-full max-w-md md:max-w-4xl lg:max-w-6xl">
         <RoomPageHeader
           title="Room Lobby"

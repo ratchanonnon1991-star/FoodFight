@@ -128,7 +128,8 @@ export function SummaryStepScreen({ billId }: SummaryStepScreenProps) {
   const missingPaymentAccount = bill.isCreator && !bill.paymentAccount;
 
   return (
-    <div className="min-h-dvh flex flex-col bg-background text-text-primary">
+    <div className="min-h-dvh flex flex-col bg-transparent text-text-primary">
+
       <BillPageHeader
         title="Review & Confirm"
         subtitle={bill.meal.name}

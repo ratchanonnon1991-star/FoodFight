@@ -36,7 +36,25 @@ export interface RoomTranslations {
     decreaseMembers: string;
     increaseMembers: string;
     openDatePicker: string;
+    locationHelper: string;
+    locationPlaceholder: string;
+    locationSearching: string;
+    noLocationsFound: string;
+    searchDataAttribution: string;
+    hideMap: string;
+    pickOnMap: string;
+    useCurrentLocation: string;
+    locating: string;
+    sourceCurrent: string;
+    sourceMap: string;
+    sourceSearch: string;
+    sourceSelected: string;
+    mapPinInstruction: string;
+    mapLoading: string;
+    mapUnavailable: string;
+    locationBlocked: string;
   };
+
   join: {
     title: string;
     subtitle: string;
@@ -103,6 +121,25 @@ export interface RoomTranslations {
     waitingForMembers: string;
     leaveRoom: string;
     closeRoom: string;
+    inviteFriends: string;
+    inviteSubtitle: string;
+    showInvite: string;
+    hideInvite: string;
+    inviteHidden: string;
+    revealInvite: string;
+    membersJoined: (current: number, max: number) => string;
+    waitingMoreFriends: string;
+    shareCodePrompt: string;
+    howItWorksStep1: string;
+    howItWorksStep2: string;
+    howItWorksStep3: string;
+    howItWorksStep4: string;
+    viewDetails: string;
+    memberList: string;
+    saveQr: string;
+    shareQr: string;
+    shareLinkBtn: string;
+    closeInvite: string;
   };
 }
 
@@ -145,7 +182,28 @@ export const roomTranslations: Record<Locale, RoomTranslations> = {
       decreaseMembers: "Decrease maximum members",
       increaseMembers: "Increase maximum members",
       openDatePicker: "Open date picker",
+      locationHelper:
+        "Search for a place, use your current location, or drop a pin on the map.",
+      locationPlaceholder: "Search a place or area",
+      locationSearching: "Searching...",
+      noLocationsFound: "No locations found.",
+      searchDataAttribution:
+        "Search data: OpenStreetMap contributors / Photon",
+      hideMap: "Hide map",
+      pickOnMap: "Pick on map",
+      useCurrentLocation: "Use current location",
+      locating: "Locating...",
+      sourceCurrent: "Current location",
+      sourceMap: "Map pin",
+      sourceSearch: "Search result",
+      sourceSelected: "Selected location",
+      mapPinInstruction: "Click or drag the pin to change the location.",
+      mapLoading: "Loading map...",
+      mapUnavailable:
+        "Map is unavailable right now. You can still search or enter a location manually.",
+      locationBlocked: "Location access is blocked in this browser context.",
     },
+
     join: {
       title: "Join Room",
       subtitle: "Enter the room code to continue",
@@ -212,6 +270,25 @@ export const roomTranslations: Record<Locale, RoomTranslations> = {
       waitingForMembers: "Waiting for members to be ready...",
       leaveRoom: "Leave Room",
       closeRoom: "Close Room",
+      inviteFriends: "Invite Friends",
+      inviteSubtitle: "Invite via QR code, link or room code",
+      showInvite: "Show room invite information",
+      hideInvite: "Hide room invite information",
+      inviteHidden: "Invite hidden for privacy",
+      revealInvite: "Click to reveal QR & code",
+      membersJoined: (current: number, max: number) => `${current} of ${max} members joined`,
+      waitingMoreFriends: "Waiting for more friends to join...",
+      shareCodePrompt: "Share the code or invite link above!",
+      howItWorksStep1: "Everyone joins",
+      howItWorksStep2: "Members get ready",
+      howItWorksStep3: "Everyone fills preferences",
+      howItWorksStep4: "AI suggests menus",
+      viewDetails: "View details",
+      memberList: "Member List",
+      saveQr: "Save QR",
+      shareQr: "Share QR",
+      shareLinkBtn: "Share Link",
+      closeInvite: "Close invite friends",
     },
   },
   th: {
@@ -251,7 +328,28 @@ export const roomTranslations: Record<Locale, RoomTranslations> = {
       decreaseMembers: "ลดจำนวนสมาชิกสูงสุด",
       increaseMembers: "เพิ่มจำนวนสมาชิกสูงสุด",
       openDatePicker: "เปิดตัวเลือกวันที่",
+      locationHelper:
+        "ค้นหาสถานที่ ใช้ตำแหน่งปัจจุบัน หรือปักหมุดบนแผนที่",
+      locationPlaceholder: "ค้นหาสถานที่หรือย่าน",
+      locationSearching: "กำลังค้นหา...",
+      noLocationsFound: "ไม่พบสถานที่",
+      searchDataAttribution:
+        "ข้อมูลค้นหา: OpenStreetMap contributors / Photon",
+      hideMap: "ซ่อนแผนที่",
+      pickOnMap: "เลือกบนแผนที่",
+      useCurrentLocation: "ใช้ตำแหน่งปัจจุบัน",
+      locating: "กำลังระบุตำแหน่ง...",
+      sourceCurrent: "ตำแหน่งปัจจุบัน",
+      sourceMap: "หมุดบนแผนที่",
+      sourceSearch: "ผลการค้นหา",
+      sourceSelected: "ตำแหน่งที่เลือก",
+      mapPinInstruction: "คลิกหรือลากหมุดเพื่อเปลี่ยนตำแหน่ง",
+      mapLoading: "กำลังโหลดแผนที่...",
+      mapUnavailable:
+        "แผนที่ไม่พร้อมใช้งานในขณะนี้ คุณยังสามารถค้นหาหรือระบุสถานที่ได้เอง",
+      locationBlocked: "การเข้าถึงตำแหน่งถูกบล็อกในเบราว์เซอร์นี้",
     },
+
     join: {
       title: "เข้าร่วมห้อง",
       subtitle: "กรอกรหัสห้องเพื่อดำเนินการต่อ",
@@ -318,6 +416,25 @@ export const roomTranslations: Record<Locale, RoomTranslations> = {
       waitingForMembers: "กำลังรอให้สมาชิกทุกคนพร้อม...",
       leaveRoom: "ออกจากห้อง",
       closeRoom: "ปิดห้อง",
+      inviteFriends: "ชวนเพื่อนเข้าห้อง",
+      inviteSubtitle: "ชวนด้วยคิวอาร์โค้ด ลิงก์ หรือรหัสห้อง",
+      showInvite: "แสดงข้อมูลเชิญเข้าห้อง",
+      hideInvite: "ซ่อนข้อมูลเชิญเข้าห้อง",
+      inviteHidden: "ซ่อนข้อมูลเพื่อความเป็นส่วนตัว",
+      revealInvite: "คลิกเพื่อแสดง QR และรหัสห้อง",
+      membersJoined: (current: number, max: number) => `สมาชิกเข้าร่วมแล้ว ${current} จาก ${max} คน`,
+      waitingMoreFriends: "กำลังรอให้เพื่อนๆ เข้าร่วม...",
+      shareCodePrompt: "แชร์รหัสห้องหรือลิงก์เชิญด้านบนได้เลย!",
+      howItWorksStep1: "ทุกคนเข้าร่วมห้อง",
+      howItWorksStep2: "สมาชิกกดยืนยันพร้อม",
+      howItWorksStep3: "ทุกคนเลือกความชอบอาหาร",
+      howItWorksStep4: "AI ช่วยแนะนำเมนู",
+      viewDetails: "ดูรายละเอียด",
+      memberList: "รายชื่อสมาชิก",
+      saveQr: "บันทึก QR",
+      shareQr: "แชร์ QR",
+      shareLinkBtn: "แชร์ลิงก์",
+      closeInvite: "ปิดหน้าต่างชวนเพื่อน",
     },
   },
 };

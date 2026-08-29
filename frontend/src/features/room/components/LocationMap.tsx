@@ -1,6 +1,10 @@
 "use client";
 
 import * as React from "react";
+import { useLanguage } from "@/i18n/LanguageProvider";
+import { roomTranslations } from "../i18n/room-translations";
+
+
 
 type MapLatLng = {
   lat: number;
@@ -158,7 +162,10 @@ export function LocationMap({
   onMarkerSelect?: (markerId: string) => void;
   readOnly?: boolean;
 }) {
+  const { locale } = useLanguage();
+  const t = roomTranslations[locale].create;
   const mapElement = React.useRef<HTMLDivElement | null>(null);
+
   const map = React.useRef<LeafletMap | null>(null);
   const marker = React.useRef<LeafletMarker | null>(null);
   const leafletRef = React.useRef<LeafletApi | null>(null);
@@ -276,9 +283,7 @@ export function LocationMap({
       .catch(() => {
         if (!isCancelled) {
           setIsLoading(false);
-          onErrorRef.current(
-            "Map is unavailable right now. You can still search or enter a location manually.",
-          );
+          onErrorRef.current(t.mapUnavailable);
         }
       });
 
@@ -292,7 +297,7 @@ export function LocationMap({
       map.current = null;
       leafletRef.current = null;
     };
-  }, [hasCoordinate, initialCenter, readOnly]);
+  }, [hasCoordinate, initialCenter, readOnly, t.mapUnavailable]);
 
   React.useEffect(() => {
     if (!readOnly || !map.current || !leafletRef.current) {
@@ -377,21 +382,21 @@ export function LocationMap({
   }, [latitude, longitude, readOnly]);
 
   return (
-    <div className="relative isolate z-0 overflow-hidden rounded-xl border border-border">
+    <div className="relative isolate z-0 overflow-hidden rounded-2xl border border-border/80 shadow-2xs">
       <div
         ref={mapElement}
         className="h-64 w-full bg-surface-subtle"
         aria-label={readOnly ? "Restaurant recommendations map" : "Choose a location on the map"}
       />
       {isLoading ? (
-        <div className="pointer-events-none absolute inset-0 flex items-center justify-center bg-surface/70 text-sm text-text-secondary">
-          Loading map...
+        <div className="pointer-events-none absolute inset-0 flex items-center justify-center bg-surface/80 backdrop-blur-xs text-sm font-medium text-text-secondary">
+          {t.mapLoading}
         </div>
       ) : null}
-      <p className="bg-surface px-3 py-1.5 text-[10px] text-text-muted">
+      <p className="bg-surface-subtle/60 border-t border-border/40 px-3.5 py-2 text-xs text-text-secondary">
         {readOnly
           ? "เลือกการ์ดร้านอาหารเพื่อโฟกัสหมุดบนแผนที่"
-          : "Click or drag the pin to change the location."}
+          : t.mapPinInstruction}
       </p>
     </div>
   );

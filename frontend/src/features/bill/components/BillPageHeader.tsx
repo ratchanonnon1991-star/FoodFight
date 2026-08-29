@@ -30,7 +30,7 @@ export function BillPageHeader({
   return (
     <header
       className={cn(
-        "w-full border-b border-border/40 bg-surface/80 backdrop-blur-xs sticky top-0 z-10",
+        "w-full border-b border-border/40 bg-surface/75 backdrop-blur-md sticky top-0 z-10",
         className,
       )}
     >
@@ -38,12 +38,13 @@ export function BillPageHeader({
         <div className="flex items-center justify-between gap-3">
           <Link
             href={backHref}
-            className="inline-flex items-center gap-1 text-sm font-medium text-text-secondary hover:text-brand-primary transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-secondary rounded-sm p-1 -ml-1"
+            className="inline-flex items-center gap-1 text-sm font-medium text-text-primary hover:text-brand-primary transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-secondary rounded-sm p-1 -ml-1"
             aria-label={t.goBack}
           >
             <ChevronLeft className="size-5" />
             <span>{t.back}</span>
           </Link>
+
 
           <div className="flex-1 text-center px-2">
             <h1 className="text-base font-semibold text-text-primary truncate">

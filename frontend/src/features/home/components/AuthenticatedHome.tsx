@@ -13,6 +13,7 @@ import type {
   AuthenticatedUserDisplay,
   CurrentFoodFightSession,
 } from "@/features/home/types/home-types";
+import { authService } from "@/features/auth/services/auth-runtime";
 import { apiFetch, getStoredAccessToken } from "@/config/api-client";
 import { HOME_TIP } from "../constants/home-static-data";
 import { HomeHeader } from "./HomeHeader";
@@ -101,18 +102,10 @@ export function AuthenticatedHome({
     }
 
     setIsLoggingOut(true);
-    const accessToken = getStoredAccessToken();
 
     try {
-      await fetch(`${API_BASE_URL}/auth/logout`, {
-        method: "POST",
-        credentials: "include",
-        headers: accessToken
-          ? { Authorization: `Bearer ${accessToken}` }
-          : undefined,
-      });
+      await authService.logout();
     } finally {
-      window.localStorage.removeItem("accessToken");
       router.replace(ROUTES.AUTH.LOGIN);
     }
   }, [isLoggingOut, router]);

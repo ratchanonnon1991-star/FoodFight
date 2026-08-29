@@ -225,6 +225,7 @@ export function FoodProfileStepLayout({
               {previewPosition === "top" && <FoodProfilePreview />}
 
               {/* Step Content */}
+
               <div className="space-y-4">
                 {children}
               </div>

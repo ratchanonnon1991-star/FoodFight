@@ -1,13 +1,12 @@
 "use client";
 
 import * as React from "react";
-import { Bell } from "lucide-react";
 import { pageTypography } from "@/components/layout/PageContainer";
-import { AccountDropdown } from "@/components/layout/AccountDropdown";
+import { HeaderUtilities } from "@/components/layout/HeaderUtilities";
 import { cn } from "@/lib/utils/cn";
 import type { AuthenticatedUserDisplay } from "../types/home-types";
 import { useHomeLanguage } from "../i18n/HomeLanguageContext";
-import { HomeLanguageSwitcher } from "./HomeLanguageSwitcher";
+
 
 export interface HomeHeaderProps {
   user: AuthenticatedUserDisplay;
@@ -59,29 +58,15 @@ export function HomeHeader({
       </div>
 
       {/* Header Actions */}
-      <div className="flex shrink-0 items-center gap-2 pt-0.5 pointer-events-auto lg:fixed lg:right-10 lg:top-3 lg:z-40 2xl:right-[calc((100vw-1440px)/2+2.5rem)]">
-        {/* Language Switcher Dropdown */}
-        <HomeLanguageSwitcher variant="glass" />
-
-        {/* Notification Bell (Dormant Control preserved) */}
-        <button
-          type="button"
-          onClick={onNotificationClick}
-          aria-label={t.header.notificationsLabel}
-          className="size-10 rounded-full border border-white/20 bg-black/20 hover:bg-black/30 backdrop-blur-md flex items-center justify-center text-white shadow-xs transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-ring cursor-pointer hover:border-white/30"
-        >
-          <Bell className="size-5" />
-        </button>
-
-        {/* Authenticated Account & Profile Dropdown */}
-        <AccountDropdown
-          user={user}
-          isLoading={isLoading}
-          onProfileClick={onProfileClick}
-          onLogout={onLogout}
-        />
-      </div>
-
+      <HeaderUtilities
+        user={user}
+        isLoading={isLoading}
+        onNotificationClick={onNotificationClick}
+        onProfileClick={onProfileClick}
+        onLogout={onLogout}
+        className="lg:fixed lg:right-10 lg:top-3 lg:z-40 2xl:right-[calc((100vw-1440px)/2+2.5rem)]"
+      />
     </header>
+
   );
 }

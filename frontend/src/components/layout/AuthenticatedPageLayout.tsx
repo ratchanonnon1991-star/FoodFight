@@ -1,4 +1,4 @@
-import * as React from "react";
+﻿import * as React from "react";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { ROUTES } from "@/config/routes";
@@ -17,12 +17,12 @@ export function AuthenticatedPageLayout({
   className,
 }: AuthenticatedPageLayoutProps) {
   return (
-    <main className="min-h-dvh bg-background text-text-primary lg:min-h-[calc(100dvh-4rem)]">
+    <main className="bg-transparent text-text-primary lg:min-h-[calc(100dvh-4rem)]">
       <PageContainer
         maxWidth={maxWidth}
         paddingY="none"
         className={cn(
-          "space-y-6 pb-28 pt-5 sm:pt-8 lg:pb-8",
+          "space-y-6 pb-28 pt-2 sm:pt-4 lg:pb-8",
           className,
         )}
       >
@@ -48,21 +48,21 @@ export function AuthenticatedPageHeader({
   className,
 }: AuthenticatedPageHeaderProps) {
   return (
-    <header className={cn("flex items-start gap-3", className)}>
+    <header className={cn("flex items-start gap-3 pb-1 pt-1", className)}>
       <Link
         href={backHref}
         aria-label="Back to home"
-        className="flex size-10 shrink-0 items-center justify-center rounded-full border border-border bg-surface text-text-secondary hover:text-text-primary"
+        className="mt-0.5 flex size-10 shrink-0 items-center justify-center rounded-full border border-white/20 bg-black/20 text-white shadow-xs backdrop-blur-md transition-all hover:bg-black/30 hover:border-white/30 active:scale-95 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-ring"
       >
         <ArrowLeft className="size-5" />
       </Link>
       <div className="min-w-0">
-        <p className="text-xs font-semibold uppercase tracking-wider text-brand-primary">
+        <p className="text-xs font-bold uppercase tracking-wider text-white/90 drop-shadow-2xs">
           {eyebrow}
         </p>
-        <h1 className="text-2xl font-bold text-text-primary">{title}</h1>
+        <h1 className="text-2xl sm:text-3xl font-extrabold text-white drop-shadow-xs">{title}</h1>
         {description ? (
-          <p className="mt-1 text-sm text-text-secondary">{description}</p>
+          <p className="mt-0.5 text-xs sm:text-sm text-white/80 font-medium">{description}</p>
         ) : null}
       </div>
     </header>

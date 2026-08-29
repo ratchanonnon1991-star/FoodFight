@@ -18,6 +18,7 @@ export const atmosphereVariants = cva(
     variants: {
       variant: {
         hero: "",
+        shell: "",
         feature: "[background-image:var(--gradient-atmosphere-feature)]",
         subtle: "[background-image:var(--gradient-atmosphere-subtle)]",
       },
@@ -26,6 +27,7 @@ export const atmosphereVariants = cva(
         md: "h-64 sm:h-80",
         lg: "h-80 sm:h-96",
         hero: "h-auto max-h-[560px] sm:max-h-[640px] lg:max-h-[720px]",
+        shell: "h-[420px] sm:h-[480px] lg:h-[540px]",
         full: "h-full",
       },
     },
@@ -44,20 +46,25 @@ export const AtmosphereBackground = React.forwardRef<
   HTMLDivElement,
   AtmosphereBackgroundProps
 >(({ className, variant, height, ...props }, ref) => {
-  if (variant === "hero") {
+  if (variant === "hero" || variant === "shell") {
+    const isShell = variant === "shell";
     return (
       <div
         ref={ref}
         aria-hidden="true"
         className={cn(
           "pointer-events-none absolute inset-x-0 top-0 overflow-hidden select-none",
-          "h-[480px] sm:h-[560px] lg:h-[640px]",
-          "[mask-image:linear-gradient(to_bottom,black_0%,black_15%,rgba(0,0,0,0.85)_30%,rgba(0,0,0,0.55)_48%,rgba(0,0,0,0.25)_65%,rgba(0,0,0,0.06)_80%,transparent_95%)]",
-          "[-webkit-mask-image:linear-gradient(to_bottom,black_0%,black_15%,rgba(0,0,0,0.85)_30%,rgba(0,0,0,0.55)_48%,rgba(0,0,0,0.25)_65%,rgba(0,0,0,0.06)_80%,transparent_95%)]",
+          isShell
+            ? "h-[420px] sm:h-[480px] lg:h-[540px]"
+            : "h-[480px] sm:h-[560px] lg:h-[640px]",
+          isShell
+            ? "[mask-image:linear-gradient(to_bottom,black_0%,black_40%,rgba(0,0,0,0.85)_55%,rgba(0,0,0,0.5)_72%,rgba(0,0,0,0.15)_88%,transparent_100%)] [-webkit-mask-image:linear-gradient(to_bottom,black_0%,black_40%,rgba(0,0,0,0.85)_55%,rgba(0,0,0,0.5)_72%,rgba(0,0,0,0.15)_88%,transparent_100%)]"
+            : "[mask-image:linear-gradient(to_bottom,black_0%,black_15%,rgba(0,0,0,0.85)_30%,rgba(0,0,0,0.55)_48%,rgba(0,0,0,0.25)_65%,rgba(0,0,0,0.06)_80%,transparent_95%)] [-webkit-mask-image:linear-gradient(to_bottom,black_0%,black_15%,rgba(0,0,0,0.85)_30%,rgba(0,0,0,0.55)_48%,rgba(0,0,0,0.25)_65%,rgba(0,0,0,0.06)_80%,transparent_95%)]",
           className
         )}
         {...props}
       >
+
         <picture className="block w-full h-full">
           <source
             media="(min-width: 1024px)"

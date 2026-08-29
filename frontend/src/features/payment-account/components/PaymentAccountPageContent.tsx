@@ -156,7 +156,7 @@ export function PaymentAccountPageContent() {
 
   if (isLoading) {
     return (
-      <main className="min-h-dvh bg-background">
+      <main className="min-h-dvh bg-transparent">
         <PageContainer maxWidth="auth" className="py-10">
           <p className="text-sm text-text-secondary">Loading payment account...</p>
         </PageContainer>
@@ -165,23 +165,24 @@ export function PaymentAccountPageContent() {
   }
 
   return (
-    <main className="min-h-dvh bg-background text-text-primary">
+    <main className="min-h-dvh bg-transparent text-text-primary">
       <PageContainer maxWidth="auth" className="space-y-5 py-5 pb-28 sm:py-8">
         <div className="flex items-center gap-3">
           <Link
             href={ROUTES.AUTHENTICATED_HOME}
             aria-label={t.back}
-            className="flex size-10 items-center justify-center rounded-full border border-border bg-surface text-text-secondary hover:text-text-primary"
+            className="mt-0.5 flex size-10 items-center justify-center rounded-full border border-white/20 bg-black/20 text-white shadow-xs backdrop-blur-md transition-all hover:bg-black/30 hover:border-white/30 active:scale-95 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-ring"
           >
             <ArrowLeft className="size-5" />
           </Link>
           <div>
-            <p className="text-xs font-semibold uppercase tracking-wider text-brand-primary">
+            <p className="text-xs font-bold uppercase tracking-wider text-white/90 drop-shadow-2xs">
               {t.title}
             </p>
-            <h1 className="text-2xl font-bold text-text-primary">{t.title}</h1>
+            <h1 className="text-2xl sm:text-3xl font-extrabold text-white drop-shadow-xs">{t.title}</h1>
           </div>
         </div>
+
 
         {errorMessage ? (
           <Alert variant="error">

@@ -26,6 +26,8 @@ export interface ProfileTranslations {
   avatarUploadHelp: string;
   successUpdated: string;
   errorDefault: string;
+  logout: string;
+  logoutDesc: string;
 }
 
 export const profileTranslations: Record<Locale, ProfileTranslations> = {
@@ -55,6 +57,8 @@ export const profileTranslations: Record<Locale, ProfileTranslations> = {
     avatarUploadHelp: "JPG or PNG up to 2MB",
     successUpdated: "Profile updated successfully.",
     errorDefault: "Unable to update profile.",
+    logout: "Log Out",
+    logoutDesc: "Sign out of your FoodFighter account on this device.",
   },
   th: {
     eyebrow: "การตั้งค่าบัญชี",
@@ -82,5 +86,7 @@ export const profileTranslations: Record<Locale, ProfileTranslations> = {
     avatarUploadHelp: "ไฟล์ JPG หรือ PNG ขนาดไม่เกิน 2MB",
     successUpdated: "บันทึกข้อมูลโปรไฟล์เรียบร้อยแล้ว",
     errorDefault: "ไม่สามารถอัปเดตโปรไฟล์ได้",
+    logout: "ออกจากระบบ",
+    logoutDesc: "ออกจากระบบ FoodFighter บนอุปกรณ์นี้",
   },
 };

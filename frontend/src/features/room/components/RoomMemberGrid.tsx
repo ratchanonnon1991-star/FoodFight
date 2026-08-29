@@ -9,6 +9,8 @@ import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
 import { IconButton } from '@/components/ui/IconButton';
+import { useLanguage } from '@/i18n/LanguageProvider';
+import { roomTranslations } from '../i18n/room-translations';
 import type { RoomMember } from '../types/room-types';
 import { getInitials } from '../utils/room-format';
 
@@ -65,12 +67,14 @@ function MemberRow({
   canManage,
   isActionLoading,
   onOpenActions,
+  t,
 }: {
   member: RoomMember;
   isHost: boolean;
   canManage: boolean;
   isActionLoading: boolean;
   onOpenActions: (member: RoomMember) => void;
+  t: (typeof roomTranslations)['en']['lobby'];
 }) {
   return (
     <div className="flex min-h-16 items-center gap-3 px-3 py-2.5">
@@ -78,12 +82,12 @@ function MemberRow({
       <div className="min-w-0 flex-1">
         <div className="flex flex-wrap items-center gap-2">
           <span className="truncate font-medium">{member.displayName}</span>
-          {isHost ? <Badge size="sm">Host</Badge> : null}
+          {isHost ? <Badge size="sm">{t.hostBadge}</Badge> : null}
         </div>
       </div>
       {!isHost ? (
         <Badge size="sm" variant={member.isReady ? 'success' : 'neutral'} dot>
-          {member.isReady ? 'Ready' : 'Not Ready'}
+          {member.isReady ? t.readyBadge : t.notReadyBadge}
         </Badge>
       ) : null}
       {!isHost && canManage ? (
@@ -108,11 +112,14 @@ export function RoomMemberGrid({
   isMemberActionLoading,
   onOpenMemberActions,
 }: RoomMemberGridProps) {
+  const { locale } = useLanguage();
+  const t = roomTranslations[locale].lobby;
+
   return (
     <Card variant="outline" className="mt-4 rounded-2xl p-4 sm:p-5 lg:mt-0">
       <div className="flex items-center justify-between gap-3">
         <h2 className="min-w-0 truncate text-lg font-semibold">
-          Members{' '}
+          {t.membersTitle}{' '}
           <span className="font-normal text-text-secondary">
             ({memberCount} / {maxMembers})
           </span>
@@ -124,7 +131,7 @@ export function RoomMemberGrid({
           disabled
           leftIcon={<UsersRound className="size-4" aria-hidden="true" />}
         >
-          Member List
+          {t.memberList}
         </Button>
       </div>
       <div className="relative mt-4 divide-y divide-border rounded-xl border border-border">
@@ -136,21 +143,30 @@ export function RoomMemberGrid({
             canManage={canManageMembers}
             isActionLoading={isMemberActionLoading}
             onOpenActions={onOpenMemberActions}
+            t={t}
           />
         ))}
       </div>
-      <div className="mt-4 flex items-center gap-3 rounded-xl border border-dashed border-border bg-surface-subtle px-4 py-4">
-        <UserRoundPlus
-          className="size-8 shrink-0 text-text-primary"
-          aria-hidden="true"
-        />
-        <div className="min-w-0">
-          <p className="font-medium">Waiting for more friends to join...</p>
-          <p className="mt-1 text-sm text-text-secondary">
-            Share the code or invite link above!
-          </p>
+      {memberCount < maxMembers ? (
+        <div className="mt-3.5 flex items-center justify-between gap-3 rounded-xl border border-border/80 bg-surface-subtle/80 px-3.5 py-3 shadow-2xs">
+          <div className="flex min-w-0 items-center gap-2.5">
+            <div className="flex size-8 shrink-0 items-center justify-center rounded-lg border border-border/60 bg-surface text-text-primary shadow-2xs">
+              <UserRoundPlus className="size-4" aria-hidden="true" />
+            </div>
+            <div className="min-w-0">
+              <p className="truncate text-xs font-semibold text-text-primary sm:text-sm">
+                {t.waitingMoreFriends}
+              </p>
+              <p className="truncate text-[11px] text-text-secondary sm:text-xs">
+                {t.shareCodePrompt}
+              </p>
+            </div>
+          </div>
+          <span className="shrink-0 rounded-full border border-border bg-surface px-2.5 py-0.5 text-xs font-semibold text-text-secondary shadow-2xs">
+            {memberCount} / {maxMembers}
+          </span>
         </div>
-      </div>
+      ) : null}
     </Card>
   );
 }

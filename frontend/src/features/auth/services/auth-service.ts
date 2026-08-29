@@ -37,4 +37,6 @@ export interface AuthService {
   beginGoogleAuth(idToken: string): Promise<AuthResult<LoginResultData>>;
 
   beginLineAuth(idToken: string): Promise<AuthResult<LoginResultData>>;
+
+  logout(): Promise<void>;
 }

@@ -28,23 +28,39 @@ export function TopNavigation({ activeTab, className }: TopNavigationProps) {
   const items = getNavigationItems(locale);
   const t = commonTranslations[locale].nav;
 
-  const isHomePage =
-    pathname === "/" ||
-    pathname === "/home" ||
-    pathname === ROUTES.AUTHENTICATED_HOME;
+  const isLandingPage = pathname === "/";
+  const isAuthPage =
+    pathname.startsWith("/login") ||
+    pathname.startsWith("/register") ||
+    pathname.startsWith("/verify-email") ||
+    pathname.startsWith("/verification-success") ||
+    pathname.startsWith("/forgot-password") ||
+    pathname.startsWith("/reset-password") ||
+    pathname.startsWith("/change-email") ||
+    pathname.startsWith("/auth");
+
+  const isAtmosphericPage = !isLandingPage && !isAuthPage;
+
 
   const [isScrolled, setIsScrolled] = React.useState(false);
 
   React.useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 340);
+      const threshold =
+        pathname === "/" ||
+        pathname === "/home" ||
+        pathname === ROUTES.AUTHENTICATED_HOME
+          ? 340
+          : 100;
+      setIsScrolled(window.scrollY > threshold);
     };
     handleScroll();
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  }, [pathname]);
 
-  const isOverHeroAtmosphere = isHomePage && !isScrolled;
+  const isOverHeroAtmosphere = isAtmosphericPage && !isScrolled;
+
 
   return (
     <header

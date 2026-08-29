@@ -51,8 +51,9 @@ export function JoinRoomForm() {
   };
 
   return (
-    <main className="min-h-dvh overflow-x-clip bg-background text-text-primary">
-      <div className="mx-auto w-full max-w-md px-4 pb-32 pt-3 sm:px-6 sm:pt-5 md:max-w-xl lg:max-w-2xl">
+    <main className="min-h-dvh overflow-x-clip bg-transparent text-text-primary">
+      <div className="mx-auto w-full max-w-md px-4 pb-32 pt-2 sm:px-6 sm:pt-4 md:max-w-xl lg:max-w-2xl">
+
         <RoomPageHeader title={t.title} subtitle={t.subtitle} backHref={ROUTES.AUTHENTICATED_HOME} />
 
         <Card variant="outline" className="rounded-2xl p-5 sm:p-6 md:p-8">

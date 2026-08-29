@@ -117,7 +117,8 @@ export function ReceiptStepScreen({ billId }: ReceiptStepScreenProps) {
   const receiptImageUrl = resolveMediaUrl(bill.receipt?.imageUrl);
 
   return (
-    <div className="min-h-dvh flex flex-col bg-background text-text-primary">
+    <div className="min-h-dvh flex flex-col bg-transparent text-text-primary">
+
       <BillPageHeader
         title="Scan Receipt"
         subtitle={bill.meal.name}

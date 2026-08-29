@@ -18,7 +18,10 @@ export const iconButtonVariants = cva(
           "text-text-primary hover:bg-surface-subtle active:bg-surface-muted active:scale-[0.96]",
         destructive:
           "bg-status-danger-icon text-white shadow-xs hover:bg-status-danger-text hover:shadow-sm hover:-translate-y-0.5 active:bg-status-danger-text active:translate-y-0 active:scale-[0.96] active:shadow-xs",
+        glass:
+          "rounded-full border border-white/20 bg-black/20 text-white backdrop-blur-md shadow-xs hover:bg-black/30 hover:border-white/30 active:scale-[0.96]",
       },
+
       size: {
         sm: "size-8 p-1.5 text-xs rounded-sm",
         md: "size-10 p-2 text-sm rounded-md",
@@ -75,8 +78,9 @@ export const IconButton = React.forwardRef<HTMLButtonElement, IconButtonProps>(
         {loading ? (
           <Spinner
             size={size === "sm" ? "sm" : "md"}
-            variant={variant === "primary" || variant === "secondary" || variant === "destructive" ? "white" : "current"}
+            variant={variant === "primary" || variant === "secondary" || variant === "destructive" || variant === "glass" ? "white" : "current"}
           />
+
         ) : (
           icon || children
         )}

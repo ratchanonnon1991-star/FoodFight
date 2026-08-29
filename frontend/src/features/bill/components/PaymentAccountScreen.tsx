@@ -120,8 +120,9 @@ export function PaymentAccountScreen() {
   };
 
   return (
-    <div className="min-h-dvh flex flex-col bg-background text-text-primary">
+    <div className="min-h-dvh flex flex-col bg-transparent text-text-primary">
       <BillPageHeader title="Payment Account" backHref={ROUTES.BILLS} />
+
 
       <main className="flex-1 py-6 pb-24">
         <PageContainer maxWidth="auth" paddingY="none" className="space-y-6">

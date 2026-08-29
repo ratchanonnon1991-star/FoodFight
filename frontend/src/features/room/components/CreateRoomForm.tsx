@@ -20,6 +20,8 @@ import { roomTranslations } from "../i18n/room-translations";
 import { LocationPicker } from "./LocationPicker";
 import { RoomPageHeader } from "./RoomPageHeader";
 
+
+
 const SEARCH_RADII = [1, 3, 5, 10] as const;
 
 function getInitialDate() {
@@ -120,8 +122,8 @@ export function CreateRoomForm() {
   };
 
   return (
-    <main className="min-h-dvh overflow-x-clip bg-background text-text-primary">
-      <div className="mx-auto w-full max-w-5xl px-4 pb-32 pt-3 sm:px-6 sm:pt-5">
+    <main className="relative min-h-dvh overflow-x-clip bg-transparent text-text-primary">
+      <div className="relative z-10 mx-auto w-full max-w-4xl px-4 pb-32 pt-2 sm:px-6 sm:pt-4">
         <RoomPageHeader
           title={t.title}
           subtitle={t.subtitle}
@@ -129,9 +131,11 @@ export function CreateRoomForm() {
           showAccountActions
         />
 
-        <p className="mb-5 text-base leading-relaxed text-text-secondary">
+
+        <p className="mb-6 text-sm sm:text-base leading-relaxed text-white/90 drop-shadow-2xs">
           {t.description}
         </p>
+
 
         {generalError ? (
           <Alert variant="error" className="mb-4">
@@ -142,109 +146,111 @@ export function CreateRoomForm() {
 
         <form
           onSubmit={handleSubmit(onSubmit)}
-          className="space-y-4"
+          className="space-y-4 sm:space-y-5"
           noValidate
         >
-          <div className="grid gap-4 lg:grid-cols-2">
-          <Card variant="outline" className="rounded-2xl p-5">
-            <FormField isInvalid={!!errors.name}>
-              <FormLabel
-                htmlFor="room-name"
-                className="text-base font-semibold normal-case tracking-normal"
-              >
-                <span className="inline-flex items-center gap-2">
-                  {t.roomNameLabel}
-                  <Info
-                    className="size-4 text-text-secondary"
-                    aria-hidden="true"
-                  />
-                </span>
-              </FormLabel>
-              <div className="relative">
-                <Pencil
-                  className="pointer-events-none absolute left-4 top-1/2 size-5 -translate-y-1/2 text-text-primary"
-                  aria-hidden="true"
-                />
-                <Input
-                  id="room-name"
-                  maxLength={30}
-                  placeholder={t.roomNamePlaceholder}
-                  className="h-14 rounded-xl pl-12 pr-14 text-base"
-                  {...register("name")}
-                />
-                <span className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-sm text-text-secondary">
-                  {roomName.length}/30
-                </span>
-              </div>
-              {errors.name ? (
-                <FormError>{errors.name.message}</FormError>
-              ) : null}
-              <p className="text-sm text-text-secondary">
-                {t.roomNameHelp}
-              </p>
-            </FormField>
-          </Card>
-
-          <Card variant="outline" className="rounded-2xl p-5">
-            <FormField isInvalid={!!errors.maxMembers}>
-              <div className="flex items-center justify-between gap-3">
+          <div className="grid gap-4 sm:gap-5 lg:grid-cols-2">
+            <Card variant="outline" className="rounded-3xl border border-border/80 bg-surface p-5 sm:p-6 shadow-xs">
+              <FormField isInvalid={!!errors.name}>
                 <FormLabel
-                  htmlFor="max-members"
+                  htmlFor="room-name"
                   className="text-base font-semibold normal-case tracking-normal"
                 >
                   <span className="inline-flex items-center gap-2">
-                    {t.maxMembersLabel}
+                    {t.roomNameLabel}
                     <Info
                       className="size-4 text-text-secondary"
                       aria-hidden="true"
                     />
                   </span>
                 </FormLabel>
-                <span className="rounded-full bg-surface-subtle px-3 py-1 text-xs text-text-secondary">
-                  {t.maxMembersBadge}
-                </span>
-              </div>
-              <div className="flex h-16 items-center justify-center gap-12 rounded-xl border border-border bg-surface">
-                <button
-                  type="button"
-                  aria-label={t.decreaseMembers}
-                  onClick={() => updateMaxMembers(maxMembers - 1)}
-                  disabled={maxMembers <= 2 || isSubmitting}
-                  className="inline-flex size-10 items-center justify-center rounded-full border border-border text-text-primary transition-colors hover:bg-surface-subtle focus-visible:outline-2 focus-visible:outline-brand-secondary disabled:opacity-40"
-                >
-                  <Minus className="size-5" aria-hidden="true" />
-                </button>
-                <Input
-                  id="max-members"
-                  type="number"
-                  min={2}
-                  max={15}
-                  inputMode="numeric"
-                  aria-label={t.maxMembersLabel}
-                  className="h-auto w-12 border-0 p-0 text-center text-3xl font-semibold focus-visible:outline-none"
-                  {...register("maxMembers", { valueAsNumber: true })}
-                />
-                <button
-                  type="button"
-                  aria-label={t.increaseMembers}
-                  onClick={() => updateMaxMembers(maxMembers + 1)}
-                  disabled={maxMembers >= 15 || isSubmitting}
-                  className="inline-flex size-10 items-center justify-center rounded-full border border-border text-text-primary transition-colors hover:bg-surface-subtle focus-visible:outline-2 focus-visible:outline-brand-secondary disabled:opacity-40"
-                >
-                  <Plus className="size-5" aria-hidden="true" />
-                </button>
-              </div>
-              {errors.maxMembers ? (
-                <FormError>{errors.maxMembers.message}</FormError>
-              ) : null}
-              <p className="text-sm text-text-secondary">
-                {t.maxMembersHelp}
-              </p>
-            </FormField>
-          </Card>
+                <div className="relative mt-2">
+                  <Pencil
+                    className="pointer-events-none absolute left-4 top-1/2 size-5 -translate-y-1/2 text-text-primary"
+                    aria-hidden="true"
+                  />
+                  <Input
+                    id="room-name"
+                    maxLength={30}
+                    placeholder={t.roomNamePlaceholder}
+                    className="h-14 rounded-2xl border-border/80 bg-surface pl-12 pr-14 text-base focus-visible:outline-focus-ring"
+                    {...register("name")}
+                  />
+                  <span className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-sm text-text-secondary">
+                    {roomName.length}/30
+                  </span>
+                </div>
+                {errors.name ? (
+                  <FormError>{errors.name.message}</FormError>
+                ) : null}
+                <p className="mt-2 text-sm text-text-secondary">
+                  {t.roomNameHelp}
+                </p>
+              </FormField>
+            </Card>
+
+            <Card variant="outline" className="rounded-3xl border border-border/80 bg-surface p-5 sm:p-6 shadow-xs">
+              <FormField isInvalid={!!errors.maxMembers}>
+                <div className="flex items-center justify-between gap-3">
+                  <FormLabel
+                    htmlFor="max-members"
+                    className="text-base font-semibold normal-case tracking-normal"
+                  >
+                    <span className="inline-flex items-center gap-2">
+                      {t.maxMembersLabel}
+                      <Info
+                        className="size-4 text-text-secondary"
+                        aria-hidden="true"
+                      />
+                    </span>
+                  </FormLabel>
+                  <span className="rounded-full bg-surface-subtle px-3 py-1 text-xs text-text-secondary font-medium border border-border/40">
+                    {t.maxMembersBadge}
+                  </span>
+                </div>
+                <div className="mt-2 flex h-18 items-center justify-between rounded-2xl border border-border/60 bg-surface-subtle/80 px-6 py-2">
+                  <button
+                    type="button"
+                    aria-label={t.decreaseMembers}
+                    onClick={() => updateMaxMembers(maxMembers - 1)}
+                    disabled={maxMembers <= 2 || isSubmitting}
+                    className="inline-flex size-11 items-center justify-center rounded-full border border-border/80 bg-surface text-text-primary shadow-2xs transition-all hover:bg-white active:scale-95 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-ring disabled:opacity-35 disabled:pointer-events-none disabled:shadow-none cursor-pointer"
+                  >
+                    <Minus className="size-5" aria-hidden="true" />
+                  </button>
+                  <div className="flex items-center justify-center">
+                    <Input
+                      id="max-members"
+                      type="number"
+                      min={2}
+                      max={15}
+                      inputMode="numeric"
+                      aria-label={t.maxMembersLabel}
+                      className="h-auto w-16 border-0 bg-transparent p-0 text-center text-3xl sm:text-4xl font-extrabold text-text-primary focus-visible:outline-none"
+                      {...register("maxMembers", { valueAsNumber: true })}
+                    />
+                  </div>
+                  <button
+                    type="button"
+                    aria-label={t.increaseMembers}
+                    onClick={() => updateMaxMembers(maxMembers + 1)}
+                    disabled={maxMembers >= 15 || isSubmitting}
+                    className="inline-flex size-11 items-center justify-center rounded-full border border-border/80 bg-surface text-text-primary shadow-2xs transition-all hover:bg-white active:scale-95 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-ring disabled:opacity-35 disabled:pointer-events-none disabled:shadow-none cursor-pointer"
+                  >
+                    <Plus className="size-5" aria-hidden="true" />
+                  </button>
+                </div>
+                {errors.maxMembers ? (
+                  <FormError>{errors.maxMembers.message}</FormError>
+                ) : null}
+                <p className="mt-2 text-sm text-text-secondary">
+                  {t.maxMembersHelp}
+                </p>
+              </FormField>
+            </Card>
           </div>
 
-          <Card variant="outline" className="rounded-2xl p-5">
+          <Card variant="outline" className="rounded-3xl border border-border/80 bg-surface p-5 sm:p-6 shadow-xs">
             <FormField isInvalid={!!errors.locationName}>
               <FormLabel
                 htmlFor="location-name"
@@ -258,35 +264,37 @@ export function CreateRoomForm() {
                   />
                 </span>
               </FormLabel>
-              <LocationPicker
-                id="location-name"
-                value={locationName}
-                latitude={latitude}
-                longitude={longitude}
-                onChange={handleLocationChange}
-                onPlaceSelected={({
-                  locationName: selectedLocation,
-                  latitude,
-                  longitude,
-                }) => {
-                  setValue("locationName", selectedLocation, {
-                    shouldDirty: true,
-                    shouldTouch: true,
-                    shouldValidate: true,
-                  });
-                  setValue("latitude", latitude);
-                  setValue("longitude", longitude);
-                }}
-                onBlur={() => {
-                  void trigger("locationName");
-                }}
-                disabled={isSubmitting}
-              />
+              <div className="mt-2">
+                <LocationPicker
+                  id="location-name"
+                  value={locationName}
+                  latitude={latitude}
+                  longitude={longitude}
+                  onChange={handleLocationChange}
+                  onPlaceSelected={({
+                    locationName: selectedLocation,
+                    latitude,
+                    longitude,
+                  }) => {
+                    setValue("locationName", selectedLocation, {
+                      shouldDirty: true,
+                      shouldTouch: true,
+                      shouldValidate: true,
+                    });
+                    setValue("latitude", latitude);
+                    setValue("longitude", longitude);
+                  }}
+                  onBlur={() => {
+                    void trigger("locationName");
+                  }}
+                  disabled={isSubmitting}
+                />
+              </div>
               {errors.locationName ? (
                 <FormError>{errors.locationName.message}</FormError>
               ) : null}
 
-              <div className="mt-5 border-t border-border pt-4">
+              <div className="mt-6 border-t border-border/80 pt-5">
                 <div className="mb-3 flex items-center justify-between gap-3">
                   <FormLabel
                     htmlFor="search-radius"
@@ -300,33 +308,40 @@ export function CreateRoomForm() {
                       />
                     </span>
                   </FormLabel>
-                  <span className="rounded-full bg-surface-subtle px-3 py-1 text-xs text-text-secondary">
+                  <span className="rounded-full bg-surface-subtle px-3 py-1 text-xs text-text-secondary font-medium border border-border/40">
                     {t.searchRadiusBadge(selectedRadius)}
                   </span>
                 </div>
                 <div
                   id="search-radius"
-                  className="grid grid-cols-4 gap-2"
+                  className="grid grid-cols-4 gap-2 sm:gap-2.5"
                   role="group"
                   aria-label={t.searchRadiusLabel}
                 >
-                  {SEARCH_RADII.map((radius) => (
-                    <button
-                      key={radius}
-                      type="button"
-                      aria-pressed={selectedRadius === radius}
-                      onClick={() =>
-                        setValue("searchRadiusKm", radius, {
-                          shouldDirty: true,
-                          shouldValidate: true,
-                        })
-                      }
-                      disabled={isSubmitting}
-                      className={`h-12 rounded-xl border text-sm transition-colors focus-visible:outline-2 focus-visible:outline-brand-secondary disabled:opacity-50 ${selectedRadius === radius ? "border-brand-primary bg-surface-subtle font-semibold text-text-primary" : "border-border bg-surface text-text-primary hover:bg-surface-subtle"}`}
-                    >
-                      {radius} km
-                    </button>
-                  ))}
+                  {SEARCH_RADII.map((radius) => {
+                    const isSelected = selectedRadius === radius;
+                    return (
+                      <button
+                        key={radius}
+                        type="button"
+                        aria-pressed={isSelected}
+                        onClick={() =>
+                          setValue("searchRadiusKm", radius, {
+                            shouldDirty: true,
+                            shouldValidate: true,
+                          })
+                        }
+                        disabled={isSubmitting}
+                        className={`h-12 rounded-xl border text-sm transition-all focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-ring disabled:opacity-50 cursor-pointer ${
+                          isSelected
+                            ? "border-brand-secondary bg-brand-secondary/15 text-brand-secondary font-bold shadow-xs ring-2 ring-brand-secondary/25"
+                            : "border-border/80 bg-surface text-text-primary hover:bg-surface-subtle hover:border-border shadow-2xs active:scale-[0.98]"
+                        }`}
+                      >
+                        {radius} km
+                      </button>
+                    );
+                  })}
                 </div>
                 <p className="mt-3 text-sm text-text-secondary">
                   {t.searchRadiusHelp}
@@ -335,7 +350,7 @@ export function CreateRoomForm() {
             </FormField>
           </Card>
 
-          <Card variant="outline" className="rounded-2xl p-5">
+          <Card variant="outline" className="rounded-3xl border border-border/80 bg-surface p-5 sm:p-6 shadow-xs">
             <FormField isInvalid={!!errors.date || !!errors.time}>
               <FormLabel className="text-base font-semibold normal-case tracking-normal">
                 <span className="inline-flex items-center gap-2">
@@ -346,40 +361,40 @@ export function CreateRoomForm() {
                   />
                 </span>
               </FormLabel>
-              <div className="grid gap-3 sm:grid-cols-2">
+              <div className="mt-2 grid gap-3 sm:grid-cols-2">
                 <label className="space-y-1.5">
-                  <span className="text-sm text-text-secondary">{t.dateLabel}</span>
+                  <span className="text-sm font-medium text-text-secondary">{t.dateLabel}</span>
                   <div className="relative">
                     <CalendarDays
-                      className="pointer-events-none absolute left-3 top-1/2 size-5 -translate-y-1/2 text-text-primary"
+                      className="pointer-events-none absolute left-3.5 top-1/2 size-5 -translate-y-1/2 text-text-primary"
                       aria-hidden="true"
                     />
                     <Input
                       id="room-date"
                       type="date"
-                      className="h-12 appearance-none rounded-xl pl-11 pr-12 text-sm [&::-webkit-calendar-picker-indicator]:pointer-events-none [&::-webkit-calendar-picker-indicator]:opacity-0"
+                      className="h-13 appearance-none rounded-2xl border-border/80 bg-surface pl-11 pr-12 text-sm focus-visible:outline-focus-ring [&::-webkit-calendar-picker-indicator]:pointer-events-none [&::-webkit-calendar-picker-indicator]:opacity-0"
                       {...register("date")}
                     />
                     <button
                       type="button"
                       aria-label={t.openDatePicker}
                       onClick={openDatePicker}
-                      className="absolute right-1 top-1/2 inline-flex size-10 -translate-y-1/2 items-center justify-center rounded-lg text-text-primary transition-colors hover:bg-surface-subtle focus-visible:outline-2 focus-visible:outline-brand-secondary"
+                      className="absolute right-1.5 top-1/2 inline-flex size-10 -translate-y-1/2 items-center justify-center rounded-xl text-text-primary transition-colors hover:bg-surface-subtle focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-ring cursor-pointer"
                     >
-                      <CalendarDays className="size-4" aria-hidden="true" />
+                      <CalendarDays className="size-4 text-text-secondary" aria-hidden="true" />
                     </button>
                   </div>
                 </label>
                 <label className="space-y-1.5">
-                  <span className="text-sm text-text-secondary">{t.timeLabel}</span>
+                  <span className="text-sm font-medium text-text-secondary">{t.timeLabel}</span>
                   <div className="relative">
                     <Timer
-                      className="pointer-events-none absolute left-3 top-1/2 size-5 -translate-y-1/2 text-text-primary"
+                      className="pointer-events-none absolute left-3.5 top-1/2 size-5 -translate-y-1/2 text-text-primary"
                       aria-hidden="true"
                     />
                     <Input
                       type="time"
-                      className="h-12 rounded-xl pl-11 pr-10 text-sm [&::-webkit-calendar-picker-indicator]:m-0 [&::-webkit-calendar-picker-indicator]:size-4"
+                      className="h-13 rounded-2xl border-border/80 bg-surface pl-11 pr-10 text-sm focus-visible:outline-focus-ring [&::-webkit-calendar-picker-indicator]:m-0 [&::-webkit-calendar-picker-indicator]:size-4"
                       {...register("time")}
                     />
                   </div>
@@ -391,19 +406,24 @@ export function CreateRoomForm() {
               {errors.time ? (
                 <FormError>{errors.time.message}</FormError>
               ) : null}
-              <p className="text-sm text-text-secondary">
+              <p className="mt-2 text-sm text-text-secondary">
                 {t.dateTimeHelp}
               </p>
             </FormField>
           </Card>
 
-          <div className="rounded-2xl border border-border bg-surface-subtle p-5">
-            <p className="font-semibold text-text-primary">
-              {t.afterCreateTitle}
-            </p>
-            <p className="mt-1 text-sm leading-relaxed text-text-secondary">
-              {t.afterCreateDesc}
-            </p>
+          <div className="rounded-2xl border border-amber-500/25 bg-amber-500/10 p-4.5 sm:p-5 text-amber-950">
+            <div className="flex items-start gap-3">
+              <Info className="mt-0.5 size-5 shrink-0 text-amber-600" aria-hidden="true" />
+              <div>
+                <p className="font-semibold text-text-primary">
+                  {t.afterCreateTitle}
+                </p>
+                <p className="mt-1 text-sm leading-relaxed text-text-secondary">
+                  {t.afterCreateDesc}
+                </p>
+              </div>
+            </div>
           </div>
 
           <Button
@@ -413,6 +433,7 @@ export function CreateRoomForm() {
             fullWidth
             loading={isSubmitting}
             loadingText={t.submitting}
+            className="h-14 rounded-2xl text-base font-bold shadow-xs active:scale-[0.99]"
           >
             {t.submit}
           </Button>

@@ -74,4 +74,6 @@ export const authService: AuthService = {
   beginGoogleAuth: (idToken) => getAuthService().beginGoogleAuth(idToken),
 
   beginLineAuth: (idToken) => getAuthService().beginLineAuth(idToken),
+
+  logout: () => getAuthService().logout(),
 };

@@ -10,10 +10,14 @@ import {
   Check,
   CreditCard,
   ImageUp,
+  LogOut,
   Pencil,
   Utensils,
 } from 'lucide-react';
+import { API_BASE_URL } from '@/config/api';
+import { getStoredAccessToken } from '@/config/api-client';
 import { ROUTES } from '@/config/routes';
+
 import {
   AuthenticatedPageLayout,
   AuthenticatedPageHeader,
@@ -30,7 +34,7 @@ import {
   getMyFoodProfile,
   type FoodProfileResponse,
 } from '@/features/food-profile/services/food-profile-service';
-import { resolveAuthMode } from '@/features/auth/services/auth-runtime';
+import { resolveAuthMode, authService } from '@/features/auth/services/auth-runtime';
 import { useLanguage } from '@/i18n/LanguageProvider';
 import { profileTranslations } from '../i18n/profile-translations';
 import {
@@ -113,10 +117,22 @@ export function ProfilePageContent() {
     () => resolveAuthMode() === 'api',
   );
   const [isSaving, setIsSaving] = React.useState(false);
+  const [isLoggingOut, setIsLoggingOut] = React.useState(false);
   const [errorMessage, setErrorMessage] = React.useState<string | null>(null);
   const [successMessage, setSuccessMessage] = React.useState<string | null>(
     null,
   );
+
+  const handleLogout = async () => {
+    if (isLoggingOut) return;
+    setIsLoggingOut(true);
+    try {
+      await authService.logout();
+    } finally {
+      router.replace(ROUTES.AUTH.LOGIN);
+    }
+  };
+
 
   React.useEffect(() => {
     let isMounted = true;
@@ -451,6 +467,34 @@ export function ProfilePageContent() {
               </Link>
             </div>
           </div>
+      </section>
+
+      {/* 4. Logout Section */}
+      <section className="rounded-2xl border border-border/80 bg-surface p-5 shadow-xs sm:p-6">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex items-start gap-3">
+            <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-status-danger-bg/60 text-brand-primary">
+              <LogOut className="size-5" />
+            </div>
+            <div className="min-w-0 flex-1">
+              <h2 className="font-bold text-text-primary">{t.logout}</h2>
+              <p className="mt-1 text-sm leading-relaxed text-text-secondary">
+                {t.logoutDesc}
+              </p>
+            </div>
+          </div>
+          <Button
+            type="button"
+            variant="destructive"
+            disabled={isLoggingOut}
+            onClick={handleLogout}
+            className="w-full sm:w-auto shrink-0 flex items-center justify-center gap-2"
+          >
+            <LogOut className="size-4" />
+            <span>{isLoggingOut ? t.saving : t.logout}</span>
+          </Button>
+
+        </div>
       </section>
     </AuthenticatedPageLayout>
   );

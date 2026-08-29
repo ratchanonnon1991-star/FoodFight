@@ -114,7 +114,8 @@ export function SplitStepScreen({ billId }: SplitStepScreenProps) {
   const allAssigned = bill.items.length > 0 && unassignedCount === 0;
 
   return (
-    <div className="min-h-dvh flex flex-col bg-background text-text-primary">
+    <div className="min-h-dvh flex flex-col bg-transparent text-text-primary">
+
       <BillPageHeader
         title="Split Bill"
         subtitle={bill.meal.name}

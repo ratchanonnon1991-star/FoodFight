@@ -70,7 +70,7 @@ export function BillDetailScreen({ billId }: BillDetailScreenProps) {
 
   if (isCancelled) {
     return (
-      <div className="min-h-dvh flex flex-col bg-background text-text-primary">
+      <div className="min-h-dvh flex flex-col bg-transparent text-text-primary">
         <BillPageHeader
           title="Bill"
           subtitle={bill.meal.name}
@@ -104,7 +104,7 @@ export function BillDetailScreen({ billId }: BillDetailScreenProps) {
           : `/bills/${billId}/summary`;
 
     return (
-      <div className="min-h-dvh flex flex-col bg-background text-text-primary">
+      <div className="min-h-dvh flex flex-col bg-transparent text-text-primary">
         <BillPageHeader title="Bill" subtitle={bill.meal.name} backHref={ROUTES.BILLS} />
         <main className="flex-1 py-8">
           <PageContainer maxWidth="auth" paddingY="none">
@@ -123,8 +123,9 @@ export function BillDetailScreen({ billId }: BillDetailScreenProps) {
   }
 
   return (
-    <div className="min-h-dvh flex flex-col bg-background text-text-primary">
+    <div className="min-h-dvh flex flex-col bg-transparent text-text-primary">
       <BillPageHeader title="Bill Detail" subtitle={bill.meal.name} backHref={ROUTES.BILLS} />
+
 
       <main className="flex-1 py-6 pb-24">
         <PageContainer maxWidth="auth" paddingY="none" className="space-y-6">
