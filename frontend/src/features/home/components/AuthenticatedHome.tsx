@@ -8,6 +8,7 @@ import { ROUTES } from "@/config/routes";
 import { API_BASE_URL } from "@/config/api";
 import { roomService } from "@/features/room/services/room-service";
 import type { RoomLobby } from "@/features/room/types/room-types";
+import type { UserRole } from "@/features/auth/types/auth-types";
 import type {
   AuthenticatedUserDisplay,
   CurrentFoodFightSession,
@@ -166,6 +167,7 @@ export function AuthenticatedHome({
           displayName?: string;
           email?: string;
           avatarUrl?: string | null;
+          role?: UserRole;
         };
       })
       .then((currentUser) => {
@@ -179,6 +181,7 @@ export function AuthenticatedHome({
           name: currentUser.displayName?.trim() || fallbackName,
           email: currentUser.email,
           avatarUrl: currentUser.avatarUrl ?? undefined,
+          role: currentUser.role,
         });
       })
       .catch(() => {

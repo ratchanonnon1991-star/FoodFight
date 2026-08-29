@@ -18,6 +18,7 @@ export interface HomeTranslations {
     editProfile: string;
     editFoodProfile: string;
     paymentAccount: string;
+    adminConsole: string;
     logout: string;
     notificationsLabel: string;
     profileMenuLabel: string;
@@ -80,8 +81,9 @@ export const homeTranslations: Record<HomeLocale, HomeTranslations> = {
       greeting: (name: string) => `Hi, ${name}`,
       greetingSubtitle: "Ready to fight for the best meal?",
       editProfile: "Edit profile",
-      editFoodProfile: "Edit food profile",
-      paymentAccount: "Payment account",
+      editFoodProfile: "Edit Food Profile",
+      paymentAccount: "Payment Account",
+      adminConsole: "Admin Console",
       logout: "Log out",
       notificationsLabel: "View notifications",
       profileMenuLabel: "Profile menu",
@@ -164,6 +166,7 @@ export const homeTranslations: Record<HomeLocale, HomeTranslations> = {
       editProfile: "แก้ไขโปรไฟล์",
       editFoodProfile: "แก้ไขโปรไฟล์อาหาร",
       paymentAccount: "บัญชีรับชำระเงิน",
+      adminConsole: "แผงควบคุมผู้ดูแล",
       logout: "ออกจากระบบ",
       notificationsLabel: "ดูการแจ้งเตือน",
       profileMenuLabel: "เมนูโปรไฟล์",

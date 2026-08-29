@@ -2,10 +2,13 @@
  * Authenticated Home Domain & Display Types
  */
 
+import type { UserRole } from "@/features/auth/types/auth-types";
+
 export interface AuthenticatedUserDisplay {
   name: string;
   email?: string;
   avatarUrl?: string;
+  role?: UserRole;
 }
 
 export interface CurrentFoodFightMember {
