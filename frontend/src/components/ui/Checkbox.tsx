@@ -48,7 +48,7 @@ export const Checkbox = React.forwardRef<HTMLInputElement, CheckboxProps>(
               "checked:bg-interactive-primary checked:border-interactive-primary",
               isActuallyInvalid
                 ? "border-status-danger-icon focus-visible:outline-status-danger-icon"
-                : "border-border hover:border-border-strong",
+                : "border-border-strong hover:border-interactive-primary",
               "disabled:cursor-not-allowed disabled:bg-surface-muted disabled:border-border-disabled disabled:checked:bg-text-disabled",
               className
             )}

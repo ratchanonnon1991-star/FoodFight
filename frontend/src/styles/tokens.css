@@ -76,8 +76,8 @@
      ========================================================================== */
   --color-background: #F4EEE3;        /* Rice Canvas */
   --color-surface: #FFFFFF;           /* Pure White Surface */
-  --color-surface-subtle: #EAE0D0;    /* Warm Subtle Tint */
-  --color-surface-muted: #DFD3C0;     /* Warm Muted Tint */
+  --color-surface-subtle: #FAF6EE;    /* Warm Light Subtle Highlight */
+  --color-surface-muted: #EBE1D2;     /* Warm Muted Container Inset */
   --color-surface-elevated: #FFFFFF;
   --color-surface-inverse: #211D19;   /* Deep Ink */
 
@@ -93,9 +93,9 @@
   /* ==========================================================================
      5. Semantic Border Tokens
      ========================================================================== */
-  --color-border: #D9CFC1;            /* Warm Neutral Border */
-  --color-border-subtle: #E8DFD3;
-  --color-border-strong: #AD9B87;
+  --color-border: #C8BAA8;            /* Warm Neutral Border */
+  --color-border-subtle: #DDD2C2;
+  --color-border-strong: #9E8C77;
   --color-border-disabled: #E0D7CB;
 
   /* ==========================================================================
@@ -126,11 +126,11 @@
   --color-status-danger-text: #8E1F1F;
   --color-status-danger-icon: #B83226;
 
-  /* Info */
-  --color-status-info-bg: #E5EEF8;
-  --color-status-info-border: #A7D3F3;
-  --color-status-info-text: #185582;
-  --color-status-info-icon: #2B5C8F;
+  /* Info (Warm Saffron-Ember Semantic Treatment) */
+  --color-status-info-bg: #F7EFE1;
+  --color-status-info-border: #E0CFA9;
+  --color-status-info-text: #5A3E1B;
+  --color-status-info-icon: #BC6C25;
 
   /* ==========================================================================
      8. Radii Tokens

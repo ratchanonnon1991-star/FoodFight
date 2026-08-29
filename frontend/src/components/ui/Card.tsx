@@ -10,7 +10,7 @@ export const cardVariants = cva(
         default: "border-border bg-surface shadow-xs",
         subtle: "border-border-subtle bg-surface-subtle",
         elevated: "border-border bg-surface-elevated shadow-md",
-        outline: "border-border bg-transparent",
+        outline: "border-border bg-surface shadow-2xs",
       },
       padding: {
         none: "p-0",
