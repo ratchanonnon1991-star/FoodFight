@@ -1,265 +1,119 @@
-# FoodFighter — AI Entry Point
+# FoodFighter — AI Entry Point & Agent Rules
 
 > **Read this file first. Do not read every project document on every task.**
 >
-> This file is the routing/index document for AI agents working on FoodFighter.
+> This file is the primary routing and index document for AI agents working on FoodFighter.
 
-## 1. Default workflow
+## 1. Default Workflow
 
-Before coding:
+Before modifying any code:
 
-1. Confirm the correct Git branch.
-2. Inspect `git status --short`.
-3. Read this file.
-4. Read **only** the task-specific documents listed below.
-5. Inspect the existing source before creating new files.
-6. Implement the smallest coherent change.
-7. Run verification.
-8. Review the full diff before commit.
-
-Do not load every Markdown file by default. Use selective reading to reduce context/token cost and keep execution fast.
+1. **Verify Git Safety**: Confirm current branch is NOT `dev` via `git branch --show-current` and inspect `git status --short`.
+2. **Consult Routing Matrix**: Read **only** the task-relevant documents in Section 3 below.
+3. **Inspect Source First**: Inspect existing components/services before creating new files.
+4. **Implement Smallest Change**: Keep changes focused, typed, and clean.
+5. **Resource-Light Verification**: Run `pnpm exec tsc --noEmit` and focused tests when relevant. Do NOT run heavy full test suites or production builds for minor changes.
+6. **Review Diff**: Check `git diff` carefully before completing tasks.
 
 ---
 
-## 2. Canonical frontend style
+## 2. Canonical Frontend Style
 
 FoodFighter uses:
 
-**Feature-oriented + Layered + Explicit Next.js style**
+**Feature-Oriented + Layered + Explicit Next.js (App Router)**
 
-Meaning:
+- **PAGE COMPOSES**: Route files (`src/app/`) stay thin and assemble feature modules.
+- **FEATURE OWNS**: Domain rules, forms, schemas, and feature UI live in `src/features/<feature>/`.
+- **SHARED REUSES**: Generic UI primitives live in `src/components/ui/`; shared widgets in `src/components/shared/`.
+- **TOKENS STYLE**: Styling strictly uses semantic CSS variables from `src/styles/tokens.css`. Never hardcode hex values in JSX.
 
-- organize code around real product features,
-- keep clear layers for routes, feature UI, shared UI, logic, and transport,
-- keep simple code explicit and readable,
-- avoid hiding ordinary logic behind unnecessary abstractions,
-- split files by real responsibility, not just line count.
-
-If you are doing frontend work, the primary architecture document is:
-
-`docs/FRONTEND_ARCHITECTURE.md`
+Primary Architecture Reference: `docs/FRONTEND_ARCHITECTURE.md`
 
 ---
 
-## 3. Task → required reading
+## 3. Task → Required Reading Matrix
 
-| Task type | Required reading |
+| Task Type | Required Reading |
 |---|---|
-| Any frontend coding | `AGENTS.md` + `docs/FRONTEND_ARCHITECTURE.md` |
-| Create/change reusable UI component | + `docs/FRONTEND_COMPONENTS.md` |
-| Form / validation / state / API / realtime | + `docs/FRONTEND_LOGIC.md` |
-| Styling / responsive / accessibility / UI polish | + `docs/FRONTEND_UI_UX.md` |
-| Test task / behavioral feature | + `docs/FRONTEND_TESTING.md` |
-| Before commit / refactor / cleanup | + `docs/FRONTEND_QUALITY.md` |
-| Auth feature | + existing `docs/AUTH.md` |
-| Product behavior / business rule | + `docs/Srs-Footfight.md` |
-| Design-system-only task | + existing `docs/DESIGN_SYSTEM.md` if present |
-| New feature not documented yet | Read SRS first, then create/update only the feature-specific doc if truly needed |
-
-Do not read documents that are unrelated to the active task.
+| **Any frontend coding / routing** | `AGENTS.md` + `docs/FRONTEND_ARCHITECTURE.md` |
+| **Design system / palette / typography** | + `docs/DESIGN_SYSTEM.md` |
+| **Create / split / reuse UI components** | + `docs/FRONTEND_COMPONENTS.md` |
+| **Forms / validation / state / API / realtime** | + `docs/FRONTEND_LOGIC.md` |
+| **Visual design / responsive / accessibility / motion** | + `docs/FRONTEND_UI_UX.md` |
+| **Testing / test cleanup / test policy** | + `docs/FRONTEND_TESTING.md` |
+| **Quality guard / refactoring / pre-commit** | + `docs/FRONTEND_QUALITY.md` |
+| **Authentication flow** | + `docs/AUTH.md` |
+| **Product requirements / business rules** | + `docs/Srs-Footfight.md` |
 
 ---
 
-## 4. Source-of-truth order
+## 4. Source-of-Truth Precedence
 
-When documents disagree, prefer:
+When requirements appear ambiguous or conflicting, follow this exact order:
 
-1. Current owner-approved product/UI reference
-2. `docs/Srs-Footfight.md`
-3. Task-specific feature document
-4. `docs/FRONTEND_UI_UX.md`
-5. `docs/FRONTEND_ARCHITECTURE.md`
-6. Existing implementation, when it does not conflict with newer decisions
-
-Do not invent missing product behavior.
+1. Current Owner-Approved Decisions & Benchmarks (e.g. Home is FROZEN benchmark)
+2. `docs/Srs-Footfight.md` (Product & System Requirements)
+3. Task-Specific Feature Documents (`docs/AUTH.md`, `docs/DESIGN_SYSTEM.md`)
+4. `docs/FRONTEND_UI_UX.md` & `docs/FRONTEND_ARCHITECTURE.md`
+5. Existing Codebase Implementation
 
 ---
 
-## 5. Git branch rule
+## 5. Global TH/EN Localization System
 
-Every bounded task must verify the branch **before mutation**.
-
-Minimum preflight:
-
-```bash
-git branch --show-current
-git status --short
-```
-
-Use the correct feature/task branch before changing files.
-
-Do not:
-
-- commit onto the wrong branch,
-- use destructive reset/clean commands on unrelated work,
-- mix multiple unrelated features in one commit.
+- **Supported Locales**: `"th"` and `"en"` (Default / fallback: `"en"`).
+- **Single Source of Truth**: `LanguageProvider` (`src/i18n/LanguageProvider.tsx`) wrapping the root layout.
+- **Hook**: `useLanguage()` returns `{ locale, setLocale }`.
+- **Persistence**: Single localStorage key `foodfighter_language`.
+- **Feature Dictionaries**: Colocated typed dictionaries in each feature (e.g. `roomTranslations`, `foodFightTranslations`, `billTranslations`, `adminTranslations`).
+- **No Heavy Packages**: Do NOT introduce `next-intl` or `react-i18next`.
 
 ---
 
-## 6. Frontend / backend boundary
+## 6. Admin Portal (Required Product Scope)
 
-Frontend may communicate with backend through HTTP/WebSocket contracts.
-
-Frontend must not import backend source code.
-
-Unless a task explicitly authorizes backend work:
-
-`BACKEND_MUTATIONS: NONE`
-
-Frontend components must not contain backend implementation logic.
+- **Route Group**: `src/app/(admin)/admin/` (Dashboard, Analytics, Users, Rooms, Bills)
+- **Route Guard**: `AdminRouteGuard` enforces `Role.ADMIN` session.
+- **Backend Guard**: Protected via NestJS `@UseGuards(RolesGuard)` and `@Roles(Role.ADMIN)`.
+- **Backend Registration**: `AdminModule` is imported in `backend/src/app.module.ts`.
+- **Promotion Tool**: `pnpm admin:promote --email <email>` via `backend/scripts/promote-admin.ts`.
 
 ---
 
-## 7. Core code-placement rule
+## 7. Component Maintainability & Splitting Signals
 
-Use this mental model:
-
-```text
-Route
-  ↓
-Feature component
-  ↓
-Cohesive subcomponents
-  ↓
-Schema / hook / service
-  ↓
-Shared API / realtime infrastructure
-  ↓
-Backend
-```
-
-Avoid:
-
-```text
-Route
-  ↓
-500-line mega component
-```
-
-Also avoid:
-
-```text
-Route
-  ↓
-40 tiny components
-  ↓
-15 index.ts files
-  ↓
-multiple unnecessary abstraction layers
-```
+- **Route / Page / Layout**: ~120–180 lines (review at >200 lines)
+- **Generic UI Primitive**: ~180–220 lines (review at >250 lines)
+- **Feature Component / Form**: ~250–350 lines (mandatory review at >400 lines)
+- **Cohesion Rule**: A cohesive 300-line component should remain intact. Do NOT create meaningless micro-components (e.g. `EmailLabel`, `SubmitButtonText`).
 
 ---
 
-## 8. Component creation rule
+## 8. Resource-Light Testing & Cache Hygiene
 
-Before creating a new component, ask:
-
-- Is this a real reusable or independently understandable responsibility?
-- Does an existing shared component already solve it?
-- Is extraction improving readability?
-- Am I creating it only to reduce line count?
-
-Simple form fields normally stay explicit in the form.
-
-Complex/cohesive behavior may be extracted.
-
-Examples worth extracting:
-
-- `VerificationCodeInput`
-- `SocialAuthButtons`
-- `TermsConsent`
-- `RoomMemberList`
-- `InviteSheet`
-- `MenuRecommendationCard`
-
-Examples usually not worth extracting:
-
-- `EmailLabel`
-- `PasswordLabel`
-- `SubmitText`
-- `OtpDigit1`
+- **Verification Tiers**:
+  - Small change: `pnpm exec tsc --noEmit`
+  - Feature completion: Focused unit tests (`Vitest` / `Jest`)
+  - Milestone: QA / Responsive / Playwright E2E once
+  - Production build (`pnpm build`): Only for deployment validation
+- **Cache Preservation**: Always preserve `frontend/.next/**`, `node_modules/**`, and `pnpm` store.
+- **Artifact Cleaning**: Clean disposable output (`test-results/`, `coverage/`, Playwright traces/videos). Never commit test artifacts.
+- **Backend Dist**: `backend/dist/**` is generated and gitignored. Do not commit or repeatedly delete.
 
 ---
 
-## 9. Import/export rule
+## 9. 7-Phase Frontend Completion Plan
 
-Prefer direct imports that reveal the real file location.
-
-Good:
-
-```ts
-import { RegisterForm } from "@/features/auth/components/RegisterForm";
-```
-
-Avoid broad barrels that hide ownership:
-
-```ts
-import { RegisterForm } from "@/features";
-```
-
-Do not create `index.ts` for every component by default.
+1. **Phase 1: Current Documentation Refresh** — *[COMPLETED]*
+2. **Phase 2: Admin Integration Completion** — *[IMPLEMENTED + VERIFIED — CHECKPOINT PENDING]*
+3. **Phase 3: Remaining Workspace Decisions** — *[NEXT: Favicon & asset cleanup]*
+4. **Phase 4: Global Frontend Foundation Audit** *(Shared component reuse, token hardcode audit, layout cleanup)*
+5. **Phase 5: Frontend Completion Inventory** *(Classify every route/page: Done / Partial / Missing / Blocked)*
+6. **Phase 6: UX/UI Completion** *(Complete and refine remaining feature screens inheriting stable global foundations)*
+7. **Phase 7: Final Frontend QA** *(TypeScript, unit tests, responsive check, E2E, accessibility, release build)*
 
 ---
-
-## 10. Shared component rule
-
-Generic reusable UI belongs in:
-
-`src/components/ui/`
-
-Reusable layout/shell pieces belong in:
-
-`src/components/layout/`
-
-Reusable non-domain widgets belong in:
-
-`src/components/shared/`
-
-FoodFighter-specific UI belongs in:
-
-`src/features/<feature>/`
-
-Do not put Room/Auth/Voting business concepts into generic UI primitives.
-
----
-
-## 11. Documentation rule
-
-Keep documentation minimal.
-
-One rule should have one canonical home.
-
-Do not duplicate the same coding rule across:
-
-- `AGENTS.md`
-- feature docs
-- skill docs
-- model-specific docs
-- extra audit docs
-
-If a model-specific file merely repeats these rules, consolidate it.
-
----
-
-## 12. Completion rule
-
-Before reporting completion:
-
-```text
-[ ] correct branch
-[ ] task-owned files only
-[ ] responsibilities still clear
-[ ] no unnecessary abstraction
-[ ] no duplicate shared UI
-[ ] typecheck passes
-[ ] lint passes
-[ ] build passes
-[ ] affected responsive UI checked
-[ ] full diff reviewed
-[ ] backend untouched unless explicitly authorized
-```
-
-If a task needs more detail, read only the relevant document from Section 3.
 
 <!-- BEGIN:nextjs-agent-rules -->
 
