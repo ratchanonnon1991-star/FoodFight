@@ -4,20 +4,20 @@ import { cn } from "@/lib/utils/cn";
 import { Spinner } from "@/components/ui/Spinner";
 
 export const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap font-medium text-sm transition-colors duration-150 select-none cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-ring active:scale-[0.98] disabled:pointer-events-none disabled:opacity-50 disabled:scale-100 disabled:cursor-not-allowed",
+  "inline-flex items-center justify-center gap-2 whitespace-nowrap font-medium text-sm transition-all duration-150 select-none cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-ring active:scale-[0.98] disabled:pointer-events-none disabled:opacity-50 disabled:scale-100 disabled:cursor-not-allowed disabled:shadow-none disabled:transform-none",
   {
     variants: {
       variant: {
         primary:
-          "bg-interactive-primary text-white shadow-xs hover:bg-interactive-primary-hover active:bg-interactive-primary-active",
+          "bg-interactive-primary text-white shadow-xs hover:bg-interactive-primary-hover hover:shadow-sm hover:-translate-y-0.5 active:bg-interactive-primary-active active:translate-y-0 active:scale-[0.98] active:shadow-xs",
         secondary:
-          "bg-brand-secondary text-white shadow-xs hover:bg-brand-secondary-hover active:bg-brand-secondary-active",
+          "bg-brand-secondary text-white shadow-xs hover:bg-brand-secondary-hover hover:shadow-sm hover:-translate-y-0.5 active:bg-brand-secondary-active active:translate-y-0 active:scale-[0.98] active:shadow-xs",
         outline:
-          "border border-border bg-surface text-text-primary shadow-xs hover:bg-surface-subtle hover:border-brand-primary active:bg-surface-muted",
+          "border border-border bg-surface text-text-primary shadow-xs hover:bg-surface-subtle hover:border-brand-primary hover:shadow-sm hover:-translate-y-0.5 active:bg-surface-muted active:translate-y-0 active:scale-[0.98] active:shadow-xs",
         ghost:
-          "text-text-primary hover:bg-surface-subtle active:bg-surface-muted",
+          "text-text-primary hover:bg-surface-subtle active:bg-surface-muted active:scale-[0.98]",
         destructive:
-          "bg-status-danger-icon text-white shadow-xs hover:bg-status-danger-text active:bg-status-danger-text",
+          "bg-status-danger-icon text-white shadow-xs hover:bg-status-danger-text hover:shadow-sm hover:-translate-y-0.5 active:bg-status-danger-text active:translate-y-0 active:scale-[0.98] active:shadow-xs",
       },
       size: {
         sm: "h-8 px-3 text-xs rounded-sm",
