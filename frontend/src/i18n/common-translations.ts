@@ -15,6 +15,15 @@ export interface CommonTranslations {
     logOut: string;
     accountActions: string;
   };
+  accountMenu: {
+    editProfile: string;
+    editFoodProfile: string;
+    paymentAccount: string;
+    adminConsole: string;
+    logout: string;
+    profileMenuLabel: string;
+    loadingProfile: string;
+  };
   actions: {
     back: string;
     continue: string;
@@ -45,6 +54,15 @@ export const commonTranslations: Record<Locale, CommonTranslations> = {
       logOut: "Log out",
       accountActions: "Account actions",
     },
+    accountMenu: {
+      editProfile: "Edit profile",
+      editFoodProfile: "Edit Food Profile",
+      paymentAccount: "Payment Account",
+      adminConsole: "Admin Console",
+      logout: "Log out",
+      profileMenuLabel: "Profile menu",
+      loadingProfile: "Loading profile",
+    },
     actions: {
       back: "Back",
       continue: "Continue",
@@ -72,6 +90,15 @@ export const commonTranslations: Record<Locale, CommonTranslations> = {
       register: "สมัครสมาชิก",
       logOut: "ออกจากระบบ",
       accountActions: "จัดการบัญชี",
+    },
+    accountMenu: {
+      editProfile: "แก้ไขโปรไฟล์",
+      editFoodProfile: "แก้ไขโปรไฟล์อาหาร",
+      paymentAccount: "บัญชีรับชำระเงิน",
+      adminConsole: "แผงควบคุมผู้ดูแล",
+      logout: "ออกจากระบบ",
+      profileMenuLabel: "เมนูโปรไฟล์",
+      loadingProfile: "กำลังโหลดโปรไฟล์",
     },
     actions: {
       back: "ย้อนกลับ",
