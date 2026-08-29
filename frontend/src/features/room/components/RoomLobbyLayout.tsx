@@ -25,6 +25,7 @@ import { roomTranslations } from '../i18n/room-translations';
 import type { RoomLobby, RoomMember } from '../types/room-types';
 import { formatRoomDate, formatRoomTime } from '../utils/room-format';
 import { RoomMemberGrid, Avatar } from './RoomMemberGrid';
+import { RoomLobbyActionBar } from './RoomLobbyActionBar';
 import { RoomPageHeader } from './RoomPageHeader';
 
 type RoomLobbyLayoutProps = {
@@ -131,8 +132,9 @@ export function RoomLobbyLayout({
               isMemberActionLoading={isMemberActionLoading}
               onOpenMemberActions={onOpenMemberActions}
             />
-            <HowItWorksCard
-              room={room}
+            <RoomLobbyActionBar
+              isHost={room.isHost}
+              status={room.status}
               areAllMembersReady={areAllMembersReady}
               canStartFoodFight={canStartFoodFight}
               isCurrentUserReady={isCurrentUserReady}
@@ -230,101 +232,6 @@ function RoomSummaryCard({
   );
 }
 
-function HowItWorksCard({
-  room,
-  areAllMembersReady,
-  canStartFoodFight,
-  isCurrentUserReady,
-  isReadyLoading,
-  isStartingRoom,
-  onStartFoodFight,
-  onSetReady,
-  onOpenLeave,
-}: {
-  room: RoomLobby;
-  areAllMembersReady: boolean;
-  canStartFoodFight: boolean;
-  isCurrentUserReady: boolean;
-  isReadyLoading: boolean;
-  isStartingRoom: boolean;
-  onStartFoodFight: () => void;
-  onSetReady: () => void;
-  onOpenLeave: () => void;
-}) {
-  return (
-    <Card variant="outline" className="mt-4 rounded-2xl p-4 sm:p-5">
-      <h2 className="text-lg font-semibold">How it works</h2>
-      <div className="mt-5 grid grid-cols-4 gap-2 text-center">
-        {[
-          [<UsersRound key="members" className="size-5" aria-hidden="true" />, 'Everyone joins'],
-          [<CheckCircleIcon key="ready" />, 'Members get ready'],
-          [<ClipboardIcon key="preference" />, 'Everyone fills preferences'],
-          [<SparkleIcon key="ai" />, 'AI suggests menus'],
-        ].map(([icon, label]) => (
-          <div key={label as string} className="flex min-w-0 flex-col items-center gap-2">
-            <span className="flex size-11 items-center justify-center rounded-full border border-border bg-surface-subtle">
-              {icon}
-            </span>
-            <span className="text-[11px] leading-snug text-text-secondary">{label}</span>
-          </div>
-        ))}
-      </div>
-      {room.isHost ? (
-        <>
-          <Button
-            type="button"
-            fullWidth
-            disabled={!canStartFoodFight}
-            loading={isStartingRoom}
-            className="mt-5"
-            leftIcon={<Play className="size-4 fill-current" aria-hidden="true" />}
-            onClick={onStartFoodFight}
-          >
-            {room.status === 'IN_PROGRESS' ? 'FoodFight started' : 'Start FoodFight'}
-          </Button>
-          <p className="mt-2 text-center text-xs text-text-secondary">
-            {room.status === 'IN_PROGRESS'
-              ? 'FoodFight is now in progress.'
-              : areAllMembersReady
-                ? 'Everyone is ready. You can start FoodFight.'
-                : 'When everyone is ready, the host can start FoodFight.'}
-          </p>
-        </>
-      ) : room.status === 'LOBBY' ? (
-        <>
-          <Button
-            type="button"
-            fullWidth
-            loading={isReadyLoading}
-            className="mt-5"
-            leftIcon={<Check className="size-4" aria-hidden="true" />}
-            onClick={onSetReady}
-          >
-            {isCurrentUserReady ? 'Not Ready' : 'Ready'}
-          </Button>
-          <Button
-            type="button"
-            fullWidth
-            variant="outline"
-            className="mt-2"
-            leftIcon={<LogOut className="size-4" aria-hidden="true" />}
-            onClick={onOpenLeave}
-          >
-            Exit room
-          </Button>
-          <p className="mt-2 text-center text-xs text-text-secondary">
-            When everyone is ready, the host can start FoodFight.
-          </p>
-        </>
-      ) : (
-        <p className="mt-5 text-center text-sm text-text-secondary">
-          FoodFight is now in progress.
-        </p>
-      )}
-    </Card>
-  );
-}
-
 export function LobbyLoading() {
   return (
     <main className="min-h-dvh overflow-x-clip bg-background px-4 pt-5 text-text-primary">
@@ -360,29 +267,5 @@ export function RoomUnavailable({ error }: { error: string | null }) {
         </Alert>
       </div>
     </main>
-  );
-}
-
-function CheckCircleIcon() {
-  return (
-    <span className="text-text-primary" aria-hidden="true">
-      ✓
-    </span>
-  );
-}
-
-function ClipboardIcon() {
-  return (
-    <span className="text-text-primary" aria-hidden="true">
-      ▤
-    </span>
-  );
-}
-
-function SparkleIcon() {
-  return (
-    <span className="text-text-primary" aria-hidden="true">
-      ✦
-    </span>
   );
 }
