@@ -163,7 +163,6 @@ export function SocialAuthButtons({
     >
       {/* Google */}
       <div
-        aria-label={googleLabel}
         className={cn(
           "relative w-full overflow-hidden rounded-xl",
           (disabled || isAnyLoading) && "pointer-events-none opacity-50",
@@ -179,6 +178,8 @@ export function SocialAuthButtons({
         )}
 
         <GoogleOAuthProvider
+          key={locale}
+          locale={locale}
           clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID ?? ""}
         >
           <GoogleLogin
@@ -201,7 +202,6 @@ export function SocialAuthButtons({
         id="line-auth-button"
         onClick={handleLineAuth}
         disabled={disabled || isAnyLoading}
-        aria-label={lineLabel}
         className={
           appearance === "surface"
             ? cn(
@@ -241,7 +241,7 @@ export function SocialAuthButtons({
             appearance === "surface" ? "text-text-primary" : "text-white"
           }
         >
-          {lineLabel}
+          {resolvedLineLabel}
         </span>
       </button>
     </div>
