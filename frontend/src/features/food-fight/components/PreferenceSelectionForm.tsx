@@ -113,8 +113,9 @@ export function PreferenceSelectionForm({
   };
 
   return (
-    <main className="min-h-dvh bg-background text-text-primary">
-      <div className="mx-auto w-full max-w-md px-4 pb-32 pt-3 sm:px-6 sm:pt-5 md:max-w-2xl">
+    <main className="min-h-dvh bg-transparent text-text-primary">
+      <div className="mx-auto w-full max-w-md px-4 pb-32 pt-2 sm:px-6 sm:pt-4 md:max-w-2xl">
+
         <RoomPageHeader
           title={t.title}
           subtitle={t.subtitle}
