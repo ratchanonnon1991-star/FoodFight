@@ -24,6 +24,13 @@ const notoSansThai = Noto_Sans_Thai({
 export const metadata: Metadata = {
   title: "FoodFighter",
   description: "AI-Powered Group Food Decision Application",
+  icons: {
+    icon: [
+      { url: "/logoIcon/icon.png", type: "image/png" },
+    ],
+    shortcut: "/logoIcon/icon.png",
+    apple: "/logoIcon/icon.png",
+  },
 };
 
 export default function RootLayout({

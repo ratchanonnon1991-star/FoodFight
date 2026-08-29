@@ -51,6 +51,7 @@ export class BillDetailService {
         displayName: member.user.displayName,
         avatarUrl: member.user.avatarUrl,
         role: member.role,
+        joinedAt: member.joinedAt ? member.joinedAt.toISOString() : undefined,
       })),
       receipt: bill.receipt
         ? {

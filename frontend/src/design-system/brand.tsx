@@ -46,6 +46,10 @@ export interface BrandMarkProps extends Omit<React.HTMLAttributes<HTMLDivElement
    * Optional custom sizes attribute for responsive image optimization. Defaults to intrinsic display width.
    */
   sizes?: string;
+  /**
+   * If true, bypasses Next.js image optimization and serves the raw asset directly. Defaults to true for local brand marks.
+   */
+  unoptimized?: boolean;
 }
 
 const defaultDimensions: Record<BrandMarkVariant, Record<BrandMarkSize, { width: number; height: number }>> = {
@@ -57,11 +61,11 @@ const defaultDimensions: Record<BrandMarkVariant, Record<BrandMarkSize, { width:
     xl: { width: 192, height: 64 },
   },
   stacked: {
-    xs: { width: 48, height: 60 },
-    sm: { width: 64, height: 80 },
-    md: { width: 88, height: 110 },
-    lg: { width: 120, height: 150 },
-    xl: { width: 160, height: 200 },
+    xs: { width: 48, height: 55 },
+    sm: { width: 64, height: 74 },
+    md: { width: 88, height: 101 },
+    lg: { width: 120, height: 138 },
+    xl: { width: 160, height: 184 },
   },
   icon: {
     xs: { width: 24, height: 24 },
@@ -90,6 +94,7 @@ export const BrandMark = React.forwardRef<HTMLDivElement, BrandMarkProps>(
       decorative = false,
       priority = false,
       sizes,
+      unoptimized = false,
       className,
       style,
       ...props
@@ -145,6 +150,7 @@ export const BrandMark = React.forwardRef<HTMLDivElement, BrandMarkProps>(
           height={finalHeight}
           sizes={effectiveSizes}
           priority={priority}
+          unoptimized={unoptimized}
           className="ff-ds-brand-mark__image"
           style={{
             width: "100%",

@@ -55,6 +55,34 @@ export interface HomeTranslations {
     noActiveTitle: string;
     noActiveDesc: string;
     startCta: string;
+    checkpoints: {
+      lobby: string;
+      preferences: string;
+      menu: string;
+      restaurant: string;
+      bill: string;
+    };
+    stepIndicator: (step: number, total: number) => string;
+    subStates: {
+      lobbyWaiting: string;
+      lobbyReady: string;
+      preferencesChoosing: string;
+      preferencesWaitingFriends: (remaining: number) => string;
+      preferencesSubmitted: string;
+      preferencesReadyToStart: string;
+      menuRecommending: string;
+      menuVoting: (round: number) => string;
+      menuVotesSubmitted: string;
+      menuFinalVote: string;
+      menuReroll: string;
+      restaurantSearching: string;
+      restaurantReady: string;
+      restaurantEmpty: string;
+      billReceipt: string;
+      billSplit: string;
+      billPayment: (paid: number, total: number) => string;
+      completed: string;
+    };
   };
   foodProfile: {
     heading: string;
@@ -140,6 +168,36 @@ export const homeTranslations: Record<HomeLocale, HomeTranslations> = {
       noActiveTitle: "No active FoodFight",
       noActiveDesc: "Start a new room or join friends to begin deciding on your next meal.",
       startCta: "Start a FoodFight",
+      checkpoints: {
+        lobby: "Lobby",
+        preferences: "Preferences",
+        menu: "Menu",
+        restaurant: "Restaurant",
+        bill: "Bill",
+      },
+      stepIndicator: (step: number, total: number) => `Step ${step} of ${total}`,
+      subStates: {
+        lobbyWaiting: "Waiting for members",
+        lobbyReady: "Everyone ready to start",
+        preferencesChoosing: "Choosing meal preferences",
+        preferencesWaitingFriends: (remaining: number) =>
+          `Submitted • Waiting for ${remaining} ${remaining === 1 ? "friend" : "friends"}`,
+        preferencesSubmitted: "Preferences submitted",
+        preferencesReadyToStart: "Everyone submitted • Ready to recommend",
+        menuRecommending: "AI is finding the best menus",
+        menuVoting: (round: number) => `Voting on menus (Round ${round})`,
+        menuVotesSubmitted: "Vote submitted • Waiting for group",
+        menuFinalVote: "Choosing the final menu",
+        menuReroll: "Preparing new recommendations",
+        restaurantSearching: "Finding nearby restaurants",
+        restaurantReady: "Restaurants ready • Choose a spot",
+        restaurantEmpty: "No spots found in radius",
+        billReceipt: "Add items or receipt",
+        billSplit: "Splitting meal items",
+        billPayment: (paid: number, total: number) =>
+          total > 0 ? `Waiting for payment (${paid}/${total})` : "Waiting for payment",
+        completed: "FoodFight completed",
+      },
     },
     foodProfile: {
       heading: "Your Food Profile",
@@ -223,6 +281,36 @@ export const homeTranslations: Record<HomeLocale, HomeTranslations> = {
       noActiveTitle: "ยังไม่มี FoodFight ที่กำลังใช้งาน",
       noActiveDesc: "เริ่มสร้างห้องใหม่หรือเข้าร่วมกับเพื่อนๆ เพื่อช่วยกันเลือกมื้ออร่อย",
       startCta: "เริ่ม FoodFight",
+      checkpoints: {
+        lobby: "ล็อบบี้",
+        preferences: "ความชอบ",
+        menu: "เมนู",
+        restaurant: "ร้านอาหาร",
+        bill: "บิล",
+      },
+      stepIndicator: (step: number, total: number) => `ขั้นตอนที่ ${step} จาก ${total}`,
+      subStates: {
+        lobbyWaiting: "รอสมาชิกเข้าร่วมห้อง",
+        lobbyReady: "สมาชิกพร้อมแล้ว เริ่ม FoodFight ได้",
+        preferencesChoosing: "กำลังเลือกความชอบอาหาร",
+        preferencesWaitingFriends: (remaining: number) =>
+          `ส่งแล้ว • รอเพื่อนอีก ${remaining} คน`,
+        preferencesSubmitted: "ส่งความต้องการอาหารแล้ว",
+        preferencesReadyToStart: "สมาชิกส่งครบแล้ว • พร้อมเริ่มแนะนำ",
+        menuRecommending: "AI กำลังหาเมนูที่เหมาะกับกลุ่ม",
+        menuVoting: (round: number) => `กำลังโหวตเมนู (รอบที่ ${round})`,
+        menuVotesSubmitted: "ส่งผลโหวตแล้ว • รอสมาชิกคนอื่น",
+        menuFinalVote: "กำลังตัดสินเมนูสุดท้าย",
+        menuReroll: "เตรียมหาเมนูชุดใหม่",
+        restaurantSearching: "กำลังค้นหาร้านอาหาร",
+        restaurantReady: "ร้านพร้อมแล้ว • เลือกร้านที่ต้องการ",
+        restaurantEmpty: "ไม่พบร้านในรัศมีที่เลือก",
+        billReceipt: "เพิ่มรายการอาหารหรือใบเสร็จ",
+        billSplit: "กำลังแบ่งรายการอาหาร",
+        billPayment: (paid: number, total: number) =>
+          total > 0 ? `รอการชำระเงิน (${paid}/${total} คน)` : "รอการชำระเงิน",
+        completed: "เสร็จสิ้นมื้ออาหาร",
+      },
     },
     foodProfile: {
       heading: "โปรไฟล์อาหารของคุณ",

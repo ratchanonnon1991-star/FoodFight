@@ -6,11 +6,15 @@ import { LogIn, UserPlus } from "lucide-react";
 import { PageContainer } from "@/components/layout/PageContainer";
 import { ROUTES } from "@/config/routes";
 import { API_BASE_URL } from "@/config/api";
-import { roomService } from "@/features/room/services/room-service";
+import {
+  roomService,
+  subscribeToRoomEvents,
+} from "@/features/room/services/room-service";
 import type { RoomLobby } from "@/features/room/types/room-types";
 import type { UserRole } from "@/features/auth/types/auth-types";
 import type {
   AuthenticatedUserDisplay,
+  CurrentFoodFightMember,
   CurrentFoodFightSession,
 } from "@/features/home/types/home-types";
 import { authService } from "@/features/auth/services/auth-runtime";
@@ -24,7 +28,19 @@ import { HomeFoodProfileCard } from "./HomeFoodProfileCard";
 import { RecentFoodFightsSection } from "./RecentFoodFightsSection";
 import { HomeTipCard } from "./HomeTipCard";
 import { HomeLanguageProvider, useHomeLanguage } from "../i18n/HomeLanguageContext";
-import type { RecentFoodFightItemData } from "@/features/home/types/home-types";
+import { useLanguage } from "@/i18n/LanguageProvider";
+import {
+  homeTranslations,
+  type HomeLocale,
+  type HomeTranslations,
+} from "../i18n/home-translations";
+import type {
+  FoodFightJourneyInfo,
+  RecentFoodFightItemData,
+} from "@/features/home/types/home-types";
+import { foodFightService } from "@/features/food-fight/services/food-fight-service";
+import type { FoodFightState } from "@/features/food-fight/types/food-fight-types";
+import type { PendingBill } from "@/features/bill/types/bill-types";
 
 import { getMyHistory } from "@/features/history/services/history-service";
 import type { HistoryItem } from "@/features/history/types/history-types";
@@ -110,6 +126,59 @@ export function AuthenticatedHome({
     }
   }, [isLoggingOut, router]);
 
+  const { locale } = useLanguage();
+  const t = homeTranslations[locale as HomeLocale] ?? homeTranslations.th;
+
+  const loadCurrentRoom = React.useCallback(async () => {
+    try {
+      const currentRoom = await roomService.getCurrentRoom();
+
+      if (
+        !currentRoom ||
+        currentRoom.status === "COMPLETED" ||
+        currentRoom.status === "CANCELLED"
+      ) {
+        setCurrentSession(null);
+        return;
+      }
+
+      let foodFightState: FoodFightState | null = null;
+      let matchedPendingBill: PendingBill | null = null;
+
+      if (currentRoom.status === "IN_PROGRESS") {
+        const matchingBill = pendingBills.find(
+          (b) =>
+            b.id === currentRoom.id ||
+            (b as unknown as { roomId?: string }).roomId === currentRoom.id,
+        );
+        if (matchingBill) {
+          matchedPendingBill = matchingBill;
+        } else {
+          try {
+            foodFightState = await foodFightService.getFoodFightState(
+              currentRoom.id,
+            );
+          } catch {
+            // FoodFight detailed state fallback
+          }
+        }
+      }
+
+      setCurrentSession(
+        toCurrentFoodFightSession(
+          currentRoom,
+          foodFightState,
+          matchedPendingBill,
+          t,
+        ),
+      );
+    } catch {
+      setCurrentSession(null);
+    } finally {
+      setIsCurrentSessionLoading(false);
+    }
+  }, [pendingBills, t]);
+
   React.useEffect(() => {
     let isMounted = true;
     const accessToken = getStoredAccessToken();
@@ -121,27 +190,30 @@ export function AuthenticatedHome({
       };
     }
 
-    const loadCurrentRoom = async () => {
-      try {
-        const currentRoom = await roomService.getCurrentRoom();
+    void loadCurrentRoom();
 
-        if (isMounted) {
-          setCurrentSession(
-            currentRoom ? toCurrentFoodFightSession(currentRoom) : null,
-          );
-        }
-      } catch {
-        if (isMounted) {
-          setCurrentSession(null);
-        }
-      } finally {
-        if (isMounted) {
-          setIsCurrentSessionLoading(false);
-        }
+    const abortController = new AbortController();
+
+    if (currentSession?.id) {
+      void subscribeToRoomEvents(
+        currentSession.id,
+        () => {
+          void loadCurrentRoom();
+        },
+        abortController.signal,
+      ).catch(() => {
+        // SSE fallback handled silently
+      });
+    }
+
+    const handleFocusOrVisibility = () => {
+      if (document.visibilityState === "visible") {
+        void loadCurrentRoom();
       }
     };
 
-    void loadCurrentRoom();
+    window.addEventListener("focus", handleFocusOrVisibility);
+    document.addEventListener("visibilitychange", handleFocusOrVisibility);
 
     apiFetch(
       `${API_BASE_URL}/auth/me`,
@@ -193,8 +265,14 @@ export function AuthenticatedHome({
 
     return () => {
       isMounted = false;
+      abortController.abort();
+      window.removeEventListener("focus", handleFocusOrVisibility);
+      document.removeEventListener(
+        "visibilitychange",
+        handleFocusOrVisibility,
+      );
     };
-  }, [router]);
+  }, [currentSession?.id, loadCurrentRoom, router]);
 
   React.useEffect(() => {
     let isMounted = true;
@@ -449,29 +527,215 @@ function HomeActionCardsGroup({
   );
 }
 
-function toCurrentFoodFightSession(room: RoomLobby): CurrentFoodFightSession {
+function toCurrentFoodFightSession(
+  room: RoomLobby,
+  foodFightState: FoodFightState | null,
+  pendingBill: PendingBill | null,
+  t: HomeTranslations,
+): CurrentFoodFightSession {
   const isLobby = room.status === "LOBBY";
+  let journey: FoodFightJourneyInfo;
+  let continueHref: string = ROUTES.ROOM.LOBBY(room.id);
+
+  if (isLobby) {
+    const allReady =
+      room.members.length > 0 && room.members.every((m) => m.isReady);
+    journey = {
+      currentStep: 1,
+      stepId: "LOBBY",
+      stageName: t.currentFoodFight.checkpoints.lobby,
+      stageSubLabel: allReady
+        ? t.currentFoodFight.subStates.lobbyReady
+        : t.currentFoodFight.subStates.lobbyWaiting,
+    };
+    continueHref = ROUTES.ROOM.LOBBY(room.id);
+  } else if (pendingBill) {
+    let subLabel = t.currentFoodFight.subStates.billReceipt;
+    if (pendingBill.nextStep === "SPLIT") {
+      subLabel = t.currentFoodFight.subStates.billSplit;
+    } else if (
+      pendingBill.nextStep === "SUMMARY" ||
+      pendingBill.nextStep === "PAYMENT"
+    ) {
+      subLabel = t.currentFoodFight.subStates.billPayment(
+        pendingBill.paymentProgress.paidCount,
+        pendingBill.paymentProgress.totalCount,
+      );
+    }
+    journey = {
+      currentStep: 5,
+      stepId: "BILL",
+      stageName: t.currentFoodFight.checkpoints.bill,
+      stageSubLabel: subLabel,
+    };
+    continueHref = pendingBill.continueHref || `/bill/${pendingBill.id}`;
+  } else if (foodFightState) {
+    const state = foodFightState.state;
+    const restState = foodFightState.restaurantState;
+
+    if (state === "WAITING_FOR_PREFERENCES") {
+      const remaining = Math.max(
+        foodFightState.totalMemberCount -
+          foodFightState.submittedMemberCount,
+        0,
+      );
+      journey = {
+        currentStep: 2,
+        stepId: "PREFERENCES",
+        stageName: t.currentFoodFight.checkpoints.preferences,
+        stageSubLabel:
+          foodFightState.submittedMemberCount > 0 && remaining > 0
+            ? t.currentFoodFight.subStates.preferencesWaitingFriends(remaining)
+            : t.currentFoodFight.subStates.preferencesChoosing,
+      };
+      continueHref = ROUTES.ROOM.PREFERENCES(room.id);
+    } else if (state === "READY_TO_RECOMMEND") {
+      journey = {
+        currentStep: 2,
+        stepId: "PREFERENCES",
+        stageName: t.currentFoodFight.checkpoints.preferences,
+        stageSubLabel: t.currentFoodFight.subStates.preferencesReadyToStart,
+      };
+      continueHref = ROUTES.ROOM.PREFERENCES(room.id);
+    } else if (state === "RECOMMENDING") {
+      // NOTE: RECOMMENDING means preferences complete -> Step 3 MENU
+      journey = {
+        currentStep: 3,
+        stepId: "MENU",
+        stageName: t.currentFoodFight.checkpoints.menu,
+        stageSubLabel: t.currentFoodFight.subStates.menuRecommending,
+      };
+      continueHref = ROUTES.ROOM.PREFERENCES(room.id);
+    } else if (state === "VOTING") {
+      journey = {
+        currentStep: 3,
+        stepId: "MENU",
+        stageName: t.currentFoodFight.checkpoints.menu,
+        stageSubLabel: t.currentFoodFight.subStates.menuVoting(
+          foodFightState.currentRound?.roundNumber ?? 1,
+        ),
+      };
+      continueHref = ROUTES.ROOM.PREFERENCES(room.id);
+    } else if (state === "WAITING_FOR_VOTES") {
+      journey = {
+        currentStep: 3,
+        stepId: "MENU",
+        stageName: t.currentFoodFight.checkpoints.menu,
+        stageSubLabel: t.currentFoodFight.subStates.menuVotesSubmitted,
+      };
+      continueHref = ROUTES.ROOM.PREFERENCES(room.id);
+    } else if (state === "FINAL_VOTE_REQUIRED") {
+      journey = {
+        currentStep: 3,
+        stepId: "MENU",
+        stageName: t.currentFoodFight.checkpoints.menu,
+        stageSubLabel: t.currentFoodFight.subStates.menuFinalVote,
+      };
+      continueHref = ROUTES.ROOM.PREFERENCES(room.id);
+    } else if (state === "REROLL_REQUIRED") {
+      journey = {
+        currentStep: 3,
+        stepId: "MENU",
+        stageName: t.currentFoodFight.checkpoints.menu,
+        stageSubLabel: t.currentFoodFight.subStates.menuReroll,
+      };
+      continueHref = ROUTES.ROOM.PREFERENCES(room.id);
+    } else if (
+      state === "RECOMMENDING_RESTAURANTS" ||
+      restState === "RECOMMENDING_RESTAURANTS"
+    ) {
+      journey = {
+        currentStep: 4,
+        stepId: "RESTAURANT",
+        stageName: t.currentFoodFight.checkpoints.restaurant,
+        stageSubLabel: t.currentFoodFight.subStates.restaurantSearching,
+      };
+      continueHref = `/room/${room.id}/restaurants`;
+    } else if (
+      state === "RESTAURANTS_READY" ||
+      restState === "RESTAURANTS_READY"
+    ) {
+      journey = {
+        currentStep: 4,
+        stepId: "RESTAURANT",
+        stageName: t.currentFoodFight.checkpoints.restaurant,
+        stageSubLabel: t.currentFoodFight.subStates.restaurantReady,
+      };
+      continueHref = `/room/${room.id}/restaurants`;
+    } else if (restState === "RESTAURANTS_EMPTY") {
+      journey = {
+        currentStep: 4,
+        stepId: "RESTAURANT",
+        stageName: t.currentFoodFight.checkpoints.restaurant,
+        stageSubLabel: t.currentFoodFight.subStates.restaurantEmpty,
+      };
+      continueHref = `/room/${room.id}/restaurants`;
+    } else if (state === "FINALIZED") {
+      journey = {
+        currentStep: 4,
+        stepId: "RESTAURANT",
+        stageName: t.currentFoodFight.checkpoints.restaurant,
+        stageSubLabel: t.currentFoodFight.subStates.restaurantReady,
+      };
+      continueHref = `/room/${room.id}/restaurants`;
+    } else {
+      journey = {
+        currentStep: 2,
+        stepId: "PREFERENCES",
+        stageName: t.currentFoodFight.checkpoints.preferences,
+        stageSubLabel: t.currentFoodFight.subStates.preferencesChoosing,
+      };
+      continueHref = ROUTES.ROOM.PREFERENCES(room.id);
+    }
+  } else {
+    journey = {
+      currentStep: 2,
+      stepId: "PREFERENCES",
+      stageName: t.currentFoodFight.checkpoints.preferences,
+      stageSubLabel: t.currentFoodFight.subStates.preferencesChoosing,
+    };
+    continueHref = ROUTES.ROOM.PREFERENCES(room.id);
+  }
+
+  const hostMember: CurrentFoodFightMember = {
+    id: `host-${room.id}`,
+    userId: "host",
+    name: room.host.displayName,
+    avatarUrl: room.host.avatarUrl,
+    joinedAt: room.scheduledAt || new Date(0).toISOString(),
+  };
+
+  const isHostIncluded = room.members.some(
+    (m) => m.userId === "host" || m.displayName === room.host.displayName,
+  );
+
+  const members: CurrentFoodFightMember[] = isHostIncluded
+    ? room.members.map((member) => ({
+        id: member.userId || member.id,
+        userId: member.userId,
+        name: member.displayName,
+        avatarUrl: member.avatarUrl,
+        joinedAt: member.joinedAt,
+      }))
+    : [
+        hostMember,
+        ...room.members.map((member) => ({
+          id: member.userId || member.id,
+          userId: member.userId,
+          name: member.displayName,
+          avatarUrl: member.avatarUrl,
+          joinedAt: member.joinedAt,
+        })),
+      ];
 
   return {
     id: room.id,
     title: room.name,
     status: isLobby ? "Lobby" : "In progress",
     memberCount: room.memberCount,
-    statusDescription: isLobby
-      ? "Waiting for preferences"
-      : "FoodFight in progress",
-    members: [
-      {
-        id: `host-${room.id}`,
-        name: room.host.displayName,
-        avatarUrl: room.host.avatarUrl,
-      },
-      ...room.members.map((member) => ({
-        id: member.id,
-        name: member.displayName,
-        avatarUrl: member.avatarUrl,
-      })),
-    ],
-    continueHref: ROUTES.ROOM.LOBBY(room.id),
+    statusDescription: journey.stageSubLabel,
+    members,
+    continueHref,
+    journey,
   };
 }

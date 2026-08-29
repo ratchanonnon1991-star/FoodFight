@@ -12,12 +12,12 @@ describe("BrandMark primitive", () => {
     expect(img).toHaveAttribute("sizes", "120px");
   });
 
-  it("renders the stacked vertical logo with correct 4:5 aspect ratio", () => {
+  it("renders the stacked vertical logo with correct aspect ratio", () => {
     render(<BrandMark variant="stacked" size="md" alt="Stacked Logo" />);
     const img = screen.getByRole("img", { name: "Stacked Logo" });
     expect(img).toBeInTheDocument();
     expect(img).toHaveAttribute("width", "88");
-    expect(img).toHaveAttribute("height", "110");
+    expect(img).toHaveAttribute("height", "101");
     expect(img).toHaveAttribute("sizes", "88px");
   });
 

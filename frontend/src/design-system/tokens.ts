@@ -106,11 +106,11 @@ export const brandLogoAssets = {
   },
   stacked: {
     src: "/logoIcon/stacked.png",
-    width: 1122,
-    height: 1402,
-    aspectRatio: 1122 / 1402, // 0.800
+    width: 1168,
+    height: 1346,
+    aspectRatio: 1168 / 1346,
     name: "Stacked (Vertical)",
-    description: "Vertically stacked lockup with symbol above wordmark for centered auth cards, splash screens, and narrow brand blocks.",
+    description: "Vertically stacked lockup with crowned crossed-utensils symbol above wordmark and tagline for centered hero, auth cards, splash screens, and brand blocks.",
   },
   icon: {
     src: "/logoIcon/icon.png",

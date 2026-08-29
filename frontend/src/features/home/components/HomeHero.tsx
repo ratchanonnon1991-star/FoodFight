@@ -52,8 +52,9 @@ export function HomeHero({ className }: HomeHeroProps) {
             <BrandMark
               variant="stacked"
               width={220}
-              height={275}
+              height={254}
               priority
+              unoptimized
               alt="FoodFighter"
               className="h-auto w-[208px] sm:w-[230px] drop-shadow-sm"
             />

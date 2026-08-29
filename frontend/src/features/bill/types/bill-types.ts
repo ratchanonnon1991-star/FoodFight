@@ -52,6 +52,7 @@ export interface BillMember {
   displayName: string;
   avatarUrl: string | null;
   role: "HOST" | "MEMBER";
+  joinedAt?: string;
 }
 
 export interface BillItemShare {
