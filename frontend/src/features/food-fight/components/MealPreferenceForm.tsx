@@ -28,6 +28,7 @@ import {
   FinalVoteScreen,
   FinalVoteWaiting,
 } from "@/features/food-fight/components/FinalVoteScreen";
+import { FinalizedScreen } from "@/features/food-fight/components/FinalizedScreen";
 import { useLanguage } from "@/i18n/LanguageProvider";
 import { foodFightTranslations } from "../i18n/food-fight-translations";
 import {
@@ -464,9 +465,13 @@ export function MealPreferenceForm({ roomId }: { roomId: string }) {
         !isStartingRestaurants &&
         state.restaurantState !== "RESTAURANTS_EMPTY" ? (
           <FinalizedScreen
-            state={state}
-            onStartRestaurants={() => void startRestaurantRecommendations()}
+            finalSelection={state.finalSelection}
+            isHost={state.currentUser.isHost}
+            canStartRestaurants={
+              state.restaurantState === "FINALIZED_MENU"
+            }
             isStartingRestaurants={isStartingRestaurants}
+            onStartRestaurants={() => void startRestaurantRecommendations()}
           />
         ) : null}
         {state.restaurantState === "RECOMMENDING_RESTAURANTS" ||
@@ -686,85 +691,6 @@ function RerollLoadingCard() {
       >
         กำลังวิเคราะห์...
       </Button>
-    </Card>
-  );
-}
-
-function FinalizedScreen({
-  state,
-  onStartRestaurants,
-  isStartingRestaurants,
-}: {
-  state: FoodFightState;
-  onStartRestaurants: () => void;
-  isStartingRestaurants: boolean;
-}) {
-  if (isStartingRestaurants) return <RestaurantLoadingScreen />;
-  const finalSelection = state.finalSelection;
-  if (!finalSelection)
-    return (
-      <StatusScreen
-        title="กำลังโหลดเมนูสุดท้าย..."
-        description="ยังไม่ได้รับข้อมูลเมนูสุดท้ายจาก Backend"
-      />
-    );
-  return (
-    <Card variant="outline" className="rounded-3xl p-6 text-center shadow-sm">
-      <StateIllustration
-        icon={<Crown className="size-11" aria-hidden="true" />}
-        tone="muted"
-      />
-      <p className="mt-5 text-sm font-medium text-brand-primary">
-        FoodFight เสร็จสมบูรณ์
-      </p>
-      <h2 className="mt-1 text-2xl font-semibold tracking-tight">
-        เมนูที่กลุ่มเลือกแล้ว!
-      </h2>
-      <div className="mt-5 rounded-2xl bg-surface-subtle p-5">
-        <div className="mx-auto flex size-28 items-center justify-center rounded-xl bg-surface-muted">
-          <ImageIcon className="size-12 text-text-muted" aria-hidden="true" />
-        </div>
-        <h3 className="mt-4 text-2xl font-semibold">
-          {finalSelection.nameTh ?? finalSelection.name}
-        </h3>
-        {finalSelection.nameTh &&
-        finalSelection.name !== finalSelection.nameTh ? (
-          <p className="mt-1 text-sm text-text-secondary">
-            {finalSelection.name}
-          </p>
-        ) : null}
-        {finalSelection.cuisine ? (
-          <p className="mt-2 text-sm text-text-secondary">
-            {finalSelection.cuisine}
-          </p>
-        ) : null}
-        <p className="mt-4 text-sm font-medium">สมาชิกทุกคนยืนยันเมนูนี้แล้ว</p>
-      </div>
-      {state.currentUser.isHost ? (
-        <>
-          <p className="mt-5 text-xs text-text-secondary">
-            Host เท่านั้นที่เริ่มค้นหาร้านอาหารได้
-          </p>
-          <Button
-            className="mt-3 w-full"
-            variant="outline"
-            onClick={onStartRestaurants}
-            disabled={
-              (state.restaurantState !== "FINALIZED_MENU" &&
-                state.restaurantState !== "RESTAURANTS_EMPTY") ||
-              isStartingRestaurants
-            }
-            loading={isStartingRestaurants}
-            loadingText="กำลังเริ่มค้นหา..."
-          >
-            ค้นหาร้านอาหาร
-          </Button>
-        </>
-      ) : (
-        <p className="mt-6 text-center text-sm text-text-secondary">
-          รอ Host ค้นหาร้านอาหาร
-        </p>
-      )}
     </Card>
   );
 }
