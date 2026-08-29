@@ -23,6 +23,8 @@ import {
   RestaurantResults,
 } from "@/features/food-fight/components/RestaurantResults";
 import { PreferenceSelectionForm } from "@/features/food-fight/components/PreferenceSelectionForm";
+import { VotingRoundScreen } from "@/features/food-fight/components/VotingRoundScreen";
+import { CompatibilityIndicator } from "@/features/food-fight/components/CompatibilityIndicator";
 import { useLanguage } from "@/i18n/LanguageProvider";
 import { foodFightTranslations } from "../i18n/food-fight-translations";
 import {
@@ -276,6 +278,10 @@ export function MealPreferenceForm({ roomId }: { roomId: string }) {
     }
   };
 
+  const handleVoteChange = (itemId: string, vote: VoteAction) => {
+    setVotes((current) => ({ ...current, [itemId]: vote }));
+  };
+
   if (view === "loading")
     return <StatusScreen title="กำลังโหลด FoodFight..." />;
   if (view === "error")
@@ -301,14 +307,24 @@ export function MealPreferenceForm({ roomId }: { roomId: string }) {
     !state.currentUser.hasSubmittedVotes
   ) {
     return (
-      <VoteSubmissionScreen
-        roomId={roomId}
-        state={state}
-        votes={votes}
-        setVotes={setVotes}
-        submitVotes={() => void submitVotes()}
-        isVoting={isVoting}
-      />
+      <main className="min-h-dvh bg-background text-text-primary">
+        <div className="mx-auto w-full max-w-md px-4 pb-32 pt-3 sm:px-6 sm:pt-5 md:max-w-3xl">
+          <RoomPageHeader
+            title={getFoodFightTitle(state)}
+            subtitle="สถานะมื้ออาหารสำหรับห้องนี้"
+            backHref={ROUTES.ROOM.LOBBY(roomId)}
+            showBackButton={false}
+          />
+          <VotingRoundScreen
+            roundNumber={state.currentRound?.roundNumber ?? 1}
+            items={state.currentRound?.items ?? []}
+            votes={votes}
+            isVoting={isVoting}
+            onVote={handleVoteChange}
+            onSubmitVotes={() => void submitVotes()}
+          />
+        </div>
+      </main>
     );
   }
   if (view === "form" || isEditing)
@@ -350,12 +366,13 @@ export function MealPreferenceForm({ roomId }: { roomId: string }) {
           </Alert>
         ) : null}
         {state.state === "VOTING" && !state.currentUser.hasSubmittedVotes ? (
-          <VotingScreen
-            state={state}
+          <VotingRoundScreen
+            roundNumber={state.currentRound?.roundNumber ?? 1}
+            items={state.currentRound?.items ?? []}
             votes={votes}
-            setVotes={setVotes}
-            submitVotes={() => void submitVotes()}
             isVoting={isVoting}
+            onVote={handleVoteChange}
+            onSubmitVotes={() => void submitVotes()}
           />
         ) : null}
         {state.state === "VOTING" && state.currentUser.hasSubmittedVotes ? (
@@ -449,42 +466,6 @@ export function MealPreferenceForm({ roomId }: { roomId: string }) {
         state.state === "RESTAURANTS_READY" ? (
           <RestaurantResults roomId={roomId} state={state} />
         ) : null}
-      </div>
-    </main>
-  );
-}
-
-function VoteSubmissionScreen({
-  roomId,
-  state,
-  votes,
-  setVotes,
-  submitVotes,
-  isVoting,
-}: {
-  roomId: string;
-  state: FoodFightState;
-  votes: Record<string, VoteAction>;
-  setVotes: React.Dispatch<React.SetStateAction<Record<string, VoteAction>>>;
-  submitVotes: () => void;
-  isVoting: boolean;
-}) {
-  return (
-    <main className="min-h-dvh bg-background text-text-primary">
-      <div className="mx-auto w-full max-w-md px-4 pb-32 pt-3 sm:px-6 sm:pt-5 md:max-w-3xl">
-        <RoomPageHeader
-          title={getFoodFightTitle(state)}
-          subtitle="สถานะมื้ออาหารสำหรับห้องนี้"
-          backHref={ROUTES.ROOM.LOBBY(roomId)}
-          showBackButton={false}
-        />
-        <VotingScreen
-          state={state}
-          votes={votes}
-          setVotes={setVotes}
-          submitVotes={submitVotes}
-          isVoting={isVoting}
-        />
       </div>
     </main>
   );
@@ -630,69 +611,6 @@ function WaitingForMembers({
         </Button>
       )}
     </Card>
-  );
-}
-
-function VotingScreen({
-  state,
-  votes,
-  setVotes,
-  submitVotes,
-  isVoting,
-}: {
-  state: FoodFightState;
-  votes: Record<string, VoteAction>;
-  setVotes: React.Dispatch<React.SetStateAction<Record<string, VoteAction>>>;
-  submitVotes: () => void;
-  isVoting: boolean;
-}) {
-  const items = state.currentRound?.items.slice(0, 2) ?? [];
-  const roundNumber = state.currentRound?.roundNumber ?? 1;
-  const isSecondRound = roundNumber === 2;
-
-  return (
-    <section aria-labelledby="voting-title">
-      <p className="text-sm font-medium text-brand-primary">
-        {isSecondRound ? "เมนูที่แนะนำ รอบที่ 2" : "เมนูที่แนะนำ"}
-      </p>
-      <h2
-        id="voting-title"
-        className="mt-1 text-2xl font-semibold tracking-tight"
-      >
-        {isSecondRound ? "เมนูใหม่สำหรับกลุ่ม" : "เราเลือกมาให้กลุ่ม 2 เมนู"}
-      </h2>
-      <p className="mt-2 text-sm leading-6 text-text-secondary">
-        เลือก OK หรือ PASS ทั้งคู่ แล้วกดยืนยันการโหวต
-      </p>
-      <div className="mt-5 grid gap-3">
-        {items.map((item) => (
-          <RecommendationCard
-            key={item.id}
-            item={item}
-            vote={votes[item.id]}
-            onVote={(vote) =>
-              setVotes((current) => ({ ...current, [item.id]: vote }))
-            }
-          />
-        ))}
-      </div>
-      <Button
-        className="mt-5 w-full"
-        onClick={submitVotes}
-        disabled={
-          items.length !== 2 ||
-          items.some((item) => !votes[item.id]) ||
-          isVoting
-        }
-        loading={isVoting}
-        loadingText="กำลังส่งการโหวต..."
-      >
-        ยืนยันการโหวต
-      </Button>
-      <p className="mt-3 text-center text-xs text-text-secondary">
-        ต้องเลือกให้ครบทั้ง 2 เมนู
-      </p>
-    </section>
   );
 }
 
@@ -1018,125 +936,6 @@ function FinalizedScreen({
         </p>
       )}
     </Card>
-  );
-}
-
-function RecommendationCard({
-  item,
-  vote,
-  onVote,
-}: {
-  item: RecommendationItem;
-  vote?: VoteAction;
-  onVote: (vote: VoteAction) => void;
-}) {
-  const metadata = item.metadata;
-  const reasons = metadata?.reasons?.length
-    ? metadata.reasons
-    : item.reason
-      ? [item.reason]
-      : [];
-  const details = [
-    metadata?.cuisineTh ?? metadata?.cuisine,
-    metadata?.proteinsTh?.join(" • "),
-    metadata?.cookingMethodsTh?.join(" • "),
-  ].filter(Boolean);
-
-  return (
-    <Card variant="outline" className="relative rounded-2xl p-3 shadow-sm">
-      <div className="flex gap-3">
-        <div className="relative flex size-20 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-surface-muted">
-          <ImageIcon className="size-9 text-text-muted" aria-hidden="true" />
-          <span className="absolute -left-1 -top-1 flex size-7 items-center justify-center rounded-full bg-brand-primary text-xs font-bold text-white">
-            {item.displayOrder}
-          </span>
-        </div>
-        <div className="min-w-0 flex-1">
-          <h3 className="text-base font-semibold leading-6">
-            {metadata?.nameTh ?? item.menuName}
-          </h3>
-          <CompatibilityIndicator
-            percentage={metadata?.compatibilityPercentage}
-          />
-          {metadata?.name && metadata.name !== metadata.nameTh ? (
-            <p className="text-xs font-medium text-text-secondary">
-              {metadata.name}
-            </p>
-          ) : null}
-          {details.length ? (
-            <ul className="mt-1 space-y-0.5 text-xs leading-5 text-text-secondary">
-              {details.map((detail) => (
-                <li key={detail} className="truncate">
-                  • {detail}
-                </li>
-              ))}
-            </ul>
-          ) : null}
-          {reasons.length ? (
-            <p className="mt-1 line-clamp-2 text-xs leading-5 text-text-secondary">
-              {reasons[0]}
-            </p>
-          ) : null}
-          {metadata?.satisfiedMembers != null &&
-          metadata.memberCount != null ? (
-            <p className="mt-1 text-xs text-text-muted">
-              ตรงใจสมาชิก {metadata.satisfiedMembers} / {metadata.memberCount}
-            </p>
-          ) : null}
-        </div>
-      </div>
-      <div className="mt-3 grid grid-cols-2 gap-2">
-        <Button
-          type="button"
-          size="sm"
-          variant={vote === "OK" ? "primary" : "outline"}
-          aria-pressed={vote === "OK"}
-          onClick={() => onVote("OK")}
-        >
-          OK
-        </Button>
-        <Button
-          type="button"
-          size="sm"
-          variant={vote === "PASS" ? "primary" : "outline"}
-          aria-pressed={vote === "PASS"}
-          onClick={() => onVote("PASS")}
-        >
-          PASS
-        </Button>
-      </div>
-    </Card>
-  );
-}
-
-function CompatibilityIndicator({
-  percentage,
-}: {
-  percentage?: number | null;
-}) {
-  if (
-    typeof percentage !== "number" ||
-    !Number.isFinite(percentage) ||
-    percentage < 0 ||
-    percentage > 100
-  ) {
-    return null;
-  }
-
-  return (
-    <div className="mt-2" aria-label={`เหมาะกับกลุ่ม ${percentage}%`}>
-      <p className="flex items-center gap-1 text-sm font-semibold text-brand-primary">
-        <Sparkles className="size-4" aria-hidden="true" />
-        เหมาะกับกลุ่ม {percentage}%
-      </p>
-      <progress
-        className="foodfight-compatibility-meter mt-1"
-        max={100}
-        value={percentage}
-      >
-        {percentage}%
-      </progress>
-    </div>
   );
 }
 
