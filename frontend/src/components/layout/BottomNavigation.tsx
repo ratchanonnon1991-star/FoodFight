@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils/cn";
 import { useLanguage } from "@/i18n/LanguageProvider";
 import { commonTranslations } from "@/i18n/common-translations";
+import { GlassSurface } from "@/components/ui/GlassSurface";
 import {
   getActiveNavigationTab,
   getNavigationItems,
@@ -32,44 +33,49 @@ export function BottomNavigation({
     <nav
       aria-label={t.mainNavigation}
       data-navigation="bottom"
-      className={cn(
-        "fixed inset-x-3 bottom-[calc(0.75rem+env(safe-area-inset-bottom))] z-30 mx-auto max-w-md",
-        "rounded-full border border-border/80 bg-surface/95 p-1.5 shadow-lg backdrop-blur-md lg:hidden",
-        className,
-      )}
+      className="lg:hidden"
     >
-      <ul className="flex items-center justify-around gap-1" role="list">
-        {items.map((tab) => {
-          const isActive = tab.id === resolvedActiveTab;
-          const Icon = tab.icon;
+      <div
+        className={cn(
+          "fixed inset-x-3 bottom-[calc(0.75rem+env(safe-area-inset-bottom))] z-40 mx-auto max-w-md p-1.5 rounded-full",
+          "bg-black/35 backdrop-blur-xl border border-white/20 shadow-[inset_0_1px_1.5px_rgba(255,255,255,0.25),0_8px_24px_rgba(0,0,0,0.25)]",
+          className,
+        )}
+      >
+        <ul className="flex items-center justify-between gap-1" role="list">
+          {items.map((tab) => {
+            const isActive = tab.id === resolvedActiveTab;
+            const Icon = tab.icon;
 
-          return (
-            <li key={tab.id} className="flex-1">
-              <Link
-                href={tab.href}
-                aria-current={isActive ? "page" : undefined}
-                className={cn(
-                  "flex flex-col items-center justify-center gap-0.5 rounded-full py-1.5 px-2 transition-all select-none",
-                  "focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-focus-ring",
-                  isActive
-                    ? "bg-surface-subtle font-bold text-brand-primary shadow-2xs"
-                    : "text-text-secondary hover:bg-surface-subtle/50 hover:text-text-primary",
-                )}
-              >
-                <Icon
+            return (
+              <li key={tab.id} className="flex-1 min-w-0">
+                <Link
+                  href={tab.href}
+                  aria-current={isActive ? "page" : undefined}
                   className={cn(
-                    "size-5",
-                    isActive ? "stroke-[2.5]" : "stroke-[1.8]",
+                    "flex items-center justify-center gap-1.5 rounded-full px-2.5 py-1.5 text-xs sm:text-sm transition-all select-none whitespace-nowrap",
+                    "focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-focus-ring",
+                    isActive
+                      ? "bg-white font-bold text-brand-primary shadow-xs"
+                      : "font-medium text-white/80 hover:text-white hover:bg-white/10 active:scale-[0.96]",
                   )}
-                />
-                <span className="text-[0.65rem] leading-none sm:text-xs">
-                  {tab.label}
-                </span>
-              </Link>
-            </li>
-          );
-        })}
-      </ul>
+                >
+                  <Icon
+                    className={cn(
+                      "size-4 shrink-0",
+                      isActive ? "stroke-[2.5] text-brand-primary" : "stroke-[1.8] text-white/80",
+                    )}
+                    aria-hidden="true"
+                  />
+                  <span className="truncate">
+                    {tab.label}
+                  </span>
+                </Link>
+              </li>
+            );
+          })}
+        </ul>
+      </div>
     </nav>
   );
 }

@@ -56,3 +56,16 @@ FoodFighter uses the minimum necessary state scope:
 - **Socket.IO Singleton**: Centralized WebSocket connection lifecycle in `src/lib/realtime/socket-client.ts`.
 - **Feature Subscriptions**: Feature hooks (`useRoomRealtime`, `useFoodFightRealtime`) manage room join events, member status updates, and vote progression.
 - **Connection Recovery**: Automatic reconnection with exponential backoff and localized error state presentation.
+
+---
+
+## 6. Team & Product Logic Freeze Policy ("เปลี่ยนหน้าตาได้ แต่ห้ามเปลี่ยนกติกา")
+
+During all visual design, layout refactoring, and UI/UX modernization tasks, **team product logic is strictly frozen**.
+
+### Strict Rules:
+- **No State Machine Changes**: Do not modify game stage progressions, room readiness transitions, or vote calculation states.
+- **No Payload or API Contract Changes**: Never alter request/response schemas, DTO structures, or endpoint paths.
+- **No Permission or Authorization Alterations**: Host vs. Member privileges, admin route guards, and bill owner capabilities must remain exactly as designed.
+- **No Validation or Selection Semantics Alterations**: Multi-select limits, "no allergies" exclusivity, custom entry logic, and form schema rules must remain untouched.
+- **No Navigation Routing Alterations**: Routes, query parameters, redirect callbacks, and step navigation sequences are locked.

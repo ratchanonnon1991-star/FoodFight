@@ -18,6 +18,7 @@ import { useLanguage } from "@/i18n/LanguageProvider";
 import { commonTranslations } from "@/i18n/common-translations";
 import type { UserRole } from "@/features/auth/types/auth-types";
 import { cn } from "@/lib/utils/cn";
+import { GlassSurface } from "@/components/ui/GlassSurface";
 
 export interface AccountDropdownUser {
   name: string;
@@ -92,12 +93,15 @@ export function AccountDropdown({
         aria-busy={isLoading}
         disabled={isLoading}
         title={isLoading ? t.loadingProfile : user.name}
-        className="flex items-center gap-1 rounded-full p-0.5 text-text-secondary transition-colors hover:text-brand-primary focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-ring disabled:cursor-wait"
+        className={cn(
+          "flex items-center gap-1 rounded-full p-0.5 text-white/80 transition-all hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-ring disabled:cursor-wait active:scale-[0.98]",
+          isMenuOpen && "text-white ring-2 ring-white/30"
+        )}
       >
-        <span className="size-10 rounded-full border border-border/80 bg-surface flex items-center justify-center shadow-2xs">
+        <span className="size-10 rounded-full border border-white/40 bg-black/20 flex items-center justify-center shadow-xs transition-transform overflow-hidden">
           {isLoading ? (
             <span
-              className="size-full animate-pulse rounded-full bg-surface-subtle"
+              className="size-full animate-pulse rounded-full bg-white/20"
               aria-hidden="true"
             />
           ) : user.avatarUrl && failedAvatarUrl !== user.avatarUrl ? (
@@ -119,34 +123,35 @@ export function AccountDropdown({
           )}
         </span>
         <ChevronDown
-          className={`size-4 transition-transform ${isMenuOpen ? "rotate-180" : ""}`}
+          className={`size-4 transition-transform duration-200 text-white/80 ${isMenuOpen ? "rotate-180" : ""}`}
           aria-hidden="true"
         />
       </button>
+
 
       {isMenuOpen && !isLoading ? (
         <div
           role="menu"
           aria-label={t.profileMenuLabel}
-          className="absolute right-0 z-50 mt-2 w-64 overflow-hidden rounded-2xl border border-border bg-surface shadow-lg"
+          className="absolute right-0 z-50 mt-2 w-64 overflow-hidden rounded-3xl border border-white/80 bg-white/95 backdrop-blur-xl shadow-2xl animate-liquid-reveal origin-top-right"
         >
-          <div className="border-b border-border-subtle px-4 py-3">
-            <p className="truncate text-sm font-bold text-text-primary">
+          <div className="border-b border-border/40 px-5 py-3.5">
+            <p className="truncate text-sm font-bold text-text-primary tracking-tight">
               {user.name}
             </p>
             {user.email ? (
-              <p className="truncate text-xs text-text-secondary">
+              <p className="truncate text-xs text-text-secondary mt-0.5">
                 {user.email}
               </p>
             ) : null}
           </div>
 
-          <div className="p-1.5">
+          <div className="p-2 space-y-0.5">
             <Link
               href={ROUTES.PROFILE}
               role="menuitem"
               onClick={() => setIsMenuOpen(false)}
-              className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-text-primary hover:bg-surface-subtle"
+              className="flex items-center gap-3.5 rounded-2xl px-3.5 py-2.5 text-sm font-medium text-text-primary transition-colors hover:bg-surface-subtle/80 active:scale-[0.99]"
             >
               <Pencil className="size-4 text-text-secondary" />
               {t.editProfile}
@@ -155,7 +160,7 @@ export function AccountDropdown({
               href={ROUTES.FOOD_PROFILE.ALLERGIES}
               role="menuitem"
               onClick={() => setIsMenuOpen(false)}
-              className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-text-primary hover:bg-surface-subtle"
+              className="flex items-center gap-3.5 rounded-2xl px-3.5 py-2.5 text-sm font-medium text-text-primary transition-colors hover:bg-surface-subtle/80 active:scale-[0.99]"
             >
               <Utensils className="size-4 text-text-secondary" />
               {t.editFoodProfile}
@@ -164,7 +169,7 @@ export function AccountDropdown({
               href={ROUTES.PAYMENT_ACCOUNT}
               role="menuitem"
               onClick={() => setIsMenuOpen(false)}
-              className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-text-primary hover:bg-surface-subtle"
+              className="flex items-center gap-3.5 rounded-2xl px-3.5 py-2.5 text-sm font-medium text-text-primary transition-colors hover:bg-surface-subtle/80 active:scale-[0.99]"
             >
               <CreditCard className="size-4 text-text-secondary" />
               {t.paymentAccount}
@@ -174,7 +179,7 @@ export function AccountDropdown({
                 href={ROUTES.ADMIN}
                 role="menuitem"
                 onClick={() => setIsMenuOpen(false)}
-                className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-text-primary hover:bg-surface-subtle"
+                className="flex items-center gap-3.5 rounded-2xl px-3.5 py-2.5 text-sm font-medium text-text-primary transition-colors hover:bg-surface-subtle/80 active:scale-[0.99]"
               >
                 <Shield className="size-4 text-text-secondary" />
                 {t.adminConsole}
@@ -187,14 +192,15 @@ export function AccountDropdown({
                 setIsMenuOpen(false);
                 onLogout?.();
               }}
-              className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left text-sm font-medium text-status-danger-text hover:bg-status-danger-bg"
+              className="flex w-full items-center gap-3.5 rounded-2xl px-3.5 py-2.5 text-left text-sm font-medium text-brand-primary transition-colors hover:bg-brand-primary/10 active:scale-[0.99]"
             >
-              <LogOut className="size-4" />
+              <LogOut className="size-4 text-brand-primary" />
               {t.logout}
             </button>
           </div>
         </div>
       ) : null}
+
     </div>
   );
 }

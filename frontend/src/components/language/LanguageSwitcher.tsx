@@ -8,7 +8,7 @@ import { SUPPORTED_LANGUAGES, type Locale } from "@/i18n/config";
 
 export interface LanguageSwitcherProps {
   className?: string;
-  variant?: "default" | "subtle" | "landing";
+  variant?: "default" | "subtle" | "landing" | "glass";
 }
 
 export function LanguageSwitcher({
@@ -73,11 +73,14 @@ export function LanguageSwitcher({
           variant === "landing" &&
             "border-border/60 bg-surface/90 backdrop-blur-sm shadow-sm",
           variant === "subtle" && "size-9 border-transparent bg-transparent hover:bg-surface-subtle",
-          isOpen && "border-brand-primary/60 text-brand-primary bg-surface-subtle"
+          variant === "glass" && "border-white/20 bg-black/20 text-white hover:bg-black/30 backdrop-blur-md shadow-xs hover:border-white/30",
+          isOpen && variant === "glass" && "border-white/40 bg-black/40 text-white",
+          isOpen && variant !== "glass" && "border-brand-primary/60 text-brand-primary bg-surface-subtle"
         )}
       >
         <Globe className="size-4.5 stroke-[1.8]" />
       </button>
+
 
       {/* Dropdown Menu (Strictly 2 rows: TH and EN) */}
       {isOpen && (

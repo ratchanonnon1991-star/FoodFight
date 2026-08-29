@@ -17,8 +17,9 @@ export interface HomeFoodCarouselProps {
   className?: string;
 }
 
-const DEFAULT_AUTOPLAY_MS = 2000;
+const DEFAULT_AUTOPLAY_MS = 4000;
 const DEFAULT_PAUSE_RESUME_MS = 10000;
+
 
 function getCardPosition(index: number, activeIndex: number, total: number) {
   let diff = index - activeIndex;

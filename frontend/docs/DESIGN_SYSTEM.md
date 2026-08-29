@@ -1,149 +1,224 @@
-# FoodFighter Design System
+# FoodFighter Design System — Visual System V2
 
-> Canonical source for **brand palette, typography, visual tokens, UI primitives, and design foundations**.
-
-## 1. Design Direction: Warm Social Food Game
-
-FoodFighter is a **social meal decision platform** designed around friendly competition, social gathering, and appetizing food presentation.
-
-**Core Brand Pillars**:
-- **Food & Flavor**: Appetizing, warm, tactile, food-forward.
-- **Social Gathering**: Welcoming, energetic, friendly, engaging.
-- **Game & Payoff**: Exciting vote reveals, winner celebrations, playful yet clear.
-- **Trust & Clarity**: Transparent bill splitting, clear navigation, accessible contrast.
-
-**Avoid**:
-- Cold generic dashboards (grey/blue tech enterprise feel).
-- Pale pastel washes or overly cute/kawaii aesthetics.
-- Dating-app card stacks or dark-mode cyber themes.
-- Generic AI purple gradients.
+> **Canonical source of truth** for brand palette, typography, two-surface architecture (Solid Tactile + Liquid Glass), elevation hierarchy, illuminated rims, atmospheric gradients, UI primitives, and motion foundations.
 
 ---
 
-## 2. Approved Brand Palette
+## 1. Visual North Star: Warm Social Food Game (Visual System V2)
 
-The production palette is **stable** and defined via semantic tokens in `src/styles/tokens.css` and `globals.css`:
+FoodFighter is an energetic, social meal decision platform designed around group gathering, friendly competition, and appetizing culinary discovery.
 
-| Token | Hex | Role | Contrast / Notes |
+```text
+FOODFIGHTER VISUAL SYSTEM V2
+  = ORIGINAL FOODFIGHTER BRAND PALETTE
+  + WARM ATMOSPHERIC COLOR FIELDS
+  + SOLID TACTILE SURFACES
+  + STRATEGIC LIQUID GLASS
+  + ILLUMINATED / REFLECTIVE RIMS
+  + CLEAR PERSISTENT INTERACTION STATES
+  + PURPOSEFUL PHYSICAL MOTION
+  + PURPOSE-BUILT FOOD / SOCIAL IMAGERY
+```
+
+### Core Desired Qualities:
+- **Warm & Appetizing**: Natural, food-forward warmth grounded in our Rice canvas and Chili accents.
+- **Tactile & Dimensional**: Physical, layered surfaces with downward-biased depth and responsive lift/compression.
+- **Social & Dynamic**: Liquid Glass navigation chrome and floating menus that feel modern and seamless.
+- **Crisp & Trustworthy**: Clear contrast, transparent bill splitting, accessible typography, and rock-solid form inputs.
+
+### Explicitly Prohibited Aesthetic Patterns:
+- ❌ **NO PURPLE / NO VIOLET / NO GENERIC AI GRADIENTS**: The brand palette is frozen. Never introduce purple tints or cyberpunk glows.
+- ❌ **NO GLASS EVERYWHERE**: Liquid Glass is strategic and reserved for chrome and floating overlays; it must never replace normal solid content cards.
+- ❌ **NO SHADOW SOUP**: Do not apply drop shadows to arbitrary layout wrappers or nested containers.
+- ❌ **NO HEAVY NEUMORPHISM / KAWAII**: Surfaces must remain clean, modern, and accessible.
+
+---
+
+## 2. Approved Brand Palette (Frozen Foundation)
+
+The canonical FoodFighter palette is strictly frozen and defined in `frontend/src/styles/tokens.css` and `frontend/src/app/globals.css`:
+
+| Token Name | Hex Code | Semantic Role | Contrast / WCAG Compliance |
 |---|---|---|---|
-| **Ink** | `#211D19` | Primary text, deep headings, high-contrast borders | ~14.8:1 on Rice background |
-| **Brand Chili** | `#D84A32` | Primary brand accent, hero badges, vibrant highlights | Brand identification |
+| **Ink** | `#211D19` | Primary text, deep headings, dark boundaries | ~14.8:1 on Rice background (AAA) |
+| **Brand Chili** | `#D84A32` | Primary brand accent, progress bars, active journey | Brand identity |
 | **Accessible Primary** | `#D0432B` | Interactive buttons, active links, primary CTA | AA compliant (4.5:1+) on white/rice |
 | **Interactive Hover** | `#B93A28` | Hover state for primary buttons and interactive controls | Darker contrast shift |
 | **Interactive Active** | `#9F2F20` | Pressed / active state for interactive controls | Deep active feedback |
-| **Saffron / Energy** | `#F2AF32` | Warm secondary accent, highlights, festive callouts | Warm energy |
-| **Herb / Fresh** | `#68784D` | Fresh accent, verified badges, supportive nature tone | Fresh balance |
-| **Rice / Canvas** | `#F4EEE3` | Page background, warm canvas | Softer than pure white |
-| **Surface White** | `#FFFFFF` | Primary card surfaces, elevated containers, inputs | Crisp readable background |
-| **Surface Subtle** | `#FAF7F2` | Secondary cards, table headers, inactive tabs | Warm tinted neutral |
-| **Border Neutral** | `#E6DEC8` | Standard card borders, separators, input borders | Warm neutral definition |
-| **Warm Earth** | `#BC6C25` | Supporting earth tone (compatibility / accents) | Secondary warm support |
+| **Saffron / Energy** | `#F2AF32` | Energy, highlights, informational notices, warm alerts | Warm highlight |
+| **Herb / Fresh** | `#68784D` | Selected preferences, checked states, verified tags | Fresh confirmed balance |
+| **Rice / Canvas** | `#F4EEE3` | Global page background canvas | Warm neutral backdrop |
+| **Surface White** | `#FFFFFF` | Primary card surfaces, elevated containers, inputs | Crisp readable ground |
+| **Surface Subtle** | `#FAF6EE` | Light warm highlight surface (avoids muddy invert) | Elevated sub-surface |
+| **Surface Muted** | `#EBE1D2` | Inset container wells, recessed display panels | Recessed container |
+| **Border Neutral** | `#C8BAA8` | Standard card borders, separators, input borders | Warm neutral definition (~1.7:1) |
+| **Border Subtle** | `#DDD2C2` | Secondary dividers, card sub-lines | Subtle definition |
+| **Border Strong** | `#9E8C77` | Unselected indicators, focused neutral boundaries | Crisp indicator boundary |
 
-> **Legacy Alias Notice**: Historical tokens (`Pastel Petal`, `Soft Apricot`, `Vanilla Custard`, `Blackberry Cream`, `Dusty Mauve`) exist only as legacy CSS aliases for backwards compatibility. All new production components must strictly use the current semantic tokens above.
+> **Hard Rule**: No arbitrary brand colors, purple gradients, or blue-gray enterprise tones. All atmospheric gradients and glass tints MUST derive strictly from this canonical palette.
 
-### Semantic Token Mapping (`src/styles/tokens.css`):
-- `var(--color-brand-primary)`: `#D84A32` (Interactive: `#D0432B`, Hover: `#B93A28`, Active: `#9F2F20`)
-- `var(--color-brand-secondary)`: `#68784D`
-- `var(--color-accent-saffron)`: `#F2AF32`
-- `var(--color-accent-herb)`: `#68784D`
-- `var(--color-background)`: `#F4EEE3`
-- `var(--color-surface)`: `#FFFFFF`
-- `var(--color-surface-subtle)`: `#FAF7F2`
-- `var(--color-text-primary)`: `#211D19`
-- `var(--color-text-secondary)`: `#5C554E`
-- `var(--color-text-muted)`: `#8C827A`
-- `var(--color-border-default)`: `#E6DEC8`
-- `var(--color-border-subtle)`: `#EFE9DC`
-- `var(--color-focus-ring)`: `#D84A32`
-
-### Status Tokens (WCAG AA/AAA Verified):
-- **Success**: bg `#E8F5E9`, border `#A5D6A7`, text `#1B5E20`, icon `#2E7D32`
+### Status Semantic Tokens:
+- **Success / Confirmed**: bg `#E8F5E9`, border `#A5D6A7`, text `#1B5E20`, icon `#2E7D32`
 - **Warning**: bg `#FFF8E1`, border `#FFE082`, text `#7F4E00`, icon `#B26A00`
-- **Danger**: bg `#FFEBEE`, border `#EF9A9A`, text `#8E1F1F`, icon `#C62828`
-- **Info**: bg `#E3F2FD`, border `#90CAF9`, text `#0D47A1`, icon `#1565C0`
+- **Danger / Destructive**: bg `#FFEBEE`, border `#EF9A9A`, text `#8E1F1F`, icon `#B83226`
+- **Info (Warm Saffron-Ember)**: bg `#F7EFE1`, border `#E0CFA9`, text `#5A3E1B`, icon `#BC6C25`
 
 ---
 
-## 3. Typography System
+## 3. Two-Surface Architecture
 
-- **Primary Latin/UI Font**: `Poppins` (Weights: `400`, `500`, `600`, `700`) via `next/font/google`
-- **Thai Glyph Font**: `Noto Sans Thai` (Weights: `400`, `500`, `600`, `700`) via `next/font/google`
-- **Combined Variable**: `--font-sans` configured in `globals.css` `@theme`.
+FoodFighter intentionally employs **two complementary surface families**. Each serves a distinct visual and structural purpose:
 
-| Scale | Class / Size | Weight | Role |
-|---|---|---|---|
-| **Display** | `text-3xl sm:text-4xl` | Bold (`700`) | Hero titles, room code displays |
-| **Heading 1** | `text-2xl sm:text-3xl` | Bold (`700`) | Screen main headings, section heroes |
-| **Heading 2** | `text-xl sm:text-2xl` | Semibold (`600`) | Card titles, major step headers |
-| **Heading 3** | `text-lg sm:text-xl` | Semibold (`600`) | Group labels, dialog titles |
-| **Body** | `text-base` | Regular (`400`) | Primary reading copy, list items |
-| **Body Small** | `text-sm` | Regular (`400`) | Secondary descriptions, helper text |
-| **Label** | `text-xs uppercase tracking-wider` | Medium (`500`) / Semibold (`600`) | Form labels, table headings, tags |
-| **Caption** | `text-xs` | Regular (`400`) | Timestamps, metadata, fine print |
+```text
+┌────────────────────────────────────────────────────────────────────────┐
+│                        FOODFIGHTER SURFACE ARCHITECTURE                │
+├───────────────────────────────────┬────────────────────────────────────┤
+│         A. SOLID TACTILE          │          B. LIQUID GLASS           │
+├───────────────────────────────────┼────────────────────────────────────┤
+│ • Form sections & input fields    │ • Desktop top navigation capsule   │
+│ • Content & detail cards          │ • Mobile bottom navigation bar     │
+│ • Bill splitting & financial data │ • Profile & account dropdown menus │
+│ • Settings & summary lists        │ • Floating map action clusters     │
+│ • Dense utility tables            │ • Atmospheric floating controls    │
+├───────────────────────────────────┼────────────────────────────────────┤
+│ Surface: Pure White (#FFFFFF)     │ Surface: Translucent White/Rice    │
+│ Depth: Downward-biased shadow     │ Effect: Backdrop blur + rim light  │
+│ Border: Warm Neutral (#C8BAA8)    │ Border: White translucent rim      │
+│ Motion: Lift on hover (if button) │ Motion: Liquid Reveal unfolding    │
+└───────────────────────────────────┴────────────────────────────────────┘
+```
 
----
-
-## 4. Radii, Shadows & Borders
-
-- **Border Radii**:
-  - `radius-xs` (`4px`): Micro badges, tags.
-  - `radius-sm` (`6px`): Small buttons, inline badges.
-  - `radius-md` (`8px`): Standard buttons, input fields, dropdowns.
-  - `radius-lg` (`12px`): Cards, modal dialogs, sheets.
-  - `radius-xl` (`16px`): Hero containers, floating action panels.
-  - `radius-full` (`9999px`): Avatars, pill badges, icon buttons.
-- **Shadows** (Warm brand-tinted):
-  - `shadow-xs`: `0 1px 2px rgba(33, 29, 25, 0.04)`
-  - `shadow-sm`: `0 2px 4px rgba(33, 29, 25, 0.06)`
-  - `shadow-md`: `0 4px 12px rgba(33, 29, 25, 0.08)`
-  - `shadow-lg`: `0 8px 24px rgba(33, 29, 25, 0.12)`
+> **Critical Rule**: Global glass vocabulary does NOT mean glass everywhere. Never render standard form cards, data tables, or financial bills in translucent glass.
 
 ---
 
-## 5. Component Catalog (Generic UI Primitives)
+## 4. Semantic Elevation Hierarchy
 
-Generic UI primitives reside under `src/components/ui/`:
+Surfaces participate in a strict 3-tier elevation model:
 
-| Component | Location | Variants / Capabilities |
-|---|---|---|
-| **Button** | `src/components/ui/Button.tsx` | `primary`, `secondary`, `outline`, `ghost`, `destructive` · `sm`, `md`, `lg`, `icon` · loading, disabled, left/right icons |
-| **IconButton** | `src/components/ui/IconButton.tsx` | Required `aria-label`, minimum 44px touch target, loading spinner |
-| **Input** | `src/components/ui/Input.tsx` | default, hover, focus, filled, disabled, invalid (`aria-invalid`) · left/right adornments · `sm`, `md`, `lg` |
-| **PasswordInput** | `src/components/ui/PasswordInput.tsx` | Show/hide visibility toggle with Lucide Eye/EyeOff, accessible labels |
-| **Label** | `src/components/ui/Label.tsx` | Associated `htmlFor`, required indicator, disabled styling |
-| **Checkbox** | `src/components/ui/Checkbox.tsx` | Accessible SVG check, label & description, keyboard focus ring |
-| **Card** | `src/components/ui/Card.tsx` | `default`, `subtle`, `elevated`, `outline` · Compound: CardHeader, CardTitle, CardDescription, CardContent, CardFooter |
-| **Badge** | `src/components/ui/Badge.tsx` | `neutral`, `brand`, `brand-secondary`, `saffron`, `herb`, `success`, `warning`, `danger`, `info` · status dot |
-| **Alert** | `src/components/ui/Alert.tsx` | `info`, `success`, `warning`, `error` · `role="alert"`, AlertTitle, AlertDescription |
-| **Spinner** | `src/components/ui/Spinner.tsx` | `role="status"`, `sm`, `md`, `lg`, `xl` sizes, primary/secondary variants |
-| **Separator** | `src/components/ui/Separator.tsx` | horizontal / vertical with optional center label |
-| **FormField** | `src/components/ui/form-field/` | Compound module connecting FormLabel, FormDescription, FormError with `aria-describedby` and `aria-live="polite"` |
+### Level 1 — Static / Utility (`--shadow-xs`)
+- **Token**: `0 2px 4px rgba(33, 29, 25, 0.06), 0 1px 2px rgba(33, 29, 25, 0.04)`
+- **Role**: Normal content cards, form sections, summary panels, setting groups.
+- **Behavior**: Static depth; does **NOT** animate or move on hover.
 
----
+### Level 2 — Tactile / Interactive (`--shadow-sm` → `--shadow-md` → `--shadow-xs`)
+- **Tokens**:
+  - Resting: `0 4px 8px -1px rgba(33, 29, 25, 0.08), 0 2px 4px -1px rgba(33, 29, 25, 0.04)`
+  - Hover: `0 8px 16px -2px rgba(33, 29, 25, 0.10), 0 3px 6px -2px rgba(33, 29, 25, 0.05)`
+  - Active: `0 2px 4px rgba(33, 29, 25, 0.06), 0 1px 2px rgba(33, 29, 25, 0.04)`
+- **Role**: Primary/secondary buttons, icon buttons, selectable cards, floating navigation capsules.
+- **Behavior**: Hover lifts (`-translate-y-0.5` + shadow increase); press compresses (`active:scale-[0.98]` or `active:scale-[0.99]` + shadow reduction).
 
-## 6. Motion System
+### Level 3 — Feature / Hero (`--shadow-md` → `--shadow-lg`)
+- **Token**: `0 8px 16px -2px rgba(33, 29, 25, 0.10), 0 3px 6px -2px rgba(33, 29, 25, 0.05)`
+- **Role**: Finalized Winner Spotlight, Active Voting Arena, Auth card container, Bill Total hero.
+- **Behavior**: Strongest dimensional card depth; static unless explicitly wrapped by an interactive control.
 
-Centralized under `src/lib/motion/`:
-- `transitions.ts`: Standard durations (`durationFast: 150ms`, `durationNormal: 250ms`, `durationSlow: 350ms`), easings, and soft spring presets.
-- `variants.ts`: `fadeIn`, `fadeUp`, `fadeDown`, `scaleIn`, `staggerContainer`, `staggerItem`.
-- `MotionProvider`: Wraps root layout with `MotionConfig` using `reducedMotion="user"`.
-- `globals.css`: Full `@media (prefers-reduced-motion: reduce)` fallback disabling non-essential transitions.
+### Overlay Level (`--shadow-xl`)
+- **Token**: `0 20px 30px -5px rgba(33, 29, 25, 0.14), 0 8px 10px -6px rgba(33, 29, 25, 0.06)`
+- **Role**: Dropdown menus, modal dialogs, bottom sheets, popovers.
 
----
-
-## 7. Brand Assets & Visual Identity
-
-- **Official Brand Mark Abstraction**: Shared `BrandMark` component supporting variants:
-  - `primary`: Full horizontal logo with icon and wordmark.
-  - `stacked`: Vertical layout for splash and hero headers.
-  - `icon`: Compact chili icon for navigation and mobile bars.
-  - `app-icon`: Squircle framed icon for PWA / app launchers.
-- **Favicon Status**: `src/app/favicon.ico` is currently preserved as a tracked asset pending final brand asset export.
+### Inset / Recessed (`No drop shadow`)
+- **Role**: Counter wells, secondary code display boxes, sub-card wells (`bg-surface-muted border border-border`).
 
 ---
 
-## 8. Design Version Policy
+## 5. Liquid Glass Material Contract *(Approved Design Specification)*
 
-1. **Foundations are Stable**: Core palette, typography, brand marks, and UI primitives are stable.
-2. **Home is the Visual Benchmark**: The Landing/Home experience is **APPROVED / FROZEN** as the standard for visual tone.
-3. **UX/UI Refinement Policy**: Remaining pages (Room, Food Fight, Bill, History, Admin) will be completed and refined by inheriting these global foundations without inventing separate design systems.
+Liquid Glass is specified as a 3-tier material system derived strictly from the canonical palette:
+
+```text
+┌───────────────────┬───────────────────────────────┬──────────────────────────────────────────┐
+│ Glass Tier        │ Recipe / Visual Treatment     │ Intended Surface Role                    │
+├───────────────────┼───────────────────────────────┼──────────────────────────────────────────┤
+│ Glass Soft        │ bg-surface/75 backdrop-blur-sm│ Passive badge overlays, tag chips,       │
+│                   │ border border-white/60        │ category overlays on carousel cards      │
+├───────────────────┼───────────────────────────────┼──────────────────────────────────────────┤
+│ Glass Interactive │ bg-surface/85 backdrop-blur-md│ Desktop top nav capsule, mobile bottom   │
+│                   │ border border-white/80        │ nav bar, floating map controls           │
+├───────────────────┼───────────────────────────────┼──────────────────────────────────────────┤
+│ Glass Floating    │ bg-surface/92 backdrop-blur-xl│ AccountDropdown menu, popovers,          │
+│                   │ border border-white/90        │ floating modal sheets, language popover  │
+└───────────────────┴───────────────────────────────┴──────────────────────────────────────────┘
+```
+
+### Critical Glass Guardrails:
+1. **NO NESTED GLASS**: Never place a glass button inside a glass capsule inside a glass header. Use solid or inset controls inside glass containers.
+2. **NO FULL-PAGE BLUR**: Never apply backdrop-blur across entire viewports or page layouts.
+3. **GRACEFUL FALLBACK**: If `backdrop-filter` is unsupported, render solid white `bg-surface border-border shadow-md` with 100% feature parity.
+
+---
+
+## 6. Illuminated Rim Lighting Contract
+
+Important floating glass chrome and hero cards feature subtle top/edge illumination:
+
+- **Neutral Rim (Default)**:
+  `box-shadow: inset 0 1px 1.5px 0 rgba(255, 255, 255, 0.85), 0 4px 8px -1px rgba(33, 29, 25, 0.08);`
+- **Confirmed / Selected Rim (Herb)**:
+  `box-shadow: inset 0 1px 2px 0 rgba(104, 120, 77, 0.35), 0 4px 8px -1px rgba(33, 29, 25, 0.08);`
+- **Action / Primary Rim (Chili)**:
+  `box-shadow: inset 0 1px 2px 0 rgba(216, 74, 50, 0.30), 0 4px 8px -1px rgba(33, 29, 25, 0.08);`
+- **Info Rim (Saffron)**:
+  `box-shadow: inset 0 1px 2px 0 rgba(242, 175, 50, 0.30), 0 4px 8px -1px rgba(33, 29, 25, 0.08);`
+
+> **Note**: Rims must remain subtle, material-focused reflections. Cyberpunk neon outlines or heavy blooms are strictly forbidden.
+
+---
+
+## 7. Warm Atmospheric Gradient Contract
+
+Atmospheric gradients provide emotional brand warmth behind top headers and fade organically into the Rice canvas:
+
+```text
+Chili (#D84A32, 12% alpha) + Saffron (#F2AF32, 15% alpha) + Herb (#68784D, 6% alpha)
+                  ↓ Smooth Organic Blend ↓
+            Rice Canvas Background (#F4EEE3)
+```
+
+### Atmosphere Intensity Tiers:
+- **Hero / Home (`HERO`)**: Strongest warmth (~450px vertical spread) behind greeting and mood discovery.
+- **Feature (`FEATURE` - Room Create / Lobby / Game)**: Moderate warmth (~250px vertical spread) behind page headers.
+- **Utility (`UTILITY` - Food Profile / Admin / Bills Detail)**: Subtle or pure Rice canvas (`0-5%` hint) for maximum focus.
+
+---
+
+## 8. Motion & Liquid Reveal Contract
+
+Motion must remain **short, responsive, physical, and restrained**:
+
+- **Timing Scales**:
+  - Fast: `150ms` (hover, active compression, micro-interactions)
+  - Normal: `250ms` (dropdowns, dialog enters, tab switches)
+  - Slow: `400ms` (winner reveals, large layout shifts)
+- **Easings**:
+  - `--ease-standard`: `cubic-bezier(0.2, 0, 0, 1)`
+  - `--ease-enter`: `cubic-bezier(0, 0, 0.2, 1)`
+  - `--ease-exit`: `cubic-bezier(0.4, 0, 1, 1)`
+- **Liquid Reveal (Floating Menus & Popovers)**:
+  - Material unfolds from trigger: `transform-origin: top right`, `scale: 0.95 → 1.0`, `translateY: -4px → 0px`, `opacity: 0 → 1` over `180ms`.
+  - **No spring physics libraries**: Pure GPU-accelerated CSS transitions.
+  - **Reduced Motion**: Automatically disables spatial transforms and delivers immediate opacity transitions.
+
+---
+
+## 9. Implementation Roadmap & Status Tracking
+
+```text
+┌────────────────────────────────────────────────────────────────────────┐
+│               VISUAL SYSTEM V2 IMPLEMENTATION ROADMAP                  │
+├───────┬──────────────────────────────────────────┬─────────────────────┤
+│ Step  │ Package / Milestone                      │ Status              │
+├───────┼──────────────────────────────────────────┼─────────────────────┤
+│ 1     │ Foundation Docs Contract Sync            │ ✅ IN PROGRESS (001)│
+│ 2     │ Package A: Global Tokens & Atmosphere    │ ⏳ APPROVED SPEC    │
+│ 3     │ Package B: GlassSurface & Atmosphere UI  │ ⏳ APPROVED SPEC    │
+│ 4     │ Package C: Navigation & Liquid Reveal    │ ⏳ APPROVED SPEC    │
+│ 5     │ Global Runtime Regression Checkpoint     │ ⏳ UPCOMING         │
+│ 6     │ As-Built Docs Sync                       │ ⏳ UPCOMING         │
+│ 7     │ Home: Asset Planning & Generation        │ ⏳ UPCOMING         │
+│ 8     │ Create Room: Feature-Local Polish        │ ⏳ UPCOMING         │
+└───────┴──────────────────────────────────────────┴─────────────────────┘
+```
+
+> **As-Spec vs As-Built Rule**: This document represents the **Approved Design Contract**. Features in Steps 2–8 are scheduled for bounded implementation in subsequent packages. Do NOT claim components exist in application code until implemented and verified.

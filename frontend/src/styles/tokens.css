@@ -161,4 +161,53 @@
   --ease-standard: cubic-bezier(0.2, 0, 0, 1);
   --ease-enter: cubic-bezier(0, 0, 0.2, 1);
   --ease-exit: cubic-bezier(0.4, 0, 1, 1);
+
+  /* ==========================================================================
+     11. Liquid Glass Material Tokens (Visual System V2)
+     ========================================================================== */
+  /* Glass Surfaces (Translucency & Base Ground) */
+  --color-glass-soft: rgba(255, 255, 255, 0.75);
+  --color-glass-interactive: rgba(255, 255, 255, 0.85);
+  --color-glass-floating: rgba(255, 255, 255, 0.92);
+
+  /* Glass Borders */
+  --color-glass-border-soft: rgba(255, 255, 255, 0.60);
+  --color-glass-border-interactive: rgba(255, 255, 255, 0.80);
+  --color-glass-border-floating: rgba(255, 255, 255, 0.90);
+
+  /* Glass Blur Presets */
+  --blur-glass-soft: 8px;
+  --blur-glass-interactive: 12px;
+  --blur-glass-floating: 16px;
+
+  /* ==========================================================================
+     12. Illuminated Rim Tokens
+     ========================================================================== */
+  --glass-rim-neutral: inset 0 1px 1.5px 0 rgba(255, 255, 255, 0.85);
+  --glass-rim-herb: inset 0 1px 2px 0 rgba(104, 120, 77, 0.35);
+  --glass-rim-chili: inset 0 1px 2px 0 rgba(216, 74, 50, 0.30);
+  --glass-rim-saffron: inset 0 1px 2px 0 rgba(242, 175, 50, 0.30);
+
+  /* ==========================================================================
+     13. Liquid Glass Shadow Presets (Independent Tunability)
+     ========================================================================== */
+  --shadow-glass-soft: 0 1px 2px rgba(33, 29, 25, 0.04);
+  --shadow-glass-interactive: inset 0 1px 1.5px 0 rgba(255, 255, 255, 0.85), 0 4px 8px -1px rgba(33, 29, 25, 0.08), 0 2px 4px -1px rgba(33, 29, 25, 0.04);
+  --shadow-glass-floating: inset 0 1px 1.5px 0 rgba(255, 255, 255, 0.95), 0 16px 28px -4px rgba(33, 29, 25, 0.12), 0 6px 12px -2px rgba(33, 29, 25, 0.06);
+
+  /* ==========================================================================
+     14. Atmospheric Gradient Materials (Pure CSS Layered Multi-Point Radials)
+     ========================================================================== */
+  --gradient-atmosphere-hero:
+    linear-gradient(180deg, rgba(0, 0, 0, 0.12) 0%, transparent 50%),
+    linear-gradient(90deg, #932012 0%, #C4381C 20%, #B4571A 42%, #7B6825 68%, #435229 88%, #2A3618 100%);
+
+  --gradient-atmosphere-feature:
+    radial-gradient(circle 380px at 20% 0%, rgba(216, 74, 50, 0.24) 0%, transparent 75%),
+    radial-gradient(circle 400px at 80% 0%, rgba(242, 175, 50, 0.26) 0%, transparent 75%),
+    radial-gradient(circle 260px at 50% 0%, rgba(104, 120, 77, 0.14) 0%, transparent 70%);
+
+  --gradient-atmosphere-subtle:
+    radial-gradient(circle 320px at 25% 0%, rgba(216, 74, 50, 0.14) 0%, transparent 70%),
+    radial-gradient(circle 340px at 75% 0%, rgba(242, 175, 50, 0.16) 0%, transparent 70%);
 }

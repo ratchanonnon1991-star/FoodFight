@@ -32,6 +32,7 @@ import { formatRoomDate } from "@/features/room/utils/room-format";
 import { RoomDetailsModal } from "@/features/room/components/RoomDetailsModal";
 import { PendingBillsSection } from "@/features/bill/components/PendingBillsSection";
 import { usePendingBills } from "@/features/bill/hooks/use-pending-bills";
+import { AtmosphereBackground } from "@/components/ui/AtmosphereBackground";
 
 function mapHistoryToRecentItem(item: HistoryItem): RecentFoodFightItemData {
   const menuName = item.finalMenu?.name;
@@ -271,12 +272,15 @@ export function AuthenticatedHome({
 
   return (
     <HomeLanguageProvider>
-      <main className="min-h-dvh bg-background text-text-primary lg:min-h-[calc(100dvh-4rem)]">
+      <main className="relative min-h-dvh bg-background text-text-primary lg:min-h-[calc(100dvh-4rem)]">
+        {/* Warm Atmosphere Hero Background Layer */}
+        <AtmosphereBackground variant="hero" height="hero" className="-top-0 lg:-top-16" />
+
         <PageContainer
           maxWidth="wide"
           paddingY="none"
           spacing="comfortable"
-          className="pt-3 pb-24 sm:pt-4 lg:pb-10"
+          className="relative z-10 pt-3 pb-24 sm:pt-4 lg:pb-10"
         >
           {/* 1. Header with greeting and avatar/notification */}
           <HomeHeader

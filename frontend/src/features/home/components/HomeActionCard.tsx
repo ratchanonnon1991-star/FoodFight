@@ -101,8 +101,8 @@ export function HomeActionCard({
 
   const cardClasses = cn(
     "group relative flex flex-col justify-between overflow-hidden rounded-2xl border p-4 sm:p-5 text-left select-none",
-    "min-h-[150px] sm:min-h-[160px] transition-all duration-200",
-    "focus-visible:outline-2 focus-visible:outline-focus-ring cursor-pointer active:scale-[0.98]",
+    "min-h-[150px] sm:min-h-[160px] transition-all duration-150",
+    "focus-visible:outline-2 focus-visible:outline-focus-ring cursor-pointer hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98]",
     "border-border/80 bg-surface shadow-xs hover:shadow-md",
     isCreate
       ? "hover:border-brand-primary/40 hover:ring-1 hover:ring-brand-primary/20"

@@ -86,6 +86,20 @@
   --shadow-lg: var(--shadow-lg);
   --shadow-xl: var(--shadow-xl);
   --shadow-focus: var(--shadow-focus);
+  --shadow-glass-soft: var(--shadow-glass-soft);
+  --shadow-glass-interactive: var(--shadow-glass-interactive);
+  --shadow-glass-floating: var(--shadow-glass-floating);
+
+  --color-glass-soft: var(--color-glass-soft);
+  --color-glass-interactive: var(--color-glass-interactive);
+  --color-glass-floating: var(--color-glass-floating);
+  --color-glass-border-soft: var(--color-glass-border-soft);
+  --color-glass-border-interactive: var(--color-glass-border-interactive);
+  --color-glass-border-floating: var(--color-glass-border-floating);
+
+  --blur-glass-soft: var(--blur-glass-soft);
+  --blur-glass-interactive: var(--blur-glass-interactive);
+  --blur-glass-floating: var(--blur-glass-floating);
 
   --font-poppins: var(--font-poppins);
   --font-noto-thai: var(--font-noto-thai);
@@ -155,6 +169,25 @@
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
+}
+
+/* ==========================================================================
+   Liquid Reveal (Dropdowns, Popovers & Floating Menus)
+   ========================================================================== */
+@keyframes liquid-reveal {
+  0% {
+    opacity: 0;
+    transform: scale(0.96) translateY(-4px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.animate-liquid-reveal {
+  animation: liquid-reveal 180ms cubic-bezier(0, 0, 0.2, 1) forwards;
+  will-change: transform, opacity;
 }
 
 /* FoodFight AI waiting state */
@@ -329,4 +362,22 @@
 .foodfight-compatibility-meter::-moz-progress-bar {
   border-radius: 9999px;
   background: var(--color-brand-primary);
+}
+
+/* ==========================================================================
+   Liquid Glass Fallback (Graceful degradation for non-supporting browsers)
+   ========================================================================== */
+@supports not (backdrop-filter: blur(1px)) {
+  .bg-glass-soft {
+    background-color: var(--color-surface-subtle) !important;
+    border-color: var(--color-border-subtle) !important;
+  }
+  .bg-glass-interactive {
+    background-color: var(--color-surface) !important;
+    border-color: var(--color-border) !important;
+  }
+  .bg-glass-floating {
+    background-color: var(--color-surface) !important;
+    border-color: var(--color-border) !important;
+  }
 }

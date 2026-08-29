@@ -44,6 +44,13 @@ export function HomeFoodCarouselCard({
   isActive,
   onClick,
 }: HomeFoodCarouselCardProps) {
+  const prevDiffRef = React.useRef(diff);
+  const isWrapping = Math.abs(diff - prevDiffRef.current) > 2;
+
+  React.useEffect(() => {
+    prevDiffRef.current = diff;
+  }, [diff]);
+
   // Render cards within visible range [-2, 2]
   const isVisible = Math.abs(diff) <= 2;
   if (!isVisible) return null;
@@ -66,28 +73,31 @@ export function HomeFoodCarouselCard({
       initial={false}
       animate={{
         x: `${diff * 108}%`,
-        scale: isActive ? 1.02 : 0.94,
-        opacity: isActive ? 1 : Math.abs(diff) === 1 ? 0.65 : 0.25,
+        scale: isActive ? 1.04 : 0.95,
+        opacity: isActive ? 1 : Math.abs(diff) === 1 ? 0.95 : 0.80,
       }}
-      transition={{
-        type: "spring",
-        stiffness: 280,
-        damping: 28,
-        mass: 0.8,
-      }}
+      transition={
+        isWrapping
+          ? { duration: 0 }
+          : {
+              duration: 0.65,
+              ease: [0.25, 1, 0.5, 1],
+            }
+      }
       style={{ zIndex }}
       className={cn(
-        "group absolute flex flex-col justify-between overflow-hidden rounded-2xl border transition-colors cursor-pointer select-none",
-        "aspect-[4/5] p-3 sm:p-4",
+        "group absolute flex flex-col justify-between overflow-hidden rounded-3xl cursor-pointer select-none",
+        "aspect-[4/5] p-3.5 sm:p-4.5",
         "w-[185px] xs:w-[195px] sm:w-[210px] md:w-[225px]",
         isActive
-          ? "border-brand-primary bg-surface shadow-md ring-2 ring-brand-primary/20"
-          : "border-border/80 bg-surface/95 shadow-2xs hover:border-border"
+          ? "border-2 border-brand-primary bg-white shadow-[0_12px_32px_rgba(216,74,50,0.25)] ring-2 ring-brand-primary/20"
+          : "border border-white/60 bg-[#FAF7F2]/80 backdrop-blur-md shadow-sm hover:border-white/90"
       )}
     >
-      {/* 4:5 Real Background Image with Readability Overlays */}
+
+      {/* 4:5 Real Background Image with Natural Faded Overlay */}
       {item.imageSrc ? (
-        <div className="absolute inset-0 z-0 overflow-hidden rounded-2xl">
+        <div className="absolute inset-0 z-0 overflow-hidden rounded-3xl">
           <Image
             src={item.imageSrc}
             alt={item.title}
@@ -96,9 +106,16 @@ export function HomeFoodCarouselCard({
             className="object-cover object-center transition-transform duration-300 group-hover:scale-105"
             priority={index === 0}
           />
-          {/* Top & Bottom gradient protection for badge and title copy */}
-          <div className="absolute inset-0 bg-gradient-to-t from-surface via-surface/30 to-transparent pointer-events-none" />
-          <div className="absolute inset-x-0 top-0 h-14 bg-gradient-to-b from-surface/60 to-transparent pointer-events-none" />
+          {/* Natural soft gradient fade merging food into card base */}
+          <div
+            className={cn(
+              "absolute inset-x-0 bottom-0 h-36 bg-gradient-to-t pointer-events-none",
+              isActive
+                ? "from-white via-white/80 to-transparent"
+                : "from-[#FAF7F2] via-[#FAF7F2]/80 to-transparent"
+            )}
+          />
+          <div className="absolute inset-x-0 top-0 h-16 bg-gradient-to-b from-black/15 to-transparent pointer-events-none" />
         </div>
       ) : (
         /* Fallback placeholder if imageSrc not provided */
@@ -116,28 +133,28 @@ export function HomeFoodCarouselCard({
       <div className="flex items-center justify-between gap-1.5 z-10 relative">
         <span
           className={cn(
-            "rounded-full px-2 py-0.5 text-[0.65rem] sm:text-[0.7rem] font-bold tracking-wide border transition-colors backdrop-blur-xs",
+            "rounded-full px-3 py-1 text-[0.65rem] sm:text-[0.7rem] font-bold tracking-wide transition-colors shadow-2xs",
             isActive
-              ? "bg-brand-primary/15 text-brand-primary border-brand-primary/40 bg-surface/90"
-              : "bg-surface/90 text-text-secondary border-border/80"
+              ? "bg-white text-brand-primary border border-brand-primary/20"
+              : "bg-white/90 backdrop-blur-xs text-text-secondary border border-white/70"
           )}
         >
           {item.tag}
         </span>
         <div
           className={cn(
-            "size-7 sm:size-8 rounded-full border flex items-center justify-center shadow-2xs transition-colors shrink-0 backdrop-blur-xs",
+            "size-7 sm:size-8 rounded-full flex items-center justify-center shadow-2xs transition-colors shrink-0",
             isActive
-              ? "bg-brand-primary text-white border-brand-primary"
-              : "bg-surface/90 text-brand-primary border-border/70"
+              ? "bg-brand-primary text-white"
+              : "bg-white/90 backdrop-blur-xs text-text-secondary border border-white/70"
           )}
         >
           <CardIcon name={item.iconName} />
         </div>
       </div>
 
-      {/* Card Footer: Category Title & Subtitle */}
-      <div className="relative z-10 pt-2 space-y-0.5 bg-gradient-to-t from-surface via-surface/95 to-transparent -mx-3 -mb-3 sm:-mx-4 sm:-mb-4 p-2.5 sm:p-3.5 rounded-b-2xl border-t border-border/20">
+      {/* Card Footer: Category Title & Subtitle sitting over the natural fade */}
+      <div className="relative z-10 pt-2 space-y-0.5">
         <h3 className="text-xs sm:text-sm md:text-base font-bold text-text-primary truncate tracking-tight">
           {item.title}
         </h3>
@@ -146,5 +163,6 @@ export function HomeFoodCarouselCard({
         </p>
       </div>
     </motion.div>
+
   );
 }

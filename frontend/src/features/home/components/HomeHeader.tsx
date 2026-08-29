@@ -45,29 +45,30 @@ export function HomeHeader({
             <h1
               className={cn(
                 pageTypography.title,
-                "truncate font-extrabold text-text-primary",
+                "truncate font-extrabold text-white drop-shadow-xs",
               )}
             >
               {t.header.greeting(user.name)} 👋
             </h1>
-            <p className="text-xs sm:text-sm text-text-secondary">
+            <p className="text-xs sm:text-sm text-white/80">
               {t.header.greetingSubtitle}
             </p>
+
           </>
         )}
       </div>
 
       {/* Header Actions */}
-      <div className="flex shrink-0 items-center gap-2 pt-0.5 lg:fixed lg:right-10 lg:top-3 lg:z-40 2xl:right-[calc((100vw-1440px)/2+2.5rem)]">
+      <div className="flex shrink-0 items-center gap-2 pt-0.5 pointer-events-auto lg:fixed lg:right-10 lg:top-3 lg:z-40 2xl:right-[calc((100vw-1440px)/2+2.5rem)]">
         {/* Language Switcher Dropdown */}
-        <HomeLanguageSwitcher />
+        <HomeLanguageSwitcher variant="glass" />
 
         {/* Notification Bell (Dormant Control preserved) */}
         <button
           type="button"
           onClick={onNotificationClick}
           aria-label={t.header.notificationsLabel}
-          className="size-10 rounded-full border border-border/80 bg-surface flex items-center justify-center text-text-secondary hover:text-brand-primary hover:border-brand-primary/50 transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-ring cursor-pointer shadow-2xs"
+          className="size-10 rounded-full border border-white/20 bg-black/20 hover:bg-black/30 backdrop-blur-md flex items-center justify-center text-white shadow-xs transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-ring cursor-pointer hover:border-white/30"
         >
           <Bell className="size-5" />
         </button>
@@ -80,6 +81,7 @@ export function HomeHeader({
           onLogout={onLogout}
         />
       </div>
+
     </header>
   );
 }
