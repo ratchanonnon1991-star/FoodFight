@@ -18,6 +18,7 @@ import type {
   CurrentFoodFightSession,
 } from "@/features/home/types/home-types";
 import { authService } from "@/features/auth/services/auth-runtime";
+import { useUserProfile } from "@/context/user-profile-context";
 import { apiFetch, getStoredAccessToken } from "@/config/api-client";
 import { HOME_TIP } from "../constants/home-static-data";
 import { HomeHeader } from "./HomeHeader";
@@ -87,18 +88,21 @@ export function AuthenticatedHome({
   onViewAllRecent,
 }: AuthenticatedHomeProps) {
   const router = useRouter();
-  const [user, setUser] = React.useState<AuthenticatedUserDisplay | null>(null);
+  const {
+    user: profileUser,
+    isLoading: isUserLoading,
+    logout: handleLogout,
+  } = useUserProfile();
+  const user: AuthenticatedUserDisplay = profileUser ?? { name: "FoodFighter" };
   const [currentSession, setCurrentSession] =
     React.useState<CurrentFoodFightSession | null>(null);
   const [recentFoodFights, setRecentFoodFights] = React.useState<
     readonly RecentFoodFightItemData[]
   >([]);
-  const [isUserLoading, setIsUserLoading] = React.useState(true);
   const [isCurrentSessionLoading, setIsCurrentSessionLoading] =
     React.useState(true);
   const [isRecentFoodFightsLoading, setIsRecentFoodFightsLoading] =
     React.useState(true);
-  const [isLoggingOut, setIsLoggingOut] = React.useState(false);
   const [selectedRecentRoom, setSelectedRecentRoom] =
     React.useState<RoomLobby | null>(null);
   const [isRecentRoomLoading, setIsRecentRoomLoading] = React.useState(false);
@@ -111,20 +115,6 @@ export function AuthenticatedHome({
     error: pendingBillsError,
     refresh: refreshPendingBills,
   } = usePendingBills();
-
-  const handleLogout = React.useCallback(async () => {
-    if (isLoggingOut) {
-      return;
-    }
-
-    setIsLoggingOut(true);
-
-    try {
-      await authService.logout();
-    } finally {
-      router.replace(ROUTES.AUTH.LOGIN);
-    }
-  }, [isLoggingOut, router]);
 
   const { locale } = useLanguage();
   const t = homeTranslations[locale as HomeLocale] ?? homeTranslations.th;
@@ -214,54 +204,6 @@ export function AuthenticatedHome({
 
     window.addEventListener("focus", handleFocusOrVisibility);
     document.addEventListener("visibilitychange", handleFocusOrVisibility);
-
-    apiFetch(
-      `${API_BASE_URL}/auth/me`,
-      {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      },
-      accessToken,
-    )
-      .then(async (response) => {
-        if (!response.ok) {
-          throw new Error("Session is no longer valid");
-        }
-
-        return (await response.json()) as {
-          displayName?: string;
-          email?: string;
-          avatarUrl?: string | null;
-          role?: UserRole;
-        };
-      })
-      .then((currentUser) => {
-        if (!isMounted) {
-          return;
-        }
-
-        const fallbackName = currentUser.email?.split("@")[0] || "FoodFighter";
-
-        setUser({
-          name: currentUser.displayName?.trim() || fallbackName,
-          email: currentUser.email,
-          avatarUrl: currentUser.avatarUrl ?? undefined,
-          role: currentUser.role,
-        });
-      })
-      .catch(() => {
-        window.localStorage.removeItem("accessToken");
-
-        if (isMounted) {
-          router.replace(ROUTES.AUTH.LOGIN);
-        }
-      })
-      .finally(() => {
-        if (isMounted) {
-          setIsUserLoading(false);
-        }
-      });
 
     return () => {
       isMounted = false;

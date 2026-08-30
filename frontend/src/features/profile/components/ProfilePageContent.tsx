@@ -36,6 +36,7 @@ import {
 } from '@/features/food-profile/services/food-profile-service';
 import { resolveAuthMode, authService } from '@/features/auth/services/auth-runtime';
 import { useLanguage } from '@/i18n/LanguageProvider';
+import { useUserProfile } from '@/context/user-profile-context';
 import { profileTranslations } from '../i18n/profile-translations';
 import {
   getCurrentUserProfile,
@@ -105,6 +106,7 @@ function AvatarPreview({
 export function ProfilePageContent() {
   const router = useRouter();
   const { locale } = useLanguage();
+  const { refreshProfile, updateLocalProfile } = useUserProfile();
   const t = profileTranslations[locale];
   const avatarFileInputRef = React.useRef<HTMLInputElement>(null);
   const [profile, setProfile] = React.useState<CurrentUserProfile | null>(null);
@@ -223,6 +225,12 @@ export function ProfilePageContent() {
       setDisplayName(updatedProfile.displayName);
       setAvatarUrl(updatedProfile.avatarUrl ?? '');
       setSuccessMessage(t.successUpdated);
+
+      updateLocalProfile({
+        name: updatedProfile.displayName,
+        avatarUrl: updatedProfile.avatarUrl ?? undefined,
+      });
+      void refreshProfile();
     } catch (error: unknown) {
       setErrorMessage(
         error instanceof Error

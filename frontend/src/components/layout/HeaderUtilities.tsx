@@ -5,6 +5,7 @@ import { Bell } from "lucide-react";
 import { LanguageSwitcher } from "@/components/language/LanguageSwitcher";
 import { AccountDropdown, type AccountDropdownUser } from "./AccountDropdown";
 import { useLanguage } from "@/i18n/LanguageProvider";
+import { useUserProfile } from "@/context/user-profile-context";
 import { cn } from "@/lib/utils/cn";
 
 export interface HeaderUtilitiesProps {
@@ -18,14 +19,19 @@ export interface HeaderUtilitiesProps {
 
 export function HeaderUtilities({
   user,
-  isLoading = false,
+  isLoading,
   onNotificationClick,
   onProfileClick,
   onLogout,
   className,
 }: HeaderUtilitiesProps) {
   const { locale } = useLanguage();
-  const activeUser = user ?? { name: "FoodFighter" };
+  const { user: contextUser, isLoading: contextLoading, logout: contextLogout } =
+    useUserProfile();
+
+  const activeUser = user ?? contextUser ?? { name: "FoodFighter" };
+  const effectiveLoading = isLoading ?? (user ? false : contextLoading);
+  const effectiveLogout = onLogout ?? contextLogout;
 
   return (
     <div
@@ -47,9 +53,9 @@ export function HeaderUtilities({
 
       <AccountDropdown
         user={activeUser}
-        isLoading={isLoading}
+        isLoading={effectiveLoading}
         onProfileClick={onProfileClick}
-        onLogout={onLogout}
+        onLogout={effectiveLogout}
       />
     </div>
   );

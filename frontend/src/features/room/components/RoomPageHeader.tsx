@@ -23,7 +23,7 @@ export function RoomPageHeader({
   subtitle,
   backHref,
   showBackButton = true,
-  showAccountActions = false,
+  showAccountActions = true,
   user,
   onLogout,
   actions,
