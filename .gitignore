@@ -9,6 +9,7 @@ node_modules
 
 # compiled output
 /dist
+backend/dist/
 /build
 
 # Logs

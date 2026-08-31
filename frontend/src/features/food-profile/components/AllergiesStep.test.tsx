@@ -46,9 +46,10 @@ describe("AllergiesStep Component", () => {
       expect(screen.getByRole("checkbox", { name: allergy })).toBeInTheDocument();
     });
 
-    expect(screen.getByRole("checkbox", { name: /i do not have any food allergies/i })).toBeInTheDocument();
+    expect(screen.getByRole("checkbox", { name: /i (do not|don't) have any food allergies/i })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: /add other allergy/i })).toBeInTheDocument();
   });
+
 
   it("allows user to multi-select standard allergies and updates selected state", async () => {
     const user = userEvent.setup();
@@ -73,7 +74,8 @@ describe("AllergiesStep Component", () => {
     renderWithProvider(<AllergiesStep />);
 
     const dairy = screen.getByRole("checkbox", { name: "Dairy" });
-    const noAllergies = screen.getByRole("checkbox", { name: /i do not have any food allergies/i });
+    const noAllergies = screen.getByRole("checkbox", { name: /i (do not|don't) have any food allergies/i });
+
 
     // 1. Select Dairy
     await user.click(dairy);

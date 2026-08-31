@@ -1,107 +1,136 @@
 /**
- * FoodFighter Design System V1 — Design Tokens
+ * FoodFighter Design System — Global Production Tokens
+ * Aligned with approved V4.1 Foundation (Ember Kitchen)
  * 
  * Token Hierarchy:
- * 1. Source Palette (Approved Brand Colors)
- * 2. Semantic Tokens (Brand, Accents, Surfaces, Text, Borders, Status)
- * 3. Component & State Variants
+ * 1. Approved Brand Palette (Ink, Chili, Interactive Primary, Saffron, Herb, Rice)
+ * 2. Semantic Brand & Interactive Tokens
+ * 3. Semantic Neutral & Surface Tokens
+ * 4. Semantic Text Tokens
+ * 5. Semantic Border Tokens
+ * 6. Focus Ring Tokens
+ * 7. Status Palette (WCAG AA Compliant)
+ * 8. Backward Compatibility Aliases (Petal, Apricot, Custard mapped to V4.1)
+ * 9. Geometry & Motion
  */
 
 :root {
   /* ==========================================================================
-     1. Approved Source Palette (Canonical Brand Colors)
+     1. Approved Source Palette (Canonical Brand Colors V4.1)
      ========================================================================== */
-  --palette-pastel-petal: #FFC6D9;
-  --palette-soft-apricot: #FFE1C6;
-  --palette-vanilla-custard: #FFF7AE;
-  --palette-blackberry-cream: #48284A;
-  --palette-dusty-mauve: #916C80;
+  --palette-deep-ink: #211D19;
+  --palette-brand-chili: #D84A32;
+  --palette-interactive-chili: #D0432B;
+  --palette-interactive-chili-hover: #B93A28;
+  --palette-interactive-chili-active: #9F2F20;
+  --palette-ember-secondary: #BC6C25;
+  --palette-saffron-energy: #F2AF32;
+  --palette-herb-fresh: #68784D;
+  --palette-rice-canvas: #F4EEE3;
+
+  /* Backward-compatible palette seeds mapped to V4.1 tones */
+  --palette-pastel-petal: #68784D;      /* Mapped to Herb Fresh */
+  --palette-soft-apricot: #F8D9D0;      /* Mapped to Chili Soft */
+  --palette-vanilla-custard: #F2AF32;   /* Mapped to Saffron Energy */
+  --palette-blackberry-cream: #211D19;  /* Mapped to Deep Ink */
+  --palette-dusty-mauve: #BC6C25;       /* Mapped to Ember Secondary */
 
   /* ==========================================================================
-     2. Semantic Brand & Accent Tokens
+     2. Semantic Brand & Interactive Tokens
      ========================================================================== */
-  --color-brand-primary: #48284A;
-  --color-brand-primary-hover: #381F3A;
-  --color-brand-primary-active: #29152B;
+  --color-brand-primary: #D84A32;
+  --color-brand-primary-hover: #B93A28;
+  --color-brand-primary-active: #9F2F20;
   --color-brand-primary-foreground: #FFFFFF;
 
-  --color-brand-secondary: #916C80;
-  --color-brand-secondary-hover: #7D5B6E;
-  --color-brand-secondary-active: #6B4C5D;
+  --color-interactive-primary: #D0432B;
+  --color-interactive-primary-hover: #B93A28;
+  --color-interactive-primary-active: #9F2F20;
+  --color-interactive-primary-foreground: #FFFFFF;
+
+  --color-brand-secondary: #BC6C25;
+  --color-brand-secondary-hover: #A55E1F;
+  --color-brand-secondary-active: #8C4E18;
   --color-brand-secondary-foreground: #FFFFFF;
 
-  --color-accent-petal: #FFC6D9;
-  --color-accent-petal-hover: #FBB4CB;
-  --color-accent-petal-foreground: #48284A;
+  /* Accents */
+  --color-accent-energy: #F2AF32;
+  --color-accent-fresh: #68784D;
+  --color-accent-warm: #F8D9D0;
 
-  --color-accent-apricot: #FFE1C6;
-  --color-accent-apricot-hover: #F9D3B2;
-  --color-accent-apricot-foreground: #48284A;
+  /* Legacy Accent Aliases (preserved for backward compatibility) */
+  --color-accent-petal: #68784D;
+  --color-accent-petal-hover: #55633E;
+  --color-accent-petal-foreground: #FFFFFF;
 
-  --color-accent-custard: #FFF7AE;
-  --color-accent-custard-hover: #F8EE92;
-  --color-accent-custard-foreground: #48284A;
+  --color-accent-apricot: #F8D9D0;
+  --color-accent-apricot-hover: #F0C4B8;
+  --color-accent-apricot-foreground: #211D19;
+
+  --color-accent-custard: #F2AF32;
+  --color-accent-custard-hover: #DE9E27;
+  --color-accent-custard-foreground: #211D19;
 
   /* ==========================================================================
      3. Semantic Neutral & Surface Tokens
      ========================================================================== */
-  --color-background: #FDFBF9;
-  --color-surface: #FFFFFF;
-  --color-surface-subtle: #F9F4F0;
-  --color-surface-muted: #F2EAE4;
+  --color-background: #F4EEE3;        /* Rice Canvas */
+  --color-surface: #FFFFFF;           /* Pure White Surface */
+  --color-surface-subtle: #FAF6EE;    /* Warm Light Subtle Highlight */
+  --color-surface-muted: #EBE1D2;     /* Warm Muted Container Inset */
   --color-surface-elevated: #FFFFFF;
-  --color-surface-inverse: #48284A;
+  --color-surface-inverse: #211D19;   /* Deep Ink */
 
   /* ==========================================================================
      4. Semantic Text Tokens
      ========================================================================== */
-  --color-text-primary: #48284A;
-  --color-text-secondary: #6B5464;
-  --color-text-muted: #8F7888;
-  --color-text-inverse: #FFFFFF;
-  --color-text-disabled: #AFA1AB;
+  --color-text-primary: #211D19;      /* Deep Ink (14.5:1 on Rice Canvas) */
+  --color-text-secondary: #5C5146;    /* Warm Muted Ink (6.68:1 on Rice Canvas) */
+  --color-text-muted: #8C7E72;
+  --color-text-inverse: #FFFAF2;      /* Warm White */
+  --color-text-disabled: #A79C91;
 
   /* ==========================================================================
      5. Semantic Border Tokens
      ========================================================================== */
-  --color-border: #E8DED8;
-  --color-border-subtle: #F2EBE6;
-  --color-border-strong: #916C80;
-  --color-border-disabled: #E5DFDC;
+  --color-border: #C8BAA8;            /* Warm Neutral Border */
+  --color-border-subtle: #DDD2C2;
+  --color-border-strong: #9E8C77;
+  --color-border-disabled: #E0D7CB;
 
   /* ==========================================================================
      6. Focus Ring Tokens
      ========================================================================== */
-  --color-focus-ring: #916C80;
+  --color-focus-ring: #D84A32;
   --focus-ring-offset: 2px;
-  --shadow-focus: 0 0 0 3px rgba(145, 108, 128, 0.35);
+  --shadow-focus: 0 0 0 3px rgba(216, 74, 50, 0.28);
 
   /* ==========================================================================
      7. Semantic Status Palette (Technical/Accessibility Layer with Verified Contrast)
      ========================================================================== */
   /* Success */
-  --color-status-success-bg: #EDF9F0;
+  --color-status-success-bg: #E1ECD9;
   --color-status-success-border: #A6DEB4;
   --color-status-success-text: #165E2A;
   --color-status-success-icon: #22863A;
 
   /* Warning */
-  --color-status-warning-bg: #FFF8E6;
+  --color-status-warning-bg: #F9E8BD;
   --color-status-warning-border: #F6D68A;
   --color-status-warning-text: #784C00;
-  --color-status-warning-icon: #B07200;
+  --color-status-warning-icon: #936018;
 
   /* Danger / Destructive */
-  --color-status-danger-bg: #FDF0F0;
+  --color-status-danger-bg: #FCE8E6;
   --color-status-danger-border: #F6B8B8;
   --color-status-danger-text: #8E1F1F;
-  --color-status-danger-icon: #CB2431;
+  --color-status-danger-icon: #B83226;
 
-  /* Info */
-  --color-status-info-bg: #EFF6FC;
-  --color-status-info-border: #A7D3F3;
-  --color-status-info-text: #185582;
-  --color-status-info-icon: #2188D9;
+  /* Info (Warm Saffron-Ember Semantic Treatment) */
+  --color-status-info-bg: #F7EFE1;
+  --color-status-info-border: #E0CFA9;
+  --color-status-info-text: #5A3E1B;
+  --color-status-info-icon: #BC6C25;
 
   /* ==========================================================================
      8. Radii Tokens
@@ -114,13 +143,13 @@
   --radius-full: 9999px;
 
   /* ==========================================================================
-     9. Shadow Tokens (Soft Brand-Tinted Shadows)
+     9. Shadow Tokens (Warm Ink-Tinted Downward-Biased Elevation)
      ========================================================================== */
-  --shadow-xs: 0 1px 2px rgba(72, 40, 74, 0.04);
-  --shadow-sm: 0 1px 3px rgba(72, 40, 74, 0.06), 0 1px 2px rgba(72, 40, 74, 0.04);
-  --shadow-md: 0 4px 8px -1px rgba(72, 40, 74, 0.08), 0 2px 4px -2px rgba(72, 40, 74, 0.04);
-  --shadow-lg: 0 12px 20px -3px rgba(72, 40, 74, 0.09), 0 4px 6px -4px rgba(72, 40, 74, 0.04);
-  --shadow-xl: 0 20px 30px -5px rgba(72, 40, 74, 0.12), 0 8px 10px -6px rgba(72, 40, 74, 0.04);
+  --shadow-xs: 0 2px 4px rgba(33, 29, 25, 0.06), 0 1px 2px rgba(33, 29, 25, 0.04);
+  --shadow-sm: 0 4px 8px -1px rgba(33, 29, 25, 0.08), 0 2px 4px -1px rgba(33, 29, 25, 0.04);
+  --shadow-md: 0 8px 16px -2px rgba(33, 29, 25, 0.10), 0 3px 6px -2px rgba(33, 29, 25, 0.05);
+  --shadow-lg: 0 12px 20px -3px rgba(33, 29, 25, 0.12), 0 4px 6px -4px rgba(33, 29, 25, 0.06);
+  --shadow-xl: 0 20px 30px -5px rgba(33, 29, 25, 0.14), 0 8px 10px -6px rgba(33, 29, 25, 0.06);
 
   /* ==========================================================================
      10. Motion Presets
@@ -132,4 +161,53 @@
   --ease-standard: cubic-bezier(0.2, 0, 0, 1);
   --ease-enter: cubic-bezier(0, 0, 0.2, 1);
   --ease-exit: cubic-bezier(0.4, 0, 1, 1);
+
+  /* ==========================================================================
+     11. Liquid Glass Material Tokens (Visual System V2)
+     ========================================================================== */
+  /* Glass Surfaces (Translucency & Base Ground) */
+  --color-glass-soft: rgba(255, 255, 255, 0.75);
+  --color-glass-interactive: rgba(255, 255, 255, 0.85);
+  --color-glass-floating: rgba(255, 255, 255, 0.92);
+
+  /* Glass Borders */
+  --color-glass-border-soft: rgba(255, 255, 255, 0.60);
+  --color-glass-border-interactive: rgba(255, 255, 255, 0.80);
+  --color-glass-border-floating: rgba(255, 255, 255, 0.90);
+
+  /* Glass Blur Presets */
+  --blur-glass-soft: 8px;
+  --blur-glass-interactive: 12px;
+  --blur-glass-floating: 16px;
+
+  /* ==========================================================================
+     12. Illuminated Rim Tokens
+     ========================================================================== */
+  --glass-rim-neutral: inset 0 1px 1.5px 0 rgba(255, 255, 255, 0.85);
+  --glass-rim-herb: inset 0 1px 2px 0 rgba(104, 120, 77, 0.35);
+  --glass-rim-chili: inset 0 1px 2px 0 rgba(216, 74, 50, 0.30);
+  --glass-rim-saffron: inset 0 1px 2px 0 rgba(242, 175, 50, 0.30);
+
+  /* ==========================================================================
+     13. Liquid Glass Shadow Presets (Independent Tunability)
+     ========================================================================== */
+  --shadow-glass-soft: 0 1px 2px rgba(33, 29, 25, 0.04);
+  --shadow-glass-interactive: inset 0 1px 1.5px 0 rgba(255, 255, 255, 0.85), 0 4px 8px -1px rgba(33, 29, 25, 0.08), 0 2px 4px -1px rgba(33, 29, 25, 0.04);
+  --shadow-glass-floating: inset 0 1px 1.5px 0 rgba(255, 255, 255, 0.95), 0 16px 28px -4px rgba(33, 29, 25, 0.12), 0 6px 12px -2px rgba(33, 29, 25, 0.06);
+
+  /* ==========================================================================
+     14. Atmospheric Gradient Materials (Pure CSS Layered Multi-Point Radials)
+     ========================================================================== */
+  --gradient-atmosphere-hero:
+    linear-gradient(180deg, rgba(0, 0, 0, 0.12) 0%, transparent 50%),
+    linear-gradient(90deg, #932012 0%, #C4381C 20%, #B4571A 42%, #7B6825 68%, #435229 88%, #2A3618 100%);
+
+  --gradient-atmosphere-feature:
+    radial-gradient(circle 380px at 20% 0%, rgba(216, 74, 50, 0.24) 0%, transparent 75%),
+    radial-gradient(circle 400px at 80% 0%, rgba(242, 175, 50, 0.26) 0%, transparent 75%),
+    radial-gradient(circle 260px at 50% 0%, rgba(104, 120, 77, 0.14) 0%, transparent 70%);
+
+  --gradient-atmosphere-subtle:
+    radial-gradient(circle 320px at 25% 0%, rgba(216, 74, 50, 0.14) 0%, transparent 70%),
+    radial-gradient(circle 340px at 75% 0%, rgba(242, 175, 50, 0.16) 0%, transparent 70%);
 }

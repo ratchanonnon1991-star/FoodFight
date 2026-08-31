@@ -5,12 +5,15 @@ import Link from "next/link";
 import { ChevronLeft } from "lucide-react";
 import { cn } from "@/lib/utils/cn";
 import { PageContainer } from "@/components/layout/PageContainer";
+import { useLanguage } from "@/i18n/LanguageProvider";
+import { billTranslations } from "../i18n/bill-translations";
 
 export interface BillPageHeaderProps {
   title: string;
   subtitle?: string;
   backHref: string;
   rightSlot?: React.ReactNode;
+  variant?: "default" | "atmosphere";
   className?: string;
 }
 
@@ -19,12 +22,21 @@ export function BillPageHeader({
   subtitle,
   backHref,
   rightSlot,
+  variant = "default",
   className,
 }: BillPageHeaderProps) {
+  const { locale } = useLanguage();
+  const t = billTranslations[locale].header;
+
+  const isAtmosphere = variant === "atmosphere";
+
   return (
     <header
       className={cn(
-        "w-full border-b border-border/40 bg-surface/80 backdrop-blur-xs sticky top-0 z-10",
+        "w-full transition-colors",
+        isAtmosphere
+          ? "border-none bg-transparent relative z-10"
+          : "border-b border-border/40 bg-surface/75 backdrop-blur-md sticky top-0 z-10",
         className,
       )}
     >
@@ -32,19 +44,36 @@ export function BillPageHeader({
         <div className="flex items-center justify-between gap-3">
           <Link
             href={backHref}
-            className="inline-flex items-center gap-1 text-sm font-medium text-text-secondary hover:text-brand-primary transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-secondary rounded-sm p-1 -ml-1"
-            aria-label="Go back"
+            className={cn(
+              "inline-flex items-center gap-1 text-sm font-medium transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-secondary rounded-sm p-1 -ml-1",
+              isAtmosphere
+                ? "text-white/90 hover:text-white"
+                : "text-text-primary hover:text-brand-primary",
+            )}
+            aria-label={t.goBack}
           >
             <ChevronLeft className="size-5" />
-            <span>Back</span>
+            <span>{t.back}</span>
           </Link>
 
           <div className="flex-1 text-center px-2">
-            <h1 className="text-base font-semibold text-text-primary truncate">
+            <h1
+              className={cn(
+                "text-base font-semibold truncate",
+                isAtmosphere ? "text-white drop-shadow-sm font-extrabold" : "text-text-primary",
+              )}
+            >
               {title}
             </h1>
             {subtitle && (
-              <p className="text-xs text-text-secondary truncate">{subtitle}</p>
+              <p
+                className={cn(
+                  "text-xs truncate",
+                  isAtmosphere ? "text-white/85 font-medium" : "text-text-secondary",
+                )}
+              >
+                {subtitle}
+              </p>
             )}
           </div>
 

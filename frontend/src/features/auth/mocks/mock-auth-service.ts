@@ -249,6 +249,13 @@ export const mockAuthService: AuthService & {
     };
   },
 
+  async logout(): Promise<void> {
+    await delay(50);
+    if (typeof window !== "undefined") {
+      localStorage.removeItem("accessToken");
+    }
+  },
+
   setMockFoodProfileComplete(completed: boolean) {
     mockFoodProfileCompleted = completed;
   },

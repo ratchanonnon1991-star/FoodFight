@@ -1,316 +1,71 @@
 # FoodFighter Frontend Logic Placement
 
-> Read this file for forms, validation, state, API calls, authentication, realtime behavior, and hooks.
+> Canonical source for **forms, validation schemas, state management, API service boundaries, realtime subscriptions, and business logic isolation**.
 
-## 1. Main rule
+## 1. Logic Separation Principles
 
-Presentation should not own every layer of logic.
-
-Preferred flow:
+Presentation components must remain focused on rendering and user interaction:
 
 ```text
-UI
+UI Component (JSX + user event triggers)
   ↓
-feature service/action
+Feature Service / Hook (Operation boundary, parameter normalization)
   ↓
-shared API/realtime transport
+Shared Transport (lib/api fetch wrapper, lib/realtime Socket.IO client)
   ↓
-backend
-```
-
-Validation:
-
-```text
-Form
-  ↓
-Schema
+Backend API / WebSocket Server
 ```
 
 ---
 
-## 2. Form responsibility
+## 2. Form & Validation Logic
 
-A form may own:
-
-- form state,
-- field composition,
-- submit orchestration,
-- local loading state,
-- user-facing field/form errors.
-
-A form should not own:
-
-- hard-coded backend URL,
-- large response DTO conversion,
-- token storage,
-- backend business-rule duplication,
-- Socket.IO connection infrastructure.
+- **Validation Schemas**: Defined using `Zod` and placed in `src/features/<feature>/schemas/` (e.g. `login-schema.ts`, `room-schema.ts`).
+- **Form Orchestration**: Implemented using `react-hook-form` + `@hookform/resolvers/zod`.
+- **Form Component Role**: Owns input binding, submit state, and field error presentation.
+- **Service Boundary**: Form submission immediately delegates values to the feature service (`authService.login(values)`, `roomService.create(values)`).
+- **Backend Authority**: Client validation provides immediate user feedback, but the backend remains the final source of truth for validation and security.
 
 ---
 
-## 3. Validation schema
+## 3. State Management Tiers
 
-Put reusable form validation in a schema file.
+FoodFighter uses the minimum necessary state scope:
 
-Examples:
-
-```text
-auth.schema.ts
-food-profile.schema.ts
-room.schema.ts
-```
-
-Schema may own:
-
-- required fields,
-- email format,
-- password client policy,
-- cross-field checks,
-- input normalization appropriate for client validation.
-
-Backend remains authoritative for server-side truth.
+1. **Local State (`useState`, `useReducer`)**:
+   - Component-specific UI state: modal visibility, tab selection, input toggles.
+2. **Feature State (`Context` / Custom Hooks)**:
+   - Scoped feature workflows: multi-step meal preference selection, active room member list, billing step progression.
+3. **Global State (`LanguageProvider`)**:
+   - Strictly reserved for application-wide primitives: Global TH/EN locale (`useLanguage()`).
+   - Avoid bloated monolithic global stores (e.g. Redux / global Zustand).
 
 ---
 
-## 4. API/service layer
+## 4. API & Transport Layer (`src/lib/api/`)
 
-Feature components should call a clear operation boundary.
-
-Example:
-
-```ts
-const result = await authService.login(values);
-```
-
-Do not put this inside UI:
-
-```ts
-fetch("http://localhost:3001/auth/login", ...)
-```
-
-Shared transport belongs in `src/lib/api/`.
-
-Feature-specific mapping belongs near the feature service/API adapter.
+- **Base URL Resolution**: Centralized in `src/config/api.ts` reading `NEXT_PUBLIC_API_URL`.
+- **Authentication Headers**: API calls attach `Authorization: Bearer <token>` from localStorage.
+- **DTO Transformation**: Feature services map raw backend responses into clean typed frontend models before passing data to UI components.
+- **Fail-Closed Safety**: In production mode (`NODE_ENV === "production"`), missing credentials or unconfigured endpoints fail closed gracefully.
 
 ---
 
-## 5. Backend DTO mapping
+## 5. Realtime Transport (`src/lib/realtime/`)
 
-Backend response/request shapes should not spread through presentation code.
-
-Preferred:
-
-```text
-backend DTO
-  ↓
-feature API/service mapper
-  ↓
-frontend domain/result
-  ↓
-UI
-```
-
-Do not make every component understand HTTP status codes and backend field names.
+- **Socket.IO Singleton**: Centralized WebSocket connection lifecycle in `src/lib/realtime/socket-client.ts`.
+- **Feature Subscriptions**: Feature hooks (`useRoomRealtime`, `useFoodFightRealtime`) manage room join events, member status updates, and vote progression.
+- **Connection Recovery**: Automatic reconnection with exponential backoff and localized error state presentation.
 
 ---
 
-## 6. Error placement
-
-Use the smallest correct scope.
-
-### Field error
-
-Near the field.
-
-### Form/server error
-
-Inside the form.
-
-### Page error
-
-Route/page error state.
-
-### Realtime connectivity problem
-
-Inside the affected realtime feature.
-
-Do not use a global toast for every failure.
-
----
-
-## 7. Local state
-
-Keep state local when only one component needs it.
-
-Examples:
-
-- password visibility,
-- modal open/closed,
-- temporary selection.
-
-Do not promote simple local state into context/store without need.
-
----
-
-## 8. Shared feature state
-
-Use context/store only if multiple components/routes genuinely need the same state.
-
-A context should have a clear feature responsibility.
-
-Do not turn one context into a global bucket for unrelated state.
-
----
-
-## 9. Server state
-
-Backend is source of truth for persisted and multi-user state.
-
-Examples:
-
-- room membership,
-- readiness,
-- active member status,
-- vote counts,
-- winner,
-- profile completion.
-
-Frontend may display or optimistically interact where appropriate, but must not independently redefine backend truth.
-
----
-
-## 10. Realtime
-
-Keep connection infrastructure separate from feature interpretation.
-
-Preferred:
-
-```text
-lib/realtime/socket-client.ts
-        ↓
-room feature hook/service
-        ↓
-Room/Lobby components
-```
-
-Do not register duplicate Socket.IO listeners in every nested component.
-
-Do not put domain meaning such as Head/Ready inside generic realtime infrastructure.
-
----
-
-## 11. Hooks
-
-Create a hook when it isolates real React behavior.
-
-Good:
-
-```text
-useCountdown
-useRoomConnection
-useDebouncedValue
-```
-
-Usually unnecessary:
-
-```text
-useRegisterTitle
-useSubmitText
-useSingleBooleanUsedOnce
-```
-
-Keep trivial local behavior local.
-
----
-
-## 12. Authentication
-
-Registration email verification is separate from future login 2FA.
-
-Do not store:
-
-- raw password,
-- OTP,
-- access token,
-- refresh token
-
-in generic client state unless the real architecture explicitly requires it and the security model supports it.
-
-A temporary mock boolean is not a production security boundary.
-
----
-
-## 13. Food Profile vs Meal Preference
-
-Food Profile:
-
-- long-lived user food information,
-- allergy/diet/restriction profile.
-
-Meal Preference:
-
-- current session preference.
-
-Keep their models and UI responsibilities distinct.
-
----
-
-## 14. Room/Lobby logic
-
-Room feature may interpret:
-
-- room data,
-- Head,
-- member list,
-- Ready state,
-- Active Member presentation,
-- invite/start interactions.
-
-Do not move these concepts into generic UI components.
-
-Backend/session contract remains authoritative.
-
----
-
-## 15. Voting logic
-
-Voting feature may own:
-
-- OK/Pass interaction,
-- vote progress presentation,
-- Recommend Again action,
-- Final Vote UI,
-- tie-break presentation.
-
-Do not silently duplicate backend winner/threshold rules inside visual components.
-
----
-
-## 16. Client/Server boundary
-
-Use `"use client"` only when required.
-
-Client components are appropriate for:
-
-- form hooks,
-- interaction handlers,
-- browser APIs,
-- client state.
-
-Keep route/page components server-compatible when practical.
-
----
-
-## 17. Avoid magic abstractions
-
-Do not introduce by default:
-
-- generic form generators,
-- command buses,
-- global action registries,
-- complicated repository patterns in the browser,
-- custom frontend event frameworks.
-
-Use an abstraction only after a real repeated problem exists.
-
-Explicit code is preferred.
+## 6. Team & Product Logic Freeze Policy ("เปลี่ยนหน้าตาได้ แต่ห้ามเปลี่ยนกติกา")
+
+During all visual design, layout refactoring, and UI/UX modernization tasks, **team product logic is strictly frozen**.
+
+### Strict Rules:
+- **No State Machine Changes**: Do not modify game stage progressions, room readiness transitions, or vote calculation states.
+- **No Payload or API Contract Changes**: Never alter request/response schemas, DTO structures, or endpoint paths.
+- **No Permission or Authorization Alterations**: Host vs. Member privileges, admin route guards, and bill owner capabilities must remain exactly as designed.
+- **No Validation or Selection Semantics Alterations**: Multi-select limits, "no allergies" exclusivity, custom entry logic, and form schema rules must remain untouched.
+- **No Navigation Routing Alterations**: Routes, query parameters, redirect callbacks, and step navigation sequences are locked.

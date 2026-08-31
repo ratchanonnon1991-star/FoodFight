@@ -1,5 +1,6 @@
-import * as React from "react";
+﻿import * as React from "react";
 import { ResponsiveNavigation } from "@/components/layout/ResponsiveNavigation";
+import { ApplicationShell } from "@/components/layout/ApplicationShell";
 
 export default function BillAuthenticatedLayout({
   children,
@@ -7,9 +8,9 @@ export default function BillAuthenticatedLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="relative min-h-dvh flex flex-col justify-between bg-background text-text-primary">
+    <ApplicationShell>
       <ResponsiveNavigation />
       {children}
-    </div>
+    </ApplicationShell>
   );
 }

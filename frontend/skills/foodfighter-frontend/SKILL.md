@@ -18,5 +18,5 @@ description: Implement, review, or refactor FoodFighter frontend features using 
    - Feature truth: `docs/Srs-Footfight.md`, `docs/AUTH.md`, `docs/DESIGN_SYSTEM.md`
 3. Inspect existing code before adding files.
 4. Implement bounded changes (`BACKEND_MUTATIONS: NONE`).
-5. Run verification (`tsc --noEmit`, `pnpm lint`, `pnpm build`, tests when applicable).
+5. Run resource-light verification (`tsc --noEmit`, focused tests when applicable).
 6. Review diff before commit.

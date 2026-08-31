@@ -20,8 +20,12 @@ import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
 import { IconButton } from '@/components/ui/IconButton';
 import { ROUTES } from '@/config/routes';
+import { useLanguage } from '@/i18n/LanguageProvider';
+import { roomTranslations } from '../i18n/room-translations';
 import type { RoomLobby, RoomMember } from '../types/room-types';
-import { formatRoomDate, formatRoomTime, getInitials } from '../utils/room-format';
+import { formatRoomDate, formatRoomTime } from '../utils/room-format';
+import { RoomMemberGrid, Avatar } from './RoomMemberGrid';
+import { RoomLobbyActionBar } from './RoomLobbyActionBar';
 import { RoomPageHeader } from './RoomPageHeader';
 
 type RoomLobbyLayoutProps = {
@@ -69,34 +73,39 @@ export function RoomLobbyLayout({
   onSetReady,
   onOpenLeave,
 }: RoomLobbyLayoutProps) {
+  const { locale } = useLanguage();
+  const t = roomTranslations[locale].lobby;
+
   return (
-    <main className="min-h-dvh overflow-x-clip bg-background text-text-primary">
-      <div className="mx-auto w-full max-w-md px-4 pb-32 pt-3 sm:px-6 sm:pt-5 md:max-w-4xl lg:max-w-6xl">
+    <main className="min-h-dvh overflow-x-clip bg-transparent text-text-primary">
+      <div className="mx-auto w-full max-w-md px-4 pb-32 pt-2 sm:px-6 sm:pt-4 md:max-w-4xl lg:max-w-6xl">
+
         <RoomPageHeader
-          title="Room Lobby"
-          subtitle="Invite friends and get ready!"
+          title={t.title}
+          subtitle={t.subtitle}
           backHref={ROUTES.AUTHENTICATED_HOME}
           actions={
             <>
               <IconButton
                 aria-label={
-                  room.isHost ? 'Room settings' : 'Room settings (host only)'
+                  room.isHost ? t.settingsHost : t.settingsHostOnly
                 }
                 aria-haspopup={room.isHost ? 'dialog' : undefined}
                 disabled={!room.isHost}
+                variant="glass"
                 icon={<Settings className="size-5" aria-hidden="true" />}
-                className="text-text-primary"
                 onClick={onOpenSettings}
               />
               <IconButton
-                aria-label="Room actions"
+                aria-label={t.roomActions}
                 aria-haspopup="dialog"
+                variant="glass"
                 icon={<MoreHorizontal className="size-5" aria-hidden="true" />}
-                className="text-text-primary"
                 onClick={onOpenRoomActions}
               />
             </>
           }
+
         />
         {error ? (
           <Alert variant="error" className="mb-4">
@@ -105,7 +114,7 @@ export function RoomLobbyLayout({
           </Alert>
         ) : null}
 
-        <div className="grid gap-4 lg:grid-cols-12 lg:items-start">
+        <div className="grid gap-5 lg:grid-cols-12 lg:items-start">
           <div className="min-w-0 lg:col-span-5">
             <RoomSummaryCard
               room={room}
@@ -113,19 +122,22 @@ export function RoomLobbyLayout({
               canInvite={canInvite}
               onOpenDetails={onOpenDetails}
               onOpenInvite={onOpenInvite}
+              t={t}
             />
           </div>
 
-          <div className="min-w-0 lg:col-span-7">
-            <MembersCard
-              room={room}
+          <div className="min-w-0 space-y-4 lg:col-span-7">
+            <RoomMemberGrid
+              memberCount={room.memberCount}
+              maxMembers={room.maxMembers}
               members={members}
               canManageMembers={canManageMembers}
               isMemberActionLoading={isMemberActionLoading}
               onOpenMemberActions={onOpenMemberActions}
             />
-            <HowItWorksCard
-              room={room}
+            <RoomLobbyActionBar
+              isHost={room.isHost}
+              status={room.status}
               areAllMembersReady={areAllMembersReady}
               canStartFoodFight={canStartFoodFight}
               isCurrentUserReady={isCurrentUserReady}
@@ -148,12 +160,14 @@ function RoomSummaryCard({
   canInvite,
   onOpenDetails,
   onOpenInvite,
+  t,
 }: {
   room: RoomLobby;
   hostMember: RoomMember;
   canInvite: boolean;
   onOpenDetails: () => void;
   onOpenInvite: () => void;
+  t: (typeof roomTranslations)['en']['lobby'];
 }) {
   return (
     <>
@@ -167,7 +181,7 @@ function RoomSummaryCard({
               />
               <Avatar member={hostMember} className="size-14" />
             </div>
-            <Badge size="sm">Host</Badge>
+            <Badge size="sm">{t.hostBadge}</Badge>
           </div>
           <div className="min-w-0 flex-1">
             <h2 className="truncate text-lg font-semibold">{room.name}</h2>
@@ -190,12 +204,12 @@ function RoomSummaryCard({
             <p className="mt-1 text-lg font-semibold">
               {room.memberCount} / {room.maxMembers}
             </p>
-            <p className="text-xs text-text-secondary">Members</p>
+            <p className="text-xs text-text-secondary">{t.membersTitle}</p>
           </div>
         </div>
         <div className="mt-4 flex justify-end border-t border-border pt-3">
           <Button type="button" variant="outline" size="sm" onClick={onOpenDetails}>
-            View details
+            {t.viewDetails}
           </Button>
         </div>
       </Card>
@@ -204,17 +218,17 @@ function RoomSummaryCard({
         <button
           type="button"
           onClick={onOpenInvite}
-          className="mt-4 flex min-h-24 w-full items-center justify-between rounded-2xl border border-dashed border-border bg-surface px-5 text-left transition-colors hover:bg-surface-subtle focus-visible:outline-2 focus-visible:outline-brand-secondary"
+          className="mt-4 flex min-h-20 w-full items-center justify-between rounded-2xl border border-dashed border-border bg-surface px-5 py-4 text-left shadow-2xs transition-colors hover:bg-surface-subtle focus-visible:outline-2 focus-visible:outline-brand-secondary active:scale-[0.99]"
         >
           <span className="min-w-0">
-            <span className="flex items-center gap-2 font-semibold">
-              <UserRoundPlus className="size-5" aria-hidden="true" /> Invite Friends
+            <span className="flex items-center gap-2 font-semibold text-text-primary">
+              <UserRoundPlus className="size-5" aria-hidden="true" /> {t.inviteFriends}
             </span>
             <span className="mt-1 block text-sm text-text-secondary">
-              Invite via QR code, link or room code
+              {t.inviteSubtitle}
             </span>
           </span>
-          <span className="shrink-0 text-2xl text-text-primary" aria-hidden="true">
+          <span className="shrink-0 text-2xl text-text-secondary" aria-hidden="true">
             ›
           </span>
         </button>
@@ -223,230 +237,9 @@ function RoomSummaryCard({
   );
 }
 
-function MembersCard({
-  room,
-  members,
-  canManageMembers,
-  isMemberActionLoading,
-  onOpenMemberActions,
-}: {
-  room: RoomLobby;
-  members: RoomMember[];
-  canManageMembers: boolean;
-  isMemberActionLoading: boolean;
-  onOpenMemberActions: (member: RoomMember) => void;
-}) {
-  return (
-    <Card variant="outline" className="mt-4 rounded-2xl p-4 sm:p-5 lg:mt-0">
-      <div className="flex items-center justify-between gap-3">
-        <h2 className="min-w-0 truncate text-lg font-semibold">
-          Members{' '}
-          <span className="font-normal text-text-secondary">
-            ({room.memberCount} / {room.maxMembers})
-          </span>
-        </h2>
-        <Button
-          type="button"
-          variant="outline"
-          size="sm"
-          disabled
-          leftIcon={<UsersRound className="size-4" aria-hidden="true" />}
-        >
-          Member List
-        </Button>
-      </div>
-      <div className="relative mt-4 divide-y divide-border rounded-xl border border-border">
-        {members.map((member, index) => (
-          <MemberRow
-            key={member.id}
-            member={member}
-            isHost={index === 0}
-            canManage={canManageMembers}
-            isActionLoading={isMemberActionLoading}
-            onOpenActions={onOpenMemberActions}
-          />
-        ))}
-      </div>
-      <div className="mt-4 flex items-center gap-3 rounded-xl border border-dashed border-border bg-surface-subtle px-4 py-4">
-        <UserRoundPlus className="size-8 shrink-0 text-text-primary" aria-hidden="true" />
-        <div className="min-w-0">
-          <p className="font-medium">Waiting for more friends to join...</p>
-          <p className="mt-1 text-sm text-text-secondary">
-            Share the code or invite link above!
-          </p>
-        </div>
-      </div>
-    </Card>
-  );
-}
-
-function HowItWorksCard({
-  room,
-  areAllMembersReady,
-  canStartFoodFight,
-  isCurrentUserReady,
-  isReadyLoading,
-  isStartingRoom,
-  onStartFoodFight,
-  onSetReady,
-  onOpenLeave,
-}: {
-  room: RoomLobby;
-  areAllMembersReady: boolean;
-  canStartFoodFight: boolean;
-  isCurrentUserReady: boolean;
-  isReadyLoading: boolean;
-  isStartingRoom: boolean;
-  onStartFoodFight: () => void;
-  onSetReady: () => void;
-  onOpenLeave: () => void;
-}) {
-  return (
-    <Card variant="outline" className="mt-4 rounded-2xl p-4 sm:p-5">
-      <h2 className="text-lg font-semibold">How it works</h2>
-      <div className="mt-5 grid grid-cols-4 gap-2 text-center">
-        {[
-          [<UsersRound key="members" className="size-5" aria-hidden="true" />, 'Everyone joins'],
-          [<CheckCircleIcon key="ready" />, 'Members get ready'],
-          [<ClipboardIcon key="preference" />, 'Everyone fills preferences'],
-          [<SparkleIcon key="ai" />, 'AI suggests menus'],
-        ].map(([icon, label]) => (
-          <div key={label as string} className="flex min-w-0 flex-col items-center gap-2">
-            <span className="flex size-11 items-center justify-center rounded-full border border-border bg-surface-subtle">
-              {icon}
-            </span>
-            <span className="text-[11px] leading-snug text-text-secondary">{label}</span>
-          </div>
-        ))}
-      </div>
-      {room.isHost ? (
-        <>
-          <Button
-            type="button"
-            fullWidth
-            disabled={!canStartFoodFight}
-            loading={isStartingRoom}
-            className="mt-5"
-            leftIcon={<Play className="size-4 fill-current" aria-hidden="true" />}
-            onClick={onStartFoodFight}
-          >
-            {room.status === 'IN_PROGRESS' ? 'FoodFight started' : 'Start FoodFight'}
-          </Button>
-          <p className="mt-2 text-center text-xs text-text-secondary">
-            {room.status === 'IN_PROGRESS'
-              ? 'FoodFight is now in progress.'
-              : areAllMembersReady
-                ? 'Everyone is ready. You can start FoodFight.'
-                : 'When everyone is ready, the host can start FoodFight.'}
-          </p>
-        </>
-      ) : room.status === 'LOBBY' ? (
-        <>
-          <Button
-            type="button"
-            fullWidth
-            loading={isReadyLoading}
-            className="mt-5"
-            leftIcon={<Check className="size-4" aria-hidden="true" />}
-            onClick={onSetReady}
-          >
-            {isCurrentUserReady ? 'Not Ready' : 'Ready'}
-          </Button>
-          <Button
-            type="button"
-            fullWidth
-            variant="outline"
-            className="mt-2"
-            leftIcon={<LogOut className="size-4" aria-hidden="true" />}
-            onClick={onOpenLeave}
-          >
-            Exit room
-          </Button>
-          <p className="mt-2 text-center text-xs text-text-secondary">
-            When everyone is ready, the host can start FoodFight.
-          </p>
-        </>
-      ) : (
-        <p className="mt-5 text-center text-sm text-text-secondary">
-          FoodFight is now in progress.
-        </p>
-      )}
-    </Card>
-  );
-}
-
-function MemberRow({
-  member,
-  isHost,
-  canManage,
-  isActionLoading,
-  onOpenActions,
-}: {
-  member: RoomMember;
-  isHost: boolean;
-  canManage: boolean;
-  isActionLoading: boolean;
-  onOpenActions: (member: RoomMember) => void;
-}) {
-  return (
-    <div className="flex min-h-16 items-center gap-3 px-3 py-2.5">
-      <Avatar member={member} />
-      <div className="min-w-0 flex-1">
-        <div className="flex flex-wrap items-center gap-2">
-          <span className="truncate font-medium">{member.displayName}</span>
-          {isHost ? <Badge size="sm">Host</Badge> : null}
-        </div>
-      </div>
-      {!isHost ? (
-        <Badge size="sm" variant={member.isReady ? 'success' : 'neutral'} dot>
-          {member.isReady ? 'Ready' : 'Not Ready'}
-        </Badge>
-      ) : null}
-      {!isHost && canManage ? (
-        <IconButton
-          aria-label={`Actions for ${member.displayName}`}
-          aria-haspopup="dialog"
-          disabled={isActionLoading}
-          icon={<MoreHorizontal className="size-5" aria-hidden="true" />}
-          className="size-9 shrink-0 text-text-primary"
-          onClick={() => onOpenActions(member)}
-        />
-      ) : null}
-    </div>
-  );
-}
-
-function Avatar({ member, className }: { member: RoomMember; className?: string }) {
-  const [failedImageUrl, setFailedImageUrl] = React.useState<string | null>(null);
-  const avatarSize = className ?? 'size-11';
-  const shouldShowImage = Boolean(member.avatarUrl && failedImageUrl !== member.avatarUrl);
-
-  if (shouldShowImage) {
-    return (
-      <img
-        key={member.avatarUrl}
-        src={member.avatarUrl ?? undefined}
-        alt={`${member.displayName}'s profile`}
-        className={`${avatarSize} rounded-full object-cover`}
-        referrerPolicy="no-referrer"
-        onError={() => setFailedImageUrl(member.avatarUrl ?? null)}
-      />
-    );
-  }
-
-  return (
-    <span
-      className={`${avatarSize} flex items-center justify-center rounded-full bg-surface-subtle text-sm font-semibold text-text-secondary`}
-      aria-hidden="true"
-    >
-      {getInitials(member.displayName) || '?'}
-    </span>
-  );
-}
-
 export function LobbyLoading() {
   return (
-    <main className="min-h-dvh overflow-x-clip bg-background px-4 pt-5 text-text-primary">
+    <main className="min-h-dvh overflow-x-clip bg-transparent px-4 pt-5 text-text-primary">
       <div className="mx-auto w-full max-w-md md:max-w-4xl lg:max-w-6xl">
         <RoomPageHeader
           title="Room Lobby"
@@ -466,7 +259,7 @@ export function LobbyLoading() {
 
 export function RoomUnavailable({ error }: { error: string | null }) {
   return (
-    <main className="min-h-dvh overflow-x-clip bg-background px-4 pt-5 text-text-primary">
+    <main className="min-h-dvh overflow-x-clip bg-transparent px-4 pt-5 text-text-primary">
       <div className="mx-auto w-full max-w-md md:max-w-4xl lg:max-w-6xl">
         <RoomPageHeader
           title="Room Lobby"
@@ -479,29 +272,5 @@ export function RoomUnavailable({ error }: { error: string | null }) {
         </Alert>
       </div>
     </main>
-  );
-}
-
-function CheckCircleIcon() {
-  return (
-    <span className="text-text-primary" aria-hidden="true">
-      ✓
-    </span>
-  );
-}
-
-function ClipboardIcon() {
-  return (
-    <span className="text-text-primary" aria-hidden="true">
-      ▤
-    </span>
-  );
-}
-
-function SparkleIcon() {
-  return (
-    <span className="text-text-primary" aria-hidden="true">
-      ✦
-    </span>
   );
 }

@@ -10,10 +10,14 @@ import {
   Check,
   CreditCard,
   ImageUp,
+  LogOut,
   Pencil,
   Utensils,
 } from 'lucide-react';
+import { API_BASE_URL } from '@/config/api';
+import { getStoredAccessToken } from '@/config/api-client';
 import { ROUTES } from '@/config/routes';
+
 import {
   AuthenticatedPageLayout,
   AuthenticatedPageHeader,
@@ -30,7 +34,10 @@ import {
   getMyFoodProfile,
   type FoodProfileResponse,
 } from '@/features/food-profile/services/food-profile-service';
-import { resolveAuthMode } from '@/features/auth/services/auth-runtime';
+import { resolveAuthMode, authService } from '@/features/auth/services/auth-runtime';
+import { useLanguage } from '@/i18n/LanguageProvider';
+import { useUserProfile } from '@/context/user-profile-context';
+import { profileTranslations } from '../i18n/profile-translations';
 import {
   getCurrentUserProfile,
   updateCurrentUserProfile,
@@ -98,6 +105,9 @@ function AvatarPreview({
 
 export function ProfilePageContent() {
   const router = useRouter();
+  const { locale } = useLanguage();
+  const { refreshProfile, updateLocalProfile } = useUserProfile();
+  const t = profileTranslations[locale];
   const avatarFileInputRef = React.useRef<HTMLInputElement>(null);
   const [profile, setProfile] = React.useState<CurrentUserProfile | null>(null);
   const [foodProfile, setFoodProfile] =
@@ -109,10 +119,22 @@ export function ProfilePageContent() {
     () => resolveAuthMode() === 'api',
   );
   const [isSaving, setIsSaving] = React.useState(false);
+  const [isLoggingOut, setIsLoggingOut] = React.useState(false);
   const [errorMessage, setErrorMessage] = React.useState<string | null>(null);
   const [successMessage, setSuccessMessage] = React.useState<string | null>(
     null,
   );
+
+  const handleLogout = async () => {
+    if (isLoggingOut) return;
+    setIsLoggingOut(true);
+    try {
+      await authService.logout();
+    } finally {
+      router.replace(ROUTES.AUTH.LOGIN);
+    }
+  };
+
 
   React.useEffect(() => {
     let isMounted = true;
@@ -143,7 +165,7 @@ export function ProfilePageContent() {
         if (error instanceof Error) {
           setErrorMessage(error.message);
         } else {
-          setErrorMessage('Unable to load your profile.');
+          setErrorMessage(t.errorDefault);
         }
       })
       .finally(() => {
@@ -169,7 +191,7 @@ export function ProfilePageContent() {
     return () => {
       isMounted = false;
     };
-  }, [router]);
+  }, [router, t.errorDefault]);
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -202,12 +224,18 @@ export function ProfilePageContent() {
       setProfile(updatedProfile);
       setDisplayName(updatedProfile.displayName);
       setAvatarUrl(updatedProfile.avatarUrl ?? '');
-      setSuccessMessage('Profile updated successfully.');
+      setSuccessMessage(t.successUpdated);
+
+      updateLocalProfile({
+        name: updatedProfile.displayName,
+        avatarUrl: updatedProfile.avatarUrl ?? undefined,
+      });
+      void refreshProfile();
     } catch (error: unknown) {
       setErrorMessage(
         error instanceof Error
           ? error.message
-          : 'Unable to update your profile.',
+          : t.errorDefault,
       );
     } finally {
       setIsSaving(false);
@@ -257,7 +285,7 @@ export function ProfilePageContent() {
 
   return (
     <AuthenticatedPageLayout>
-      <AuthenticatedPageHeader eyebrow="Account" title="My profile" />
+      <AuthenticatedPageHeader eyebrow={t.eyebrow} title={t.title} description={t.description} />
 
       {errorMessage ? (
         <Alert variant="error">
@@ -277,7 +305,7 @@ export function ProfilePageContent() {
             <AvatarPreview name={displayName} avatarUrl={avatarUrl} />
             <div className="min-w-0">
               <h2 className="truncate text-lg font-bold text-text-primary">
-                {displayName || 'Your profile'}
+                {displayName || t.title}
               </h2>
               <p className="truncate text-sm text-text-secondary">
                 {profile?.email}
@@ -287,19 +315,20 @@ export function ProfilePageContent() {
 
           <form onSubmit={handleSubmit} className="space-y-5">
             <div className="space-y-2">
-              <Label htmlFor="profile-display-name">Name</Label>
+              <Label htmlFor="profile-display-name">{t.displayName}</Label>
               <Input
                 id="profile-display-name"
                 value={displayName}
                 onChange={(event) => setDisplayName(event.target.value)}
                 maxLength={100}
                 autoComplete="name"
+                placeholder={t.displayNamePlaceholder}
                 required
               />
             </div>
 
             <div className="space-y-2">
-              <Label>Upload from device</Label>
+              <Label>{t.avatarUploadPrompt}</Label>
               <input
                 ref={avatarFileInputRef}
                 type="file"
@@ -314,10 +343,10 @@ export function ProfilePageContent() {
                 leftIcon={<ImageUp className="size-4" />}
                 onClick={() => avatarFileInputRef.current?.click()}
               >
-                Choose profile picture
+                {t.avatarUploadPrompt}
               </Button>
               <p className="text-xs text-text-muted">
-                JPG, PNG, or other image formats up to 2 MB.
+                {t.avatarUploadHelp}
               </p>
             </div>
 
@@ -325,9 +354,9 @@ export function ProfilePageContent() {
               type="submit"
               fullWidth
               loading={isSaving}
-              loadingText="Saving..."
+              loadingText={t.saving}
             >
-              Save profile
+              {t.saveChanges}
             </Button>
           </form>
       </section>
@@ -340,10 +369,10 @@ export function ProfilePageContent() {
               </div>
               <div className="min-w-0">
                 <h2 className="font-bold text-text-primary">
-                  Food Safety &amp; Diet Profile
+                  {t.foodPreferences}
                 </h2>
                 <p className="mt-1 text-sm leading-relaxed text-text-secondary">
-                  Applied automatically to all group sessions.
+                  {t.foodPreferencesDesc}
                 </p>
               </div>
             </div>
@@ -351,7 +380,7 @@ export function ProfilePageContent() {
               href={`${ROUTES.FOOD_PROFILE.ALLERGIES}?from=profile`}
               className="inline-flex shrink-0 items-center gap-1.5 rounded-full border border-brand-primary/40 px-4 py-2 text-sm font-semibold text-text-primary hover:bg-brand-primary/5"
             >
-              Edit
+              {t.editFoodProfile}
               <Pencil className="size-3.5" />
             </Link>
           </div>
@@ -364,7 +393,7 @@ export function ProfilePageContent() {
             <div className="mt-6 space-y-5">
               <div>
                 <p className="text-xs font-bold uppercase tracking-wider text-text-secondary">
-                  Food allergies
+                  {t.allergies}
                 </p>
                 <div className="mt-2 flex flex-wrap gap-2">
                   {foodProfile?.allergies.length ||
@@ -381,7 +410,7 @@ export function ProfilePageContent() {
                     </>
                   ) : (
                     <span className="rounded-full bg-surface-subtle px-3 py-1 text-xs font-semibold text-text-secondary">
-                      No allergies
+                      {t.noAllergies}
                     </span>
                   )}
                 </div>
@@ -389,7 +418,7 @@ export function ProfilePageContent() {
 
               <div>
                 <p className="text-xs font-bold uppercase tracking-wider text-text-secondary">
-                  Dietary restrictions
+                  {t.restrictions}
                 </p>
                 <div className="mt-2 flex flex-wrap gap-2">
                   {foodProfile?.restrictions.length ||
@@ -409,7 +438,7 @@ export function ProfilePageContent() {
                     </>
                   ) : (
                     <span className="rounded-full bg-surface-subtle px-3 py-1 text-xs font-semibold text-text-secondary">
-                      No restrictions
+                      {t.noRestrictions}
                     </span>
                   )}
                 </div>
@@ -417,11 +446,11 @@ export function ProfilePageContent() {
 
               <div>
                 <p className="text-xs font-bold uppercase tracking-wider text-text-secondary">
-                  Additional nuances
+                  {t.foodPreferencesDesc}
                 </p>
                 <p className="mt-2 text-sm leading-relaxed text-text-secondary">
                   {foodProfile?.additionalNotes ||
-                    'No additional food preferences yet.'}
+                    t.noRestrictions}
                 </p>
               </div>
             </div>
@@ -434,18 +463,46 @@ export function ProfilePageContent() {
               <CreditCard className="size-5" />
             </div>
             <div className="min-w-0 flex-1">
-              <h2 className="font-bold text-text-primary">Payment account</h2>
+              <h2 className="font-bold text-text-primary">{t.paymentAccount}</h2>
               <p className="mt-1 text-sm leading-relaxed text-text-secondary">
-                Add or update your PromptPay account and payment QR code.
+                {t.paymentAccountDesc}
               </p>
               <Link
                 href={ROUTES.PAYMENT_ACCOUNT}
                 className="mt-4 inline-flex h-10 items-center rounded-xl bg-brand-primary px-4 text-sm font-semibold text-white hover:bg-brand-primary-hover"
               >
-                Set up payment account
+                {t.paymentAccountButton}
               </Link>
             </div>
           </div>
+      </section>
+
+      {/* 4. Logout Section */}
+      <section className="rounded-2xl border border-border/80 bg-surface p-5 shadow-xs sm:p-6">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex items-start gap-3">
+            <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-status-danger-bg/60 text-brand-primary">
+              <LogOut className="size-5" />
+            </div>
+            <div className="min-w-0 flex-1">
+              <h2 className="font-bold text-text-primary">{t.logout}</h2>
+              <p className="mt-1 text-sm leading-relaxed text-text-secondary">
+                {t.logoutDesc}
+              </p>
+            </div>
+          </div>
+          <Button
+            type="button"
+            variant="destructive"
+            disabled={isLoggingOut}
+            onClick={handleLogout}
+            className="w-full sm:w-auto shrink-0 flex items-center justify-center gap-2"
+          >
+            <LogOut className="size-4" />
+            <span>{isLoggingOut ? t.saving : t.logout}</span>
+          </Button>
+
+        </div>
       </section>
     </AuthenticatedPageLayout>
   );

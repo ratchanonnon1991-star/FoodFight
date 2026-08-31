@@ -9,6 +9,10 @@ import { PageContainer } from "@/components/layout/PageContainer";
 import { Button, buttonVariants } from "@/components/ui/Button";
 import { cn } from "@/lib/utils/cn";
 
+import { useLanguage } from "@/i18n/LanguageProvider";
+import { commonTranslations } from "@/i18n/common-translations";
+import { LanguageSwitcher } from "@/components/language/LanguageSwitcher";
+
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8888";
 
 type AuthenticatedUser = {
@@ -23,6 +27,8 @@ export interface PublicHeaderProps {
 
 export function PublicHeader({ className }: PublicHeaderProps) {
   const router = useRouter();
+  const { locale } = useLanguage();
+  const t = commonTranslations[locale].publicHeader;
   const [user, setUser] = React.useState<AuthenticatedUser | null>(null);
   const [isCheckingSession, setIsCheckingSession] = React.useState(true);
   const [isLoggingOut, setIsLoggingOut] = React.useState(false);
@@ -115,11 +121,13 @@ export function PublicHeader({ className }: PublicHeaderProps) {
           FoodFighter
         </Link>
 
-        {/* Account Navigation */}
-        <nav aria-label="Account actions" className="flex items-center gap-2 sm:gap-3">
+        {/* Account Navigation & Language Switcher */}
+        <nav aria-label={t.accountActions} className="flex items-center gap-2 sm:gap-3">
+          <LanguageSwitcher variant="subtle" />
+
           {isCheckingSession ? (
             <span className="text-xs text-text-muted" aria-live="polite">
-              Checking session...
+              {t.checkingSession}
             </span>
           ) : user ? (
             <>
@@ -137,7 +145,7 @@ export function PublicHeader({ className }: PublicHeaderProps) {
                 onClick={handleLogout}
                 className="text-xs sm:text-sm min-h-[40px]"
               >
-                Log out
+                {t.logOut}
               </Button>
             </>
           ) : (
@@ -149,7 +157,7 @@ export function PublicHeader({ className }: PublicHeaderProps) {
                   "text-xs sm:text-sm font-semibold text-text-secondary hover:text-text-primary px-3 sm:px-4 min-h-[40px] inline-flex items-center justify-center",
                 )}
               >
-                Log in
+                {t.logIn}
               </Link>
               <Link
                 href={ROUTES.AUTH.REGISTER}
@@ -158,7 +166,7 @@ export function PublicHeader({ className }: PublicHeaderProps) {
                   "text-xs sm:text-sm font-semibold px-3 sm:px-4 min-h-[40px] inline-flex items-center justify-center",
                 )}
               >
-                Register
+                {t.register}
               </Link>
             </>
           )}

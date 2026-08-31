@@ -15,6 +15,7 @@ export const billInclude = {
         select: {
           userId: true,
           role: true,
+          joinedAt: true,
           user: { select: { displayName: true, avatarUrl: true } },
         },
       },

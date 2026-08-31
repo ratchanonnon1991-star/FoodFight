@@ -282,3 +282,23 @@ AI จะทำหน้าที่
 * ร้านอาหารที่เลือก  
 * วันที่และเวลาในการใช้งาน
 
+---
+
+# **Product Requirement vs Current Implementation Status**
+
+> **SRS Rule**: The requirements above are the authoritative **Product Specification**. The table below documents the **Current Implementation Status** in the codebase. Gaps represent future implementation roadmap items, not removed requirements.
+
+| Feature Area | SRS Product Requirement | Current Implementation Status | Notes |
+|---|---|---|---|
+| **Authentication** | Email/Password, Google OAuth, LINE Login, 2FA | `IMPLEMENTED` (Email/Pass), `PARTIAL` (OAuth buttons), `NOT_IMPLEMENTED` (2FA) | Email OTP is registration verification only |
+| **Food Profile** | Profile creation, allergies, religious dietary restrictions | `IMPLEMENTED` | Food profile stepper & form |
+| **Room & Lobby** | Create room, join code, invite link, QR code, member list | `IMPLEMENTED` | Room lobby & QR code sharing |
+| **Ready & Active Member** | Realtime ready status, 60% threshold, 2-min rule, Active Member gating | `IMPLEMENTED` | Realtime status sync |
+| **Meal Preference** | Category, budget, dietary notes collection per session | `IMPLEMENTED` | Interactive meal preference chips & form |
+| **AI Recommendation** | LLM recommendation of 2 menus based on group constraints | `IMPLEMENTED` | Integrated recommendation UI & API |
+| **Voting & Final Vote** | OK/Pass vote, 60% rule, Recommend Again, 4-menu Final Vote, Head tie-break | `IMPLEMENTED` | Realtime voting & tie-break controls |
+| **Restaurant & Map** | Restaurant list, map coordinates, open hours, contact info | `IMPLEMENTED` | Leaflet.js / OpenStreetMap map component |
+| **Bill Splitting & OCR** | Bill itemization, member split, settlement summary, OCR (Optional) | `IMPLEMENTED` (Split & Details), `PARTIAL` (OCR mock) | Complete multi-step bill calculation & ledger |
+| **Admin Console** | User management, stats, analytics, room/bill inspection | `IMPLEMENTED` | Full Dashboard, Analytics, Users, Rooms, Bills |
+| **History** | Past sessions, selected menus, dining records | `IMPLEMENTED` | History list & session items |
+

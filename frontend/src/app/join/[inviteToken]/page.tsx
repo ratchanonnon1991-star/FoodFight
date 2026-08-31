@@ -1,6 +1,7 @@
-import type { Metadata } from "next";
+﻿import type { Metadata } from "next";
 import { ROUTES } from "@/config/routes";
 import { RoomPreviewScreen } from "@/features/room/components/RoomPreviewScreen";
+import { ApplicationShell } from "@/components/layout/ApplicationShell";
 
 export const metadata: Metadata = {
   title: "Join FoodFighter Room | FoodFighter",
@@ -14,5 +15,9 @@ export default async function InviteRoomPage({
 }) {
   const { inviteToken } = await params;
 
-  return <RoomPreviewScreen inviteToken={inviteToken} backHref={ROUTES.HOME} />;
+  return (
+    <ApplicationShell>
+      <RoomPreviewScreen inviteToken={inviteToken} backHref={ROUTES.HOME} />
+    </ApplicationShell>
+  );
 }

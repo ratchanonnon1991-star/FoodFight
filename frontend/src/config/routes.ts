@@ -44,6 +44,17 @@ export const ROUTES = {
   PROFILE: "/profile",
   PAYMENT_ACCOUNT: "/payment-account",
   DESIGN_SYSTEM: "/design-system",
+  ADMIN: "/admin",
+  ADMIN_ANALYTICS: "/admin/analytics",
+  ADMIN_USERS: "/admin/users",
+  ADMIN_USER_DETAIL: (userId: string) =>
+    `/admin/users/${encodeURIComponent(userId)}`,
+  ADMIN_ROOMS: "/admin/rooms",
+  ADMIN_ROOM_DETAIL: (roomId: string) =>
+    `/admin/rooms/${encodeURIComponent(roomId)}`,
+  ADMIN_BILLS: "/admin/bills",
+  ADMIN_BILL_DETAIL: (billId: string) =>
+    `/admin/bills/${encodeURIComponent(billId)}`,
 } as const;
 
 /** Bill routes that need a billId can't be plain string constants. */

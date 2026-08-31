@@ -13,6 +13,7 @@ import { PaymentAccountModule } from './payment-account/payment-account.module';
 import { HistoryModule } from './history/history.module';
 import { BillModule } from './bill/bill.module';
 import { RecommendationAiModule } from './recommendation-ai/recommendation-ai.module';
+import { AdminModule } from './admin/admin.module';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { RecommendationAiModule } from './recommendation-ai/recommendation-ai.mo
     HistoryModule,
     BillModule,
     RecommendationAiModule,
+    AdminModule,
   ],
   providers: [
     {

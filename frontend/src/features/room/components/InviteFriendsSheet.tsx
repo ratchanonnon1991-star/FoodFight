@@ -4,11 +4,13 @@
 /* eslint-disable @next/next/no-img-element */
 
 import * as React from "react";
-import { Check, Copy, Download, Link as LinkIcon, Share2, X } from "lucide-react";
+import { Check, Copy, Download, Eye, EyeOff, Link as LinkIcon, Share2, X } from "lucide-react";
 import { motion } from "motion/react";
 import { Button } from "@/components/ui/Button";
 import { IconButton } from "@/components/ui/IconButton";
+import { useLanguage } from "@/i18n/LanguageProvider";
 import { transitionExit, transitionSpringSoft, transitionEnter } from "@/lib/motion";
+import { roomTranslations } from "../i18n/room-translations";
 import type { RoomLobby } from "../types/room-types";
 
 interface InviteFriendsSheetProps {
@@ -17,6 +19,9 @@ interface InviteFriendsSheetProps {
 }
 
 export function InviteFriendsSheet({ room, onClose }: InviteFriendsSheetProps) {
+  const { locale } = useLanguage();
+  const t = roomTranslations[locale].lobby;
+  const [isMasked, setIsMasked] = React.useState(true);
   const [copied, setCopied] = React.useState<"code" | "link" | null>(null);
   const [isClosing, setIsClosing] = React.useState(false);
   const closeTimeoutRef = React.useRef<number | null>(null);
@@ -57,10 +62,10 @@ export function InviteFriendsSheet({ room, onClose }: InviteFriendsSheetProps) {
         textArea.style.opacity = "0";
         document.body.appendChild(textArea);
         textArea.select();
-        const copied = document.execCommand("copy");
+        const copiedResult = document.execCommand("copy");
         textArea.remove();
 
-        if (!copied) {
+        if (!copiedResult) {
           return;
         }
       }
@@ -107,33 +112,103 @@ export function InviteFriendsSheet({ room, onClose }: InviteFriendsSheetProps) {
         <div className="mx-auto mb-4 h-1.5 w-12 rounded-full bg-border" aria-hidden="true" />
         <div className="flex items-start justify-between gap-3">
           <div className="min-w-0">
-            <h2 id="invite-friends-title" className="break-words text-xl font-semibold text-text-primary">Invite Friends</h2>
-            <p className="mt-1 text-sm text-text-secondary">Share the QR code, link or room code</p>
+            <h2 id="invite-friends-title" className="break-words text-xl font-semibold text-text-primary">
+              {t.inviteFriends}
+            </h2>
+            <p className="mt-1 text-sm text-text-secondary">
+              {t.inviteSubtitle}
+            </p>
           </div>
-          <IconButton aria-label="Close invite friends" icon={<X className="size-5" aria-hidden="true" />} onClick={requestClose} className="text-text-primary" />
+          <div className="flex items-center gap-1.5 shrink-0">
+            <IconButton
+              aria-label={isMasked ? t.showInvite : t.hideInvite}
+              icon={isMasked ? <Eye className="size-5" aria-hidden="true" /> : <EyeOff className="size-5" aria-hidden="true" />}
+              onClick={() => setIsMasked((prev) => !prev)}
+              className="text-text-primary"
+            />
+            <IconButton
+              aria-label={t.closeInvite}
+              icon={<X className="size-5" aria-hidden="true" />}
+              onClick={requestClose}
+              className="text-text-primary"
+            />
+          </div>
         </div>
 
         <div className="mt-6 grid min-w-0 gap-5 sm:grid-cols-[minmax(0,196px)_minmax(0,1fr)]">
           <div className="flex min-w-0 flex-col items-center gap-3">
-            <div className="rounded-2xl border border-border bg-white p-3">
-              <img src={qrUrl} alt="QR code for the room invite link" width={160} height={160} className="size-40" />
-            </div>
+            {isMasked ? (
+              <div
+                onClick={() => setIsMasked(false)}
+                className="relative flex size-40 flex-col items-center justify-center rounded-2xl border border-dashed border-border bg-surface-subtle p-3 text-center cursor-pointer select-none transition-colors hover:bg-surface-muted focus-visible:outline-2 focus-visible:outline-brand-secondary"
+                role="button"
+                tabIndex={0}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    setIsMasked(false);
+                  }
+                }}
+                aria-label={t.revealInvite}
+              >
+                <EyeOff className="size-8 text-text-secondary" aria-hidden="true" />
+                <p className="mt-2 text-xs font-semibold text-text-primary">{t.inviteHidden}</p>
+                <p className="mt-0.5 text-[10px] text-text-secondary">{t.revealInvite}</p>
+              </div>
+            ) : (
+              <div className="rounded-2xl border border-border bg-white p-3">
+                <img src={qrUrl} alt="QR code for the room invite link" width={160} height={160} className="size-40" />
+              </div>
+            )}
             <div className="grid w-full grid-cols-2 gap-2">
-              <a href={qrUrl} target="_blank" rel="noreferrer" className="inline-flex min-h-11 items-center justify-center gap-1.5 rounded-xl border border-border px-2 text-xs font-medium text-text-primary transition-colors hover:bg-surface-subtle focus-visible:outline-2 focus-visible:outline-brand-secondary">
+              <a
+                href={qrUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex min-h-11 items-center justify-center gap-1.5 rounded-xl border border-border bg-surface px-2 text-xs font-medium text-text-primary shadow-xs transition-colors hover:bg-surface-subtle focus-visible:outline-2 focus-visible:outline-brand-secondary active:scale-[0.98]"
+              >
                 <Download className="size-4" aria-hidden="true" />
-                Save QR
+                {t.saveQr}
               </a>
-              <Button type="button" variant="outline" size="sm" onClick={shareInvite} leftIcon={<Share2 className="size-4" aria-hidden="true" />}>
-                Share QR
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={shareInvite}
+                leftIcon={<Share2 className="size-4" aria-hidden="true" />}
+                className="min-h-11 rounded-xl"
+              >
+                {t.shareQr}
               </Button>
             </div>
           </div>
 
           <div className="min-w-0 space-y-3">
-            <ShareValue label="Room Code" value={room.roomCode} copied={copied === "code"} onCopy={() => copyValue("code", room.roomCode)} />
-            <ShareValue label="Invite Link" value={inviteLink} copied={copied === "link"} onCopy={() => copyValue("link", inviteLink)} />
-            <Button type="button" variant="outline" fullWidth onClick={shareInvite} leftIcon={<LinkIcon className="size-4" aria-hidden="true" />}>
-              Share Link
+            <ShareValue
+              label={t.roomCode}
+              displayValue={isMasked ? "••••••" : room.roomCode}
+              realValue={room.roomCode}
+              copied={copied === "code"}
+              onCopy={() => copyValue("code", room.roomCode)}
+              isMasked={isMasked}
+            />
+            <ShareValue
+              label={t.shareLink}
+              displayValue={isMasked ? "••••••••••••••••••••••••" : inviteLink}
+              realValue={inviteLink}
+              copied={copied === "link"}
+              onCopy={() => copyValue("link", inviteLink)}
+              isMasked={isMasked}
+            />
+            <Button
+              type="button"
+              variant="outline"
+              size="lg"
+              fullWidth
+              onClick={shareInvite}
+              leftIcon={<LinkIcon className="size-4" aria-hidden="true" />}
+              className="rounded-xl font-medium"
+            >
+              {t.shareLinkBtn}
             </Button>
           </div>
         </div>
@@ -144,21 +219,36 @@ export function InviteFriendsSheet({ room, onClose }: InviteFriendsSheetProps) {
 
 function ShareValue({
   label,
-  value,
+  displayValue,
+  realValue,
   copied,
   onCopy,
+  isMasked,
 }: {
   label: string;
-  value: string;
+  displayValue: string;
+  realValue: string;
   copied: boolean;
   onCopy: () => void;
+  isMasked?: boolean;
 }) {
   return (
     <div className="min-w-0">
       <p className="mb-1.5 text-xs font-medium text-text-secondary">{label}</p>
-      <div className="flex min-h-12 min-w-0 w-full items-center gap-2 rounded-xl border border-border bg-surface px-3">
-        <span className="min-w-0 max-w-full flex-1 truncate text-sm text-text-primary">{value}</span>
-        <button type="button" onClick={onCopy} aria-label={`Copy ${label}`} className="inline-flex size-9 shrink-0 items-center justify-center rounded-lg text-text-primary transition-colors hover:bg-surface-subtle focus-visible:outline-2 focus-visible:outline-brand-secondary">
+      <div className="flex min-h-12 min-w-0 w-full items-center gap-2 rounded-xl border border-border bg-surface px-3 shadow-2xs">
+        <span
+          className={`min-w-0 max-w-full flex-1 truncate text-sm text-text-primary ${
+            isMasked ? "font-mono tracking-widest text-text-secondary" : ""
+          }`}
+        >
+          {displayValue}
+        </span>
+        <button
+          type="button"
+          onClick={onCopy}
+          aria-label={`Copy ${label}`}
+          className="inline-flex size-9 shrink-0 items-center justify-center rounded-lg text-text-primary transition-colors hover:bg-surface-subtle focus-visible:outline-2 focus-visible:outline-brand-secondary active:scale-95"
+        >
           {copied ? <Check className="size-4 text-status-success-icon" aria-hidden="true" /> : <Copy className="size-4" aria-hidden="true" />}
         </button>
       </div>

@@ -22,6 +22,8 @@ import { Separator } from "@/components/ui/Separator";
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/Alert";
 import { cn } from "@/lib/utils/cn";
 
+import { useLanguage } from "@/i18n/LanguageProvider";
+import { authTranslations } from "@/features/auth/i18n/auth-translations";
 import { VerificationCodeInput } from "./VerificationCodeInput";
 import { ResendCodeControl } from "./ResendCodeControl";
 import { VerificationSecurityNotice } from "./VerificationSecurityNotice";
@@ -45,6 +47,8 @@ function maskEmail(email: string): string {
 
 export function VerifyEmailForm() {
   const router = useRouter();
+  const { locale } = useLanguage();
+  const t = authTranslations[locale].verifyEmail;
 
   const {
     challenge,
@@ -86,7 +90,7 @@ export function VerifyEmailForm() {
     setResendMessage(null);
 
     if (!challenge?.email) {
-      setGeneralError("Verification session not found. Please register again.");
+      setGeneralError(t.sessionNotFound);
       return;
     }
 
@@ -102,9 +106,7 @@ export function VerifyEmailForm() {
             message: result.error.message,
           });
 
-          setGeneralError(
-            "Your code has expired. Please request a new verification code below.",
-          );
+          setGeneralError(t.expiredNotice);
         } else if (
           result.error.kind === "invalid_code" ||
           result.error.kind === "validation"
@@ -123,9 +125,7 @@ export function VerifyEmailForm() {
 
       router.push(ROUTES.AUTH.VERIFICATION_SUCCESS);
     } catch {
-      setGeneralError(
-        "An unexpected error occurred during verification. Please try again.",
-      );
+      setGeneralError(t.unexpectedError);
     }
   };
 
@@ -144,14 +144,12 @@ export function VerifyEmailForm() {
       if (result.ok && result.data) {
         setChallenge(result.data);
 
-        setResendMessage(
-          "A new verification code has been sent to your email.",
-        );
+        setResendMessage(t.resendSuccess);
       } else if (!result.ok) {
         setGeneralError(result.error.message);
       }
     } catch {
-      setGeneralError("Failed to resend verification code. Please try again.");
+      setGeneralError(t.resendGenericError);
     } finally {
       setIsResending(false);
     }
@@ -164,8 +162,8 @@ export function VerifyEmailForm() {
   if (!challenge) {
     return (
       <AuthSessionFallback
-        title="Verification session not found"
-        description="Please register or sign in to verify your email address."
+        title={t.sessionNotFound}
+        description={t.subtitlePrefix}
       />
     );
   }
@@ -176,24 +174,24 @@ export function VerifyEmailForm() {
         <Link
           href={ROUTES.AUTH.REGISTER}
           className="inline-flex items-center gap-1.5 text-xs font-medium text-text-secondary hover:text-text-primary transition-colors focus-visible:outline-2 focus-visible:outline-brand-secondary rounded-sm"
-          aria-label="Back to registration"
+          aria-label={t.back}
         >
           <ArrowLeft className="size-4" aria-hidden="true" />
-          <span>Back</span>
+          <span>{t.back}</span>
         </Link>
       </div>
 
       <div className="text-center space-y-1.5">
         <div className="text-xl font-bold tracking-tight text-brand-primary">
-          FoodFighter
+          {t.brand}
         </div>
 
         <h1 className="text-2xl font-bold tracking-tight text-text-primary">
-          Verify your email
+          {t.title}
         </h1>
 
         <div className="text-xs text-text-secondary">
-          <span>We&apos;ve sent a 6-digit code to </span>
+          <span>{t.subtitlePrefix}</span>
 
           <span className="font-semibold text-text-primary">
             {maskEmail(challenge.email)}
@@ -204,7 +202,7 @@ export function VerifyEmailForm() {
               href={ROUTES.AUTH.CHANGE_EMAIL}
               className="text-xs font-medium text-brand-primary underline underline-offset-2 hover:text-brand-primary-hover focus-visible:outline-2 focus-visible:outline-brand-secondary rounded-sm"
             >
-              Change email
+              {t.changeEmail}
             </Link>
           </div>
         </div>
@@ -212,7 +210,7 @@ export function VerifyEmailForm() {
 
       {generalError && (
         <Alert variant="error">
-          <AlertTitle>Verification Notice</AlertTitle>
+          <AlertTitle>{t.noticeTitle}</AlertTitle>
 
           <AlertDescription>{generalError}</AlertDescription>
         </Alert>
@@ -220,7 +218,7 @@ export function VerifyEmailForm() {
 
       {resendMessage && (
         <Alert variant="success">
-          <AlertTitle>Success</AlertTitle>
+          <AlertTitle>{t.successTitle}</AlertTitle>
 
           <AlertDescription>{resendMessage}</AlertDescription>
         </Alert>
@@ -247,14 +245,11 @@ export function VerifyEmailForm() {
         <div className="text-center text-xs text-text-muted">
           {expiry.isExpired ? (
             <span className="text-status-danger-text font-medium">
-              Code has expired
+              {t.codeExpired}
             </span>
           ) : (
             <span>
-              Code expires in{" "}
-              <span className="font-medium text-text-secondary">
-                {expiry.formattedTime}
-              </span>
+              {t.codeExpiresIn(expiry.formattedTime)}
             </span>
           )}
         </div>
@@ -266,7 +261,7 @@ export function VerifyEmailForm() {
           disabled={isSubmitting || (codeValue?.length ?? 0) !== 6}
           loading={isSubmitting}
         >
-          VERIFY OTP
+          {t.submit}
         </Button>
       </form>
 
@@ -277,7 +272,7 @@ export function VerifyEmailForm() {
       />
 
       <div className="relative my-2">
-        <Separator text="OR" />
+        <Separator text={t.or} />
       </div>
 
       <Link
@@ -289,7 +284,7 @@ export function VerifyEmailForm() {
           "w-full h-11 text-sm font-medium justify-center",
         )}
       >
-        CHANGE EMAIL
+        {t.changeEmailButton}
       </Link>
 
       <VerificationSecurityNotice />

@@ -602,6 +602,28 @@ async function beginLineAuth(
 }
 
 // =========================
+// LOGOUT
+// =========================
+
+async function logout(): Promise<void> {
+  const accessToken =
+    typeof window !== "undefined" ? localStorage.getItem("accessToken") : null;
+  try {
+    await fetch(`${API_URL}/auth/logout`, {
+      method: "POST",
+      credentials: "include",
+      headers: accessToken
+        ? { Authorization: `Bearer ${accessToken}` }
+        : undefined,
+    });
+  } finally {
+    if (typeof window !== "undefined") {
+      localStorage.removeItem("accessToken");
+    }
+  }
+}
+
+// =========================
 // SERVICE
 // =========================
 
@@ -615,4 +637,5 @@ export const apiAuthService: AuthService = {
   resetPassword,
   beginGoogleAuth,
   beginLineAuth,
+  logout,
 };

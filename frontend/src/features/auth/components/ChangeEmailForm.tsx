@@ -10,6 +10,8 @@ import { ROUTES } from "@/config/routes";
 import { authService } from "@/features/auth/services/auth-runtime";
 import { useAuthFlow } from "@/features/auth/context/auth-flow-context";
 import { changeEmailSchema, type ChangeEmailFormValues } from "@/features/auth/schemas/change-email-schema";
+import { useLanguage } from "@/i18n/LanguageProvider";
+import { authTranslations } from "@/features/auth/i18n/auth-translations";
 import { Button, buttonVariants } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { FormField, FormLabel, FormError } from "@/components/ui/form-field";
@@ -27,6 +29,8 @@ function maskEmail(email: string): string {
 
 export function ChangeEmailForm() {
   const router = useRouter();
+  const { locale } = useLanguage();
+  const t = authTranslations[locale].changeEmail;
   const {
     challenge,
     isHydrating,
@@ -50,7 +54,7 @@ export function ChangeEmailForm() {
     setGeneralError(null);
 
     if (!challenge) {
-      setGeneralError("Verification session not found. Please register again.");
+      setGeneralError(t.sessionNotFound);
       return;
     }
 
@@ -79,7 +83,7 @@ export function ChangeEmailForm() {
       setVerificationCompleted(false);
       router.push(ROUTES.AUTH.VERIFY_EMAIL);
     } catch {
-      setGeneralError("An unexpected error occurred while changing email. Please try again.");
+      setGeneralError(t.unexpectedError);
     }
   };
 
@@ -90,8 +94,8 @@ export function ChangeEmailForm() {
   if (!challenge) {
     return (
       <AuthSessionFallback
-        title="Verification session not found"
-        description="Please register or sign in to change your verification email."
+        title={t.sessionNotFound}
+        description={t.subtitle}
       />
     );
   }
@@ -103,19 +107,19 @@ export function ChangeEmailForm() {
         <Link
           href={ROUTES.AUTH.VERIFY_EMAIL}
           className="inline-flex items-center gap-1.5 text-xs font-medium text-text-secondary hover:text-text-primary transition-colors focus-visible:outline-2 focus-visible:outline-brand-secondary rounded-sm"
-          aria-label="Back to verification"
+          aria-label={t.back}
         >
           <ArrowLeft className="size-4" aria-hidden="true" />
-          <span>Back</span>
+          <span>{t.back}</span>
         </Link>
       </div>
 
       {/* Brand & Heading */}
       <div className="text-center space-y-1.5">
-        <div className="text-xl font-bold tracking-tight text-brand-primary">FoodFighter</div>
-        <h1 className="text-2xl font-bold tracking-tight text-text-primary">Change email</h1>
+        <div className="text-xl font-bold tracking-tight text-brand-primary">{t.brand}</div>
+        <h1 className="text-2xl font-bold tracking-tight text-text-primary">{t.title}</h1>
         <p className="text-xs text-text-secondary">
-          Enter your new email address. We&apos;ll send a fresh 6-digit verification code to confirm.
+          {t.subtitle}
         </p>
       </div>
 
@@ -123,7 +127,7 @@ export function ChangeEmailForm() {
       <div className="flex items-center gap-2.5 p-3 rounded-md bg-surface-subtle border border-border text-xs text-text-secondary">
         <Mail className="size-4 shrink-0 text-brand-primary" aria-hidden="true" />
         <div>
-          <span>Current registered email: </span>
+          <span>{t.currentRegistered}</span>
           <span className="font-semibold text-text-primary">{maskEmail(challenge.email)}</span>
         </div>
       </div>
@@ -131,7 +135,7 @@ export function ChangeEmailForm() {
       {/* Error Alert */}
       {generalError && (
         <Alert variant="error">
-          <AlertTitle>Error</AlertTitle>
+          <AlertTitle>{t.errorTitle}</AlertTitle>
           <AlertDescription>{generalError}</AlertDescription>
         </Alert>
       )}
@@ -140,12 +144,12 @@ export function ChangeEmailForm() {
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4" noValidate>
         <FormField isInvalid={!!errors.newEmail}>
           <FormLabel htmlFor="newEmail" required>
-            New email address
+            {t.newEmailLabel}
           </FormLabel>
           <Input
             id="newEmail"
             type="email"
-            placeholder="new.email@example.com"
+            placeholder={t.newEmailPlaceholder}
             autoComplete="email"
             disabled={isSubmitting}
             {...register("newEmail")}
@@ -156,7 +160,7 @@ export function ChangeEmailForm() {
         {/* Advisory Notice */}
         <div className="flex items-start gap-2 text-xs text-text-muted">
           <AlertCircle className="size-3.5 shrink-0 text-text-muted mt-0.5" aria-hidden="true" />
-          <span>Changing your email address will immediately invalidate the previous verification code.</span>
+          <span>{t.advisoryNotice}</span>
         </div>
 
         {/* Action Buttons */}
@@ -168,14 +172,14 @@ export function ChangeEmailForm() {
             disabled={isSubmitting}
             loading={isSubmitting}
           >
-            SEND CODE
+            {t.submit}
           </Button>
 
           <Link
             href={ROUTES.AUTH.VERIFY_EMAIL}
             className={cn(buttonVariants({ variant: "outline" }), "w-full h-11 text-sm font-medium justify-center")}
           >
-            Cancel
+            {t.cancel}
           </Link>
         </div>
       </form>

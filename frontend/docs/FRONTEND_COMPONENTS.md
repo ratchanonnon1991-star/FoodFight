@@ -1,438 +1,107 @@
-# FoodFighter Components Guide
+# FoodFighter Frontend Components Guide
 
-> Read this file when creating, splitting, reusing, or refactoring UI components.
+> Canonical source for **component creation, responsibility-driven splitting, reuse rules, and maintainability review thresholds**.
 
-## 1. Component principle
+## 1. Core Component Principles
 
-Create a component when it represents a **real responsibility**.
-
-Do not create a component merely to reduce line count.
-
-A useful component normally has at least one of these:
-
-- meaningful reusable UI responsibility,
-- meaningful behavior/state,
-- repeated use,
-- independent reason to change,
-- clear domain or layout concept.
+1. **Responsibility-Driven Creation**:
+   - Create a component when it represents a **clear domain concept, distinct interaction behavior, or reusable UI block**.
+   - Do NOT create components merely to satisfy arbitrary line-count limits.
+2. **Page Composes · Feature Owns · Shared Reuses**:
+   - `src/app/` pages compose feature modules with minimal wrapper markup.
+   - `src/features/<feature>/` owns feature-specific orchestration and business cards.
+   - `src/components/ui/` owns generic, domain-agnostic UI primitives.
+   - `src/components/shared/` owns reusable cross-feature widgets (e.g. `BrandMark`, `LanguageSwitcher`).
 
 ---
 
-## 2. Simple fields stay in the form
+## 2. Component Splitting & Maintainability Signals
 
-Keep ordinary fields explicit.
+To keep the codebase maintainable without creating micro-component noise, use these **review signals**:
 
-Example:
+| Component Category | Target Line Count | Review Trigger | Splitting Guidance |
+|---|---|---|---|
+| **Route / Page / Layout** | ~120–180 lines | >200 lines | Delegate forms, table logic, and data fetches to feature components. |
+| **Generic UI Primitive** | ~180–220 lines | >250 lines | Split compound parts (e.g., `CardHeader`, `CardContent`, `FormField`). |
+| **Feature Component / Form** | ~250–350 lines | >400 lines | **Mandatory review**: Extract cohesive sections (e.g., Step panels, member lists, trend charts). |
 
-```tsx
-<Controller
-  control={control}
-  name="email"
-  render={({ field, fieldState }) => (
-    <FormField invalid={fieldState.invalid}>
-      <FormLabel htmlFor={field.name}>Email</FormLabel>
-      <Input id={field.name} type="email" {...field} />
-      <FormError error={fieldState.error} />
-    </FormField>
-  )}
-/>
-```
+> **Crucial Rule**: A cohesive 300-line component that is easy to trace from top to bottom should **remain together**. Conversely, a 150-line file that mixes four unrelated responsibilities should be **split**.
 
-Do not automatically create:
+### Good Extraction Examples
+- `VerificationCodeInput` (Handles 6-box auto-focus, paste, backspace keyboard events)
+- `SocialAuthButtons` (Groups Google and LINE OAuth triggers)
+- `MealPreferenceCategorySection` (Autonomous multi-select category buttons)
+- `RoomMemberList` & `RoomMemberItem` (Renders member readiness, host badge, kick action)
+- `AdminTrendChart` (Reusable SVG/canvas trend visualizer)
+- `StatCard` (Standard metric card with label, value, trend indicator)
 
-```text
-EmailField.tsx
-PasswordField.tsx
-FirstNameField.tsx
-```
-
-for normal one-off fields.
-
-This explicit style makes form logic easier to learn and trace.
+### Micro-Components to Avoid
+Do NOT create shallow JSX wrappers with zero independent logic:
+- ❌ `EmailLabel`
+- ❌ `PasswordLabel`
+- ❌ `SubmitButtonText`
+- ❌ `OtpDigit1`
+- ❌ `PreferenceTitle`
 
 ---
 
-## 3. Extract complex/cohesive behavior
+## 3. Shared Primitives Catalog (`src/components/ui/`)
 
-Good extraction examples:
-
-```text
-VerificationCodeInput
-SocialAuthButtons
-TermsConsent
-ResendCodeControl
-DatePickerInput
-RoomMemberList
-InviteSheet
-MenuRecommendationCard
-RestaurantMap
-```
-
-Reasons:
-
-- interaction behavior,
-- focused responsibility,
-- reuse,
-- independent accessibility/state concerns.
-
----
-
-## 4. Avoid micro-components
-
-Usually do not create:
+These generic primitives must be reused across all features. Do NOT create duplicate feature-local copies:
 
 ```text
-RegisterHeading
-RegisterSubtitle
-EmailLabel
-PasswordLabel
-SubmitButtonText
-OtpDigit1
-```
-
-A small block of plain JSX can stay inline.
-
----
-
-## 5. Common component library
-
-FoodFighter maintains a **small central UI library**.
-
-Current baseline:
-
-```text
-Button
-IconButton
-Input
-PasswordInput
-Label
-Checkbox
-Card
-Badge
-Alert
-Spinner
-Separator
-FormField
-```
-
-These are generic primitives.
-
-Do not recreate them inside features.
-
----
-
-## 6. Button
-
-Button is an action primitive.
-
-Prefer semantic variants such as:
-
-```text
-primary
-secondary
-outline
-ghost
-destructive
-```
-
-and a small size system:
-
-```text
-sm
-md
-lg
-icon
-```
-
-Relevant states:
-
-- default
-- hover
-- focus-visible
-- active
-- disabled
-- loading
-
-Do not create `LoginButton`, `RegisterButton`, or `CreateRoomButton` just to change style.
-
-Compose `Button`.
-
----
-
-## 7. Input and PasswordInput
-
-`Input` handles generic text input.
-
-`PasswordInput` may add:
-
-- visibility toggle,
-- accessible toggle label,
-- password-safe behavior.
-
-Feature validation still belongs to the feature schema/form.
-
----
-
-## 8. FormField
-
-Use shared form composition for consistent:
-
-```text
-label
-control
-description
-error
-```
-
-Do not manually invent a different error/label layout for every feature.
-
----
-
-## 9. Card
-
-`Card` is a generic surface/container.
-
-Feature UI composes it.
-
-Good:
-
-```tsx
-<Card>
-  {/* room-specific UI */}
-</Card>
-```
-
-Do not add generic Card variants such as:
-
-```text
-ready-member
-restaurant-result
-recommendation
-final-vote
-```
-
-Those meanings belong to feature components.
-
----
-
-## 10. Badge
-
-Generic semantic statuses may be:
-
-```text
-neutral
-info
-success
-warning
-danger
-```
-
-Feature code maps domain state to a generic Badge.
-
-Example:
-
-```text
-Ready member
-→ success Badge
-```
-
-Do not teach the generic Badge what "Ready" means.
-
----
-
-## 11. Alert
-
-Use Alert for scoped, meaningful information/error state.
-
-Do not turn every field error into a global Alert.
-
----
-
-## 12. Spinner / loading
-
-For form submit buttons, prefer Button loading state when possible.
-
-Use standalone Spinner only for section/page loading that truly needs it.
-
----
-
-## 13. Add components on demand
-
-Potential future generic components:
-
-```text
-Textarea
-Select
-RadioGroup
-Switch
-Avatar
-Dialog
-Sheet
-Toast
-Skeleton
-Tabs
-Progress
-```
-
-Do not scaffold all of them now.
-
-Once a generic component is introduced, reuse it rather than creating feature-local clones.
-
----
-
-## 14. Layout components
-
-Current/expected reusable layout pieces:
-
-```text
-PageContainer
-AuthLayout
-PublicHeader
-PublicFooter
-```
-
-Likely future:
-
-```text
-AppShell
-AppHeader
-BottomNavigation
-PageHeader
-```
-
-Do not create a layout abstraction for a wrapper used only once.
-
----
-
-## 15. Feature component map
-
-This is a planning map, not a command to create everything now.
-
-### Auth
-
-```text
-RegisterForm
-LoginForm
-VerifyEmailForm
-ChangeEmailForm
-VerificationSuccess
-VerificationCodeInput
-SocialAuthButtons
-TermsConsent
-ResendCodeControl
-AuthSessionFallback
-```
-
-### Food Profile
-
-Likely:
-
-```text
-FoodProfileForm
-FoodProfileStepper
-AllergyStep
-RestrictionStep
-FoodProfileDetailsStep
-```
-
-Only create step components when the UI/behavior is substantial enough.
-
-### Room / Lobby
-
-Likely:
-
-```text
-RoomSummary
-RoomMemberList
-RoomMemberItem
-InviteSheet
-ReadyAction
-StartFoodFightAction
-```
-
-### Meal Preference
-
-Likely:
-
-```text
-MealPreferenceForm
-```
-
-Keep simple choices inline until extraction is justified.
-
-### Recommendation
-
-Likely:
-
-```text
-RecommendationState
-MenuRecommendationCard
-RecommendationActions
-```
-
-### Voting
-
-Likely:
-
-```text
-VotingPanel
-VoteOption
-VoteProgress
-FinalVotePanel
-TieBreakAction
-```
-
-### Restaurants
-
-Likely:
-
-```text
-RestaurantList
-RestaurantCard
-RestaurantMap
-```
-
-### History
-
-Likely:
-
-```text
-HistoryList
-HistoryItem
+src/components/ui/
+├─ Alert.tsx            # role="alert" with title, description, and semantic status variants
+├─ Badge.tsx            # Pill status indicators (brand, saffron, herb, neutral, success, danger, info)
+├─ Button.tsx           # Primary CTA, secondary, outline, ghost, destructive with loading states
+├─ Card.tsx             # Surface containers with CardHeader, CardTitle, CardContent, CardFooter
+├─ Checkbox.tsx         # Accessible custom SVG checkbox with keyboard focus
+├─ form-field/          # Compound FormField, FormLabel, FormDescription, FormError with ARIA links
+├─ IconButton.tsx       # Touch-friendly icon button requiring accessible aria-label
+├─ Input.tsx            # Standard text input with left/right adornments
+├─ Label.tsx            # Accessible form label with htmlFor connection
+├─ PasswordInput.tsx    # Password input with show/hide toggle
+├─ Separator.tsx        # Horizontal/vertical rule with optional center text
+└─ Spinner.tsx          # Accessible loading spinner (role="status")
 ```
 
 ---
 
-## 16. Component split checklist
+## 4. Current Feature Component Map
 
-Before extracting:
+### Auth (`src/features/auth/components/`)
+- `LoginForm`, `RegisterForm`, `VerifyEmailForm`, `ChangeEmailForm`
+- `VerificationCodeInput`, `SocialAuthButtons`, `TermsConsent`, `ResendCodeControl`
 
-```text
-[ ] clear responsibility/name
-[ ] independent behavior/state
-[ ] reused or likely independently changed
-[ ] parent becomes easier to read
-[ ] not created only to satisfy line count
-```
+### Home (`src/features/home/components/`)
+- `HomeHero`: Primary welcome banner and action hub (FROZEN benchmark)
+- `QuickActions`: Create room, join with code, food profile shortcut
+- `ActiveSessions`: Cards representing ongoing meal decision sessions
 
-If most answers are no, keep it inline.
+### Room & Lobby (`src/features/room/components/`)
+- `RoomLobbyLayout`: Orchestrates room header, member grid, and action bar
+- `RoomSummary`: Displays room name, code, host, and QR code modal trigger
+- `RoomMemberList` & `RoomMemberItem`: Realtime participant status and host controls
+- `InviteSheet`: Bottom sheet / modal for sharing invite link and QR code
 
----
+### Food Fight (`src/features/food-fight/components/`)
+- `MealPreferenceForm`: Category chips, budget slider, dietary notes
+- `RestaurantResults`: Displays AI recommended menus, cards, and OK/Pass voting
+- `VotingPanel` & `FinalVotePanel`: Realtime ballot casting and tie-break controls
+- `WinnerPayoff`: Celebration banner and final selected menu reveal
 
-## 17. File-size review
+### Bill & Split (`src/features/bill/components/`)
+- `ReceiptStepScreen`: Receipt upload, OCR summary, and manual line-item entry
+- `SplitStepScreen`: Item assignment per member, tax/service charge allocation
+- `SummaryStepScreen`: Settlement summary, individual totals, PromptPay QR codes
+- `BillDetailScreen`: Complete read-only billing overview and payment ledger
 
-Suggested review signals:
-
-```text
-route page/layout       ~120 lines
-generic UI              ~180 lines
-feature form/component  ~220 lines
-```
-
-When near a threshold:
-
-- inspect responsibilities,
-- extract only a real responsibility,
-- keep cohesive code together.
-
-A clean 230-line explicit form may be better than five tiny files that hide the flow.
+### Admin (`src/features/admin/components/`)
+- `AdminShell`: Top navigation bar, admin profile, section navigation tabs
+- `AdminDashboard`: Platform metrics (users, active rooms, completed sessions)
+- `AdminAnalytics`: Period selector, automated insights, KPI cards, and trend charts
+- `AdminTrendChart`: Visual line/bar chart for user growth, rooms, and billing volume
+- `AdminUsersPage` & `AdminUserDetailPage`: User management and profile inspection
+- `AdminRoomsPage` & `AdminRoomDetailPage`: Active/historical room directory
+- `AdminBillsPage` & `AdminBillDetailPage`: Bill itemization and settlement tracking
+- `StatCard`: Standardized metric card used across Dashboard and Analytics

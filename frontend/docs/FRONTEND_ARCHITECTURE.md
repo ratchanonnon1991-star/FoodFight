@@ -1,480 +1,186 @@
 # FoodFighter Frontend Architecture
 
-> Canonical source for **how frontend code is structured and where files belong**.
+> Canonical source for **how frontend code is structured, where files belong, layer boundaries, and shared systems**.
 
-## 1. Style
+## 1. Architectural Philosophy
 
 FoodFighter uses:
 
-**Feature-oriented + Layered + Explicit Next.js**
+**Feature-Oriented + Layered + Explicit Next.js (App Router)**
 
-The goal is not maximum abstraction.
-
-The goal is to make code easy to trace:
+### Core Tenet
+> **PAGE COMPOSES · FEATURE OWNS · SHARED REUSES · TOKENS STYLE**
 
 ```text
-page.tsx
+app/ (Route composition & layouts)
   ↓
-feature component
+features/<feature>/ (Domain logic, schemas, feature components, services)
   ↓
-subcomponents / schema / hook / service
+components/ (Generic UI primitives, layout shells, shared widgets)
   ↓
-shared infrastructure
+i18n/ & lib/ (Global language provider, API clients, realtime transport, motion)
+  ↓
+config/ & styles/ (Canonical routes, API base, semantic tokens)
 ```
-
-A developer should be able to open a page and follow imports to understand the feature.
 
 ---
 
-## 2. Canonical source structure
+## 2. Canonical Directory Structure
 
-Use this as the target shape, but do not create empty folders in advance.
+The actual production structure of `frontend/src/`:
 
 ```text
 src/
-├─ app/
-│  ├─ (auth)/
-│  ├─ (main)/
-│  ├─ design-system/
-│  ├─ globals.css
-│  └─ layout.tsx
+├─ app/                         # Next.js App Router (Routes & Layouts)
+│  ├─ (admin)/admin/            # Admin portal sub-tree (Protected by AdminRouteGuard)
+│  │  ├─ analytics/
+│  │  ├─ bills/[billId]/
+│  │  ├─ rooms/[roomId]/
+│  │  ├─ users/[userId]/
+│  │  ├─ layout.tsx
+│  │  └─ page.tsx
+│  ├─ (auth)/                   # Authentication flows
+│  │  ├─ login/
+│  │  ├─ register/
+│  │  ├─ verify-email/
+│  │  ├─ change-email/
+│  │  └─ layout.tsx
+│  ├─ design-system/            # Internal component showcase
+│  ├─ globals.css               # Global theme & typography
+│  ├─ layout.tsx                # Root layout (LanguageProvider, MotionProvider)
+│  └─ page.tsx                  # Home / Landing page (Visual Benchmark)
 │
-├─ features/
-│  ├─ auth/
-│  ├─ home/
-│  ├─ food-profile/
-│  ├─ room/
-│  ├─ meal-preference/
-│  ├─ recommendations/
-│  ├─ voting/
-│  ├─ restaurants/
-│  └─ history/
+├─ features/                    # Feature domain modules
+│  ├─ admin/                    # Admin dashboard, analytics, users, rooms, bills
+│  ├─ auth/                     # Registration, login, OTP verification
+│  ├─ bill/                     # Bill itemization, split calculation, payment status
+│  ├─ design-system/            # Showcase components
+│  ├─ food-fight/               # Preferences, recommendations, OK/Pass voting, winner
+│  ├─ food-profile/             # Dietary restrictions, allergies, profile stepper
+│  ├─ history/                  # Past meal decisions and billing history
+│  ├─ home/                     # Home hero, quick actions, active session cards
+│  ├─ payment-account/          # PromptPay and bank account management
+│  ├─ profile/                  # User settings and personal food identity
+│  └─ room/                     # Room lobby, QR code, member list, ready status
 │
-├─ components/
-│  ├─ ui/
-│  ├─ layout/
-│  ├─ shared/
-│  └─ providers/
+├─ components/                  # Reusable presentation layer
+│  ├─ layout/                   # PageContainer, AuthLayout, Shells, Navigation
+│  ├─ shared/                   # Generic widgets (BrandMark, LanguageSwitcher)
+│  └─ ui/                       # Design system primitives (Button, Input, Card, Badge, etc.)
 │
-├─ lib/
-│  ├─ api/
-│  ├─ realtime/
-│  ├─ motion/
-│  ├─ env/
-│  └─ utils/
+├─ i18n/                        # Global lightweight localization system
+│  ├─ config.ts                 # Supported locales ("th" | "en") & storage keys
+│  ├─ LanguageProvider.tsx      # Single source of truth React context & useLanguage hook
+│  ├─ LanguageSwitcher.tsx      # Shared visual language toggle
+│  └─ translations.ts           # Core & landing translations dictionary
 │
-├─ config/
-│  └─ routes.ts
+├─ lib/                         # Shared infrastructure & utilities
+│  ├─ api/                      # Base fetch wrapper, error handling, auth headers
+│  ├─ motion/                   # Framer motion variants, transitions, provider
+│  ├─ realtime/                 # Socket.IO client singleton and connection lifecycle
+│  └─ utils/                    # Pure formatters (currency, dates, timers, cn helper)
 │
-└─ styles/
-   └─ tokens.css
-```
-
----
-
-## 3. `src/app/`
-
-`app/` owns Next.js routing and route composition.
-
-Typical responsibilities:
-
-- `page.tsx`
-- `layout.tsx`
-- metadata
-- route groups
-- route-level loading/error boundaries
-- high-level page composition
-
-A route file should usually stay thin.
-
-Good:
-
-```tsx
-import type { Metadata } from "next";
-import { LoginForm } from "@/features/auth/components/LoginForm";
-
-export const metadata: Metadata = {
-  title: "Login | FoodFighter",
-};
-
-export default function LoginPage() {
-  return <LoginForm />;
-}
-```
-
-A page may also own small page-level composition such as a back action, brand mark, and feature component.
-
-Do not put large forms, fetch wrappers, DTO parsing, or complex reusable UI implementations in `page.tsx`.
-
----
-
-## 4. Route groups
-
-Use route groups to separate major shells without changing URLs.
-
-Example:
-
-```text
-app/
-├─ (auth)/
-│  ├─ layout.tsx
-│  ├─ register/
-│  └─ login/
+├─ config/                      # Application configuration
+│  ├─ api.ts                    # API base URL resolution
+│  └─ routes.ts                 # Canonical typed route constants (ROUTES)
 │
-└─ (main)/
-   ├─ layout.tsx
-   ├─ room/
-   └─ history/
+└─ styles/                      # Design tokens
+   └─ tokens.css                # CSS custom properties for palette, radii, and shadows
 ```
 
-Use `(auth)` for authentication screens.
+---
 
-Use `(main)` when the main application shares navigation/shell structure.
+## 3. Global / Shared Architecture Policy
+
+Anything genuinely shared across features must have **exactly ONE source of truth**:
+
+1. **Global Tokens & Primitives**:
+   - Palette, typography scales, radii, shadows, borders, and focus rings live in `src/styles/tokens.css` and `src/components/ui/`.
+   - Never create feature-local copies of `Button`, `Input`, `Card`, `Badge`, `Alert`, or `Spinner`.
+
+2. **Global Shared UI**:
+   - `BrandMark`: Single source for official logo variants.
+   - `LanguageSwitcher`: Single shared component for language switching.
+   - Layout primitives: `PageContainer`, `AuthLayout`.
+
+3. **Domain Logic Stays Feature-Owned**:
+   - Realtime room sync stays in `features/room/`.
+   - Voting and tie-break rules stay in `features/food-fight/`.
+   - Bill calculation stays in `features/bill/`.
+   - Admin metrics stay in `features/admin/`.
 
 ---
 
-## 5. `src/features/<feature>/`
+## 4. Global TH/EN Localization Architecture
 
-Feature code owns FoodFighter-specific behavior and UI.
+FoodFighter implements a **lightweight, typed, zero-package-overhead** localization system:
 
-Examples:
-
-- Auth
-- Food Profile
-- Room
-- Meal Preference
-- Recommendations
-- Voting
-- Restaurants
-- History
-
-Feature code may understand business words such as:
-
-- Head
-- Ready
-- Active Member
-- OK / Pass
-- Final Vote
-
-Generic UI must not.
-
-### Start small
-
-For a small or early feature:
-
-```text
-features/<feature>/
-├─ components/
-│  ├─ FeatureForm.tsx
-│  └─ FeatureCard.tsx
-├─ <feature>.schema.ts
-├─ <feature>.types.ts
-└─ <feature>.service.ts
-```
-
-Only add `hooks/`, `services/`, `schemas/`, or other subfolders when the number of files actually benefits from grouping (as structured in `src/features/auth/`).
-
-Do not create speculative empty architecture.
+- **Supported Locales**: `"th"` and `"en"` (Default / fallback: `"en"`).
+- **Single Source of Truth**: `LanguageProvider` wrapping the root application in `src/app/layout.tsx`.
+- **Hook**: `useLanguage()` returns `{ locale, setLocale }`.
+- **Persistence**: Single localStorage key: `foodfighter_language`.
+- **Pre-Auth Accessibility**: Language switcher is available immediately on Landing before login.
+- **Typed Feature Dictionaries**: Each feature owns a typed dictionary matching the global `Locale` type:
+  - `homeTranslations` (`src/features/home/`)
+  - `roomTranslations` (`src/features/room/`)
+  - `foodFightTranslations` (`src/features/food-fight/`)
+  - `billTranslations` (`src/features/bill/`)
+  - `adminTranslations` (`src/features/admin/`)
+- **No Third-Party Overhead**: Avoid `next-intl`, `react-i18next`, or `i18next`.
 
 ---
 
-## 6. `src/components/ui/`
+## 5. Admin Architecture & Scope (Required Scope)
 
-Generic design-system primitives.
+Admin is a **required first-class product subsystem**:
 
-Examples:
-
-```text
-Button
-IconButton
-Input
-PasswordInput
-Label
-Checkbox
-Card
-Badge
-Alert
-Spinner
-Separator
-FormField
-```
-
-These components must not know FoodFighter business rules.
-
-Wrong:
-
-```text
-ReadyMemberCard
-VoteOption
-RestaurantCard
-```
-
-Those belong to feature folders.
+- **Route Group**: `src/app/(admin)/admin/`
+- **Route Protection**: `AdminRouteGuard` enforces authenticated `Role.ADMIN` session; non-admins and unauthenticated users are redirected.
+- **Backend Protection**: Guarded by `@UseGuards(RolesGuard)` and `@Roles(Role.ADMIN)`.
+- **Admin Scope**:
+  1. `/admin` — System Overview Dashboard
+  2. `/admin/analytics` — Platform Analytics, trends, and automated insights
+  3. `/admin/users` & `/admin/users/[userId]` — User Directory & User Detail
+  4. `/admin/rooms` & `/admin/rooms/[roomId]` — Rooms Directory & Session Detail
+  5. `/admin/bills` & `/admin/bills/[billId]` — Bills & Payments Directory / Settlement Detail
+- **Backend Registration**: `AdminModule` is imported and registered in `backend/src/app.module.ts`.
 
 ---
 
-## 7. `src/components/layout/`
+## 6. Canonical Routes (`src/config/routes.ts`)
 
-Reusable application structure.
-
-Examples:
-
-```text
-PageContainer
-AuthLayout
-PublicHeader
-PublicFooter
-AppShell
-AppHeader
-BottomNavigation
-```
-
-A layout component may understand page structure but not feature business logic.
-
----
-
-## 8. `src/components/shared/`
-
-Use only for reusable non-domain widgets more complex than basic primitives.
-
-Examples:
-
-- generic date picker,
-- generic empty state,
-- generic pagination control.
-
-Do not use `shared/` as a miscellaneous dump.
-
-If the component contains FoodFighter-specific vocabulary, it probably belongs to a feature.
-
----
-
-## 9. `src/lib/`
-
-Shared infrastructure.
-
-### `lib/api/`
-
-- API base configuration
-- shared request wrapper
-- credentials policy
-- generic transport errors
-
-### `lib/realtime/`
-
-- Socket.IO/WebSocket connection setup
-- reconnection
-- generic transport lifecycle
-
-### `lib/motion/`
-
-- reusable motion presets
-- reduced-motion helpers
-
-### `lib/utils/`
-
-Only genuinely reusable utilities.
-
-Avoid giant `helpers.ts`, `common.ts`, or `misc.ts`.
-
----
-
-## 10. `src/config/`
-
-Stable application configuration.
-
-Example:
+All internal links and redirects must consume `ROUTES` from `src/config/routes.ts`:
 
 ```ts
 export const ROUTES = {
+  HOME: "/",
+  AUTHENTICATED_HOME: "/",
   AUTH: {
     LOGIN: "/login",
     REGISTER: "/register",
+    VERIFY_EMAIL: "/verify-email",
+    CHANGE_EMAIL: "/change-email",
   },
-};
+  ROOM: {
+    CREATE: "/room/create",
+    DETAIL: (id: string) => `/room/${id}`,
+  },
+  FOOD_FIGHT: {
+    PREFERENCES: (id: string) => `/food-fight/${id}/preferences`,
+    RECOMMENDATIONS: (id: string) => `/food-fight/${id}/recommendations`,
+    VOTING: (id: string) => `/food-fight/${id}/voting`,
+    RESULT: (id: string) => `/food-fight/${id}/result`,
+  },
+  BILL: {
+    DETAIL: (id: string) => `/bill/${id}`,
+  },
+  ADMIN: "/admin",
+  ADMIN_ANALYTICS: "/admin/analytics",
+  ADMIN_USERS: "/admin/users",
+  ADMIN_USER_DETAIL: (id: string) => `/admin/users/${id}`,
+  ADMIN_ROOMS: "/admin/rooms",
+  ADMIN_ROOM_DETAIL: (id: string) => `/admin/rooms/${id}`,
+  ADMIN_BILLS: "/admin/bills",
+  ADMIN_BILL_DETAIL: (id: string) => `/admin/bills/${id}`,
+} as const;
 ```
-
-Do not repeat route literals throughout components.
-
----
-
-## 11. Dependency direction
-
-Allowed:
-
-```text
-app → features
-app → components/layout
-app → components/ui
-
-features → components/ui
-features → components/shared
-features → lib
-
-components/ui → small shared utilities
-```
-
-Avoid:
-
-```text
-components/ui → features
-components/ui → app
-frontend → backend source
-feature A → feature B internals without an intentional boundary
-```
-
-Circular imports are architecture defects.
-
----
-
-## 12. Server vs Client components
-
-Do not add `"use client"` automatically.
-
-Keep a Server Component when the file only needs:
-
-- metadata,
-- static composition,
-- server-compatible rendering.
-
-Use a Client Component when it requires:
-
-- React state/effects/transitions,
-- React Hook Form,
-- browser APIs,
-- event handlers,
-- client-only libraries.
-
-Preferred shape:
-
-```text
-Server route/page
-    ↓
-Client interactive feature component
-```
-
-Do not make the whole tree client-side because one nested control is interactive.
-
----
-
-## 13. Flat files over folder noise
-
-Prefer:
-
-```text
-features/auth/components/
-├─ RegisterForm.tsx
-├─ LoginForm.tsx
-├─ SocialAuthButtons.tsx
-└─ TermsConsent.tsx
-```
-
-over:
-
-```text
-register-form/
-├─ register-form.tsx
-└─ index.ts
-
-login-form/
-├─ login-form.tsx
-└─ index.ts
-```
-
-unless a component genuinely owns multiple files such as:
-
-- tests,
-- styles,
-- specialized helpers,
-- internal child components.
-
-Navigation cost matters.
-
----
-
-## 14. `index.ts` / barrel files
-
-Do not create barrels by default.
-
-Prefer direct imports:
-
-```ts
-import { LoginForm } from "@/features/auth/components/LoginForm";
-```
-
-Use `index.ts` only when it creates a meaningful module boundary.
-
-Avoid broad barrels that hide implementation ownership.
-
----
-
-## 15. Naming
-
-Use clear names derived from responsibilities and domain concepts.
-
-Good:
-
-```text
-RegisterForm
-VerificationCodeInput
-RoomMemberList
-InviteSheet
-MenuRecommendationCard
-VoteProgress
-RestaurantCard
-```
-
-Avoid vague names:
-
-```text
-Manager
-Thing
-Common
-MainStuff
-DataComponent
-HelperComponent
-```
-
----
-
-## 16. Feature boundaries specific to FoodFighter
-
-### Food Profile ≠ Meal Preference
-
-Food Profile is long-lived user preference/allergy/diet information.
-
-Meal Preference is session-specific intent.
-
-Do not merge them into one generic "preferences" module.
-
-### Email verification ≠ login 2FA
-
-Registration email verification must remain distinct from future login 2FA.
-
-### Room/Lobby ≠ Voting
-
-Room/Lobby owns membership, Head, Ready, invite, and start controls.
-
-Voting owns OK/Pass, vote progress, Recommend Again, Final Vote, and tie-break presentation.
-
-Do not create one giant "session" component that owns everything.
-
----
-
-## 17. Clean architecture rule for this project
-
-FoodFighter does **not** require enterprise-style layers such as:
-
-```text
-domain/
-use-cases/
-repositories/
-adapters/
-infrastructure/
-```
-
-for ordinary frontend features.
-
-Add abstraction only when the project demonstrates a real need.
-
-The preferred default is explicit, feature-oriented code.

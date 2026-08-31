@@ -10,7 +10,9 @@ export const cardVariants = cva(
         default: "border-border bg-surface shadow-xs",
         subtle: "border-border-subtle bg-surface-subtle",
         elevated: "border-border bg-surface-elevated shadow-md",
-        outline: "border-border bg-transparent",
+        outline: "border-border bg-surface shadow-xs",
+        tactile:
+          "border-border bg-surface shadow-xs transition-all duration-150 hover:-translate-y-0.5 hover:shadow-md hover:border-border-strong active:translate-y-0 active:scale-[0.99] active:shadow-xs",
       },
       padding: {
         none: "p-0",

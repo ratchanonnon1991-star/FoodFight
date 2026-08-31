@@ -1,10 +1,11 @@
 'use client';
 
 import * as React from 'react';
-import Link from 'next/link';
-import { ArrowLeft, Bell, CircleUserRound, LogOut, House } from 'lucide-react';
-import { IconButton } from '@/components/ui/IconButton';
-import { ROUTES } from '@/config/routes';
+import { ArrowLeft } from 'lucide-react';
+import { HeaderUtilities } from '@/components/layout/HeaderUtilities';
+import type { AccountDropdownUser } from '@/components/layout/AccountDropdown';
+import { useLanguage } from '@/i18n/LanguageProvider';
+import { roomTranslations } from '../i18n/room-translations';
 
 export interface RoomPageHeaderProps {
   title: string;
@@ -12,6 +13,8 @@ export interface RoomPageHeaderProps {
   backHref: string;
   showBackButton?: boolean;
   showAccountActions?: boolean;
+  user?: AccountDropdownUser | null;
+  onLogout?: () => void;
   actions?: React.ReactNode;
 }
 
@@ -20,129 +23,42 @@ export function RoomPageHeader({
   subtitle,
   backHref,
   showBackButton = true,
-  showAccountActions = false,
+  showAccountActions = true,
+  user,
+  onLogout,
   actions,
 }: RoomPageHeaderProps) {
-  const [openMenu, setOpenMenu] = React.useState<
-    'notifications' | 'profile' | null
-  >(null);
-  const actionsRef = React.useRef<HTMLDivElement>(null);
-
-  React.useEffect(() => {
-    const handlePointerDown = (event: PointerEvent) => {
-      if (!actionsRef.current?.contains(event.target as Node)) {
-        setOpenMenu(null);
-      }
-    };
-
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') {
-        setOpenMenu(null);
-      }
-    };
-
-    document.addEventListener('pointerdown', handlePointerDown);
-    document.addEventListener('keydown', handleKeyDown);
-
-    return () => {
-      document.removeEventListener('pointerdown', handlePointerDown);
-      document.removeEventListener('keydown', handleKeyDown);
-    };
-  }, []);
-
-  const toggleMenu = (menu: 'notifications' | 'profile') => {
-    setOpenMenu((currentMenu) => (currentMenu === menu ? null : menu));
-  };
-
-  const signOut = () => {
-    window.localStorage.removeItem('accessToken');
-    window.location.assign(ROUTES.AUTH.LOGIN);
-  };
+  const { locale } = useLanguage();
+  const t = roomTranslations[locale].header;
 
   return (
-    <header className="flex items-start justify-between gap-3 pb-4">
+    <header className="flex items-start justify-between gap-3 pb-3 pt-1">
       <div className="flex min-w-0 items-start gap-3">
         {showBackButton ? (
           <a
             href={backHref}
-            aria-label="Back"
-            className="relative z-10 mt-1 inline-flex size-10 shrink-0 cursor-pointer items-center justify-center rounded-full text-text-primary transition-colors hover:bg-surface-subtle focus-visible:outline-2 focus-visible:outline-brand-secondary"
+            aria-label={t.back}
+            className="relative z-10 mt-0.5 inline-flex size-10 shrink-0 cursor-pointer items-center justify-center rounded-full border border-white/20 bg-black/20 text-white shadow-xs backdrop-blur-md transition-all hover:bg-black/30 hover:border-white/30 active:scale-95 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus-ring"
           >
-            <ArrowLeft className="size-6" aria-hidden="true" />
+            <ArrowLeft className="size-5" aria-hidden="true" />
           </a>
         ) : null}
         <div className="min-w-0">
-          <h1 className="truncate text-2xl font-semibold tracking-tight text-text-primary">
+          <h1 className="truncate text-2xl sm:text-3xl font-extrabold tracking-tight text-white drop-shadow-xs">
             {title}
           </h1>
-          <p className="mt-1 text-sm text-text-secondary">{subtitle}</p>
+          <p className="mt-0.5 text-xs sm:text-sm text-white/80 font-medium">{subtitle}</p>
         </div>
       </div>
 
-      <div
-        ref={actionsRef}
-        className="relative flex shrink-0 items-center gap-1"
-      >
+      <div className="relative flex shrink-0 items-center gap-1.5">
         {actions}
         {showAccountActions ? (
-          <>
-            <IconButton
-              aria-label="Notifications"
-              icon={<Bell className="size-5" aria-hidden="true" />}
-              className="text-text-primary"
-              aria-expanded={openMenu === 'notifications'}
-              aria-haspopup="dialog"
-              onClick={() => toggleMenu('notifications')}
-            />
-            <IconButton
-              aria-label="Profile"
-              icon={<CircleUserRound className="size-6" aria-hidden="true" />}
-              className="text-text-primary"
-              aria-expanded={openMenu === 'profile'}
-              aria-haspopup="menu"
-              onClick={() => toggleMenu('profile')}
-            />
-
-            {openMenu === 'notifications' ? (
-              <div
-                role="dialog"
-                aria-label="Notifications"
-                className="absolute right-0 top-12 z-20 w-64 rounded-2xl border border-border bg-surface p-4 shadow-xl"
-              >
-                <p className="font-semibold text-text-primary">Notifications</p>
-                <p className="mt-1 text-sm text-text-secondary">
-                  You&apos;re all caught up.
-                </p>
-              </div>
-            ) : null}
-
-            {openMenu === 'profile' ? (
-              <div
-                role="menu"
-                aria-label="Profile menu"
-                className="absolute right-0 top-12 z-20 w-52 rounded-2xl border border-border bg-surface p-2 shadow-xl"
-              >
-                <Link
-                  href={ROUTES.AUTHENTICATED_HOME}
-                  role="menuitem"
-                  onClick={() => setOpenMenu(null)}
-                  className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-text-primary transition-colors hover:bg-surface-subtle focus-visible:outline-2 focus-visible:outline-brand-secondary"
-                >
-                  <House className="size-4" aria-hidden="true" />
-                  Home
-                </Link>
-                <button
-                  type="button"
-                  role="menuitem"
-                  onClick={signOut}
-                  className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left text-sm font-medium text-status-danger-text transition-colors hover:bg-surface-subtle focus-visible:outline-2 focus-visible:outline-brand-secondary"
-                >
-                  <LogOut className="size-4" aria-hidden="true" />
-                  Sign out
-                </button>
-              </div>
-            ) : null}
-          </>
+          <HeaderUtilities
+            user={user}
+            onLogout={onLogout}
+            className="lg:fixed lg:right-10 lg:top-3 lg:z-40 2xl:right-[calc((100vw-1440px)/2+2.5rem)]"
+          />
         ) : null}
       </div>
     </header>

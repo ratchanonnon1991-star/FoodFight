@@ -3,10 +3,12 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils/cn";
-import { PageContainer } from "./PageContainer";
+import { useLanguage } from "@/i18n/LanguageProvider";
+import { commonTranslations } from "@/i18n/common-translations";
+import { GlassSurface } from "@/components/ui/GlassSurface";
 import {
   getActiveNavigationTab,
-  navigationItems,
+  getNavigationItems,
   type NavTab,
 } from "./navigation-config";
 
@@ -22,43 +24,50 @@ export function BottomNavigation({
   className,
 }: BottomNavigationProps) {
   const pathname = usePathname();
+  const { locale } = useLanguage();
   const resolvedActiveTab = getActiveNavigationTab(pathname, activeTab);
+  const items = getNavigationItems(locale);
+  const t = commonTranslations[locale].nav;
 
   return (
     <nav
-      aria-label="Main Navigation"
+      aria-label={t.mainNavigation}
       data-navigation="bottom"
-      className={cn(
-        "fixed inset-x-0 bottom-0 z-30 border-t border-border/80 bg-surface/95 py-2.5 pb-[calc(0.625rem+env(safe-area-inset-bottom))] shadow-lg backdrop-blur-md lg:hidden",
-        className,
-      )}
+      className="lg:hidden"
     >
-      <PageContainer maxWidth="standard" paddingY="none">
-        <ul className="flex items-center justify-around gap-1.5" role="list">
-          {navigationItems.map((tab) => {
+      <div
+        className={cn(
+          "fixed inset-x-3 bottom-[calc(0.75rem+env(safe-area-inset-bottom))] z-40 mx-auto max-w-md p-1.5 rounded-full",
+          "bg-black/35 backdrop-blur-xl border border-white/20 shadow-[inset_0_1px_1.5px_rgba(255,255,255,0.25),0_8px_24px_rgba(0,0,0,0.25)]",
+          className,
+        )}
+      >
+        <ul className="flex items-center justify-between gap-1" role="list">
+          {items.map((tab) => {
             const isActive = tab.id === resolvedActiveTab;
             const Icon = tab.icon;
 
             return (
-              <li key={tab.id} className="flex-1">
+              <li key={tab.id} className="flex-1 min-w-0">
                 <Link
                   href={tab.href}
                   aria-current={isActive ? "page" : undefined}
                   className={cn(
-                    "flex flex-col items-center justify-center gap-1 rounded-2xl px-3 py-1.5 transition-all select-none",
-                    "focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-brand-secondary",
+                    "flex items-center justify-center gap-1.5 rounded-full px-2.5 py-1.5 text-xs sm:text-sm transition-all select-none whitespace-nowrap",
+                    "focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-focus-ring",
                     isActive
-                      ? "bg-surface-subtle font-bold text-brand-primary shadow-2xs"
-                      : "text-text-secondary hover:bg-surface-subtle/50 hover:text-text-primary",
+                      ? "bg-white font-bold text-brand-primary shadow-xs"
+                      : "font-medium text-white/80 hover:text-white hover:bg-white/10 active:scale-[0.96]",
                   )}
                 >
                   <Icon
                     className={cn(
-                      "size-5",
-                      isActive ? "stroke-[2.5]" : "stroke-[1.8]",
+                      "size-4 shrink-0",
+                      isActive ? "stroke-[2.5] text-brand-primary" : "stroke-[1.8] text-white/80",
                     )}
+                    aria-hidden="true"
                   />
-                  <span className="text-2xs leading-none sm:text-xs">
+                  <span className="truncate">
                     {tab.label}
                   </span>
                 </Link>
@@ -66,7 +75,7 @@ export function BottomNavigation({
             );
           })}
         </ul>
-      </PageContainer>
+      </div>
     </nav>
   );
 }

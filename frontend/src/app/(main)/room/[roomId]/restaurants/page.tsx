@@ -16,8 +16,9 @@ export default async function RestaurantsPage({
   const { roomId } = await params;
 
   return (
-    <main className="min-h-dvh bg-background text-text-primary">
-      <div className="mx-auto w-full max-w-md px-4 pb-32 pt-3 sm:px-6 sm:pt-5 md:max-w-3xl">
+    <main className="min-h-dvh bg-transparent text-text-primary">
+      <div className="mx-auto w-full max-w-md px-4 pb-32 pt-2 sm:px-6 sm:pt-4 md:max-w-3xl">
+
         <RoomPageHeader
           title="ร้านอาหารแนะนำ"
           subtitle="ร้านที่เข้ากับเมนูและความต้องการของกลุ่ม"

@@ -5,6 +5,8 @@
  * and client-side results across auth flows.
  */
 
+export type UserRole = "USER" | "ADMIN";
+
 export interface RegisterInput {
   name: string;
   email: string;

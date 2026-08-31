@@ -12,14 +12,28 @@
 
   window.FFPrototype = window.FFPrototype || {};
   const P = window.FFPrototype;
+  let renderedRoute = '';
 
   /* ==========================================================================
      1. Main Route Switch Dispatcher (All 38 Registered Screens Live)
      ========================================================================== */
   function renderCurrentRoute() {
-    const hash = window.location.hash || '#/login';
+    const hash = window.location.hash || '#/landing';
     const appRoot = document.getElementById('app-root');
     if (!appRoot) return;
+
+    // A loading screen owns a short local timer. Invalidate it when a user
+    // navigates away so an old completion callback cannot redirect a newer
+    // screen. The normal completion path is still allowed to navigate to
+    // Food Picks before this guard runs.
+    if (renderedRoute === '#/recommendation-loading' && hash !== renderedRoute) {
+      P.WAVE1?.cancelRecommendationLoading?.();
+    }
+    renderedRoute = hash;
+
+    document.body.classList.toggle('ux-lab-active', hash === '#/ux-lab');
+    const prototypeProductRoutes = [...(P.WAVE1?.routes || []), ...(P.WAVE2?.routes || []), ...(P.WAVE3?.routes || []), ...(P.WAVE4?.routes || [])];
+    document.body.classList.toggle('wave1-active', prototypeProductRoutes.includes(hash));
 
     // Reset window scroll on navigation
     window.scrollTo({ top: 0, behavior: 'instant' });
@@ -28,22 +42,62 @@
     let bindFn = null;
 
     switch (hash) {
-      // V1 Auth (4 Screens)
+      // Wave 01 clickable product prototype (local-only)
+      case '#/landing':
       case '#/login':
-        screenHtml = P.renderLogin();
-        bindFn = P.bindLoginEvents;
-        break;
       case '#/register':
-        screenHtml = P.renderRegister();
-        bindFn = P.bindRegisterEvents;
-        break;
       case '#/verify-email':
-        screenHtml = P.renderVerifyEmail();
-        bindFn = P.bindVerifyEmailEvents;
-        break;
       case '#/forgot-password':
-        screenHtml = P.renderForgotPassword();
-        bindFn = P.bindForgotPasswordEvents;
+      case '#/reset-password':
+      case '#/food-profile':
+      case '#/home':
+      case '#/room/create':
+      case '#/room/join':
+      case '#/room/preview':
+      case '#/room/lobby':
+        screenHtml = P.renderWave1Route(hash);
+        bindFn = P.bindWave1Events;
+        break;
+
+      // Wave 02 local gameplay prototype (no runtime/API dependency)
+      case '#/meal-preference':
+      case '#/recommendation-loading':
+      case '#/food-picks':
+      case '#/vote':
+      case '#/winner':
+      case '#/restaurant':
+      case '#/restaurant/detail':
+        screenHtml = P.renderWave2Route(hash);
+        bindFn = P.bindWave2Events;
+        break;
+
+      // Wave 03 local bill, split, payment, completion, and history prototype
+      case '#/bills':
+      case '#/bills/receipt':
+      case '#/bills/items':
+      case '#/bills/split':
+      case '#/bills/detail':
+      case '#/payment':
+      case '#/payment/status':
+      case '#/bill-complete':
+      case '#/history':
+      case '#/history/detail':
+        screenHtml = P.renderWave3Route(hash);
+        bindFn = P.bindWave3Events;
+        break;
+
+      // Wave 04 profile, account, and food-profile revisit prototype
+      case '#/profile':
+      case '#/profile/edit':
+      case '#/profile/food':
+        screenHtml = P.renderWave4Route(hash);
+        bindFn = P.bindWave4Events;
+        break;
+
+      // Developer UX Lab (isolated reference surface)
+      case '#/ux-lab':
+        screenHtml = P.renderUXLab();
+        bindFn = P.bindUXLabEvents;
         break;
 
       // V1 Food Profile Onboarding (3 Screens)
@@ -60,24 +114,10 @@
         bindFn = P.bindFoodProfileDetailsEvents;
         break;
 
-      // V1 Home (1 Screen)
-      case '#/home':
-        screenHtml = P.renderHome();
-        bindFn = P.bindHomeEvents;
-        break;
-
       // V2 Room Journey (8 Screens)
-      case '#/room/create':
-        screenHtml = P.renderRoomCreate();
-        bindFn = P.bindRoomCreateEvents;
-        break;
       case '#/room/lobby-host':
         screenHtml = P.renderRoomLobbyHost();
         bindFn = P.bindRoomLobbyHostEvents;
-        break;
-      case '#/room/join':
-        screenHtml = P.renderRoomJoinHub();
-        bindFn = P.bindRoomJoinHubEvents;
         break;
       case '#/room/scan-qr':
         screenHtml = P.renderRoomScanQR();
@@ -90,10 +130,6 @@
       case '#/room/invite':
         screenHtml = P.renderRoomInviteScreen();
         bindFn = P.bindRoomInviteScreenEvents;
-        break;
-      case '#/room/preview':
-        screenHtml = P.renderRoomPreview();
-        bindFn = P.bindRoomPreviewEvents;
         break;
       case '#/room/lobby-member':
         screenHtml = P.renderRoomLobbyMember();
@@ -178,23 +214,10 @@
         break;
 
       // V6 History, Profile & Settings (4 Screens)
-      case '#/history':
-        screenHtml = P.renderHistory();
-        bindFn = P.bindHistoryEvents;
-        break;
       case '#/bill-history':
         screenHtml = P.renderBillHistory();
         bindFn = P.bindBillHistoryEvents;
         break;
-      case '#/profile':
-        screenHtml = P.renderProfile();
-        bindFn = P.bindProfileEvents;
-        break;
-      case '#/profile/food':
-        screenHtml = P.renderProfileFoodEdit();
-        bindFn = P.bindProfileFoodEditEvents;
-        break;
-
       // Unknown / 404 Fallback
       default: {
         screenHtml = P.renderNotFoundShell(hash);
@@ -219,9 +242,9 @@
     window.addEventListener('hashchange', renderCurrentRoute);
     P.initPrototypeNavigator();
 
-    // Default route to #/login if blank hash
+    // Default route to the product prototype if blank hash
     if (!window.location.hash) {
-      window.location.hash = '#/login';
+      window.location.hash = '#/landing';
     } else {
       renderCurrentRoute();
     }

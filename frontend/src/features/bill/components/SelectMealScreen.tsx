@@ -16,6 +16,8 @@ import { Avatar } from "@/components/ui/Avatar";
 import { Alert, AlertDescription } from "@/components/ui/Alert";
 import { Spinner } from "@/components/ui/Spinner";
 import { ApiError } from "@/lib/api/client";
+import { useLanguage } from "@/i18n/LanguageProvider";
+import { billTranslations } from "../i18n/bill-translations";
 import { PendingBillsSection } from "./PendingBillsSection";
 import { billService } from "../services/bill-service";
 import { usePendingBills } from "../hooks/use-pending-bills";
@@ -24,6 +26,8 @@ import type { AvailableRoom } from "../types/bill-types";
 
 export function SelectMealScreen() {
   const router = useRouter();
+  const { locale } = useLanguage();
+  const t = billTranslations[locale].selectMeal;
   const [rooms, setRooms] = React.useState<AvailableRoom[] | null>(null);
   const [error, setError] = React.useState<string | null>(null);
   const [creatingRoomId, setCreatingRoomId] = React.useState<string | null>(null);
@@ -49,7 +53,7 @@ export function SelectMealScreen() {
       router.push(billRoutes.receipt(bill.id));
     } catch (err) {
       setError(
-        err instanceof ApiError ? err.message : "Unable to start a bill for this meal.",
+        err instanceof ApiError ? err.message : t.errorDefault,
       );
     } finally {
       setCreatingRoomId(null);
@@ -70,7 +74,7 @@ export function SelectMealScreen() {
         if (isMounted) {
           setRooms([]);
           setError(
-            err instanceof ApiError ? err.message : "Unable to load meals.",
+            err instanceof ApiError ? err.message : t.errorDefault,
           );
         }
       });
@@ -78,7 +82,7 @@ export function SelectMealScreen() {
     return () => {
       isMounted = false;
     };
-  }, []);
+  }, [t.errorDefault]);
 
   const pendingBillIds = React.useMemo(
     () => new Set(pendingBills.map((bill) => bill.id)),
@@ -115,9 +119,9 @@ export function SelectMealScreen() {
   return (
     <AuthenticatedPageLayout>
       <AuthenticatedPageHeader
-        eyebrow="Your bills"
-        title="Select Meal"
-        description="Continue an unfinished bill or choose a meal to create a new one."
+        eyebrow={t.eyebrow}
+        title={t.title}
+        description={t.description}
       />
 
           <PendingBillsSection
@@ -141,12 +145,10 @@ export function SelectMealScreen() {
           <Card variant="subtle" padding="lg" className="text-center space-y-3">
             <PackageOpen className="size-10 mx-auto text-text-muted" />
             <p className="text-sm font-medium text-text-primary">
-              {pendingBills.length > 0 ? "No new meals available" : "Can't find your meal?"}
+              {t.noAvailableMeals}
             </p>
             <p className="text-sm text-text-secondary">
-              {pendingBills.length > 0
-                ? "Your unfinished bills are listed above."
-                : "A bill can only be created after your group has selected a final restaurant."}
+              {t.noAvailableMealsDesc}
             </p>
           </Card>
         ) : (
@@ -156,10 +158,10 @@ export function SelectMealScreen() {
                 id="new-bill-heading"
                 className="text-sm font-bold tracking-tight text-text-primary sm:text-base"
               >
-                Start a new bill
+                {t.availableSectionTitle}
               </h2>
               <p className="mt-1 text-xs leading-relaxed text-text-secondary">
-                Only meals with a final restaurant selected can be billed.
+                {t.description}
               </p>
             </div>
             {roomsForCreation.map((room) => (
@@ -180,18 +182,14 @@ export function SelectMealScreen() {
                   </div>
                   {room.billStatus && (
                     <Badge variant={room.billStatus === "DRAFT" ? "warning" : "info"}>
-                      {room.billStatus === "DRAFT" ? "In progress" : "Splitting"}
+                      {room.billStatus}
                     </Badge>
                   )}
                 </div>
 
                 {room.restaurantName ? (
                   <Badge variant="brand-secondary">{room.restaurantName}</Badge>
-                ) : (
-                  <p className="text-xs text-text-muted">
-                    No final restaurant selected yet.
-                  </p>
-                )}
+                ) : null}
 
                 <div className="flex items-center justify-between gap-3">
                   <div className="flex items-center gap-2">
@@ -217,7 +215,7 @@ export function SelectMealScreen() {
                     loading={creatingRoomId === room.roomId}
                     onClick={() => handleSelect(room)}
                   >
-                    {room.billId ? "Continue" : "Create Bill"}
+                    {room.billId ? t.viewBill : t.startBill}
                   </Button>
                 </div>
               </Card>
@@ -227,12 +225,12 @@ export function SelectMealScreen() {
 
         {!hasPaymentAccount && (
           <p className="text-center text-xs text-text-muted">
-            Managing your PromptPay receiving account?{" "}
+            {t.paymentAccountWarning}{" "}
             <Link
               href={ROUTES.BILL_PAYMENT_ACCOUNT}
               className="font-medium text-brand-primary hover:underline"
             >
-              Set up payment account
+              {t.setupPaymentAccount}
             </Link>
           </p>
         )}
